@@ -9,7 +9,7 @@ public class MainToCheck {
         System.out.println("Function: " + subExpr.getName() + ", Result: " + subExpr.eval()); // Outputs: Function: MINUS, Result: 7.0
 
         // Multiplication
-        MathExpression mulExpr = new TimesFunction(new Number(4.0), new Number(6.0));
+        MathExpression mulExpr = new TimesFunction(new Number(4), new Number(6.0));
         System.out.println("Function: " + mulExpr.getName() + ", Result: " + mulExpr.eval()); // Outputs: Function: TIMES, Result: 24.0
 
         // Division
@@ -27,5 +27,25 @@ public class MainToCheck {
         // Absolute
         MathExpression absExpr = new AbsFunction(new Number(-10.0));
         System.out.println("Function: " + absExpr.getName() + ", Result: " + absExpr.eval()); // Outputs: Function: ABS, Result: 10.0
-    }
+
+
+            // CONCAT function usage
+            Expression<String> concatExpr = new ConcatFunction(new StringLiteral("Hello, "), new StringLiteral("World!"));
+            System.out.println("Result of CONCAT: " + concatExpr.eval()); // Outputs: Hello, World!
+
+            // SUB function usage
+            Expression<String> subExpr2 = new SubFunction(new StringLiteral("Hello, World!"), new Number(7.0), new Number(11.0));
+            System.out.println("Result of SUB: " + subExpr2.eval()); // Outputs: World
+
+            // Another SUB function usage
+            Expression<String> subExpr3 = new SubFunction(new StringLiteral("OpenAI is awesome!"), new Number(7.0), new Number(8.0));
+            System.out.println("Result of SUB: " + subExpr3.eval()); // Outputs:
+
+            // CONCAT with SUB function usage
+            Expression<String> combinedExpr = new ConcatFunction(
+                    new SubFunction(new StringLiteral("Hello, World!"), new Number(0.0), new Number(4.0)),
+                    new SubFunction(new StringLiteral("OpenAI"), new Number(0.0), new Number(3.0))
+            );
+            System.out.println("Result of combined CONCAT and SUB: " + combinedExpr.eval()); // Outputs: HelloOpen
+        }
 }

@@ -14,7 +14,7 @@ public abstract class StringExpression implements Expression<String> {
             throw new IllegalArgumentException("Number of arguments does not match the required number of arguments : " + numberOfArguments());
         }
     }
-
+    public abstract String getName();
     @Override
     public String eval(){
         return execute(arguments);

@@ -22,6 +22,7 @@ public class DivideFunction extends MathExpression {
         double num = argument[1].eval();
         if(num==0)
             throw new ArithmeticException("Divide by zero!");
+            //not a number? - NaN
         else
             return argument[0].eval()/num;
 
