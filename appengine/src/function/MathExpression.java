@@ -1,3 +1,5 @@
+package function;
+
 public abstract class MathExpression implements Expression<Double> {
 
     protected Expression<Double>[] arguments;
@@ -11,7 +13,7 @@ public abstract class MathExpression implements Expression<Double> {
 
     private void checkArguments() {
         if(arguments.length != numberOfArguments()) {
-            throw new IllegalArgumentException("Number of arguments does not match the required number of arguments : "+numberOfArguments());
+            throw new IllegalArgumentException("function.Number of arguments does not match the required number of arguments : "+numberOfArguments());
         }
     }
 

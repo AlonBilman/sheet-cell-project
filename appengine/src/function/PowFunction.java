@@ -1,11 +1,12 @@
+package function;
 
-public class TimesFunction extends MathExpression {
+public class PowFunction extends MathExpression {
 
     private final String name;
 
-    public TimesFunction(Expression<Double> arg1 , Expression<Double> arg2) {
+    public PowFunction(Expression<Double> arg1 , Expression<Double> arg2) {
         super(arg1,arg2);
-        name = "TIMES";
+        name = "POW";
     }
 
     @Override
@@ -19,6 +20,6 @@ public class TimesFunction extends MathExpression {
 
     @Override
     protected double execute(Expression<Double>[] argument) {
-        return argument[0].eval()*argument[1].eval();
+        return Math.pow(argument[0].eval(),argument[1].eval());
     }
 }

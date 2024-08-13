@@ -1,3 +1,5 @@
+package function;
+
 public class StringLiteral implements Expression<String> {
 
     private final String value;

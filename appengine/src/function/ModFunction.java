@@ -1,11 +1,12 @@
+package function;
 
-public class PowFunction extends MathExpression {
+public class ModFunction extends MathExpression {
 
     private final String name;
 
-    public PowFunction(Expression<Double> arg1 , Expression<Double> arg2) {
+    public ModFunction(Expression<Double> arg1 , Expression<Double> arg2) {
         super(arg1,arg2);
-        name = "POW";
+        name = "MOD";
     }
 
     @Override
@@ -19,6 +20,7 @@ public class PowFunction extends MathExpression {
 
     @Override
     protected double execute(Expression<Double>[] argument) {
-        return Math.pow(argument[0].eval(),argument[1].eval());
+            return argument[0].eval()%argument[1].eval();
+
     }
 }

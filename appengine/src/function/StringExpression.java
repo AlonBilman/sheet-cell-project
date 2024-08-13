@@ -1,3 +1,5 @@
+package function;
+
 public abstract class StringExpression implements Expression<String> {
 
     protected Expression<String>[] arguments;
@@ -11,7 +13,7 @@ public abstract class StringExpression implements Expression<String> {
 
     private void checkArguments(){
         if(arguments.length != numberOfArguments()) {
-            throw new IllegalArgumentException("Number of arguments does not match the required number of arguments : " + numberOfArguments());
+            throw new IllegalArgumentException("function.Number of arguments does not match the required number of arguments : " + numberOfArguments());
         }
     }
     public abstract String getName();

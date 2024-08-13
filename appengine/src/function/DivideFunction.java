@@ -1,3 +1,4 @@
+package function;
 
 public class DivideFunction extends MathExpression {
 

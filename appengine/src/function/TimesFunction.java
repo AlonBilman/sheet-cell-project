@@ -1,11 +1,12 @@
+package function;
 
-public class ModFunction extends MathExpression {
+public class TimesFunction extends MathExpression {
 
     private final String name;
 
-    public ModFunction(Expression<Double> arg1 , Expression<Double> arg2) {
+    public TimesFunction(Expression<Double> arg1 , Expression<Double> arg2) {
         super(arg1,arg2);
-        name = "MOD";
+        name = "TIMES";
     }
 
     @Override
@@ -19,7 +20,6 @@ public class ModFunction extends MathExpression {
 
     @Override
     protected double execute(Expression<Double>[] argument) {
-            return argument[0].eval()%argument[1].eval();
-
+        return argument[0].eval()*argument[1].eval();
     }
 }

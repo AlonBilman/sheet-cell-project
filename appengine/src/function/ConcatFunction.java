@@ -1,3 +1,5 @@
+package function;
+
 public class ConcatFunction extends StringExpression {
 
     private final String name;

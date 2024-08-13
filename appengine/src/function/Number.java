@@ -1,3 +1,5 @@
+package function;
+
 public class Number implements Expression<Double> {
     private final Double value;
     public Number(Double value) {
