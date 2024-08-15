@@ -1,5 +1,9 @@
 package sheet.impl;
-import expression.api.Expression;
+import expression.api.*;
+import expression.impl.*;
+import expression.impl.Number;
+import expression.impl.function.ConcatFunction;
+import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
 
 import java.util.ArrayList;
@@ -21,44 +25,146 @@ public class CellImpl {
 
         this.row = row;
         this.col = col;
-        this.id = generateId(col,row);
+        this.id = generateId(col, row);
         dependsOn = new ArrayList<>();
         affectsOn = new ArrayList<>();
     }
-    //maybe I get a string? and then edit the cell? {Bla Bla}?
 
+    //maybe I get a string? and then edit the cell? {Bla Bla}?
+    //string
     public void editCell(Expression value, int version, CellImpl... depends) {
         //originalValue = value;
-      //  effectiveValue = value.eval().toString();
+        //  effectiveValue = value.eval().toString();
         updateLastChangeAt(version);
         updateCellsThatIAffect(); //maham
         updateCellsThatIDependsOn(depends);
     }
 
-    private void updateCellsThatIDependsOn(CellImpl... depends) {
+    private void updateCellsThatIDependsOn(CellImpl... depends) { //
         //.... update the list. get rid of older that I don't depend on anymore
     }
+
     public void updateCellsThatIAffect() {
         //
     }
 
     public void calculateEffectiveValue() {
-        // build the expression object out of the original value...
-        // it can be {PLUS, 4, 5} OR {CONCAT, "hello", "world"}
+        // Check if the original value is an expression or needs parsing
+        if (originalValue != null && !originalValue.isEmpty()) {
+            // Assuming originalValue can be directly used to create an Expression
+            // (This step might involve more complex parsing logic based on your system)
+            Expression expression = parseExpression(originalValue);
 
-        // first question: what is the generic type of Expression ?
-
-        // second question: what is the return type of eval() ?
-
+            // Set the effective value of the cell
+            this.effectiveValue = expression.eval();
+        } else {
+            // Handle the case where there is no valid expression
+            this.effectiveValue = null;
+        }
     }
 
+    // Inside CellImpl.java
+
+    private Expression parseExpression(String originalValue) {
+        originalValue = originalValue.trim(); // Clean up the input
+
+        if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
+            // Remove the curly braces
+            originalValue = originalValue.substring(1, originalValue.length() - 1);
+
+            // Identify the function name (everything before the first comma)
+            int firstCommaIndex = originalValue.indexOf(',');
+            if (firstCommaIndex == -1) {
+                throw new IllegalArgumentException("Invalid expression format: " + originalValue);
+            }
+
+            String functionName = originalValue.substring(0, firstCommaIndex).trim();
+
+            // Extract the arguments
+            String arguments = originalValue.substring(firstCommaIndex + 1).trim();
+
+            // Parse the arguments
+            List<Expression> parsedArguments = parseArguments(arguments);
+
+            // Create the appropriate expression based on the function name
+            switch (functionName) {
+                case "PLUS":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("PLUS function requires two arguments.");
+                    }
+                    return new PlusFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "CONCAT":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("CONCAT function requires two arguments.");
+                    }
+                    return new ConcatFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                // Handle other functions like MINUS, etc.
+                default:
+                    throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
+            }
+        } else {
+            // If it's a simple number or value, create a corresponding Expression
+            return parseSimpleValue(originalValue);
+        }
+    }
+
+
+    private List<Expression> parseArguments(String arguments) {
+        List<Expression> result = new ArrayList<>();
+        int braceCount = 0;
+        StringBuilder currentArgument = new StringBuilder();
+
+        for (int i = 0; i < arguments.length(); i++) {
+            char c = arguments.charAt(i);
+
+            if (c == '{') {
+                braceCount++;
+            } else if (c == '}') {
+                braceCount--;
+            }
+
+            if (c == ',' && braceCount == 0) {
+                // End of an argument
+                result.add(parseExpression(currentArgument.toString().trim()));
+                currentArgument.setLength(0);
+            } else {
+                currentArgument.append(c);
+            }
+        }
+
+        // Add the last argument
+        if (currentArgument.length() > 0) {
+            result.add(parseExpression(currentArgument.toString().trim()));
+        }
+
+        return result;
+    }
+
+    private Expression parseSimpleValue(String value) {
+        // Try to parse as a number
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            // Remove the quotes and create a MyString expression
+            String stringValue = value.substring(1, value.length() - 1);
+            return new Mystring(stringValue);
+        } else {
+            try {
+                return new Number(Double.parseDouble(value));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Unsupported value : " + value + " \n You may have forgotten to delineate the expression with {}.." +
+                        " Or maybe you wanted a String so make sure to write it like this : \"<data>\"");
+            }
+        }
+
+    }
 
     private String generateId(int col, int row) {
-        char letter = (char)('A'+col);
-        return letter+String.valueOf(row+1);
+        char letter = (char) ('A' + col);
+        return letter + String.valueOf(row + 1);
     }
 
-    Boolean IdChecker(String id){
+    Boolean IdChecker(String id) {
         return id.equals(this.id);
     }
 
@@ -70,7 +176,7 @@ public class CellImpl {
         lastChangeAt = currVersion++;
     }
 
-    public  String getOriginalValue() {
+    public String getOriginalValue() {
         return originalValue;
     }
 
@@ -96,5 +202,14 @@ public class CellImpl {
 
     public int getCol() {
         return col;
+    }
+
+    // Update the CellImpl class to include this method
+    public void setOriginalValue(String originalValue) {
+        this.originalValue = originalValue;
+    }
+
+    public EffectiveValue getEffectiveValue() {
+        return effectiveValue;
     }
 }
