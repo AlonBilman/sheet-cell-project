@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Scanner;
 
 public class CheckUserInputForFiles extends CheckForXMLFile {
-     protected  File checkFileUserInput() {
+     public static File checkFileUserInput() {
         String filePath;
         Scanner scanner = new Scanner(System.in);
         File fileToCheck;
@@ -22,5 +22,6 @@ public class CheckUserInputForFiles extends CheckForXMLFile {
         scanner.close();
         return fileToCheck;
     }
+
 
 }

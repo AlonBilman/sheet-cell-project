@@ -1,4 +1,5 @@
 package sheet.impl;
+import FileCheck.STLCell;
 import expression.api.Expression;
 import sheet.api.EffectiveValue;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class CellImpl {
     private final int row;
-    private final int col;
+    private final String col;
     private final String id;
     private int lastChangeAt;
     private List<CellImpl> dependsOn;
@@ -16,16 +17,16 @@ public class CellImpl {
     private EffectiveValue effectiveValue;
 
 
-    public CellImpl(int row, int col) {
+    public CellImpl(STLCell cell) {
         lastChangeAt = 0;
-
-        this.row = row;
-        this.col = col;
+        this.row = cell.getRow();
+        this.col = cell.getColumn();
+        this.originalValue = cell.getSTLOriginalValue();
         this.id = generateId(col,row);
         dependsOn = new ArrayList<>();
         affectsOn = new ArrayList<>();
     }
-    //maybe I get a string? and then edit the cell? {Bla Bla}?
+
 
     public void editCell(Expression value, int version, CellImpl... depends) {
         //originalValue = value;
@@ -36,12 +37,14 @@ public class CellImpl {
     }
 
     private void updateCellsThatIDependsOn(CellImpl... depends) {
-        //.... update the list. get rid of older that I don't depend on anymore
+
     }
     public void updateCellsThatIAffect() {
-        //
-    }
 
+    }
+    public EffectiveValue getEffectiveValue() {
+        return effectiveValue;
+    }
     public void calculateEffectiveValue() {
         // build the expression object out of the original value...
         // it can be {PLUS, 4, 5} OR {CONCAT, "hello", "world"}
@@ -53,8 +56,8 @@ public class CellImpl {
     }
 
 
-    private String generateId(int col, int row) {
-        char letter = (char)('A'+col);
+    private String generateId(String col, int row) {
+        char letter = col.charAt(0);
         return letter+String.valueOf(row+1);
     }
 
@@ -94,7 +97,7 @@ public class CellImpl {
         return row;
     }
 
-    public int getCol() {
+    public String getCol() {
         return col;
     }
 }
