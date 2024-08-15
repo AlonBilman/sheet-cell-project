@@ -1,42 +1,57 @@
 package sheet.impl;
 import expression.api.Expression;
+import sheet.api.EffectiveValue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cell {
+public class CellImpl {
     private final int row;
     private final int col;
     private final String id;
     private int lastChangeAt;
-    private List<Cell> dependsOn;
-    private List<Cell> affectsOn;
-    private Expression originalValue;
-    private String effectiveValue; //string? what should it be?... //bool, int, double, string, they are all printable...
+    private List<CellImpl> dependsOn;
+    private List<CellImpl> affectsOn;
+    private String originalValue;
+    private EffectiveValue effectiveValue;
 
-    public Cell(int row, int col) {
+
+    public CellImpl(int row, int col) {
         lastChangeAt = 0;
-        effectiveValue = " ";
+
         this.row = row;
         this.col = col;
         this.id = generateId(col,row);
         dependsOn = new ArrayList<>();
         affectsOn = new ArrayList<>();
     }
+    //maybe I get a string? and then edit the cell? {Bla Bla}?
 
-    public void editCell(Expression value, int version, Cell... depends) {
-        originalValue = value;
-        effectiveValue = value.eval().toString();
+    public void editCell(Expression value, int version, CellImpl... depends) {
+        //originalValue = value;
+      //  effectiveValue = value.eval().toString();
         updateLastChangeAt(version);
-        updateCellsThatIAffect();
+        updateCellsThatIAffect(); //maham
         updateCellsThatIDependsOn(depends);
     }
 
-    private void updateCellsThatIDependsOn(Cell... depends) {
+    private void updateCellsThatIDependsOn(CellImpl... depends) {
         //.... update the list. get rid of older that I don't depend on anymore
     }
     public void updateCellsThatIAffect() {
         //
     }
+
+    public void calculateEffectiveValue() {
+        // build the expression object out of the original value...
+        // it can be {PLUS, 4, 5} OR {CONCAT, "hello", "world"}
+
+        // first question: what is the generic type of Expression ?
+
+        // second question: what is the return type of eval() ?
+
+    }
+
 
     private String generateId(int col, int row) {
         char letter = (char)('A'+col);
@@ -47,15 +62,15 @@ public class Cell {
         return id.equals(this.id);
     }
 
-    public void removeDependsOn(Cell cell) {
-        dependsOn.remove(cell);
+    public void removeDependsOn(CellImpl cellImpl) {
+        dependsOn.remove(cellImpl);
     }
 
     public void updateLastChangeAt(int currVersion) {
         lastChangeAt = currVersion++;
     }
 
-    public  Expression getOriginalValue() {
+    public  String getOriginalValue() {
         return originalValue;
     }
 
@@ -63,11 +78,11 @@ public class Cell {
         return lastChangeAt;
     }
 
-    public List<Cell> getDependsOn() {
+    public List<CellImpl> getDependsOn() {
         return dependsOn;
     }
 
-    public List<Cell> getAffectsOn() {
+    public List<CellImpl> getAffectsOn() {
         return affectsOn;
     }
 

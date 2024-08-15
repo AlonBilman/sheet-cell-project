@@ -13,7 +13,7 @@
 //
 //    private void checkArguments() {
 //        if(arguments.length != numberOfArguments()) {
-//            throw new IllegalArgumentException("expression.api.impl.Number of arguments does not match the required number of arguments : "+numberOfArguments());
+//            throw new IllegalArgumentException("expression.impl.Number of arguments does not match the required number of arguments : "+numberOfArguments());
 //        }
 //    }
 //

@@ -1,7 +1,7 @@
-//package expression.api.impl.function.testemp;
+//package expression.impl.function.testemp;
 //
 //import expression.api.Expression;
-//import expression.api.impl.BinaryExpression;
+//import expression.impl.BinaryExpression;
 //
 //public class ConcatFunction extends BinaryExpression {
 //
