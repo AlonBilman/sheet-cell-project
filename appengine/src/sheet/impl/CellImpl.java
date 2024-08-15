@@ -1,4 +1,6 @@
 package sheet.impl;
+import FileCheck.STLCell;
+import expression.api.Expression;
 import expression.api.*;
 import expression.impl.*;
 import expression.impl.Number;
@@ -11,7 +13,7 @@ import java.util.List;
 
 public class CellImpl {
     private final int row;
-    private final int col;
+    private final String col;
     private final String id;
     private int lastChangeAt;
     private List<CellImpl> dependsOn;
@@ -20,27 +22,26 @@ public class CellImpl {
     private EffectiveValue effectiveValue;
 
 
-    public CellImpl(int row, int col) {
+    public CellImpl(STLCell cell) {
         lastChangeAt = 0;
-
-        this.row = row;
-        this.col = col;
-        this.id = generateId(col, row);
+        this.row = cell.getRow();
+        this.col = cell.getColumn();
+        this.originalValue = cell.getSTLOriginalValue();
+        this.id = generateId(col,row);
         dependsOn = new ArrayList<>();
         affectsOn = new ArrayList<>();
     }
-
     //maybe I get a string? and then edit the cell? {Bla Bla}?
-    //string
+
     public void editCell(Expression value, int version, CellImpl... depends) {
         //originalValue = value;
-        //  effectiveValue = value.eval().toString();
+      //  effectiveValue = value.eval().toString();
         updateLastChangeAt(version);
         updateCellsThatIAffect(); //maham
         updateCellsThatIDependsOn(depends);
     }
 
-    private void updateCellsThatIDependsOn(CellImpl... depends) { //
+    private void updateCellsThatIDependsOn(CellImpl... depends) {
         //.... update the list. get rid of older that I don't depend on anymore
     }
 
@@ -141,12 +142,13 @@ public class CellImpl {
 
     }
 
-    private String generateId(int col, int row) {
-        char letter = (char) ('A' + col);
-        return letter + String.valueOf(row + 1);
+     private String generateId(String col, int row) {
+        char letter = col.charAt(0);
+        return letter+String.valueOf(row+1);
     }
 
-    Boolean IdChecker(String id) {
+
+    Boolean IdChecker(String id){
         return id.equals(this.id);
     }
 
@@ -158,7 +160,7 @@ public class CellImpl {
         lastChangeAt = currVersion++;
     }
 
-    public String getOriginalValue() {
+    public  String getOriginalValue() {
         return originalValue;
     }
 
