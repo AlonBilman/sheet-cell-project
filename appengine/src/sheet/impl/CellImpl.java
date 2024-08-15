@@ -49,44 +49,34 @@ public class CellImpl {
     }
 
     public void calculateEffectiveValue() {
-        // Check if the original value is an expression or needs parsing
+        //check if the original value is an expression or needs parsing
         if (originalValue != null && !originalValue.isEmpty()) {
-            // Assuming originalValue can be directly used to create an Expression
-            // (This step might involve more complex parsing logic based on your system)
             Expression expression = parseExpression(originalValue);
-
-            // Set the effective value of the cell
+            //set the effective value of the cell
             this.effectiveValue = expression.eval();
         } else {
-            // Handle the case where there is no valid expression
+            //handle the case where there is no valid expression
             this.effectiveValue = null;
         }
     }
-
-    // Inside CellImpl.java
 
     private Expression parseExpression(String originalValue) {
         originalValue = originalValue.trim(); // Clean up the input
 
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
-            // Remove the curly braces
             originalValue = originalValue.substring(1, originalValue.length() - 1);
 
-            // Identify the function name (everything before the first comma)
             int firstCommaIndex = originalValue.indexOf(',');
             if (firstCommaIndex == -1) {
                 throw new IllegalArgumentException("Invalid expression format: " + originalValue);
             }
 
             String functionName = originalValue.substring(0, firstCommaIndex).trim();
-
-            // Extract the arguments
+            //extract the arguments
             String arguments = originalValue.substring(firstCommaIndex + 1).trim();
 
-            // Parse the arguments
             List<Expression> parsedArguments = parseArguments(arguments);
 
-            // Create the appropriate expression based on the function name
             switch (functionName) {
                 case "PLUS":
                     if (parsedArguments.size() != 2) {
@@ -99,53 +89,45 @@ public class CellImpl {
                         throw new IllegalArgumentException("CONCAT function requires two arguments.");
                     }
                     return new ConcatFunction(parsedArguments.get(0), parsedArguments.get(1));
-
-                // Handle other functions like MINUS, etc.
+                    //NEED TO ADD MORE FUNCTIONS OBV
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
             }
         } else {
-            // If it's a simple number or value, create a corresponding Expression
             return parseSimpleValue(originalValue);
         }
     }
-
 
     private List<Expression> parseArguments(String arguments) {
         List<Expression> result = new ArrayList<>();
         int braceCount = 0;
         StringBuilder currentArgument = new StringBuilder();
-
         for (int i = 0; i < arguments.length(); i++) {
-            char c = arguments.charAt(i);
+            char ch = arguments.charAt(i);
 
-            if (c == '{') {
+            if (ch == '{') {
                 braceCount++;
-            } else if (c == '}') {
+            } else if (ch == '}') {
                 braceCount--;
             }
 
-            if (c == ',' && braceCount == 0) {
+            if (ch == ',' && braceCount == 0) {
                 // End of an argument
                 result.add(parseExpression(currentArgument.toString().trim()));
                 currentArgument.setLength(0);
             } else {
-                currentArgument.append(c);
+                currentArgument.append(ch);
             }
         }
-
-        // Add the last argument
         if (currentArgument.length() > 0) {
             result.add(parseExpression(currentArgument.toString().trim()));
         }
-
         return result;
     }
 
     private Expression parseSimpleValue(String value) {
-        // Try to parse as a number
         if (value.startsWith("\"") && value.endsWith("\"")) {
-            // Remove the quotes and create a MyString expression
+
             String stringValue = value.substring(1, value.length() - 1);
             return new Mystring(stringValue);
         } else {
