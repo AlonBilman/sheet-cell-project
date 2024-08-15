@@ -1,5 +1,4 @@
-package sheetbuild;
-
+package sheet.impl;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class SpreadSheet {
         buildSheet();
         this.sheetName = sheetName;
         this.sheetVersionNumber = 1;
-        sheetList = new ArrayList<SpreadSheet>();
+        sheetList = new ArrayList<>();
         sheetList.addLast(this); //the first sheet in the array
 
     }
@@ -49,7 +48,7 @@ public class SpreadSheet {
         }
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-        int row = Integer.parseInt(cellId.substring(1)); //1=> after the letter.
+        int row = Integer.parseInt(cellId.substring(1))-1; //1=> after the letter.
         if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the Cell you refer to exists.");
         }
