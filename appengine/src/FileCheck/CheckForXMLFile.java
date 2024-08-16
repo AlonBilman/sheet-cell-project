@@ -7,15 +7,14 @@ import java.io.File;
 
 
 public class CheckForXMLFile {
-    protected boolean isXMLFile(String fileName) {
+    protected static boolean isXMLFile(String fileName) {
         File file = new File(fileName);
-            return file.getName().toLowerCase().endsWith(".xml");
-
+        return file.getName().toLowerCase().endsWith(".xml");
     }
-    protected boolean doesFileExist(File fileToCheck) {
+    protected static boolean doesFileExist(File fileToCheck) {
         return fileToCheck.exists();
     }
-    protected File getXMLFile(String filePath) {
+    protected static File getXMLFile(String filePath) {
         File file = new File(filePath);
         if (doesFileExist(file) && isXMLFile(filePath)) {
             System.out.print("file loaded successfully \n");
@@ -25,16 +24,9 @@ public class CheckForXMLFile {
     }
 
     public static STLSheet readXMLFile(String filePath) throws JAXBException {
-        STLSheet stlSheet = null;
-        JAXBContext jaxbContext = JAXBContext.newInstance(STLSheet.class);
-
+        JAXBContext jaxbContext = JAXBContext.newInstance("FileCheck");
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-
-        stlSheet = (STLSheet) unmarshaller.unmarshal(new File(filePath));
-
-        return stlSheet;
+        return   (STLSheet) unmarshaller.unmarshal(new File(filePath));
     }
 }
-
 
