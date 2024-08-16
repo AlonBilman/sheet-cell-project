@@ -19,7 +19,7 @@ import java.util.Scanner;
 public class TestParseExpressionWithValidAndInvalidCases {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        CellImpl cell = new CellImpl(0, 0);
+        CellImpl cell = new CellImpl(0, "0");
 
         // List of test cases with both valid and invalid expressions
         String[] testCases = {

@@ -8,15 +8,16 @@ import java.io.File;
 import java.util.List;
 
 
-public class CheckForXMLFile {
-    protected static boolean isXMLFile(String fileName) {
+public class CheckForXMLFile extends XMLTypes{
+    protected boolean isXMLFile(String fileName) {
         File file = new File(fileName);
             return file.getName().toLowerCase().endsWith(".xml");
+
     }
-    protected static boolean doesFileExist(File fileToCheck) {
+    protected boolean doesFileExist(File fileToCheck) {
         return fileToCheck.exists();
     }
-    protected static File getXMLFile(String filePath) {
+    protected File getXMLFile(String filePath) {
         File file = new File(filePath);
         if (doesFileExist(file) && isXMLFile(filePath)) {
             System.out.print("file loaded successfully \n");
@@ -26,9 +27,15 @@ public class CheckForXMLFile {
     }
 
     public static STLSheet readXMLFile(String filePath) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance("FileCheck");
+        STLSheet stlSheet = null;
+        JAXBContext jaxbContext = JAXBContext.newInstance(STLSheet.class);
+
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        return   (STLSheet) unmarshaller.unmarshal(new File(filePath));
+
+
+        stlSheet = (STLSheet) unmarshaller.unmarshal(new File(filePath));
+
+        return stlSheet;
     }
 }
 

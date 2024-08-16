@@ -1,15 +1,16 @@
 package sheet.impl;
 import FileCheck.STLCell;
 import expression.api.Expression;
-import expression.api.*;
 import expression.impl.*;
 import expression.impl.Number;
+import expression.impl.function.CellReferenceFunc;
 import expression.impl.function.ConcatFunction;
 import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CellImpl {
     private final int row;
@@ -20,14 +21,20 @@ public class CellImpl {
     private List<CellImpl> affectsOn;
     private String originalValue;
     private EffectiveValue effectiveValue;
+    //private static SpreadSheetImpl lastUpdatedSpreadSheet;
 
+    public CellImpl(int row, String col) {
+        this.row = row;
+        this.col = col;
+        this.id = generateId(col, row);
+    }
 
     public CellImpl(STLCell cell) {
         lastChangeAt = 0;
         this.row = cell.getRow();
         this.col = cell.getColumn();
         this.originalValue = cell.getSTLOriginalValue();
-        this.id = generateId(col,row);
+        this.id = generateId(col, row);
         dependsOn = new ArrayList<>();
         affectsOn = new ArrayList<>();
     }
@@ -35,10 +42,10 @@ public class CellImpl {
 
     public void editCell(Expression value, int version, CellImpl... depends) {
         //originalValue = value;
-      //  effectiveValue = value.eval().toString();
-        updateLastChangeAt(version);
-        updateCellsThatIAffect(); //maham
-        updateCellsThatIDependsOn(depends);
+        //  effectiveValue = value.eval().toString();
+        //  updateLastChangeAt(version);
+        // updateCellsThatIAffect(); //maham
+        //  updateCellsThatIDependsOn(depends);
     }
 
     private void updateCellsThatIDependsOn(CellImpl... depends) {
@@ -49,10 +56,10 @@ public class CellImpl {
         //
     }
 
-    public void calculateEffectiveValue() {
+    public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
         //check if the original value is an expression or needs parsing
         if (originalValue != null && !originalValue.isEmpty()) {
-            Expression expression = parseExpression(originalValue);
+            Expression expression = parseExpression(originalValue, currSheet);
             //set the effective value of the cell
             this.effectiveValue = expression.eval();
         } else {
@@ -61,7 +68,7 @@ public class CellImpl {
         }
     }
 
-    private Expression parseExpression(String originalValue) {
+    private Expression parseExpression(String originalValue, SpreadSheetImpl currSheet) {
         originalValue = originalValue.trim(); // Clean up the input
 
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
@@ -76,7 +83,7 @@ public class CellImpl {
             //extract the arguments
             String arguments = originalValue.substring(firstCommaIndex + 1).trim();
 
-            List<Expression> parsedArguments = parseArguments(arguments);
+            List<Expression> parsedArguments = parseArguments(arguments,currSheet);
 
             switch (functionName) {
                 case "PLUS":
@@ -90,7 +97,13 @@ public class CellImpl {
                         throw new IllegalArgumentException("CONCAT function requires two arguments.");
                     }
                     return new ConcatFunction(parsedArguments.get(0), parsedArguments.get(1));
-                    //NEED TO ADD MORE FUNCTIONS OBV
+                //NEED TO ADD MORE FUNCTIONS OBV
+
+                case "REF":
+                    if (parsedArguments.size() != 1) {
+                        throw new IllegalArgumentException("REF function requires one argument.");
+                    }
+                    return new CellReferenceFunc(parsedArguments.getFirst(), currSheet);
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
             }
@@ -99,7 +112,7 @@ public class CellImpl {
         }
     }
 
-    private List<Expression> parseArguments(String arguments) {
+    private List<Expression> parseArguments(String arguments, SpreadSheetImpl currSheet) {
         List<Expression> result = new ArrayList<>();
         int braceCount = 0;
         StringBuilder currentArgument = new StringBuilder();
@@ -114,33 +127,39 @@ public class CellImpl {
 
             if (ch == ',' && braceCount == 0) {
                 // End of an argument
-                result.add(parseExpression(currentArgument.toString().trim()));
+                result.add(parseExpression(currentArgument.toString().trim(), currSheet));
                 currentArgument.setLength(0);
             } else {
                 currentArgument.append(ch);
             }
         }
         if (currentArgument.length() > 0) {
-            result.add(parseExpression(currentArgument.toString().trim()));
+            result.add(parseExpression(currentArgument.toString().trim(), currSheet));
         }
         return result;
     }
 
     private Expression parseSimpleValue(String value) {
         if (value.startsWith("\"") && value.endsWith("\"")) {
-
+            // Handle quoted strings
+            String stringValue = value.substring(1, value.length() - 1);
+            return new Mystring(stringValue);
+        } else if (value.startsWith("(") && value.endsWith(")")) {
+            // Handle strings enclosed in parentheses
             String stringValue = value.substring(1, value.length() - 1);
             return new Mystring(stringValue);
         } else {
+            // Try to parse as a number
             try {
                 return new Number(Double.parseDouble(value));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Unsupported value : " + value + " \n You may have forgotten to delineate the expression with {}.." +
-                        " Or maybe you wanted a String so make sure to write it like this : \"<data>\"");
+                throw new IllegalArgumentException("Unsupported value: " + value +
+                        "\nYou may have forgotten to delineate the expression with {}.." +
+                        " Or maybe you wanted a String, so make sure to write it like this: \"<data>\" or (<data>)");
             }
         }
-
     }
+
 
      private String generateId(String col, int row) {
         char letter = col.charAt(0);
@@ -184,16 +203,19 @@ public class CellImpl {
         return row;
     }
 
-    public int getCol() {
+    public String getCol() {
         return col;
     }
 
     // Update the CellImpl class to include this method
-    public void setOriginalValue(String originalValue) {
+    public void setOriginalValue(String originalValue, SpreadSheetImpl currSheet) {
         this.originalValue = originalValue;
+        calculateEffectiveValue(currSheet);
+        //maham
     }
 
     public EffectiveValue getEffectiveValue() {
         return effectiveValue;
     }
+
 }

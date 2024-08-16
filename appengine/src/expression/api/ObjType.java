@@ -1,5 +1,5 @@
 package expression.api;
 
 public enum ObjType {
-    NUMERIC, STRING, BOOLEAN
+    NUMERIC, STRING, BOOLEAN, SYSTEM
 }
