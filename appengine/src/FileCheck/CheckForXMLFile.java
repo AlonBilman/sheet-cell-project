@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.List;
 
 
-public class CheckForXMLFile extends XMLTypes{
+public class CheckForXMLFile {
     protected boolean isXMLFile(String fileName) {
         File file = new File(fileName);
             return file.getName().toLowerCase().endsWith(".xml");
