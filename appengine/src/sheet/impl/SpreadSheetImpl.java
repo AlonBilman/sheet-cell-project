@@ -22,6 +22,18 @@ public class SpreadSheetImpl {
 
     //set origonal val
 
+    public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
+        this.sheetName = sheetName;
+        this.rowSize = rowSize;
+        this.columnSize = columnSize;
+        this.colWidth = colWidth;
+        this.rowHeight = rowHeight;
+        this.sheetVersionNumber = 1;
+        this.activeCells = new HashMap<>();
+        this.sheetMap = new HashMap<>();
+        this.sheet = this;
+    }
+
     public SpreadSheetImpl(STLSheet stlSheet) {
         this.rowSize = stlSheet.getSTLLayout().getRows();
         this.columnSize = stlSheet.getSTLLayout().getColumns();
@@ -33,6 +45,10 @@ public class SpreadSheetImpl {
  	    this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
         this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
         currSheet = this;
+    }
+
+    public void addCell(String id, CellImpl cell) {
+        activeCells.put(id, cell);
     }
 
 
@@ -73,12 +89,9 @@ public class SpreadSheetImpl {
     }
 
     public EffectiveValue ref(EffectiveValue id) {
-        if(id.getObjType()!= ObjType.STRING)
-            throw new IllegalArgumentException("Ref function expect an id of a Cell.");
         CellImpl curr = getCell((String)id.getValue());
         if (curr == null)
             throw new RuntimeException("No such cell, create it before referring to it.");
-
         return curr.getEffectiveValue(); //returns EffectiveValue
     }
 

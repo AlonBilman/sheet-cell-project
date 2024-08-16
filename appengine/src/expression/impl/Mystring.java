@@ -1,5 +1,4 @@
 package expression.impl;
-
 import expression.api.Expression;
 import expression.api.ObjType;
 import sheet.api.EffectiveValue;

@@ -1,5 +1,4 @@
 package sheet.api;
-
 import expression.api.ObjType;
 
 public interface EffectiveValue {

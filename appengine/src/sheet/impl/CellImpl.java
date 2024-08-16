@@ -1,18 +1,14 @@
 package sheet.impl;
 import FileCheck.STLCell;
 import expression.api.Expression;
-import expression.api.*;
 import expression.impl.*;
 import expression.impl.Number;
 import expression.impl.function.CellReferenceFunc;
 import expression.impl.function.ConcatFunction;
 import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CellImpl {
     private final int row;
@@ -76,6 +72,7 @@ public class CellImpl {
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
             originalValue = originalValue.substring(1, originalValue.length() - 1);
 
+
             int firstCommaIndex = originalValue.indexOf(',');
             if (firstCommaIndex == -1) {
                 throw new IllegalArgumentException("Invalid expression format: " + originalValue);
@@ -135,7 +132,7 @@ public class CellImpl {
                 currentArgument.append(ch);
             }
         }
-        if (currentArgument.length() > 0) {
+        if (!currentArgument.isEmpty()) {
             result.add(parseExpression(currentArgument.toString().trim(), currSheet));
         }
         return result;
@@ -146,24 +143,18 @@ public class CellImpl {
             // Handle quoted strings
             String stringValue = value.substring(1, value.length() - 1);
             return new Mystring(stringValue);
-        } else if (value.startsWith("(") && value.endsWith(")")) {
-            // Handle strings enclosed in parentheses
-            String stringValue = value.substring(1, value.length() - 1);
-            return new Mystring(stringValue);
-        } else {
-            // Try to parse as a number
-            try {
-                return new Number(Double.parseDouble(value));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Unsupported value: " + value +
-                        "\nYou may have forgotten to delineate the expression with {}.." +
-                        " Or maybe you wanted a String, so make sure to write it like this: \"<data>\" or (<data>)");
-            }
+        }
+        // Try to parse as a number
+        try {
+            return new Number(Double.parseDouble(value));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Unsupported value: " + value +
+                    "\nYou may have forgotten to delineate the expression with {}.." +
+                    " Or maybe you wanted a String, so make sure to write it like this: \"<data>\" or (<data>)");
         }
 
+
     }
-
-
      private String generateId(String col, int row) {
         char letter = col.charAt(0);
         return letter+String.valueOf(row+1);
@@ -216,6 +207,7 @@ public class CellImpl {
         calculateEffectiveValue(currSheet);
         //maham
     }
+
 
     public EffectiveValue getEffectiveValue() {
         return effectiveValue;
