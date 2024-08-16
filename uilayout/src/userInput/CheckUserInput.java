@@ -118,7 +118,7 @@ public class CheckUserInput {
     public void printCurrentSheet(SpreadSheetImpl sheet) {
         System.out.println("Sheet name: " + sheet.getSheetName() + "\n");
         System.out.println("Sheet version: " + sheet.getSheetVersionNumber() + "\n");
-        sheet.printSheet();
+        printSheet();
         System.out.println("\n");
     }
 
@@ -151,6 +151,34 @@ public class CheckUserInput {
             versionNumber = scanner.nextInt();
         }
         printCurrentSheet(sheetMap.get(versionNumber));
+    }
+
+    public void printSheet(){
+        SpreadSheetImpl sheet = this.sheetMap.get(this.sheetVersionNumber);
+        int colWidth = sheet.colWidth;
+        int rowHeight = sheet.rowHeight;
+        String spaceString = "  ".repeat(Math.max(1, colWidth+1));
+        String newLineString = " |\n".repeat(Math.max(1, rowHeight));
+        char letter;
+        System.out.print(" "); // Initial space for row numbers (aligns with row numbers)
+        for (int col = 0; col < 9; col++) {
+            letter = (char) ('A' + col % 26);
+            System.out.print("|" + spaceString + letter + spaceString);
+        }
+        // End divider
+        System.out.print(newLineString);
+
+// Print the grid rows with numbers and dividers
+        for (int row = 0; row < sheet.rowSize; row++) {
+            System.out.print((row + 1)); // Row number
+
+            for (int col = 0; col < sheet.columnSize; col++) {
+                letter = (char) ('A' + col % 26);
+                System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)) + spaceString);
+            }
+            // End divider
+            System.out.print(newLineString);
+        }
     }
 }
 

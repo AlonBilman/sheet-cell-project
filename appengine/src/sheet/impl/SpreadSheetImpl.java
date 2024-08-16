@@ -64,50 +64,20 @@ public class SpreadSheetImpl {
 
     public CellImpl getCell(String cellId) {
         if (!cellId.matches("^[A-Za-z]\\d+$")) {
-           throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + cellId);
+            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + cellId);
         }
-       char letter = cellId.charAt(0); //taking the char
-       int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-        int row = Integer.parseInt(cellId.substring(1))-1; //1=> after the letter.
-       if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
-           throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
+        char letter = cellId.charAt(0); //taking the char
+        int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
+        int row = Integer.parseInt(cellId.substring(1)) - 1; //1=> after the letter.
+        if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
+            throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
         }
 //      if (!sheet[row][col].getId().equals(cellId)) {
 //            throw new IllegalArgumentException("Something went wrong, the Id you refer to do not match the specified column or row. Try again.");
 //       }
-         return null;
+        return null;
     }
-
-
-    public void printSheet(){
-      SpreadSheetImpl sheet = this.sheetMap.get(this.sheetVersionNumber);
-        int colWidth = sheet.colWidth;
-        int rowHeight = sheet.rowHeight;
-        String spaceString = "  ".repeat(Math.max(1, colWidth+1));
-        String newLineString = " |\n".repeat(Math.max(1, rowHeight));
-        char letter;
-        System.out.print(" "); // Initial space for row numbers (aligns with row numbers)
-        for (int col = 0; col < 9; col++) {
-            letter = (char) ('A' + col % 26);
-            System.out.print("|" + spaceString + letter + spaceString);
-        }
-        // End divider
-        System.out.print(newLineString);
-
-// Print the grid rows with numbers and dividers
-        for (int row = 0; row < sheet.rowSize; row++) {
-            System.out.print((row + 1)); // Row number
-
-            for (int col = 0; col < sheet.columnSize; col++) {
-                letter = (char) ('A' + col % 26);
-                System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)) + spaceString);
-            }
-            // End divider
-            System.out.print(newLineString);
-        }
-    }
-
- }
 
 }
+
 
