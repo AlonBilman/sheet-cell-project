@@ -1,7 +1,7 @@
 package sheet.impl;
 import FileCheck.STLCell;
 import expression.api.Expression;
-import expression.api.*;
+
 import expression.impl.*;
 import expression.impl.Number;
 import expression.impl.function.ConcatFunction;
@@ -31,10 +31,10 @@ public class CellImpl {
         dependsOn = new ArrayList<>();
         affectsOn = new ArrayList<>();
     }
-    //maybe I get a string? and then edit the cell? {Bla Bla}?
+
 
     public void editCell(Expression value, int version, CellImpl... depends) {
-        //originalValue = value;
+       // originalValue = value;
       //  effectiveValue = value.eval().toString();
         updateLastChangeAt(version);
         updateCellsThatIAffect(); //maham
@@ -184,7 +184,7 @@ public class CellImpl {
         return row;
     }
 
-    public int getCol() {
+    public String getCol() {
         return col;
     }
 
