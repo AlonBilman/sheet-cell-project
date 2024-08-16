@@ -3,9 +3,7 @@ package FileCheck;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.annotation.*;
 import java.io.File;
-import java.util.List;
 
 
 public class CheckForXMLFile {
