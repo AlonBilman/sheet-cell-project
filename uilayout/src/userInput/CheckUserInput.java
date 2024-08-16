@@ -1,12 +1,11 @@
 package userInput;
 
 import FileCheck.STLSheet;
-import jakarta.xml.bind.JAXBException;
 import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
+import java.awt.desktop.ScreenSleepEvent;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -23,43 +22,71 @@ public class CheckUserInput {
     private static final char EXIT_SYSTEM = '6';
 
     public static void printMenu() {
-        System.out.print("Please choose an option from the menu: \n");
-        System.out.println("1. Load a new XML file");
-        System.out.println("2. Load current sheet");
-        System.out.println("3. Load specific cell");
-        System.out.println("4. Update specific cell");
-        System.out.println("5. Print versions");
-        System.out.println("6. Exit system");
+        // ANSI escape codes for bold and reset
+        final String BOLD = "\033[1m";
+        final String ITALIC = "\033[3m";
+        final String RESET = "\033[0m";
+
+        // Define the menu options and their descriptions
+        String[] options = {
+                "Load a new XML file",
+                "Load current sheet",
+                "Load specific cell",
+                "Update specific cell",
+                "Print sheet versions",
+                "Exit system"
+        };
+
+        // Print the menu header
+        System.out.println("+------------------------------------------+");
+        System.out.println("|" + BOLD + BOLD+  "          Please choose an option" + RESET + "         |");
+        System.out.println("+------------------------------------------+");
+
+        // Print the menu options
+        for (int i = 0; i < options.length; i++) {
+            String option = String.format("| %2d. %s%-34s%s   |", i + 1, ITALIC, options[i], RESET);
+            System.out.println(option);
+        }
+
+        // Print the menu footer
+        System.out.println("+------------------------------------------+");
+
     }
 
-    public void UserStartMenuInput() throws JAXBException {
+    public void UserStartMenuInput() throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
         File newFile = null;
-        Object result = null;
         String input;
         STLSheet sheet = null;
         SpreadSheetImpl spreadSheet = null;
         char userInput;
         CellImpl cell = null;
-
         do {
             printMenu();
-            input = scanner.nextLine().trim();
+            input = scanner.nextLine();
             while (input.isEmpty()) {
                 System.out.println("Input cannot be empty, please enter a valid option.");
-                input = scanner.nextLine().trim();
+                input = scanner.nextLine();
             }
-
             userInput = input.charAt(0);
             while (userInput != FILE_INPUT && (newFile==null)) {
-                System.out.println("Please enter an xml file before trying to play");
-                newFile = checkFileUserInput();
+                if(userInput != EXIT_SYSTEM) {
+                    System.out.println("Please enter an xml file before trying to play");
+                    newFile = checkFileUserInput();
+                    userInput = FILE_INPUT;
+                }
+                else{
+                    System.out.println("Exiting system");
+                    System.exit(0);
+                }
             }
 
             switch (userInput) {
                 case FILE_INPUT:
-                    System.out.println("Please load a new XML file...");
-                    newFile = checkFileUserInput();
+                    if(newFile==null) {
+                        System.out.println("Please load a new XML file...");
+                        newFile = checkFileUserInput();
+                    }
                     sheet = readXMLFile(newFile.getAbsolutePath());
                     spreadSheet = new SpreadSheetImpl(sheet);
                     if(spreadSheet == null)
@@ -97,8 +124,8 @@ public class CheckUserInput {
                     System.out.println("Invalid option, please enter a valid option.");
                     break;
             }
+
         } while (userInput != EXIT_SYSTEM);
-        scanner.close();
 
         exitSystem();
     }
@@ -154,8 +181,9 @@ public class CheckUserInput {
     }
 
     public void printSheet(SpreadSheetImpl sheet){
-        int colWidth = sheet.colWidth;
-        int rowHeight = sheet.rowHeight;
+        int colWidth = sheet.getColWidth();
+        int rowHeight = sheet.getRowHeight();
+        String columnDivider = "|";
         String spaceString = "  ".repeat(Math.max(1, colWidth+1));
         String newLineString = " |\n".repeat(Math.max(1, rowHeight));
         char letter;
@@ -168,10 +196,10 @@ public class CheckUserInput {
         System.out.print(newLineString);
 
 // Print the grid rows with numbers and dividers
-        for (int row = 0; row < sheet.rowSize; row++) {
+        for (int row = 0; row < sheet.getRowSize(); row++) {
             System.out.print((row + 1)); // Row number
 
-            for (int col = 0; col < sheet.columnSize; col++) {
+            for (int col = 0; col < sheet.getColumnSize(); col++) {
                 letter = (char) ('A' + col % 26);
                 System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)) + spaceString);
             }

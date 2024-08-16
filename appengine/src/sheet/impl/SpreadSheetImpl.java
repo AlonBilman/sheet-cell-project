@@ -20,8 +20,6 @@ public class SpreadSheetImpl {
     private SpreadSheetImpl sheet;
     public static SpreadSheetImpl currSheet = null;
 
-    //set origonal val
-
     public SpreadSheetImpl(STLSheet stlSheet) {
         this.rowSize = stlSheet.getSTLLayout().getRows();
         this.columnSize = stlSheet.getSTLLayout().getColumns();
@@ -35,6 +33,21 @@ public class SpreadSheetImpl {
         currSheet = this;
     }
 
+
+    public int getRowSize() {
+        return rowSize;
+    }
+    public int getColumnSize() {
+        return columnSize;
+    }
+
+    public int getColWidth() {
+        return colWidth;
+    }
+
+    public int getRowHeight() {
+        return rowHeight;
+    }
 
     public void setSheetMap(Map<Integer, SpreadSheetImpl> sheetMap) {
         this.sheetMap = sheetMap;
