@@ -118,7 +118,7 @@ public class CheckUserInput {
     public void printCurrentSheet(SpreadSheetImpl sheet) {
         System.out.println("Sheet name: " + sheet.getSheetName() + "\n");
         System.out.println("Sheet version: " + sheet.getSheetVersionNumber() + "\n");
-        printSheet();
+        printSheet(sheet);
         System.out.println("\n");
     }
 
@@ -153,8 +153,7 @@ public class CheckUserInput {
         printCurrentSheet(sheetMap.get(versionNumber));
     }
 
-    public void printSheet(){
-        SpreadSheetImpl sheet = this.sheetMap.get(this.sheetVersionNumber);
+    public void printSheet(SpreadSheetImpl sheet){
         int colWidth = sheet.colWidth;
         int rowHeight = sheet.rowHeight;
         String spaceString = "  ".repeat(Math.max(1, colWidth+1));
