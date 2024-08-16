@@ -100,6 +100,7 @@ public class CheckUserInput {
         } while (userInput != EXIT_SYSTEM);
         scanner.close();
 
+        exitSystem();
     }
 
 
@@ -117,12 +118,12 @@ public class CheckUserInput {
     public void printCurrentSheet(SpreadSheetImpl sheet) {
         System.out.println("Sheet name: " + sheet.getSheetName() + "\n");
         System.out.println("Sheet version: " + sheet.getSheetVersionNumber() + "\n");
-        //printSheet();
+        sheet.printSheet();
         System.out.println("\n");
     }
 
-    public Object exitSystem(){
-        return System.out;
+    public void exitSystem(){
+        System.exit(0);
     }
 
     public void updateSpecificCell(SpreadSheetImpl cell){

@@ -11,10 +11,13 @@ import java.util.Map;
 public class SpreadSheetImpl {
     private final int rowSize;
     private final int columnSize;
+    private final int colWidth;
+    private final int rowHeight;
     private Map<String, CellImpl> activeCells;
     private final String sheetName;
     private int sheetVersionNumber;
     private Map<Integer, SpreadSheetImpl> sheetMap;
+    private SpreadSheetImpl sheet;
     public static SpreadSheetImpl currSheet = null;
 
     //set origonal val
@@ -27,6 +30,8 @@ public class SpreadSheetImpl {
         this.sheetVersionNumber = 1;
         this.sheetMap = new HashMap<>();
         this.sheetMap.put(this.sheetVersionNumber, this);
+ 	this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
+        this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
         currSheet = this;
     }
 
@@ -89,5 +94,37 @@ public class SpreadSheetImpl {
         }
         return cell;
     }
+
+    public void printSheet(){
+      SpreadSheetImpl sheet = this.sheetMap.get(this.sheetVersionNumber);
+        int colWidth = sheet.colWidth;
+        int rowHeight = sheet.rowHeight;
+        String spaceString = "  ".repeat(Math.max(1, colWidth+1));
+        String newLineString = " |\n".repeat(Math.max(1, rowHeight));
+        char letter;
+        System.out.print(" "); // Initial space for row numbers (aligns with row numbers)
+        for (int col = 0; col < 9; col++) {
+            letter = (char) ('A' + col % 26);
+            System.out.print("|" + spaceString + letter + spaceString);
+        }
+        // End divider
+        System.out.print(newLineString);
+
+// Print the grid rows with numbers and dividers
+        for (int row = 0; row < sheet.rowSize; row++) {
+            System.out.print((row + 1)); // Row number
+
+            for (int col = 0; col < sheet.columnSize; col++) {
+                letter = (char) ('A' + col % 26);
+                System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)) + spaceString);
+            }
+            // End divider
+            System.out.print(newLineString);
+        }
+    }
+
+ }
+
+
 }
 

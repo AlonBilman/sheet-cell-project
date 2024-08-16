@@ -1,12 +1,14 @@
 package sheet.impl;
 import FileCheck.STLCell;
 import expression.api.Expression;
+import expression.api.*;
 import expression.impl.*;
 import expression.impl.Number;
 import expression.impl.function.CellReferenceFunc;
 import expression.impl.function.ConcatFunction;
 import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -158,6 +160,7 @@ public class CellImpl {
                         " Or maybe you wanted a String, so make sure to write it like this: \"<data>\" or (<data>)");
             }
         }
+
     }
 
 
