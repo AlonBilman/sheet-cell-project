@@ -2,11 +2,13 @@ package expression.impl.function;
 import expression.api.Expression;
 import expression.api.ObjType;
 import sheet.api.EffectiveValue;
+import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
 public class CellReferenceFunc implements Expression {
     Expression cellId;
     SpreadSheetImpl currSheet;
+    String currCellId;
     public CellReferenceFunc(Expression cellId, SpreadSheetImpl currSheet) {
         this.cellId = cellId;
         this.currSheet = currSheet;

@@ -1,5 +1,7 @@
 package sheet.impl;
 
+import java.util.Set;
+
 public class TestRefFunction {
     public static void main(String[] args) {
         try {
@@ -32,7 +34,6 @@ public class TestRefFunction {
                 cellE1.setOriginalValue("{PLUS,{REF,\"A1\"},{REF,\"C1\"}}", sheet); // E1 = A1 + C1 = 56 + 56 = 112
                 cellG1.setOriginalValue("{PLUS,{REF,\"A1\"},20}", sheet);           // G1 = A1 + 20 = 76
                 cellF1.setOriginalValue("{CONCAT,{REF,\"B1\"},{REF,\"E1\"}}", sheet);  // F1 = B1 + E1 (type mismatch should cause an error)
-
             } catch (Exception e) {
                 System.out.println("Error setting cell values: " + e.getMessage());
             }
@@ -76,6 +77,11 @@ public class TestRefFunction {
     private static void printEffectiveValue(CellImpl cell, String cellName) {
         try {
             System.out.println(cellName + " Effective Value: " + cell.getEffectiveValue().getValue());
+            Set<String> dependsOn= cell.getDependsOn();
+            for (String a : dependsOn) {
+                System.out.println(cellName + " Depends on: " + a);
+            }
+
         } catch (Exception e) {
             System.out.println("Error getting " + cellName + "'s effective value: " + e.getMessage());
         }

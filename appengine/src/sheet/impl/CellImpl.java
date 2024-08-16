@@ -8,15 +8,17 @@ import expression.impl.function.ConcatFunction;
 import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CellImpl {
     private final int row;
     private final String col;
     private final String id;
     private int lastChangeAt;
-    private List<CellImpl> dependsOn;
-    private List<CellImpl> affectsOn;
+    private Set<String> dependsOn;
+    private Set<String> affectsOn;
     private String originalValue;
     private EffectiveValue effectiveValue;
     //private static SpreadSheetImpl lastUpdatedSpreadSheet;
@@ -25,6 +27,8 @@ public class CellImpl {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
+        dependsOn = new HashSet<>();
+        affectsOn = new HashSet<>();
     }
 
     public CellImpl(STLCell cell) {
@@ -33,8 +37,8 @@ public class CellImpl {
         this.col = cell.getColumn();
         this.originalValue = cell.getSTLOriginalValue();
         this.id = generateId(col, row);
-        dependsOn = new ArrayList<>();
-        affectsOn = new ArrayList<>();
+        dependsOn = new HashSet<>();
+        affectsOn = new HashSet<>();
     }
     //maybe I get a string? and then edit the cell? {Bla Bla}?
 
@@ -102,7 +106,10 @@ public class CellImpl {
                     if (parsedArguments.size() != 1) {
                         throw new IllegalArgumentException("REF function requires one argument.");
                     }
-                    return new CellReferenceFunc(parsedArguments.getFirst(), currSheet);
+                    Expression argument = parsedArguments.get(0);
+                    Expression res = new CellReferenceFunc(argument, currSheet);
+                    dependsOn.add(argument.eval().getValue().toString());
+                    return res;
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
             }
@@ -181,11 +188,13 @@ public class CellImpl {
         return lastChangeAt;
     }
 
-    public List<CellImpl> getDependsOn() {
+    public Set<String> getDependsOn() {
         return dependsOn;
     }
-
-    public List<CellImpl> getAffectsOn() {
+    public void addAffectsOnId(String id){
+        affectsOn.add(id);
+    }
+    public Set<String> getAffectsOn() {
         return affectsOn;
     }
 

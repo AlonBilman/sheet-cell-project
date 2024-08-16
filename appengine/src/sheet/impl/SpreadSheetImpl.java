@@ -51,7 +51,6 @@ public class SpreadSheetImpl {
         activeCells.put(id, cell);
     }
 
-
     public void setSheetMap(Map<Integer, SpreadSheetImpl> sheetMap) {
         this.sheetMap = sheetMap;
     }
@@ -65,22 +64,18 @@ public class SpreadSheetImpl {
         return sheetMap;
     }
 
-
     public String getSheetName() {
         return sheetName;
     }
-
 
     public int getSheetVersionNumber() {
         return sheetVersionNumber;
     }
 
-
     public void setSheetVersionNumber(int sheetVersionNumber) {
         this.sheetVersionNumber = sheetVersionNumber;
         currSheet = this;
     }
-
 
     public void addNewVersion(STLSheet newSheet) {
         SpreadSheetImpl newSpreadSheet = new SpreadSheetImpl(newSheet);
@@ -89,6 +84,7 @@ public class SpreadSheetImpl {
     }
 
     public EffectiveValue ref(EffectiveValue id) {
+        String theCellThatRefIsReferingTo = (String)id.getValue();
         CellImpl curr = getCell((String)id.getValue());
         if (curr == null)
             throw new RuntimeException("No such cell, create it before referring to it.");
@@ -112,8 +108,4 @@ public class SpreadSheetImpl {
         }
         return cell;
     }
-
 }
-
-
-
