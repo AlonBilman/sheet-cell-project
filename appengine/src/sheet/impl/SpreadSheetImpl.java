@@ -47,9 +47,26 @@ public class SpreadSheetImpl {
         currSheet = this;
     }
 
+
+    public int getRowSize() {
+        return rowSize;
+    }
+    public int getColumnSize() {
+        return columnSize;
+    }
+
+    public int getColWidth() {
+        return colWidth;
+    }
+
+    public int getRowHeight() {
+        return rowHeight;
+    }
+
     public void addCell(String id, CellImpl cell) {
         activeCells.put(id, cell);
     }
+
 
     public void setSheetMap(Map<Integer, SpreadSheetImpl> sheetMap) {
         this.sheetMap = sheetMap;
@@ -64,18 +81,22 @@ public class SpreadSheetImpl {
         return sheetMap;
     }
 
+
     public String getSheetName() {
         return sheetName;
     }
+
 
     public int getSheetVersionNumber() {
         return sheetVersionNumber;
     }
 
+
     public void setSheetVersionNumber(int sheetVersionNumber) {
         this.sheetVersionNumber = sheetVersionNumber;
         currSheet = this;
     }
+
 
     public void addNewVersion(STLSheet newSheet) {
         SpreadSheetImpl newSpreadSheet = new SpreadSheetImpl(newSheet);
@@ -110,4 +131,8 @@ public class SpreadSheetImpl {
         }
         return cell;
     }
+
 }
+
+
+

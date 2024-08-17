@@ -23,10 +23,17 @@ public class CheckForXMLFile {
         return null;
     }
 
-    public static STLSheet readXMLFile(String filePath) throws JAXBException {
+    public static STLSheet readXMLFile(String filePath) {
+      try {
+
         JAXBContext jaxbContext = JAXBContext.newInstance("FileCheck");
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         return   (STLSheet) unmarshaller.unmarshal(new File(filePath));
+    }
+      catch(JAXBException e) {
+          System.out.println("Error reading file " + filePath );
+          return null;
+      }
     }
 }
 
