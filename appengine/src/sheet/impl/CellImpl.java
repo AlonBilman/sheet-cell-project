@@ -165,7 +165,7 @@ public class CellImpl {
     }
      private String generateId(String col, int row) {
         char letter = col.charAt(0);
-        return letter+String.valueOf(row+1);
+        return letter+String.valueOf(row);
     }
 
 
