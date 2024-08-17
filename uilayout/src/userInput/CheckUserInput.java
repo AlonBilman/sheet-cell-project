@@ -55,7 +55,7 @@ public class CheckUserInput {
 
     public void UserStartMenuInput() throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
-        File newFile = null;
+        File newFile = null, oldFile = null;
         String input;
         STLSheet sheet = null;
         SpreadSheetImpl spreadSheet = null;
@@ -69,7 +69,7 @@ public class CheckUserInput {
                 input = scanner.nextLine();
             }
             userInput = input.charAt(0);
-            while (userInput != FILE_INPUT && (newFile==null)) {
+            while (userInput != FILE_INPUT && (oldFile==null)) {
                 if(userInput != EXIT_SYSTEM) {
                     System.out.println("Please enter an xml file before trying to play");
                     newFile = checkFileUserInput();
@@ -83,11 +83,27 @@ public class CheckUserInput {
 
             switch (userInput) {
                 case FILE_INPUT:
-                    if(newFile==null) {
-                        System.out.println("Please load a new XML file...");
+                    System.out.println("Please load a new XML file...");
+                    newFile = checkFileUserInput();
+                    while (newFile == null && oldFile == null) {
+                        System.out.println("Invalid file. Ensure it exists and is an XML file. Please try again.");
                         newFile = checkFileUserInput();
                     }
-                    sheet = readXMLFile(newFile.getAbsolutePath());
+                    if(oldFile==null) {
+
+                        oldFile = newFile;
+                    }
+                    else{
+
+                        if(newFile == null){
+                            System.out.println("Wrong XML file, old one was saved");
+                        }
+                        else {
+                            System.out.println("New xml file loaded.");
+                            oldFile = newFile;
+                        }
+                    }
+                    sheet = readXMLFile(oldFile.getAbsolutePath());
                     spreadSheet = new SpreadSheetImpl(sheet);
                     if(spreadSheet == null)
                         throw(new RuntimeException("SpreadSheet is null"));
@@ -184,11 +200,11 @@ public class CheckUserInput {
         int colWidth = sheet.getColWidth();
         int rowHeight = sheet.getRowHeight();
         String columnDivider = "|";
-        String spaceString = "  ".repeat(Math.max(1, colWidth+1));
+        String spaceString = "  ".repeat(Math.max(1, colWidth));
         String newLineString = " |\n".repeat(Math.max(1, rowHeight));
         char letter;
         System.out.print(" "); // Initial space for row numbers (aligns with row numbers)
-        for (int col = 0; col < 9; col++) {
+        for (int col = 0; col < sheet.getColumnSize(); col++) {
             letter = (char) ('A' + col % 26);
             System.out.print("|" + spaceString + letter + spaceString);
         }
@@ -201,7 +217,13 @@ public class CheckUserInput {
 
             for (int col = 0; col < sheet.getColumnSize(); col++) {
                 letter = (char) ('A' + col % 26);
-                System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)) + spaceString);
+                try{
+                    System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)).getEffectiveValue().getValue() + spaceString);
+                }catch (Exception noSuchCell){
+                    System.out.print("|" + spaceString + " " + spaceString);
+                }
+
+
             }
             // End divider
             System.out.print(newLineString);
