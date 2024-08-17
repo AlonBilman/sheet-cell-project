@@ -83,11 +83,12 @@ public class SpreadSheetImpl {
         this.sheetMap.put(this.sheetVersionNumber, newSpreadSheet);
     }
 
-    public EffectiveValue ref(EffectiveValue id) {
+    public EffectiveValue  ref(EffectiveValue id,String IdThatCalledMe) {
         String theCellThatRefIsReferingTo = (String)id.getValue();
         CellImpl curr = getCell((String)id.getValue());
         if (curr == null)
             throw new RuntimeException("No such cell, create it before referring to it.");
+        curr.addAffectsOnId(IdThatCalledMe);
         return curr.getEffectiveValue(); //returns EffectiveValue
     }
 

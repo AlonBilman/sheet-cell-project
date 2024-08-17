@@ -107,8 +107,9 @@ public class CellImpl {
                         throw new IllegalArgumentException("REF function requires one argument.");
                     }
                     Expression argument = parsedArguments.get(0);
-                    Expression res = new CellReferenceFunc(argument, currSheet);
-                    dependsOn.add(argument.eval().getValue().toString());
+                    Expression res = new CellReferenceFunc(argument, currSheet,this.id);
+                    String referencedId = argument.eval().getValue().toString();
+                    dependsOn.add(referencedId);
                     return res;
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);

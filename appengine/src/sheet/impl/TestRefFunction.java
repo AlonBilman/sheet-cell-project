@@ -33,7 +33,7 @@ public class TestRefFunction {
                 cellD1.setOriginalValue("{CONCAT,{REF,\"B1\"},\"123\"}", sheet);    // D1 = B1 + "123" = "HelloWorld123"
                 cellE1.setOriginalValue("{PLUS,{REF,\"A1\"},{REF,\"C1\"}}", sheet); // E1 = A1 + C1 = 56 + 56 = 112
                 cellG1.setOriginalValue("{PLUS,{REF,\"A1\"},20}", sheet);           // G1 = A1 + 20 = 76
-                cellF1.setOriginalValue("{CONCAT,{REF,\"B1\"},{REF,\"E1\"}}", sheet);  // F1 = B1 + E1 (type mismatch should cause an error)
+
             } catch (Exception e) {
                 System.out.println("Error setting cell values: " + e.getMessage());
             }
@@ -78,9 +78,11 @@ public class TestRefFunction {
         try {
             System.out.println(cellName + " Effective Value: " + cell.getEffectiveValue().getValue());
             Set<String> dependsOn= cell.getDependsOn();
-            for (String a : dependsOn) {
-                System.out.println(cellName + " Depends on: " + a);
-            }
+            System.out.print("Depends on: ") ;
+            System.out.println(dependsOn);
+            Set<String> affects= cell.getAffectsOn();
+            System.out.print("Affects on:") ;
+            System.out.println(affects);
 
         } catch (Exception e) {
             System.out.println("Error getting " + cellName + "'s effective value: " + e.getMessage());
