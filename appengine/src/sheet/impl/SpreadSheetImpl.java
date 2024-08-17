@@ -1,11 +1,14 @@
 package sheet.impl;
 
+import FileCheck.STLCell;
+import FileCheck.STLCells;
 import FileCheck.STLSheet;
 import expression.api.Expression;
 import expression.api.ObjType;
 import sheet.api.EffectiveValue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SpreadSheetImpl {
@@ -17,10 +20,6 @@ public class SpreadSheetImpl {
     private final String sheetName;
     private int sheetVersionNumber;
     private Map<Integer, SpreadSheetImpl> sheetMap;
-    private SpreadSheetImpl sheet;
-    public static SpreadSheetImpl currSheet = null;
-
-    //set origonal val
 
     public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
         this.sheetName = sheetName;
@@ -31,26 +30,39 @@ public class SpreadSheetImpl {
         this.sheetVersionNumber = 1;
         this.activeCells = new HashMap<>();
         this.sheetMap = new HashMap<>();
-        this.sheet = this;
+
     }
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         this.rowSize = stlSheet.getSTLLayout().getRows();
         this.columnSize = stlSheet.getSTLLayout().getColumns();
         this.activeCells = new HashMap<>();
+        STLCells stlCells = stlSheet.getSTLCells();
+        if(stlCells != null) {
+            addCells(stlCells.getSTLCell(),this);
+        }
         this.sheetName = stlSheet.getName();
         this.sheetVersionNumber = 1;
         this.sheetMap = new HashMap<>();
         this.sheetMap.put(this.sheetVersionNumber, this);
  	    this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
         this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
-        currSheet = this;
     }
 
+    public void addCells( List<STLCell> cells,SpreadSheetImpl sheet) {
+        if(cells == null || cells.isEmpty()) {
+            return;
+        }
+        for (STLCell cell : cells) {
+            CellImpl cellImpl = new CellImpl(cell,sheet);
+            this.activeCells.put(cellImpl.getId() , cellImpl);
+        }
+    }
 
     public int getRowSize() {
         return rowSize;
     }
+
     public int getColumnSize() {
         return columnSize;
     }
@@ -94,7 +106,6 @@ public class SpreadSheetImpl {
 
     public void setSheetVersionNumber(int sheetVersionNumber) {
         this.sheetVersionNumber = sheetVersionNumber;
-        currSheet = this;
     }
 
 

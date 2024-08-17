@@ -105,29 +105,21 @@ public class CheckUserInput {
                     }
                     sheet = readXMLFile(oldFile.getAbsolutePath());
                     spreadSheet = new SpreadSheetImpl(sheet);
-                    if(spreadSheet == null)
-                        throw(new RuntimeException("SpreadSheet is null"));
                     break;
                 case LOAD_CURRENT_SHEET:
                     System.out.println("Loading current sheet...");
-                    if(spreadSheet!= null) {
-                        printCurrentSheet(spreadSheet);
-                    }
+                    printCurrentSheet(spreadSheet);
                     break;
                 case LOAD_SPECIFIC_CELL:
-                    if(spreadSheet!= null){
                     System.out.println("Enter specific cell id:");
                     String cellId = scanner.nextLine();
                     cell = spreadSheet.getCell(cellId);
                     System.out.println("Loading the cell...");
                     printCell(cell);
-                    }
                     break;
                 case UPDATE_SPECIFIC_CELL:
-                    if(spreadSheet!= null) {
-                        System.out.println("Updating the cell...");
-                        updateSpecificCell(spreadSheet);
-                    }
+                    System.out.println("Updating the cell...");
+                    updateSpecificCell(spreadSheet);
                     break;
                 case VERSIONS_PRINT:
                     System.out.println("Versions print to the system...");
@@ -151,7 +143,7 @@ public class CheckUserInput {
     private void printCell(CellImpl cell) {
         System.out.println("Cell id: " + cell.getId() + "\n");
         System.out.println("Cell original Value: " + cell.getOriginalValue() + "\n");
-        System.out.println("Cell effective value: " + cell.getEffectiveValue() + "\n");
+        System.out.println("Cell effective value: " + cell.getEffectiveValue().getValue() + "\n");
         System.out.println("Cell last changed at version: " + cell.getLastChangeAt() + "\n");
         System.out.println("Cell depending on: " + cell.getDependsOn() + "\n");
         System.out.println("Cell affects cells: " + cell.getAffectsOn() + "\n");
@@ -205,7 +197,8 @@ public class CheckUserInput {
         char letter;
         System.out.print(" "); // Initial space for row numbers (aligns with row numbers)
         for (int col = 0; col < sheet.getColumnSize(); col++) {
-            letter = (char) ('A' + col % 26);
+          //  letter = (char) ('A' + col % 26);
+            letter = (char) ('A' + (col-1));
             System.out.print("|" + spaceString + letter + spaceString);
         }
         // End divider
@@ -218,11 +211,10 @@ public class CheckUserInput {
             for (int col = 0; col < sheet.getColumnSize(); col++) {
                 letter = (char) ('A' + col % 26);
                 try{
-                    System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row+1)).getEffectiveValue().getValue() + spaceString);
+                    System.out.print("|" + spaceString + sheet.getCell(letter+String.valueOf(row)).getEffectiveValue().getValue() + spaceString);
                 }catch (Exception noSuchCell){
                     System.out.print("|" + spaceString + " " + spaceString);
                 }
-
 
             }
             // End divider

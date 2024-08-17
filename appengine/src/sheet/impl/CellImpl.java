@@ -21,7 +21,7 @@ public class CellImpl {
     private Set<String> affectsOn;
     private String originalValue;
     private EffectiveValue effectiveValue;
-    //private static SpreadSheetImpl lastUpdatedSpreadSheet;
+    private static SpreadSheetImpl lastUpdatedSpreadSheet;
 
     public CellImpl(int row, String col) {
         this.row = row;
@@ -31,14 +31,16 @@ public class CellImpl {
         affectsOn = new HashSet<>();
     }
 
-    public CellImpl(STLCell cell) {
-        lastChangeAt = 0;
+    public CellImpl(STLCell cell,SpreadSheetImpl spreadSheet) {
+        lastChangeAt = 1;
         this.row = cell.getRow();
         this.col = cell.getColumn();
-        this.originalValue = cell.getSTLOriginalValue();
-        this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
+        lastUpdatedSpreadSheet = spreadSheet;
+        setOriginalValue(cell.getSTLOriginalValue(),lastUpdatedSpreadSheet);
+        this.id = generateId(col, row);
+
     }
     //maybe I get a string? and then edit the cell? {Bla Bla}?
 
