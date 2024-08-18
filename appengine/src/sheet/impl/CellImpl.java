@@ -73,7 +73,7 @@ public class CellImpl {
     }
 
     private Expression parseExpression(String originalValue, SpreadSheetImpl currSheet) {
-        originalValue = originalValue.trim(); // Clean up the input
+        //originalValue = originalValue.trim(); // Clean up the input
 
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
             originalValue = originalValue.substring(1, originalValue.length() - 1);
@@ -84,9 +84,9 @@ public class CellImpl {
                 throw new IllegalArgumentException("Invalid expression format: " + originalValue);
             }
 
-            String functionName = originalValue.substring(0, firstCommaIndex).trim();
+            String functionName = originalValue.substring(0, firstCommaIndex);
             //extract the arguments
-            String arguments = originalValue.substring(firstCommaIndex + 1).trim();
+            String arguments = originalValue.substring(firstCommaIndex + 1);
 
             List<Expression> parsedArguments = parseArguments(arguments,currSheet);
 
@@ -136,7 +136,7 @@ public class CellImpl {
 
             if (ch == ',' && braceCount == 0) {
                 // End of an argument
-                result.add(parseExpression(currentArgument.toString().trim(), currSheet));
+                result.add(parseExpression(currentArgument.toString(), currSheet));
                 currentArgument.setLength(0);
             } else {
                 currentArgument.append(ch);
@@ -149,20 +149,10 @@ public class CellImpl {
     }
 
     private Expression parseSimpleValue(String value) {
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            // Handle quoted strings
-            String stringValue = value.substring(1, value.length() - 1);
-            return new Mystring(stringValue);
-        }
-        // Try to parse as a number
-        try {
-            return new Number(Double.parseDouble(value));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Unsupported value: " + value +
-                    "\nYou may have forgotten to delineate the expression with {}.." +
-                    " Or maybe you wanted a String, so make sure to write it like this: \"<data>\" or (<data>)");
-        }
-
+        if(value.isEmpty()||value.matches(".*[^0-9].*")) //if its empty or contains something that is not a number.
+            return new Mystring(value);
+        //else . it contains a number.
+        return new Number(Double.valueOf(value));
 
     }
      private String generateId(String col, int row) {

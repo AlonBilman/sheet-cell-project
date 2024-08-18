@@ -11,6 +11,7 @@ public PlusFunction(Expression arg1 , Expression arg2) {
     super(arg1,arg2);
     name = "PLUS";
 }
+
     public String getName() {
         return name;
     }

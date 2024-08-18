@@ -27,12 +27,12 @@ public class TestRefFunction {
 
             try {
                 // Set values
-                cellA1.setOriginalValue("{PLUS,50,6}", sheet);                      // A1 = 50 + 6 = 56
-                cellB1.setOriginalValue("{CONCAT,\"Hello\",\"World\"}", sheet);     // B1 = "Hello" + "World" = "HelloWorld"
-                cellC1.setOriginalValue("{REF,\"A1\"}", sheet);                     // C1 = A1 = 56
-                cellD1.setOriginalValue("{CONCAT,{REF,\"B1\"},\"123\"}", sheet);    // D1 = B1 + "123" = "HelloWorld123"
-                cellE1.setOriginalValue("{PLUS,{REF,\"A1\"},{REF,\"C1\"}}", sheet); // E1 = A1 + C1 = 56 + 56 = 112
-                cellG1.setOriginalValue("{PLUS,{REF,\"A1\"},20}", sheet);           // G1 = A1 + 20 = 76
+                cellA1.setOriginalValue("{PLUS,50,              6}", sheet);                      // A1 = 50 + 6 = 56
+                cellB1.setOriginalValue("{CONCAT,      Hello, World }", sheet);     // B1 = "Hello" + "World" = "HelloWorld"
+                cellC1.setOriginalValue("{REF,A1}", sheet);                     // C1 = A1 = 56
+                cellD1.setOriginalValue("{CONCAT,{CONCAT,a,{REF,B1},}, blalba}", sheet);    // D1 = B1 + "123" = "HelloWorld123"
+                cellE1.setOriginalValue("{PLUS,{REF,A1},{REF,C1}}", sheet); // E1 = A1 + C1 = 56 + 56 = 112
+                cellG1.setOriginalValue("{PLUS,{REF,A1},20}", sheet);           // G1 = A1 + 20 = 76
 
             } catch (Exception e) {
                 System.out.println("Error setting cell values: " + e.getMessage());

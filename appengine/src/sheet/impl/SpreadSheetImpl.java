@@ -127,7 +127,7 @@ public class SpreadSheetImpl {
 
     public CellImpl getCell(String cellId) {
         if (!cellId.matches("^[A-Za-z]\\d+$")) {
-            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + cellId);
+            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: "+ cellId);
         }
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
