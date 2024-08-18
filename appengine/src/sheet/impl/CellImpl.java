@@ -23,7 +23,8 @@ public class CellImpl {
     private EffectiveValue effectiveValue;
     private static SpreadSheetImpl lastUpdatedSpreadSheet;
 
-    public CellImpl(int row, String col) {
+    public CellImpl(int row, String col,SpreadSheetImpl spreadSheet) {
+        lastUpdatedSpreadSheet = spreadSheet;
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
@@ -59,8 +60,7 @@ public class CellImpl {
     public void updateCellsThatIAffect() {
         //
     }
-
-    public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
+public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
         //check if the original value is an expression or needs parsing
         if (originalValue != null && !originalValue.isEmpty()) {
             Expression expression = parseExpression(originalValue, currSheet);
@@ -73,11 +73,8 @@ public class CellImpl {
     }
 
     private Expression parseExpression(String originalValue, SpreadSheetImpl currSheet) {
-        //originalValue = originalValue.trim(); // Clean up the input
-
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
             originalValue = originalValue.substring(1, originalValue.length() - 1);
-
 
             int firstCommaIndex = originalValue.indexOf(',');
             if (firstCommaIndex == -1) {
@@ -220,10 +217,11 @@ public class CellImpl {
         if (visitedCells.contains(this.id)) {
             throw new IllegalArgumentException("Circular dependency detected involving cell: " + this.id);
         }
-
+        //add it to visited cells.
         visitedCells.add(this.id);
         for (String dependencyId : dependsOn) {
             CellImpl dependentCell = lastUpdatedSpreadSheet.getCell(dependencyId);
+            //and keep checking on all my dependsOn set.
             dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
         }
     }
