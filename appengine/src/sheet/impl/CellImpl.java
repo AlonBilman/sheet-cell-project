@@ -44,7 +44,7 @@ public class CellImpl {
     }
     //maybe I get a string? and then edit the cell? {Bla Bla}?
 
-    public void editCell(Expression value, int version, CellImpl... depends) {
+    public void editCell(String value, int version, CellImpl... depends) {
         //originalValue = value;
         //  effectiveValue = value.eval().toString();
         //  updateLastChangeAt(version);

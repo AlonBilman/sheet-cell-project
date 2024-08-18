@@ -10,9 +10,9 @@ public class CheckUserInputForFiles extends CheckForXMLFile {
         File fileToCheck;
 
 
-            System.out.print("Enter the file path: ");
-            filePath = scanner.nextLine();
-            fileToCheck = getXMLFile(filePath);
+        System.out.print("Enter the file path: ");
+        filePath = scanner.nextLine();
+        fileToCheck = getXMLFile(filePath);
 
 
         return fileToCheck;

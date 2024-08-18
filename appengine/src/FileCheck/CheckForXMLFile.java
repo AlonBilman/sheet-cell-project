@@ -14,7 +14,7 @@ public class CheckForXMLFile {
     protected static boolean doesFileExist(File fileToCheck) {
         return fileToCheck.exists();
     }
-    protected static File getXMLFile(String filePath) {
+    public static File getXMLFile(String filePath) {
         File file = new File(filePath);
         if (doesFileExist(file) && isXMLFile(filePath)) {
             System.out.print("file loaded successfully \n");
