@@ -27,7 +27,7 @@ public class TestRefFunction {
 
             try {
                 // Set values
-                cellA1.setOriginalValue("{PLUS,50,              6}", sheet);                      // A1 = 50 + 6 = 56
+                cellA1.setOriginalValue("{PLUS,50,             6}", sheet);                      // A1 = 50 + 6 = 56
                 cellB1.setOriginalValue("{CONCAT,      Hello, World }", sheet);     // B1 = "Hello" + "World" = "HelloWorld"
                 cellC1.setOriginalValue("{REF,A1}", sheet);                     // C1 = A1 = 56
                 cellD1.setOriginalValue("{CONCAT,{CONCAT,a,{REF,B1},}, blalba}", sheet);    // D1 = B1 + "123" = "HelloWorld123"

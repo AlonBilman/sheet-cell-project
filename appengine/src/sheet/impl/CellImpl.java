@@ -206,8 +206,26 @@ public class CellImpl {
     // Update the CellImpl class to include this method
     public void setOriginalValue(String originalValue, SpreadSheetImpl currSheet) {
         this.originalValue = originalValue;
+        this.dependsOn.clear();
         calculateEffectiveValue(currSheet);
-        //maham
+        detectCircularDependency(new HashSet<>());
+        //no Circular Dependency detected! so continue!
+        for (String affectedId : affectsOn) {
+            CellImpl affectedCell = lastUpdatedSpreadSheet.getCell(affectedId);
+            affectedCell.calculateEffectiveValue(currSheet);
+        }
+    }
+
+    private void detectCircularDependency(Set<String> visitedCells) {
+        if (visitedCells.contains(this.id)) {
+            throw new IllegalArgumentException("Circular dependency detected involving cell: " + this.id);
+        }
+
+        visitedCells.add(this.id);
+        for (String dependencyId : dependsOn) {
+            CellImpl dependentCell = lastUpdatedSpreadSheet.getCell(dependencyId);
+            dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
+        }
     }
 
 
