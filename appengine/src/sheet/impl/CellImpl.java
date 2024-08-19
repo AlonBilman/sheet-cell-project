@@ -21,10 +21,9 @@ public class CellImpl {
     private Set<String> affectsOn;
     private String originalValue;
     private EffectiveValue effectiveValue;
-    private static SpreadSheetImpl lastUpdatedSpreadSheet;
+    private static SpreadSheetImpl currSpreadSheet;
 
-    public CellImpl(int row, String col,SpreadSheetImpl spreadSheet) {
-        lastUpdatedSpreadSheet = spreadSheet;
+    public CellImpl(int row, String col) {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
@@ -32,47 +31,34 @@ public class CellImpl {
         affectsOn = new HashSet<>();
     }
 
-    public CellImpl(STLCell cell,SpreadSheetImpl spreadSheet) {
+    public CellImpl(STLCell cell) {
         lastChangeAt = 1;
         this.row = cell.getRow();
         this.col = cell.getColumn();
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
-        lastUpdatedSpreadSheet = spreadSheet;
-        setOriginalValue(cell.getSTLOriginalValue(),lastUpdatedSpreadSheet);
+        setOriginalValue(cell.getSTLOriginalValue());
         this.id = generateId(col, row);
-
-    }
-    //maybe I get a string? and then edit the cell? {Bla Bla}?
-
-    public void editCell(Expression value, int version, CellImpl... depends) {
-        //originalValue = value;
-        //  effectiveValue = value.eval().toString();
-        //  updateLastChangeAt(version);
-        // updateCellsThatIAffect(); //maham
-        //  updateCellsThatIDependsOn(depends);
     }
 
-    private void updateCellsThatIDependsOn(CellImpl... depends) {
-        //.... update the list. get rid of older that I don't depend on anymore
+    public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
+        currSpreadSheet = spreadSheet;
     }
 
-    public void updateCellsThatIAffect() {
-        //
+    public void editCell(String newOriginalVal) {
+        setOriginalValue(newOriginalVal);
     }
-public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
-        //check if the original value is an expression or needs parsing
+
+    public void calculateEffectiveValue() {
         if (originalValue != null && !originalValue.isEmpty()) {
-            Expression expression = parseExpression(originalValue, currSheet);
-            //set the effective value of the cell
+            Expression expression = parseExpression(originalValue);
             this.effectiveValue = expression.eval();
         } else {
-            //handle the case where there is no valid expression
             this.effectiveValue = null;
         }
     }
 
-    private Expression parseExpression(String originalValue, SpreadSheetImpl currSheet) {
+    private Expression parseExpression(String originalValue) {
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
             originalValue = originalValue.substring(1, originalValue.length() - 1);
 
@@ -82,10 +68,9 @@ public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
             }
 
             String functionName = originalValue.substring(0, firstCommaIndex);
-            //extract the arguments
             String arguments = originalValue.substring(firstCommaIndex + 1);
 
-            List<Expression> parsedArguments = parseArguments(arguments,currSheet);
+            List<Expression> parsedArguments = parseArguments(arguments);
 
             switch (functionName) {
                 case "PLUS":
@@ -99,17 +84,17 @@ public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
                         throw new IllegalArgumentException("CONCAT function requires two arguments.");
                     }
                     return new ConcatFunction(parsedArguments.get(0), parsedArguments.get(1));
-                //NEED TO ADD MORE FUNCTIONS OBV
 
                 case "REF":
                     if (parsedArguments.size() != 1) {
                         throw new IllegalArgumentException("REF function requires one argument.");
                     }
                     Expression argument = parsedArguments.get(0);
-                    Expression res = new CellReferenceFunc(argument, currSheet,this.id);
+                    Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
                     String referencedId = argument.eval().getValue().toString();
                     dependsOn.add(referencedId);
                     return res;
+
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
             }
@@ -118,59 +103,84 @@ public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
         }
     }
 
-    private List<Expression> parseArguments(String arguments, SpreadSheetImpl currSheet) {
+    private List<Expression> parseArguments(String arguments) {
         List<Expression> result = new ArrayList<>();
         int braceCount = 0;
         StringBuilder currentArgument = new StringBuilder();
         for (int i = 0; i < arguments.length(); i++) {
             char ch = arguments.charAt(i);
-
             if (ch == '{') {
                 braceCount++;
             } else if (ch == '}') {
                 braceCount--;
             }
-
             if (ch == ',' && braceCount == 0) {
-                // End of an argument
-                result.add(parseExpression(currentArgument.toString(), currSheet));
+                result.add(parseExpression(currentArgument.toString()));
                 currentArgument.setLength(0);
             } else {
                 currentArgument.append(ch);
             }
         }
         if (!currentArgument.isEmpty()) {
-            result.add(parseExpression(currentArgument.toString().trim(), currSheet));
+            result.add(parseExpression(currentArgument.toString().trim()));
         }
         return result;
     }
 
     private Expression parseSimpleValue(String value) {
-        if(value.isEmpty()||value.matches(".*[^0-9].*")) //if its empty or contains something that is not a number.
+        if (value.isEmpty() || value.matches(".*[^0-9].*"))
             return new Mystring(value);
-        //else . it contains a number.
         return new Number(Double.valueOf(value));
-
     }
-     private String generateId(String col, int row) {
+
+    private String generateId(String col, int row) {
         char letter = col.charAt(0);
-        return letter+String.valueOf(row);
+        return letter + String.valueOf(row);
     }
 
-
-    Boolean IdChecker(String id){
-        return id.equals(this.id);
+    private void removeDependsOn() {
+        for (String dependsOnId : dependsOn) {
+            CellImpl cell = currSpreadSheet.getCell(dependsOnId);
+            cell.removeAffectsOn(dependsOnId);
+            dependsOn.clear();
+        }
     }
 
-    public void removeDependsOn(CellImpl cellImpl) {
-        dependsOn.remove(cellImpl);
+    private void removeAffectsOn(String dependsOnId) {
+        affectsOn.remove(dependsOnId);
+    }
+
+    public void setOriginalValue(String originalValue) {
+        this.originalValue = originalValue;
+        removeDependsOn();
+        calculateEffectiveValue();
+        detectCircularDependency(new HashSet<>());
+        for (String affectedId : affectsOn) {
+            CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
+            affectedCell.calculateEffectiveValue();
+        }
+    }
+
+    private void detectCircularDependency(Set<String> visitedCells) {
+        if (visitedCells.contains(this.id)) {
+            throw new IllegalArgumentException("Circular dependency detected involving cell: " + this.id);
+        }
+        visitedCells.add(this.id);
+        for (String dependencyId : dependsOn) {
+            CellImpl dependentCell = currSpreadSheet.getCell(dependencyId);
+            dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
+        }
+    }
+
+    public EffectiveValue getEffectiveValue() {
+        return effectiveValue;
     }
 
     public void updateLastChangeAt(int currVersion) {
         lastChangeAt = currVersion++;
     }
 
-    public  String getOriginalValue() {
+    public String getOriginalValue() {
         return originalValue;
     }
 
@@ -181,9 +191,11 @@ public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
     public Set<String> getDependsOn() {
         return dependsOn;
     }
-    public void addAffectsOnId(String id){
+
+    public void addAffectsOnId(String id) {
         affectsOn.add(id);
     }
+
     public Set<String> getAffectsOn() {
         return affectsOn;
     }
@@ -199,36 +211,4 @@ public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
     public String getCol() {
         return col;
     }
-
-    // Update the CellImpl class to include this method
-    public void setOriginalValue(String originalValue, SpreadSheetImpl currSheet) {
-        this.originalValue = originalValue;
-        this.dependsOn.clear();
-        calculateEffectiveValue(currSheet);
-        detectCircularDependency(new HashSet<>());
-        //no Circular Dependency detected! so continue!
-        for (String affectedId : affectsOn) {
-            CellImpl affectedCell = lastUpdatedSpreadSheet.getCell(affectedId);
-            affectedCell.calculateEffectiveValue(currSheet);
-        }
-    }
-
-    private void detectCircularDependency(Set<String> visitedCells) {
-        if (visitedCells.contains(this.id)) {
-            throw new IllegalArgumentException("Circular dependency detected involving cell: " + this.id);
-        }
-        //add it to visited cells.
-        visitedCells.add(this.id);
-        for (String dependencyId : dependsOn) {
-            CellImpl dependentCell = lastUpdatedSpreadSheet.getCell(dependencyId);
-            //and keep checking on all my dependsOn set.
-            dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
-        }
-    }
-
-
-    public EffectiveValue getEffectiveValue() {
-        return effectiveValue;
-    }
-
 }
