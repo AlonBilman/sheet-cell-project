@@ -1,7 +1,9 @@
 package expression.api;
 import sheet.api.EffectiveValue;
 
-public interface Expression {
+import java.io.Serializable;
+
+public interface Expression extends Serializable {
     EffectiveValue eval();
     ObjType type();
 }

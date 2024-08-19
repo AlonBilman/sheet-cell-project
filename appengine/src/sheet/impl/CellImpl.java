@@ -6,12 +6,14 @@ import expression.impl.Mystring;
 import expression.impl.function.*;
 import expression.impl.Number;
 import sheet.api.EffectiveValue;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CellImpl {
+public class CellImpl implements Serializable {
     private final int row;
     private final String col;
     private final String id;
@@ -22,13 +24,14 @@ public class CellImpl {
     private EffectiveValue effectiveValue;
     private static SpreadSheetImpl currSpreadSheet;
 
-    public CellImpl(int row, String col) {
+    public CellImpl(int row, String col,String newOriginalVal, int versionNumber) {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
-        //setOriginalValue(originalValue);
+        setOriginalValue(originalValue);
+        lastChangeAt = ++versionNumber;
     }
 
     private void checkRowAndCol(int row, String col){
@@ -57,10 +60,6 @@ public class CellImpl {
 
     public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
         currSpreadSheet = spreadSheet;
-    }
-
-    public void editCell(String newOriginalVal) {
-        setOriginalValue(newOriginalVal);
     }
 
     public void calculateEffectiveValue() {

@@ -2,11 +2,13 @@ package sheet.impl;
 
 import FileCheck.*;
 import sheet.api.EffectiveValue;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpreadSheetImpl {
+public class SpreadSheetImpl implements Serializable {
     private final int rowSize;
     private final int columnSize;
     private final int colWidth;
@@ -15,6 +17,7 @@ public class SpreadSheetImpl {
     private final String sheetName;
     private int sheetVersionNumber;
     private Map<Integer, SpreadSheetImpl> sheetMap;
+    private SpreadSheetImpl sheetBeforeChange=null;
 
     public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
         this.sheetName = sheetName;
@@ -26,7 +29,28 @@ public class SpreadSheetImpl {
         this.activeCells = new HashMap<>();
         this.sheetMap = new HashMap<>();
         CellImpl.setSpreadSheet(this);
+        sheetBeforeChange=deepCopy();
     }
+
+    public SpreadSheetImpl deepCopy() {
+        try {
+            // Serialize the object to a byte array
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+            // Deserialize the byte array to a new object
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return (SpreadSheetImpl) objectInputStream.readObject();
+
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
+        }
+    }
+
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
@@ -42,6 +66,56 @@ public class SpreadSheetImpl {
         STLCells stlCells = stlSheet.getSTLCells();
         if(stlCells != null) {
             addCells(stlCells.getSTLCell());
+        }
+        sheetBeforeChange=deepCopy();
+    }
+
+    public void changeCell(String id, String newOriginalVal) {
+            CellImpl cell = activeCells.get(id);
+            cell.setOriginalValue(newOriginalVal);
+            updateVersionNumber();
+            sheetBeforeChange=deepCopy();
+    }
+
+    public void addCell(int row, String col, String newOriginalVal){
+        CellImpl cell = new CellImpl(row,col,newOriginalVal,this.sheetVersionNumber);
+        addCell(cell.getId(),cell);
+    }
+
+    public void addNewVersion(STLSheet newSheet) {
+        SpreadSheetImpl newSpreadSheet = new SpreadSheetImpl(newSheet);
+        this.sheetVersionNumber++;
+        this.sheetMap.put(this.sheetVersionNumber, newSpreadSheet);
+    }
+
+
+    public EffectiveValue ref(EffectiveValue id, String IdThatCalledMe) {
+        String theCellThatRefIsReferringTo = (String) id.getValue();
+        CellImpl curr = getCell(theCellThatRefIsReferringTo);
+        if (curr == null)
+            throw new RuntimeException("No such cell, create it before referring to it.");
+        curr.addAffectsOnId(IdThatCalledMe);
+        return curr.getEffectiveValue(); //returns EffectiveValue
+    }
+
+    public CellImpl getCell(String cellId) {
+       checkCellId(cellId);
+        char letter = cellId.charAt(0); //taking the char
+        int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
+        int row = Integer.parseInt(cellId.substring(1)) - 1; //1 => after the letter.
+        if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
+            throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
+        }
+        CellImpl cell = activeCells.get(cellId);
+        if (cell == null) {
+            throw new RuntimeException("No such cell, it contains nothing, before referring to it you should update its content.");
+        }
+        return cell;
+    }
+
+    private void checkCellId(String id) {
+        if (!id.matches("^[A-Za-z]\\d+$")) {
+            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + id);
         }
     }
 
@@ -79,11 +153,6 @@ public class SpreadSheetImpl {
         this.sheetMap = sheetMap;
     }
 
-    public void changeCell(String id, String newOriginalVal) {
-        CellImpl cell = activeCells.get(id);
-        cell.setOriginalValue(newOriginalVal);
-    }
-
     public Map<Integer, SpreadSheetImpl> getSheetMap() {
         return sheetMap;
     }
@@ -96,45 +165,14 @@ public class SpreadSheetImpl {
         return sheetVersionNumber;
     }
 
-    public void setSheetVersionNumber(int sheetVersionNumber) {
-        this.sheetVersionNumber = sheetVersionNumber;
-    }
-
-    public void addNewVersion(STLSheet newSheet) {
-        SpreadSheetImpl newSpreadSheet = new SpreadSheetImpl(newSheet);
+    public void updateVersionNumber() {
         this.sheetVersionNumber++;
-        this.sheetMap.put(this.sheetVersionNumber, newSpreadSheet);
     }
 
-    public EffectiveValue ref(EffectiveValue id, String IdThatCalledMe) {
-        String theCellThatRefIsReferringTo = (String) id.getValue();
-        CellImpl curr = getCell(theCellThatRefIsReferringTo);
-        if (curr == null)
-            throw new RuntimeException("No such cell, create it before referring to it.");
-        curr.addAffectsOnId(IdThatCalledMe);
-        return curr.getEffectiveValue(); //returns EffectiveValue
+    public SpreadSheetImpl getSheetBeforeChange() {
+        return sheetBeforeChange;
     }
 
-    public CellImpl getCell(String cellId) {
-       checkCellId(cellId);
-        char letter = cellId.charAt(0); //taking the char
-        int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-        int row = Integer.parseInt(cellId.substring(1)) - 1; //1 => after the letter.
-        if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
-            throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
-        }
-        CellImpl cell = activeCells.get(cellId);
-        if (cell == null) {
-            throw new RuntimeException("No such cell, it contains nothing, before referring to it you should update its content.");
-        }
-        return cell;
-    }
-
-    private void checkCellId(String id) {
-        if (!id.matches("^[A-Za-z]\\d+$")) {
-            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + id);
-        }
-    }
 
 }
 

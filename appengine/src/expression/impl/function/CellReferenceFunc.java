@@ -17,7 +17,7 @@ public class CellReferenceFunc implements Expression {
     public EffectiveValue eval() {
         EffectiveValue evaluateCell = cellId.eval();
         if (evaluateCell.getObjType() != ObjType.STRING)
-            throw new IllegalArgumentException("REF function is only applicable to String! please write your Cell-Id in the way shown : \"<data>\" ");
+            throw new IllegalArgumentException("REF function is only applicable to String! - provided Double");
         return currSheet.ref(cellId.eval(), calledById); 
     }
 
