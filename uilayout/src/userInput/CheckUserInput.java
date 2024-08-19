@@ -1,13 +1,16 @@
 package userInput;
 
+import DTO.CellDataDTO;
+import DTO.LoadDTO;
+import DTO.sheetDTO;
 import FileCheck.STLSheet;
 import sheet.impl.SpreadSheetImpl;
 import engineImpl.EngineImpl;
 import java.io.File;
 import java.util.Scanner;
 
+import static FileCheck.CheckForXMLFile.getXMLFile;
 import static FileCheck.CheckForXMLFile.loadXMLFile;
-import static FileCheck.CheckUserInputForFiles.checkFileUserInput;
 
 public class CheckUserInput {
     private static final char FILE_INPUT = '1';
@@ -54,11 +57,11 @@ public class CheckUserInput {
     public void UserStartMenuInput() {
         EngineImpl engine = new EngineImpl();
         Scanner scanner = new Scanner(System.in);
-        File newFile, oldFile = null;
+        File newFile = null;
         String input;
-        STLSheet stlSheet = null;
+        STLSheet stlSheet;
         char userInput = 0;
-        EngineImpl.loadDTO loadResult;
+        LoadDTO loadResult;
         SpreadSheetImpl spreadSheet = null;
 
 
@@ -71,7 +74,7 @@ public class CheckUserInput {
             }
 
             userInput = input.charAt(0);
-            while (userInput != FILE_INPUT && (oldFile==null)) {
+            while (userInput != FILE_INPUT && (newFile==null)) {
                 if(userInput != EXIT_SYSTEM) {
                     System.out.println("Please enter an xml file before trying to play");
                     newFile = checkFileUserInput();
@@ -87,19 +90,18 @@ public class CheckUserInput {
                   do {
                       System.out.println("Please load a new XML file...");
                       newFile = checkFileUserInput();
-                      loadResult = engine.Load(newFile, oldFile);
-                      if (!loadResult.isValid()) {
+                      loadResult = engine.Load(newFile);
+                      if (loadResult.isNotValid()) {
                           System.out.println("Invalid file. Ensure it exists and is an XML file. Please try again.");
                       }
-                  }while(!loadResult.isValid());
+                  }while(loadResult.isNotValid());
 
-                  oldFile = loadResult.getLoadedFile();
-                  stlSheet = loadXMLFile(oldFile);
+                  stlSheet = loadXMLFile(loadResult.getLoadedFile());
                   spreadSheet = new SpreadSheetImpl(stlSheet);
                   break;
 
                 case LOAD_CURRENT_SHEET:
-                    EngineImpl.sheetDTO sheet = engine.Display(spreadSheet);
+                    sheetDTO sheet = engine.Display(spreadSheet);
                     printSheet(sheet);
                     break;
 
@@ -107,7 +109,7 @@ public class CheckUserInput {
                     System.out.println("Enter specific cell id:");
                     String cellId = scanner.nextLine();
                     try {
-                        EngineImpl.CellDataDTO cellData = new EngineImpl.CellDataDTO(spreadSheet.getCell(cellId));
+                        CellDataDTO cellData = new CellDataDTO(spreadSheet.getCell(cellId));
                         printCell(cellData);
                     }
                     catch(Exception noSuchCell){
@@ -126,7 +128,7 @@ public class CheckUserInput {
 
                 case VERSIONS_PRINT:
                     System.out.println("The versions print is:");
-                    EngineImpl.sheetDTO versionsSheet = engine.showVersions(spreadSheet);
+                    sheetDTO versionsSheet = engine.showVersions(spreadSheet);
                     for(int i = 1; i < versionsSheet.getSheetMap().size(); i++) {
                         printSheet(versionsSheet.getSheetMap().get(i));
                     }
@@ -148,7 +150,7 @@ public class CheckUserInput {
     }
 
 
-    public void printSheet(EngineImpl.sheetDTO sheet){
+    public void printSheet(sheetDTO sheet){
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
         String spaceAfterString;
@@ -188,7 +190,7 @@ public class CheckUserInput {
         }
     }
 
-    public void printCell(EngineImpl.CellDataDTO cell) {
+    public void printCell(CellDataDTO cell) {
         System.out.println("Cell id: " + cell.getId() + "\n");
         System.out.println("Cell original Value: " + cell.getOriginalValue() + "\n");
         System.out.println("Cell effective value: " + cell.getEffectiveValue().getValue() + "\n");
@@ -196,5 +198,19 @@ public class CheckUserInput {
         System.out.println("Cell depending on: " + cell.getDependsOn() + "\n");
         System.out.println("Cell affects cells: " + cell.getAffectsOn() + "\n");
 
+    }
+
+    public static File checkFileUserInput() {
+        String filePath;
+        Scanner scanner = new Scanner(System.in);
+        File fileToCheck;
+
+
+        System.out.print("Enter the file path: ");
+        filePath = scanner.nextLine();
+        fileToCheck = getXMLFile(filePath);
+
+
+        return fileToCheck;
     }
 }
