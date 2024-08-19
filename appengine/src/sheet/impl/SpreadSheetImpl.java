@@ -59,6 +59,13 @@ public class SpreadSheetImpl {
         }
     }
 
+    public Map<String, CellImpl> getSTLCells() {
+        return activeCells;
+    }
+
+    public Map<Integer, SpreadSheetImpl> getSheets() {
+        return sheetMap;
+    }
     public int getRowSize() {
         return rowSize;
     }

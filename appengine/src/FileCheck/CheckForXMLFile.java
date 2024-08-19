@@ -22,7 +22,10 @@ public class CheckForXMLFile {
         }
         return null;
     }
+    public static STLSheet loadXMLFile(File file) {
+        return readXMLFile(file.getAbsolutePath());
 
+    }
     public static STLSheet readXMLFile(String filePath) {
       try {
 
