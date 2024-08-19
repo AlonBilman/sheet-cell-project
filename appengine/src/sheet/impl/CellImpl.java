@@ -7,6 +7,9 @@ import expression.impl.function.*;
 import expression.impl.Number;
 import sheet.api.EffectiveValue;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +33,7 @@ public class CellImpl implements Serializable {
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
-        setOriginalValue(originalValue);
+        setOriginalValue(newOriginalVal);
         lastChangeAt = ++versionNumber;
     }
 
@@ -157,13 +160,13 @@ public class CellImpl implements Serializable {
     private void removeDependsOn() {
         for (String dependsOnId : dependsOn) {
             CellImpl cell = currSpreadSheet.getCell(dependsOnId);
-            cell.removeAffectsOn(dependsOnId);
-            dependsOn.clear();
+            cell.removeAffectsOn(this.id);
         }
+        dependsOn.clear();
     }
 
-    private void removeAffectsOn(String dependsOnId) {
-        affectsOn.remove(dependsOnId);
+    private void removeAffectsOn(String id) {
+        affectsOn.remove(id);
     }
 
     public void setOriginalValue(String originalValue) {
@@ -227,4 +230,17 @@ public class CellImpl implements Serializable {
     public String getCol() {
         return col;
     }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(new HashSet<>(dependsOn)); // Deep copy dependsOn
+        oos.writeObject(new HashSet<>(affectsOn)); // Deep copy affectsOn
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        this.dependsOn = (Set<String>) ois.readObject();
+        this.affectsOn = (Set<String>) ois.readObject();
+    }
+
 }

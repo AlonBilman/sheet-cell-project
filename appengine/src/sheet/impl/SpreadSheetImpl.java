@@ -32,24 +32,62 @@ public class SpreadSheetImpl implements Serializable {
         sheetBeforeChange=deepCopy();
     }
 
-    public SpreadSheetImpl deepCopy() {
-        try {
-            // Serialize the object to a byte array
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.flush();
-            objectOutputStream.close();
+//    public SpreadSheetImpl deepCopy() {
+//        try {
+//            // Serialize the object to a byte array
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+//            objectOutputStream.writeObject(this);
+//            objectOutputStream.flush();
+//            objectOutputStream.close();
+//
+//            // Deserialize the byte array to a new object
+//            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+//            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+//            return (SpreadSheetImpl) objectInputStream.readObject();
+//
+//        } catch (IOException | ClassNotFoundException e) {
+//            throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
+//        }
+//    }
+public SpreadSheetImpl deepCopy() {
+    try {
+        // Serialize the object to a byte array
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.flush();
+        objectOutputStream.close();
 
-            // Deserialize the byte array to a new object
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            return (SpreadSheetImpl) objectInputStream.readObject();
+        // Deserialize the byte array to a new object
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+        return (SpreadSheetImpl) objectInputStream.readObject();
 
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
-        }
+    } catch (NotSerializableException e) {
+        System.err.println("A field is not serializable: " + e.getMessage());
+        throw new RuntimeException("Failed to deep copy SpreadSheetImpl due to non-serializable field", e);
+    } catch (IOException | ClassNotFoundException e) {
+        throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
     }
+}
+
+//    public SpreadSheetImpl deepCopy() {
+//        try {
+//            // Serialize the current object to a byte array
+//            ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+//            ObjectOutputStream objectOutStream = new ObjectOutputStream(byteOutStream);
+//            objectOutStream.writeObject(this);
+//            objectOutStream.flush();
+//
+//            // Deserialize the byte array to create a deep copy
+//            ByteArrayInputStream byteInStream = new ByteArrayInputStream(byteOutStream.toByteArray());
+//            ObjectInputStream objectInStream = new ObjectInputStream(byteInStream);
+//            return (SpreadSheetImpl) objectInStream.readObject();
+//        } catch (Exception e) {
+//            throw new RuntimeException("Deep copy failed.", e);
+//        }
+//    }
 
 
     public SpreadSheetImpl(STLSheet stlSheet) {
@@ -79,7 +117,7 @@ public class SpreadSheetImpl implements Serializable {
 
     public void addCell(int row, String col, String newOriginalVal){
         CellImpl cell = new CellImpl(row,col,newOriginalVal,this.sheetVersionNumber);
-        addCell(cell.getId(),cell);
+        activeCells.put(cell.getId(), cell);
     }
 
     public void addNewVersion(STLSheet newSheet) {
@@ -145,9 +183,7 @@ public class SpreadSheetImpl implements Serializable {
         return rowHeight;
     }
 
-    public void addCell(String id, CellImpl cell) {
-        activeCells.put(id, cell);
-    }
+
 
     public void setSheetMap(Map<Integer, SpreadSheetImpl> sheetMap) {
         this.sheetMap = sheetMap;
