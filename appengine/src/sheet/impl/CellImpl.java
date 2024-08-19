@@ -1,11 +1,10 @@
 package sheet.impl;
 import FileCheck.STLCell;
 import expression.api.Expression;
-import expression.impl.*;
+import expression.api.ObjType;
+import expression.impl.Mystring;
+import expression.impl.function.*;
 import expression.impl.Number;
-import expression.impl.function.CellReferenceFunc;
-import expression.impl.function.ConcatFunction;
-import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,16 +28,31 @@ public class CellImpl {
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
+        //setOriginalValue(originalValue);
+    }
+
+    private void checkRowAndCol(int row, String col){
+        if(!(col != null && col.length() == 1 && Character.isLetter(col.charAt(0)))){
+            throw new IllegalArgumentException("One or more of the Cells have invalid id. found: \"" + col+ "\" as col.\n" +
+                    "Cell's ID must contain a letter followed by a number. Meaning column has to be a letter.");
+        }
+        int colInt = Character.getNumericValue(col.charAt(0)) - Character.getNumericValue('A'); //getting the col
+
+        if (colInt < 0 || row < 0 || row >= currSpreadSheet.getRowSize() || colInt >= currSpreadSheet.getColumnSize()) {
+            throw new IllegalArgumentException("One or more cells are out of sheet boundaries. Found \"" + col + "\" as column and \"" + row + "\" as row.");
+        }
+        //everything is fine. well in that case...return..
     }
 
     public CellImpl(STLCell cell) {
         lastChangeAt = 1;
         this.row = cell.getRow();
         this.col = cell.getColumn();
+        checkRowAndCol(row,col);
+        this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         setOriginalValue(cell.getSTLOriginalValue());
-        this.id = generateId(col, row);
     }
 
     public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
@@ -50,9 +64,12 @@ public class CellImpl {
     }
 
     public void calculateEffectiveValue() {
-        if (originalValue != null && !originalValue.isEmpty()) {
-            Expression expression = parseExpression(originalValue);
-            this.effectiveValue = expression.eval();
+        if (originalValue != null) {
+            if(!originalValue.isEmpty()){
+                Expression expression = parseExpression(originalValue);
+                this.effectiveValue = expression.eval();
+            }
+            else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
         } else {
             this.effectiveValue = null;
         }

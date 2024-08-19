@@ -1,10 +1,7 @@
 package sheet.impl;
 
-import FileCheck.STLCell;
-import FileCheck.STLCells;
-import FileCheck.STLSheet;
+import FileCheck.*;
 import sheet.api.EffectiveValue;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,20 +29,20 @@ public class SpreadSheetImpl {
     }
 
     public SpreadSheetImpl(STLSheet stlSheet) {
+        CellImpl.setSpreadSheet(this);
+        this.activeCells = new HashMap<>();
+        this.sheetVersionNumber = 1;
         this.rowSize = stlSheet.getSTLLayout().getRows();
         this.columnSize = stlSheet.getSTLLayout().getColumns();
-        this.activeCells = new HashMap<>();
+        this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
+        this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
+        this.sheetName = stlSheet.getName();
+        this.sheetMap = new HashMap<>();
+        this.sheetMap.put(this.sheetVersionNumber, this); // Need to be fixed
         STLCells stlCells = stlSheet.getSTLCells();
         if(stlCells != null) {
             addCells(stlCells.getSTLCell());
         }
-        this.sheetName = stlSheet.getName();
-        this.sheetVersionNumber = 1;
-        this.sheetMap = new HashMap<>();
-        this.sheetMap.put(this.sheetVersionNumber, this);
-        this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
-        this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
-        CellImpl.setSpreadSheet(this);
     }
 
     public void addCells(List<STLCell> cells) {
@@ -119,12 +116,9 @@ public class SpreadSheetImpl {
     }
 
     public CellImpl getCell(String cellId) {
-        if (!cellId.matches("^[A-Za-z]\\d+$")) {
-            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + cellId);
-        }
+       checkCellId(cellId);
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-
         int row = Integer.parseInt(cellId.substring(1)) - 1; //1 => after the letter.
         if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
@@ -135,4 +129,12 @@ public class SpreadSheetImpl {
         }
         return cell;
     }
+
+    private void checkCellId(String id) {
+        if (!id.matches("^[A-Za-z]\\d+$")) {
+            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + id);
+        }
+    }
+
 }
+
