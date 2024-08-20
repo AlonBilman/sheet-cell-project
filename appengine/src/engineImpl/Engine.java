@@ -18,7 +18,7 @@ public interface Engine {
 
     CellDataDTO showCell(CellImpl cell);
 
-    sheetDTO updateCell(SpreadSheetImpl sheet);
+    sheetDTO updateCell(SpreadSheetImpl sheet, String cellId, String value);
 
     sheetDTO showVersions(SpreadSheetImpl sheet);
 

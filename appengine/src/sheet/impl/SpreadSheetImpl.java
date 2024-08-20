@@ -123,6 +123,7 @@ public SpreadSheetImpl deepCopy() {
     }
 
     public void addCells(List<STLCell> cells) {
+        CellImpl.setSpreadSheet(this);
         if(cells == null || cells.isEmpty()) {
             return;
         }

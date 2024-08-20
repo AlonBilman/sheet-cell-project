@@ -27,12 +27,7 @@ public class CellDataDTO {
         this.originalValue = cell.getOriginalValue();
         this.effectiveValue = cell.getEffectiveValue();
     }
-    public int getRow() {
-        return row;
-    }
-    public String getCol() {
-        return col;
-    }
+
     public String getId() {
         return id;
     }

@@ -4,6 +4,7 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.sheetDTO;
 import FileCheck.STLSheet;
+import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 import engineImpl.EngineImpl;
 import java.io.File;
@@ -60,10 +61,11 @@ public class CheckUserInput {
         File newFile = null;
         String input;
         STLSheet stlSheet;
-        char userInput = 0;
+        sheetDTO sheet;
+        char userInput;
         LoadDTO loadResult;
         SpreadSheetImpl spreadSheet = null;
-
+        CellDataDTO cellData;
 
         do {
             printMenu();
@@ -94,14 +96,14 @@ public class CheckUserInput {
                       if (loadResult.isNotValid()) {
                           System.out.println("Invalid file. Ensure it exists and is an XML file. Please try again.");
                       }
-                  }while(loadResult.isNotValid());
+                  }while(loadResult.isNotValid() && spreadSheet==null);
 
                   stlSheet = loadXMLFile(loadResult.getLoadedFile());
                   spreadSheet = new SpreadSheetImpl(stlSheet);
                   break;
 
                 case LOAD_CURRENT_SHEET:
-                    sheetDTO sheet = engine.Display(spreadSheet);
+                    sheet = engine.Display(spreadSheet);
                     printSheet(sheet);
                     break;
 
@@ -109,7 +111,7 @@ public class CheckUserInput {
                     System.out.println("Enter specific cell id:");
                     String cellId = scanner.nextLine();
                     try {
-                        CellDataDTO cellData = new CellDataDTO(spreadSheet.getCell(cellId));
+                        cellData = engine.showCell(spreadSheet.getCell(cellId));
                         printCell(cellData);
                     }
                     catch(Exception noSuchCell){
@@ -122,8 +124,17 @@ public class CheckUserInput {
                     String cellToUpdate = scanner.nextLine();
                     System.out.println("Enter new cell value:");
                     String newValue = scanner.nextLine();
-                   // engine.updateCell(cellToUpdate, newValue);
-                    System.out.println("Cell updated.");
+                    try {
+                        sheet = engine.updateCell(spreadSheet, cellToUpdate, newValue);
+                        System.out.println("Cell updated.");
+                    }
+                    catch(Exception e){
+                        System.out.println(e);
+                        sheet = new sheetDTO(spreadSheet);
+                        break;
+                    }
+
+
                     break;
 
                 case VERSIONS_PRINT:
@@ -149,7 +160,6 @@ public class CheckUserInput {
 
     }
 
-
     public void printSheet(sheetDTO sheet){
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
@@ -170,14 +180,14 @@ public class CheckUserInput {
         System.out.print(newLineString);
 
 // Print the grid rows with numbers and dividers
-        for (int row = 0; row < sheet.getRowSize(); row++) {
-            System.out.print((row + 1)); // Row number
+        for (int row = 1; row <= sheet.getRowSize(); row++) {
+            System.out.print((row)); // Row number
             for (int col = 0; col < sheet.getColSize(); col++) {
                 letter = (char) ('A' + col % 26);
                 if(col == 0)
                     System.out.print(columnDivider);
                 try{
-                    spaceAfterString = " ".repeat(sheet.getColWidth()- sheet.getActiveCells().get(letter+String.valueOf(row)).getOriginalValue().length());
+                    spaceAfterString = " ".repeat(sheet.getColWidth() * 2 - sheet.getActiveCells().get(letter+String.valueOf(row)).getOriginalValue().length());
                     System.out.print(spaceString + sheet.getActiveCells().get(letter+String.valueOf(row)).getEffectiveValue().getValue() + spaceAfterString + columnDivider);
                 }catch (Exception noSuchCell){
                     System.out.print(spaceString + " " + spaceString + columnDivider);
