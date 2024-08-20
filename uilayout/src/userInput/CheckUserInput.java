@@ -75,16 +75,15 @@ public class CheckUserInput {
             input = scanner.nextLine();
             if (input.isEmpty()) {
                 System.out.println("Input cannot be empty, please enter a valid option.");
-                continue;  // Prompt the user again
+                input= scanner.nextLine();  // Prompt the user again
             }
 
 
             userInput = input.charAt(0);
-            while (userInput != FILE_INPUT && (spreadSheet == null)) {
+            if(userInput != FILE_INPUT && (spreadSheet == null)) {
                 if (userInput != EXIT_SYSTEM) {
                     System.out.println("Please enter an XML file before proceeding.");
-                    oldFile = checkFileUserInput();
-                    userInput = FILE_INPUT;
+                    UserStartMenuInput();
                 } else {
                     System.out.println("Exiting system...");
                     System.exit(0);
@@ -93,7 +92,7 @@ public class CheckUserInput {
 
             switch (userInput) {
                 case FILE_INPUT:
-                    do {
+
                         if (spreadSheet != null) {
                             System.out.println("A file is already loaded. Loading a new file will override it.");
                         }
@@ -105,7 +104,7 @@ public class CheckUserInput {
                         if (loadResult.isNotValid() && spreadSheet == null) {
                             System.out.println("Invalid file. Ensure it exists and is an XML file.");
                         }
-                    } while (loadResult.isNotValid() && oldFile == null);
+
 
                     if (!loadResult.isNotValid()) {
                         oldFile = newFile;
@@ -115,13 +114,17 @@ public class CheckUserInput {
                         System.out.println("Invalid file. The previous file is retained.");
                         loadResult = engine.Load(oldFile);
                     }
-
+                    if(oldFile == null) {
+                        break;
+                    }
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     spreadSheet = new SpreadSheetImpl(stlSheet);
                     integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display(spreadSheet));
                     break;
 
                 case LOAD_CURRENT_SHEET:
+                    if(sheet == null)
+                        break;
                     sheet = engine.Display(spreadSheet);
                     printSheet(sheet);
                     break;
