@@ -172,8 +172,6 @@ public class CheckUserInput {
                         versionNum = scanner.nextInt();
                     }
                     printSheet(integersheetDTOMap.get(versionNum));
-
-
                     break;
 
 
@@ -190,43 +188,53 @@ public class CheckUserInput {
         System.exit(engine.exitSystem().getExitStatus());
     }
 
-    public void printSheet(sheetDTO sheet){
+    public void printSheet(sheetDTO sheet) {
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
-        String spaceAfterString;
-        String spaceString = "  ".repeat(sheet.getColWidth());
-        String newLineString = "\n".repeat(sheet.getRowHeight()+1);
+        String spaceString = " ".repeat(sheet.getColWidth());
+        String newLineString = "\n".repeat(sheet.getRowHeight() + 1);
         char letter;
+
         System.out.println("Sheet name is: " + sheetName);
         System.out.println("Sheet version is: " + sheet.getSheetVersionNumber() + "\n");
+
+        // Print column headers
         System.out.print(" ");
         for (int col = 0; col < sheet.getColSize(); col++) {
             letter = (char) ('A' + col % 26);
-            if(col == 0)
-                System.out.print(columnDivider);
-            System.out.print(spaceString + letter + spaceString+ columnDivider);
+            System.out.print(spaceString + letter + spaceString + columnDivider);
         }
-        // End divider
         System.out.print(newLineString);
 
-// Print the grid rows with numbers and dividers
+        // Print the grid rows with numbers and dividers
         for (int row = 1; row <= sheet.getRowSize(); row++) {
-            System.out.print((row)); // Row number
+            System.out.print(row); // Row number
             for (int col = 0; col < sheet.getColSize(); col++) {
                 letter = (char) ('A' + col % 26);
-                if(col == 0)
+                String cellKey = letter + String.valueOf(row);
+                String cellValue;
+
+                if (col == 0) {
                     System.out.print(columnDivider);
-                try{
-                    spaceAfterString = " ".repeat(sheet.getColWidth() * 2 - sheet.getActiveCells().get(letter+String.valueOf(row)).getOriginalValue().length());
-                    System.out.print(spaceString + sheet.getActiveCells().get(letter+String.valueOf(row)).getEffectiveValue().getValue() + spaceAfterString + columnDivider);
-                }catch (Exception noSuchCell){
-                    System.out.print(spaceString + " " + spaceString + columnDivider);
                 }
 
+                // Fetch and print the cell value, or an empty space if the cell does not exist
+                CellDataDTO cell = sheet.getActiveCells().get(cellKey);
+                if (cell != null) {
+                    // Ensure cell value is treated as a string
+                    Object valueObject = cell.getEffectiveValue().getValue();
+                    cellValue = (valueObject != null) ? valueObject.toString() : "";
+
+                    int paddingSize = sheet.getColWidth() * 2 + 1 - cellValue.length();
+                    int leftPadding = paddingSize / 2;
+                    int rightPadding = paddingSize - leftPadding;
+                    System.out.print(" ".repeat(leftPadding) + cellValue + " ".repeat(rightPadding) + columnDivider);
+                } else {
+                    System.out.print(spaceString + " " + spaceString + columnDivider);
+                }
             }
             // End divider
             System.out.print(newLineString);
-
         }
     }
 
