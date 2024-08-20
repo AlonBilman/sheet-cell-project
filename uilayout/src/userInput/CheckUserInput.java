@@ -123,8 +123,6 @@ public class CheckUserInput {
                     break;
 
                 case LOAD_CURRENT_SHEET:
-                    if(sheet == null)
-                        break;
                     sheet = engine.Display(spreadSheet);
                     printSheet(sheet);
                     break;
