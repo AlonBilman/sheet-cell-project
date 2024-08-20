@@ -19,7 +19,6 @@ public class LoadDTO {
         }
     }
 
-
     public File getLoadedFile() {
         return this.loadedFile;
     }

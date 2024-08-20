@@ -23,6 +23,11 @@ public class CellImpl implements Serializable {
     private Set<String> affectsOn;
     private String originalValue;
     private EffectiveValue effectiveValue;
+
+    public static SpreadSheetImpl getCurrSpreadSheet() {
+        return currSpreadSheet;
+    }
+
     private static SpreadSheetImpl currSpreadSheet;
 
     public CellImpl(int row, String col,String newOriginalVal, int versionNumber) {

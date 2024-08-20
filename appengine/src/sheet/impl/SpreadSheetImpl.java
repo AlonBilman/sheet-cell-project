@@ -72,22 +72,19 @@ public SpreadSheetImpl deepCopy() {
     }
 
     public void changeCell(String id, String newOriginalVal) {
+            sheetBeforeChange=deepCopy();
             CellImpl.setSpreadSheet(this);
             CellImpl cell = activeCells.get(id);
             cell.setOriginalValue(newOriginalVal);
             updateVersionNumber();
-            sheetBeforeChange=deepCopy();
+
     }
 
     public void addCell(int row, String col, String newOriginalVal){
+        CellImpl.setSpreadSheet(this);
+        sheetBeforeChange=deepCopy();
         CellImpl cell = new CellImpl(row,col,newOriginalVal,this.sheetVersionNumber);
         activeCells.put(cell.getId(), cell);
-    }
-
-    public void addNewVersion(STLSheet newSheet) {
-        SpreadSheetImpl newSpreadSheet = new SpreadSheetImpl(newSheet);
-        this.sheetVersionNumber++;
-        this.sheetMap.put(this.sheetVersionNumber, newSpreadSheet);
     }
 
 
@@ -127,6 +124,7 @@ public SpreadSheetImpl deepCopy() {
         if(cells == null || cells.isEmpty()) {
             return;
         }
+        CellImpl.setSpreadSheet(this);
         for (STLCell cell : cells) {
             CellImpl cellImpl = new CellImpl(cell);
             this.activeCells.put(cellImpl.getId(), cellImpl);
@@ -179,6 +177,5 @@ public SpreadSheetImpl deepCopy() {
     public SpreadSheetImpl getSheetBeforeChange() {
         return sheetBeforeChange;
     }
-
 }
 

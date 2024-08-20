@@ -11,33 +11,46 @@ import java.io.File;
 
 public class EngineImpl implements Engine {
 
-    @Override
-    public sheetDTO Display(SpreadSheetImpl sheet) {
-            return new sheetDTO(sheet);
+    public SpreadSheetImpl getSpreadSheet() {
+        return spreadSheet;
+    }
+
+    private SpreadSheetImpl spreadSheet;
+
+   public EngineImpl(SpreadSheetImpl spreadSheet) {
+        this.spreadSheet = spreadSheet;
+    }
+
+    public void setSheet(SpreadSheetImpl sheet){
+       this.spreadSheet = sheet;
     }
 
     @Override
-    public CellDataDTO showCell(CellImpl cell) {
-            if (cell == null) {
-                throw new IllegalArgumentException("Cannot create CellDataDTO from a null cell.");
-            }
-            return new CellDataDTO(cell);
-        }
-
-    @Override
-    public sheetDTO updateCell(SpreadSheetImpl sheet, String cellId, String value) {
-        try{
-            sheet.changeCell(cellId, value);
-        }catch (Exception e){
-            sheet = sheet.getSheetBeforeChange();
-            throw  e ;
-        }
-        return new sheetDTO(sheet);
+    public sheetDTO Display() {
+            return new sheetDTO(spreadSheet);
     }
 
     @Override
-    public sheetDTO showVersions(SpreadSheetImpl sheet) {
-        return new sheetDTO(sheet);
+    public CellDataDTO showCell(String id) {
+       return new CellDataDTO(this.spreadSheet.getCell(id));
+        }
+
+    //------------------------------------------------------------------------------------------------------//
+    @Override
+    public sheetDTO updateCell(String cellId, String value) {
+        try {
+            this.spreadSheet.changeCell(cellId, value);
+        } catch (Exception e) {
+            this.spreadSheet = this.spreadSheet.getSheetBeforeChange();
+            throw e;
+        }
+        return new sheetDTO(this.spreadSheet);
+    }
+
+
+    @Override
+    public sheetDTO showVersions() {
+        return new sheetDTO(this.spreadSheet);
     }
 
     @Override
