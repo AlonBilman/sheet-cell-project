@@ -1,18 +1,21 @@
 package sheet.impl;
 import FileCheck.STLCell;
 import expression.api.Expression;
-import expression.impl.*;
+import expression.api.ObjType;
+import expression.impl.Mystring;
+import expression.impl.function.*;
 import expression.impl.Number;
 import expression.impl.function.CellReferenceFunc;
 import expression.impl.function.ConcatFunction;
 import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CellImpl {
+public class CellImpl implements Serializable {
     private final int row;
     private final String col;
     private final String id;
@@ -21,60 +24,61 @@ public class CellImpl {
     private Set<String> affectsOn;
     private String originalValue;
     private EffectiveValue effectiveValue;
-    private static SpreadSheetImpl lastUpdatedSpreadSheet;
+    private static SpreadSheetImpl currSpreadSheet;
 
-    public CellImpl(int row, String col) {
+    public CellImpl(int row, String col,String newOriginalVal, int versionNumber) {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
+        setOriginalValue(newOriginalVal);
+        lastChangeAt = ++versionNumber;
     }
 
-    public CellImpl(STLCell cell,SpreadSheetImpl spreadSheet) {
+    private void checkRowAndCol(int row, String col){
+        if(!(col != null && col.length() == 1 && Character.isLetter(col.charAt(0)))){
+            throw new IllegalArgumentException("One or more of the Cells have invalid id. found: \"" + col+ "\" as col.\n" +
+                    "Cell's ID must contain a letter followed by a number. Meaning column has to be a letter.");
+        }
+        int colInt = Character.getNumericValue(col.charAt(0)) - Character.getNumericValue('A'); //getting the col
+
+        if (colInt < 0 || row < 0 || row >= currSpreadSheet.getRowSize() || colInt >= currSpreadSheet.getColumnSize()) {
+            throw new IllegalArgumentException("One or more cells are out of sheet boundaries. Found \"" + col + "\" as column and \"" + row + "\" as row.");
+        }
+        //everything is fine. well in that case...return..
+    }
+
+    public CellImpl(STLCell cell) {
         lastChangeAt = 1;
         this.row = cell.getRow();
         this.col = cell.getColumn();
+        checkRowAndCol(row,col);
+        this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
-        lastUpdatedSpreadSheet = spreadSheet;
-        setOriginalValue(cell.getSTLOriginalValue(),lastUpdatedSpreadSheet);
-        this.id = generateId(col, row);
-
+        setOriginalValue(cell.getSTLOriginalValue());
     }
     //maybe I get a string? and then edit the cell? {Bla Bla}?
 
-    public void editCell(String value, int version, CellImpl... depends) {
-        //originalValue = value;
-        //  effectiveValue = value.eval().toString();
-        //  updateLastChangeAt(version);
-        // updateCellsThatIAffect(); //maham
-        //  updateCellsThatIDependsOn(depends);
+    public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
+        currSpreadSheet = spreadSheet;
     }
 
-    private void updateCellsThatIDependsOn(CellImpl... depends) {
-        //.... update the list. get rid of older that I don't depend on anymore
-    }
-
-    public void updateCellsThatIAffect() {
-        //
-    }
-
-    public void calculateEffectiveValue(SpreadSheetImpl currSheet) {
-        //check if the original value is an expression or needs parsing
-        if (originalValue != null && !originalValue.isEmpty()) {
-            Expression expression = parseExpression(originalValue, currSheet);
-            //set the effective value of the cell
-            this.effectiveValue = expression.eval();
+    public void calculateEffectiveValue() {
+        if (originalValue != null) {
+            if(!originalValue.isEmpty()){
+                Expression expression = parseExpression(originalValue);
+                this.effectiveValue = expression.eval();
+            }
+            else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
         } else {
             //handle the case where there is no valid expression
             this.effectiveValue = null;
         }
     }
 
-    private Expression parseExpression(String originalValue, SpreadSheetImpl currSheet) {
-        originalValue = originalValue.trim(); // Clean up the input
-
+    private Expression parseExpression(String originalValue) {
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
             originalValue = originalValue.substring(1, originalValue.length() - 1);
 
@@ -84,11 +88,10 @@ public class CellImpl {
                 throw new IllegalArgumentException("Invalid expression format: " + originalValue);
             }
 
-            String functionName = originalValue.substring(0, firstCommaIndex).trim();
-            //extract the arguments
-            String arguments = originalValue.substring(firstCommaIndex + 1).trim();
+            String functionName = originalValue.substring(0, firstCommaIndex);
+            String arguments = originalValue.substring(firstCommaIndex + 1);
 
-            List<Expression> parsedArguments = parseArguments(arguments,currSheet);
+            List<Expression> parsedArguments = parseArguments(arguments);
 
             switch (functionName) {
                 case "PLUS":
@@ -109,7 +112,7 @@ public class CellImpl {
                         throw new IllegalArgumentException("REF function requires one argument.");
                     }
                     Expression argument = parsedArguments.get(0);
-                    Expression res = new CellReferenceFunc(argument, currSheet,this.id);
+                    Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
                     String referencedId = argument.eval().getValue().toString();
                     dependsOn.add(referencedId);
                     return res;
@@ -121,7 +124,7 @@ public class CellImpl {
         }
     }
 
-    private List<Expression> parseArguments(String arguments, SpreadSheetImpl currSheet) {
+    private List<Expression> parseArguments(String arguments) {
         List<Expression> result = new ArrayList<>();
         int braceCount = 0;
         StringBuilder currentArgument = new StringBuilder();
@@ -135,55 +138,73 @@ public class CellImpl {
             }
 
             if (ch == ',' && braceCount == 0) {
-                // End of an argument
-                result.add(parseExpression(currentArgument.toString().trim(), currSheet));
+                result.add(parseExpression(currentArgument.toString()));
                 currentArgument.setLength(0);
             } else {
                 currentArgument.append(ch);
             }
         }
         if (!currentArgument.isEmpty()) {
-            result.add(parseExpression(currentArgument.toString().trim(), currSheet));
+            result.add(parseExpression(currentArgument.toString().trim()));
         }
         return result;
     }
 
     private Expression parseSimpleValue(String value) {
-        if (value.startsWith("\"") && value.endsWith("\"")) {
-            // Handle quoted strings
-            String stringValue = value.substring(1, value.length() - 1);
-            return new Mystring(stringValue);
-        }
-        // Try to parse as a number
-        try {
-            return new Number(Double.parseDouble(value));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Unsupported value: " + value +
-                    "\nYou may have forgotten to delineate the expression with {}.." +
-                    " Or maybe you wanted a String, so make sure to write it like this: \"<data>\" or (<data>)");
-        }
-
-
+        if (value.isEmpty() || value.matches(".*[^0-9].*"))
+            return new Mystring(value);
+        return new Number(Double.valueOf(value));
     }
-     private String generateId(String col, int row) {
+
+    private String generateId(String col, int row) {
         char letter = col.charAt(0);
-        return letter+String.valueOf(row);
+        return letter + String.valueOf(row);
     }
 
-
-    Boolean IdChecker(String id){
-        return id.equals(this.id);
+    private void removeDependsOn() {
+        for (String dependsOnId : dependsOn) {
+            CellImpl cell = currSpreadSheet.getCell(dependsOnId);
+            cell.removeAffectsOn(this.id);
+        }
+        dependsOn.clear();
     }
 
-    public void removeDependsOn(CellImpl cellImpl) {
-        dependsOn.remove(cellImpl);
+    private void removeAffectsOn(String id) {
+        affectsOn.remove(id);
+    }
+
+    public void setOriginalValue(String originalValue) {
+        this.originalValue = originalValue;
+        removeDependsOn();
+        calculateEffectiveValue();
+        detectCircularDependency(new HashSet<>());
+        for (String affectedId : affectsOn) {
+            CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
+            affectedCell.calculateEffectiveValue();
+        }
+        updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());;
+    }
+
+    private void detectCircularDependency(Set<String> visitedCells) {
+        if (visitedCells.contains(this.id)) {
+            throw new IllegalArgumentException("Circular dependency detected involving cell: " + this.id);
+        }
+        visitedCells.add(this.id);
+        for (String dependencyId : dependsOn) {
+            CellImpl dependentCell = currSpreadSheet.getCell(dependencyId);
+            dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
+        }
+    }
+
+    public EffectiveValue getEffectiveValue() {
+        return effectiveValue;
     }
 
     public void updateLastChangeAt(int currVersion) {
         lastChangeAt = currVersion++;
     }
 
-    public  String getOriginalValue() {
+    public String getOriginalValue() {
         return originalValue;
     }
 
@@ -194,7 +215,8 @@ public class CellImpl {
     public Set<String> getDependsOn() {
         return dependsOn;
     }
-    public void addAffectsOnId(String id){
+
+    public void addAffectsOnId(String id) {
         affectsOn.add(id);
     }
     public Set<String> getAffectsOn() {

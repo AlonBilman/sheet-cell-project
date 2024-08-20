@@ -20,3 +20,4 @@ public class Number implements Expression {
         return new EffectiveValueImpl(value,type());
     }
 }
+
