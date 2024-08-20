@@ -151,10 +151,19 @@ public class CheckUserInput {
                 case VERSIONS_PRINT:
                     System.out.println("The versions print is:");
                     sheetDTO versionsSheet = engine.showVersions(spreadSheet);
+                    int versionNum;
                     for (int i = 1; i < versionsSheet.getSheetMap().size(); i++) {
-                        printSheet(versionsSheet.getSheetMap().get(i));
+                        System.out.println("version " + i + ": " + " | " + "Active cells: " + versionsSheet.getSheetMap().get(i).getActiveCells().size());
+                        System.out.println("Please pick a version to peek at");
+                        scanner = new Scanner(System.in);
+                        versionNum = scanner.nextInt();
+                        while (versionNum < 0 || versionNum > versionsSheet.getSheetMap().get(i).getActiveCells().size()) {
+                            System.out.println("Invalid version. Please try again.");
+                            versionNum = scanner.nextInt();
+                        }
+                        printSheet(versionsSheet.getSheetMap().get(versionNum));
                     }
-                    printSheet(versionsSheet);
+
                     break;
 
                 case EXIT_SYSTEM:

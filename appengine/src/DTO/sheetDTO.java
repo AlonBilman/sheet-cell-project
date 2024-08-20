@@ -42,8 +42,9 @@ public class sheetDTO {
     private Map<Integer, sheetDTO> convertSheetMap(SpreadSheetImpl sheet) {
         Map<Integer, sheetDTO> convertedMap = new HashMap<>();
         for (Map.Entry<Integer, SpreadSheetImpl> entry : sheet.getSheetMap().entrySet()) {
-            if (entry.getValue() != sheet) {
-                convertedMap.put(entry.getKey(), new sheetDTO(entry.getValue()));
+            if (!entry.getValue().equals(sheet)) {
+                sheetDTO sheetDTOInstance = new sheetDTO(entry.getValue());
+                convertedMap.put(entry.getKey(), sheetDTOInstance);
             }
         }
         return convertedMap;
