@@ -10,7 +10,7 @@ import sheet.impl.SpreadSheetImpl;
 import java.io.File;
 
 public class EngineImpl implements Engine {
-
+    private final File loadedFile = null;
     @Override
     public sheetDTO Display(SpreadSheetImpl sheet) {
             return new sheetDTO(sheet);
@@ -42,9 +42,12 @@ public class EngineImpl implements Engine {
 
     @Override
     public LoadDTO Load(File newFile) {
-        return new LoadDTO(newFile);
+       return new LoadDTO(newFile);
     }
 
+    public boolean isNotValid() {
+        return loadedFile == null;
+    }
     @Override
     public exitDTO exitSystem() {
         return new DTO.exitDTO();

@@ -58,12 +58,12 @@ public class CheckUserInput {
     public void UserStartMenuInput() {
         EngineImpl engine = new EngineImpl();
         Scanner scanner = new Scanner(System.in);
-        File newFile = null;
+        File newFile = null, oldFile = null;
         String input;
         STLSheet stlSheet;
-        sheetDTO sheet;
-        char userInput;
-        LoadDTO loadResult;
+        sheetDTO sheet = null;
+        char userInput = 0;
+        LoadDTO loadResult = null;
         SpreadSheetImpl spreadSheet = null;
         CellDataDTO cellData;
 
@@ -72,35 +72,51 @@ public class CheckUserInput {
             input = scanner.nextLine();
             if (input.isEmpty()) {
                 System.out.println("Input cannot be empty, please enter a valid option.");
-
+                continue;  // Prompt the user again
             }
 
+
             userInput = input.charAt(0);
-            while (userInput != FILE_INPUT && (newFile==null)) {
-                if(userInput != EXIT_SYSTEM) {
-                    System.out.println("Please enter an xml file before trying to play");
-                    newFile = checkFileUserInput();
+            while (userInput != FILE_INPUT && (spreadSheet == null)) {
+                if (userInput != EXIT_SYSTEM) {
+                    System.out.println("Please enter an XML file before proceeding.");
+                    oldFile = checkFileUserInput();
                     userInput = FILE_INPUT;
-                }
-                else{
-                    System.out.println("Exiting system");
+                } else {
+                    System.out.println("Exiting system...");
                     System.exit(0);
                 }
             }
+
             switch (userInput) {
                 case FILE_INPUT:
-                  do {
-                      System.out.println("Please load a new XML file...");
-                      newFile = checkFileUserInput();
-                      loadResult = engine.Load(newFile);
-                      if (loadResult.isNotValid()) {
-                          System.out.println("Invalid file. Ensure it exists and is an XML file. Please try again.");
-                      }
-                  }while(loadResult.isNotValid() && spreadSheet==null);
+                    do {
+                        if (spreadSheet != null) {
+                            System.out.println("A file is already loaded. Loading a new file will override it.");
+                        }
 
-                  stlSheet = loadXMLFile(loadResult.getLoadedFile());
-                  spreadSheet = new SpreadSheetImpl(stlSheet);
-                  break;
+                        System.out.println("Please load a new XML file...");
+                        newFile = checkFileUserInput();
+                        loadResult = engine.Load(newFile);
+
+                        if (loadResult.isNotValid() && spreadSheet == null) {
+                            System.out.println("Invalid file. Ensure it exists and is an XML file.");
+                        }
+                    } while (loadResult.isNotValid() && oldFile == null);
+
+                    if (!loadResult.isNotValid()) {
+                        oldFile = newFile;
+                    }
+
+                    if (loadResult.isNotValid() && oldFile != null) {
+                        System.out.println("Invalid file. The previous file is retained.");
+                        loadResult = engine.Load(oldFile);
+                    }
+
+                    stlSheet = loadXMLFile(loadResult.getLoadedFile());
+                    spreadSheet = new SpreadSheetImpl(stlSheet);
+
+                    break;
 
                 case LOAD_CURRENT_SHEET:
                     sheet = engine.Display(spreadSheet);
@@ -113,8 +129,7 @@ public class CheckUserInput {
                     try {
                         cellData = engine.showCell(spreadSheet.getCell(cellId));
                         printCell(cellData);
-                    }
-                    catch(Exception noSuchCell){
+                    } catch (Exception noSuchCell) {
                         System.out.println("Specific cell id not found. Please try again.");
                     }
                     break;
@@ -127,23 +142,19 @@ public class CheckUserInput {
                     try {
                         sheet = engine.updateCell(spreadSheet, cellToUpdate, newValue);
                         System.out.println("Cell updated.");
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        sheet = new sheetDTO(spreadSheet);  // This is redundant but safe
                     }
-                    catch(Exception e){
-                        System.out.println(e);
-                        sheet = new sheetDTO(spreadSheet);
-                        break;
-                    }
-
-
                     break;
 
                 case VERSIONS_PRINT:
                     System.out.println("The versions print is:");
                     sheetDTO versionsSheet = engine.showVersions(spreadSheet);
-                    for(int i = 1; i < versionsSheet.getSheetMap().size(); i++) {
+                    for (int i = 1; i < versionsSheet.getSheetMap().size(); i++) {
                         printSheet(versionsSheet.getSheetMap().get(i));
                     }
-                    printSheet(versionsSheet);  // Implement this method to print the sheetDTO
+                    printSheet(versionsSheet);
                     break;
 
                 case EXIT_SYSTEM:
@@ -157,7 +168,6 @@ public class CheckUserInput {
         } while (userInput != EXIT_SYSTEM);
 
         System.exit(engine.exitSystem().getExitStatus());
-
     }
 
     public void printSheet(sheetDTO sheet){
