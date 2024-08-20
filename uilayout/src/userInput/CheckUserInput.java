@@ -8,6 +8,8 @@ import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 import engineImpl.EngineImpl;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import static FileCheck.CheckForXMLFile.getXMLFile;
@@ -61,6 +63,7 @@ public class CheckUserInput {
         File newFile = null, oldFile = null;
         String input;
         STLSheet stlSheet;
+        Map<Integer,sheetDTO> integersheetDTOMap = new HashMap<>();
         sheetDTO sheet = null;
         char userInput = 0;
         LoadDTO loadResult = null;
@@ -115,7 +118,7 @@ public class CheckUserInput {
 
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     spreadSheet = new SpreadSheetImpl(stlSheet);
-
+                    integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display(spreadSheet));
                     break;
 
                 case LOAD_CURRENT_SHEET:
@@ -142,29 +145,37 @@ public class CheckUserInput {
                     try {
                         sheet = engine.updateCell(spreadSheet, cellToUpdate, newValue);
                         System.out.println("Cell updated.");
+                        integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
-                        sheet = new sheetDTO(spreadSheet);  // This is redundant but safe
+                        sheet = new sheetDTO(spreadSheet);// This is redundant but safe
+                        integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     }
                     break;
 
                 case VERSIONS_PRINT:
                     System.out.println("The versions print is:");
-                    sheetDTO versionsSheet = engine.showVersions(spreadSheet);
                     int versionNum;
-                    for (int i = 1; i < versionsSheet.getSheetMap().size(); i++) {
-                        System.out.println("version " + i + ": " + " | " + "Active cells: " + versionsSheet.getSheetMap().get(i).getActiveCells().size());
-                        System.out.println("Please pick a version to peek at");
-                        scanner = new Scanner(System.in);
-                        versionNum = scanner.nextInt();
-                        while (versionNum < 0 || versionNum > versionsSheet.getSheetMap().get(i).getActiveCells().size()) {
-                            System.out.println("Invalid version. Please try again.");
-                            versionNum = scanner.nextInt();
-                        }
-                        printSheet(versionsSheet.getSheetMap().get(versionNum));
+                    sheetDTO versionsSheet;
+                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
+                        versionsSheet = engine.showVersions(spreadSheet.getSheetMap().get(i));
+                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
                     }
+                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
+                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
+                    }
+                    System.out.println("Please pick a version to peek at");
+                    scanner = new Scanner(System.in);
+                    versionNum = scanner.nextInt();
+                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
+                        System.out.println("Invalid version. Please try again.");
+                        versionNum = scanner.nextInt();
+                    }
+                    printSheet(integersheetDTOMap.get(versionNum));
+
 
                     break;
+
 
                 case EXIT_SYSTEM:
                     System.out.println("Exiting system...");
