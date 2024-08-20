@@ -12,8 +12,6 @@ public class sheetDTO {
     private final Map<String, CellDataDTO> activeCells;
     private final String sheetName;
     private final int sheetVersionNumber;
-    private final Map<Integer, sheetDTO> sheetMap;
-
 
     // Constructors, getters, setters
     public sheetDTO(SpreadSheetImpl sheet) {
@@ -24,28 +22,10 @@ public class sheetDTO {
         this.activeCells = convertCells(sheet);
         this.sheetName = sheet.getSheetName();
         this.sheetVersionNumber = sheet.getSheetVersionNumber();
-        this.sheetMap = convertSheetMap(sheet);
+
     }
 
-    private Map<String, CellDataDTO> convertCells(SpreadSheetImpl sheet) {
-        Map<String, CellDataDTO> convertedCells = new HashMap<>();
-        for (Map.Entry<String, CellImpl> entry : sheet.getSTLCells().entrySet()) {
-            // Avoid recursion by checking if the cell's parent sheet is the current sheet
-                convertedCells.put(entry.getKey(), new CellDataDTO(entry.getValue()));
-        }
-        return convertedCells;
-    }
 
-    // Helper method to convert sheet map
-    private Map<Integer, sheetDTO> convertSheetMap(SpreadSheetImpl sheet) {
-        Map<Integer, sheetDTO> convertedMap = new HashMap<>();
-        for (Map.Entry<Integer, SpreadSheetImpl> entry : sheet.getSheetMap().entrySet()) {
-            if (entry.getValue() != sheet) {
-                convertedMap.put(entry.getKey(), new sheetDTO(entry.getValue()));
-            }
-        }
-        return convertedMap;
-    }
     public int getRowSize() {
         return rowSize;
     }
@@ -66,9 +46,6 @@ public class sheetDTO {
     }
     public int getSheetVersionNumber() {
         return sheetVersionNumber;
-    }
-    public Map<Integer, sheetDTO> getSheetMap() {
-        return sheetMap;
     }
 
 }

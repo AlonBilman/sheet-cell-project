@@ -4,11 +4,13 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.exitDTO;
 import DTO.sheetDTO;
+import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.File;
 
 public class EngineImpl implements Engine {
+    private final File loadedFile = null;
 
     private SpreadSheetImpl spreadSheet;
 
@@ -25,8 +27,8 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public sheetDTO Display() {
-            return new sheetDTO(spreadSheet);
+    public sheetDTO Display(SpreadSheetImpl sheet) {
+            return new sheetDTO(sheet);
     }
 
     @Override
@@ -55,6 +57,9 @@ public class EngineImpl implements Engine {
         return new LoadDTO(newFile);
     }
 
+    public boolean isNotValid() {
+        return loadedFile == null;
+    }
     @Override
     public exitDTO exitSystem() {
         return new DTO.exitDTO();
