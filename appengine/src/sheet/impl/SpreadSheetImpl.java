@@ -72,22 +72,27 @@ public SpreadSheetImpl deepCopy() {
     }
 
     public void changeCell(String id, String newOriginalVal) {
-            CellImpl.setSpreadSheet(this);
-            CellImpl cell = activeCells.get(id);
-            cell.setOriginalValue(newOriginalVal);
-            updateVersionNumber();
             sheetBeforeChange=deepCopy();
+            CellImpl.setSpreadSheet(this);
+            checkCellId(id);
+            CellImpl cell = activeCells.get(id);
+            if(cell==null) //meaning there is no cell like this activated
+            {
+                checkCellId(id);
+                addCell(id.charAt(1)- '0', id.substring(0,1), newOriginalVal);
+            }
+            else {
+                cell.setOriginalValue(newOriginalVal);
+                updateVersionNumber();
+            }
+
     }
 
     public void addCell(int row, String col, String newOriginalVal){
+        CellImpl.setSpreadSheet(this);
+        sheetBeforeChange=deepCopy();
         CellImpl cell = new CellImpl(row,col,newOriginalVal,this.sheetVersionNumber);
         activeCells.put(cell.getId(), cell);
-    }
-
-    public void addNewVersion(STLSheet newSheet) {
-        SpreadSheetImpl newSpreadSheet = new SpreadSheetImpl(newSheet);
-        this.sheetVersionNumber++;
-        this.sheetMap.put(this.sheetVersionNumber, newSpreadSheet);
     }
 
 
@@ -104,7 +109,7 @@ public SpreadSheetImpl deepCopy() {
        checkCellId(cellId);
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-        int row = Integer.parseInt(cellId.substring(1)) - 1; //1 => after the letter.
+        int row = Integer.parseInt(cellId.substring(1));
         if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
         }
@@ -127,6 +132,7 @@ public SpreadSheetImpl deepCopy() {
         if(cells == null || cells.isEmpty()) {
             return;
         }
+        CellImpl.setSpreadSheet(this);
         for (STLCell cell : cells) {
             CellImpl cellImpl = new CellImpl(cell);
             this.activeCells.put(cellImpl.getId(), cellImpl);
@@ -179,6 +185,5 @@ public SpreadSheetImpl deepCopy() {
     public SpreadSheetImpl getSheetBeforeChange() {
         return sheetBeforeChange;
     }
-
 }
 

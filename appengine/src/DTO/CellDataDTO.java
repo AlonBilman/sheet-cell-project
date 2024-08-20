@@ -2,8 +2,6 @@ package DTO;
 
 import sheet.api.EffectiveValue;
 import sheet.impl.CellImpl;
-import sheet.impl.SpreadSheetImpl;
-
 import java.util.Set;
 
 public class CellDataDTO {
@@ -15,7 +13,6 @@ public class CellDataDTO {
     private final Set<String> affectsOn;
     private final String originalValue;
     private final EffectiveValue effectiveValue;
-    private static SpreadSheetImpl lastUpdatedSpreadSheet;
 
     public CellDataDTO(CellImpl cell) {
         this.row = cell.getRow();
@@ -27,7 +24,6 @@ public class CellDataDTO {
         this.originalValue = cell.getOriginalValue();
         this.effectiveValue = cell.getEffectiveValue();
     }
-
     public String getId() {
         return id;
     }
@@ -45,8 +41,5 @@ public class CellDataDTO {
     }
     public EffectiveValue getEffectiveValue() {
         return effectiveValue;
-    }
-    public SpreadSheetImpl getLastUpdatedSpreadSheet() {
-        return lastUpdatedSpreadSheet;
     }
 }

@@ -1,4 +1,5 @@
-package userInput;
+package Main;
+
 import userInput.CheckUserInput;
 
 public class Main {

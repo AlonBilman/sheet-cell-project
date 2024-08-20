@@ -26,16 +26,14 @@ public class sheetDTO {
         this.sheetVersionNumber = sheet.getSheetVersionNumber();
 
     }
-
     private Map<String, CellDataDTO> convertCells(SpreadSheetImpl sheet) {
         Map<String, CellDataDTO> convertedCells = new HashMap<>();
         for (Map.Entry<String, CellImpl> entry : sheet.getSTLCells().entrySet()) {
-            CellDataDTO cellDataDTO = new CellDataDTO(sheet.getSTLCells().get(entry.getKey()));
-            convertedCells.put(entry.getKey(), cellDataDTO);
+            // Avoid recursion by checking if the cell's parent sheet is the current sheet
+            convertedCells.put(entry.getKey(), new CellDataDTO(entry.getValue()));
         }
         return convertedCells;
     }
-
 
     public int getRowSize() {
         return rowSize;
