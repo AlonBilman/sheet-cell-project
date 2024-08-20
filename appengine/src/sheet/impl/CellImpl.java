@@ -3,7 +3,6 @@ import FileCheck.STLCell;
 import expression.api.Expression;
 import expression.api.ObjType;
 import expression.impl.Mystring;
-import expression.impl.function.*;
 import expression.impl.Number;
 import expression.impl.function.CellReferenceFunc;
 import expression.impl.function.ConcatFunction;
@@ -233,18 +232,6 @@ public class CellImpl implements Serializable {
 
     public String getCol() {
         return col;
-    }
-
-    // Update the CellImpl class to include this method
-    public void setOriginalValue(String originalValue, SpreadSheetImpl currSheet) {
-        this.originalValue = originalValue;
-        calculateEffectiveValue(currSheet);
-        //maham
-    }
-
-
-    public EffectiveValue getEffectiveValue() {
-        return effectiveValue;
     }
 
 }

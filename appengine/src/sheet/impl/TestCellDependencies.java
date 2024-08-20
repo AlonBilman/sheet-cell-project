@@ -30,7 +30,7 @@ public  class TestCellDependencies {
             printEffectiveValue(sheet.getCell("C3"), "C3");
         }
 
-       // SpreadSheetImpl sheet3 = sheet.deepCopy();
+
        // sheet = sheet3;
         System.out.println();
         System.out.println();
