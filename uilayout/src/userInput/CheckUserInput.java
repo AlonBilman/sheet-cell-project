@@ -4,6 +4,7 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.sheetDTO;
 import FileCheck.STLSheet;
+import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 import engineImpl.EngineImpl;
 import java.io.File;
@@ -57,7 +58,7 @@ public class CheckUserInput {
     }
 
     public void UserStartMenuInput() {
-        EngineImpl engine =new EngineImpl(null);
+        EngineImpl engine = new EngineImpl();
         Scanner scanner = new Scanner(System.in);
         File newFile = null, oldFile = null;
         String input;
@@ -74,8 +75,9 @@ public class CheckUserInput {
             input = scanner.nextLine();
             if (input.isEmpty()) {
                 System.out.println("Input cannot be empty, please enter a valid option.");
-
+                continue;  // Prompt the user again
             }
+
 
             userInput = input.charAt(0);
             while (userInput != FILE_INPUT && (spreadSheet == null)) {
@@ -88,6 +90,7 @@ public class CheckUserInput {
                     System.exit(0);
                 }
             }
+
             switch (userInput) {
                 case FILE_INPUT:
                     do {
@@ -115,13 +118,11 @@ public class CheckUserInput {
 
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     spreadSheet = new SpreadSheetImpl(stlSheet);
-                    engine.setSheet(spreadSheet);
-		            integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display());
-		    
+                    integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display(spreadSheet));
                     break;
 
                 case LOAD_CURRENT_SHEET:
-                    sheet = engine.Display();
+                    sheet = engine.Display(spreadSheet);
                     printSheet(sheet);
                     break;
 
@@ -129,11 +130,10 @@ public class CheckUserInput {
                     System.out.println("Enter specific cell id:");
                     String cellId = scanner.nextLine();
                     try {
-                        cellData = engine.showCell(cellId);
+                        cellData = engine.showCell(spreadSheet.getCell(cellId));
                         printCell(cellData);
-                    }
-                    catch(Exception noSuchCell){
-                        System.out.println(noSuchCell.getMessage());
+                    } catch (Exception noSuchCell) {
+                        System.out.println("Specific cell id not found. Please try again.");
                     }
                     break;
 
@@ -143,7 +143,7 @@ public class CheckUserInput {
                     System.out.println("Enter new cell value:");
                     String newValue = scanner.nextLine();
                     try {
-                        sheet = engine.updateCell(cellToUpdate, newValue);
+                        sheet = engine.updateCell(spreadSheet, cellToUpdate, newValue);
                         System.out.println("Cell updated.");
                         integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     } catch (Exception e) {
@@ -153,28 +153,27 @@ public class CheckUserInput {
                     }
                     break;
 
-//                case VERSIONS_PRINT:
-//                    System.out.println("The versions print is:");
-//                    int versionNum;
-//                    sheetDTO versionsSheet;
-//                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
-//                        versionsSheet = engine.showVersions(spreadSheet.getSheetMap().get(i));
-//                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
-//                    }
-//                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
-//                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
-//                    }
-//                    System.out.println("Please pick a version to peek at");
-//                    scanner = new Scanner(System.in);
-//                    versionNum = scanner.nextInt();
-//                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
-//                        System.out.println("Invalid version. Please try again.");
-//                        versionNum = scanner.nextInt();
-//                    }
-//                    printSheet(integersheetDTOMap.get(versionNum));
-//
-//
-//                    break;
+                case VERSIONS_PRINT:
+                    System.out.println("The versions print is:");
+                    int versionNum;
+                    sheetDTO versionsSheet;
+                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
+                        versionsSheet = engine.showVersions(spreadSheet.getSheetMap().get(i));
+                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
+                    }
+                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
+                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
+                    }
+                    System.out.println("Please pick a version to peek at");
+                    scanner = new Scanner(System.in);
+                    versionNum = scanner.nextInt();
+                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
+                        System.out.println("Invalid version. Please try again.");
+                        versionNum = scanner.nextInt();
+                    }
+                    printSheet(integersheetDTOMap.get(versionNum));
+                    break;
+
 
                 case EXIT_SYSTEM:
                     System.out.println("Exiting system...");
@@ -187,39 +186,51 @@ public class CheckUserInput {
         } while (userInput != EXIT_SYSTEM);
 
         System.exit(engine.exitSystem().getExitStatus());
-
     }
 
-    public void printSheet(sheetDTO sheet){
+    public void printSheet(sheetDTO sheet) {
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
-        String spaceAfterString;
-        String spaceString = "  ".repeat(sheet.getColWidth());
-        String newLineString = "\n".repeat(sheet.getRowHeight()+1);
+        String spaceString = " ".repeat(sheet.getColWidth());
+        String newLineString = "\n".repeat(sheet.getRowHeight() + 1);
         char letter;
+
         System.out.println("Sheet name is: " + sheetName);
         System.out.println("Sheet version is: " + sheet.getSheetVersionNumber() + "\n");
+
+        // Print column headers
         System.out.print(" ");
         for (int col = 0; col < sheet.getColSize(); col++) {
             letter = (char) ('A' + col % 26);
-            if(col == 0)
-                System.out.print(columnDivider);
-            System.out.print(spaceString + letter + spaceString+ columnDivider);
+            System.out.print(spaceString + letter + spaceString + columnDivider);
         }
         // End divider
         System.out.print(newLineString);
 
-// Print the grid rows with numbers and dividers
+        // Print the grid rows with numbers and dividers
         for (int row = 1; row <= sheet.getRowSize(); row++) {
-            System.out.print((row)); // Row number
+            System.out.print(row); // Row number
             for (int col = 0; col < sheet.getColSize(); col++) {
                 letter = (char) ('A' + col % 26);
-                if(col == 0)
+                String cellKey = letter + String.valueOf(row);
+                String cellValue;
+
+                if (col == 0) {
                     System.out.print(columnDivider);
-                try{
-                    spaceAfterString = " ".repeat(sheet.getColWidth() * 2 - sheet.getActiveCells().get(letter+String.valueOf(row)).getOriginalValue().length());
-                    System.out.print(spaceString + sheet.getActiveCells().get(letter+String.valueOf(row)).getEffectiveValue().getValue() + spaceAfterString + columnDivider);
-                }catch (Exception noSuchCell){
+                }
+
+                // Fetch and print the cell value, or an empty space if the cell does not exist
+                CellDataDTO cell = sheet.getActiveCells().get(cellKey);
+                if (cell != null) {
+                    // Ensure cell value is treated as a string
+                    Object valueObject = cell.getEffectiveValue().getValue();
+                    cellValue = (valueObject != null) ? valueObject.toString() : "";
+
+                    int paddingSize = sheet.getColWidth() * 2 + 1 - cellValue.length();
+                    int leftPadding = paddingSize / 2;
+                    int rightPadding = paddingSize - leftPadding;
+                    System.out.print(" ".repeat(leftPadding) + cellValue + " ".repeat(rightPadding) + columnDivider);
+                } else {
                     System.out.print(spaceString + " " + spaceString + columnDivider);
                 }
 
