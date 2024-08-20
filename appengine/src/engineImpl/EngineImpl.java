@@ -4,18 +4,17 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.exitDTO;
 import DTO.sheetDTO;
-import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.File;
 
 public class EngineImpl implements Engine {
 
+    private SpreadSheetImpl spreadSheet;
+
     public SpreadSheetImpl getSpreadSheet() {
         return spreadSheet;
     }
-
-    private SpreadSheetImpl spreadSheet;
 
    public EngineImpl(SpreadSheetImpl spreadSheet) {
         this.spreadSheet = spreadSheet;
@@ -35,18 +34,16 @@ public class EngineImpl implements Engine {
        return new CellDataDTO(this.spreadSheet.getCell(id));
         }
 
-    //------------------------------------------------------------------------------------------------------//
     @Override
     public sheetDTO updateCell(String cellId, String value) {
         try {
             this.spreadSheet.changeCell(cellId, value);
         } catch (Exception e) {
-            this.spreadSheet = this.spreadSheet.getSheetBeforeChange();
+            this.spreadSheet = this.spreadSheet.getSheetBeforeChange(); //1 snapshot back
             throw e;
         }
         return new sheetDTO(this.spreadSheet);
     }
-
 
     @Override
     public sheetDTO showVersions() {
