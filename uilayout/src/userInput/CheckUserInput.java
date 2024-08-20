@@ -133,7 +133,7 @@ public class CheckUserInput {
                         printCell(cellData);
                     }
                     catch(Exception noSuchCell){
-                        System.out.println("Specific cell id not found. Please try again.");
+                        System.out.println(noSuchCell.getMessage());
                     }
                     break;
 
@@ -151,9 +151,6 @@ public class CheckUserInput {
                         sheet = new sheetDTO(spreadSheet);// This is redundant but safe
                         integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     }
-
-
-
                     break;
 
 //                case VERSIONS_PRINT:

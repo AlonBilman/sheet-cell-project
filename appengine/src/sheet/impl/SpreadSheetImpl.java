@@ -74,9 +74,17 @@ public SpreadSheetImpl deepCopy() {
     public void changeCell(String id, String newOriginalVal) {
             sheetBeforeChange=deepCopy();
             CellImpl.setSpreadSheet(this);
+            checkCellId(id);
             CellImpl cell = activeCells.get(id);
-            cell.setOriginalValue(newOriginalVal);
-            updateVersionNumber();
+            if(cell==null) //meaning there is no cell like this activated
+            {
+                checkCellId(id);
+                addCell(id.charAt(1)- '0', id.substring(0,1), newOriginalVal);
+            }
+            else {
+                cell.setOriginalValue(newOriginalVal);
+                updateVersionNumber();
+            }
 
     }
 
@@ -101,7 +109,7 @@ public SpreadSheetImpl deepCopy() {
        checkCellId(cellId);
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-        int row = Integer.parseInt(cellId.substring(1)) - 1; //1 => after the letter.
+        int row = Integer.parseInt(cellId.substring(1));
         if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
         }
