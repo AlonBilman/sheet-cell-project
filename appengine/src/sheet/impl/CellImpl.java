@@ -6,10 +6,6 @@ import expression.impl.Mystring;
 import expression.impl.function.*;
 import expression.impl.Number;
 import sheet.api.EffectiveValue;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -178,6 +174,7 @@ public class CellImpl implements Serializable {
             CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
             affectedCell.calculateEffectiveValue();
         }
+        updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());;
     }
 
     private void detectCircularDependency(Set<String> visitedCells) {
@@ -229,18 +226,6 @@ public class CellImpl implements Serializable {
 
     public String getCol() {
         return col;
-    }
-
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
-        oos.writeObject(new HashSet<>(dependsOn)); // Deep copy dependsOn
-        oos.writeObject(new HashSet<>(affectsOn)); // Deep copy affectsOn
-    }
-
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();
-        this.dependsOn = (Set<String>) ois.readObject();
-        this.affectsOn = (Set<String>) ois.readObject();
     }
 
 }

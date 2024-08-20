@@ -20,20 +20,26 @@ public  class TestCellDependencies {
         printEffectiveValue(cell, "A1");
         printEffectiveValue(sheet.getCell("B2"), "B2");
         System.out.println();
-       //SpreadSheetImpl sheet2 = sheet.deepCopy();
 
-//        try {
-//            sheet.changeCell("B2", "{PLUS,a aa aa ,{REF,C3}}");
-//        } catch (Exception e) {
-//            sheet = sheet2;
-//        }
+        try {
+            sheet.changeCell("B2", "{PLUS,a aa aa ,{REF,C3}}");
+     } catch (Exception e) {
+            System.out.println("error on B2 does it ref to C3? ");
+           sheet = sheet.getSheetBeforeChange();
+            printEffectiveValue(sheet.getCell("B2"), "B2");
+            printEffectiveValue(sheet.getCell("C3"), "C3");
+        }
 
-        SpreadSheetImpl sheet3 = sheet.deepCopy();
-        sheet = sheet3;
+       // SpreadSheetImpl sheet3 = sheet.deepCopy();
+       // sheet = sheet3;
+        System.out.println();
+        System.out.println();
         sheet.changeCell("A1", "{PLUS,20,20}"); //40
 
         printEffectiveValue(sheet.getCell("A1"), "A1");
         printEffectiveValue(sheet.getCell("B2"), "B2");
+        printEffectiveValue(sheet.getCell("E5"), "E5");
+        printEffectiveValue(sheet.getCell("C3"), "C3");
 
     }
 
@@ -48,7 +54,6 @@ public  class TestCellDependencies {
             Set<String> affects = cell.getAffectsOn();
             System.out.print("Affects on: ");
             System.out.println(affects);
-            System.out.print("v: "+cell.getLastChangeAt());
         } catch (Exception e) {
             System.out.println("Error getting " + cellName + "'s effective value: " + e.getMessage());
         }

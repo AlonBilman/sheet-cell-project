@@ -2,7 +2,6 @@ package sheet.impl;
 
 import FileCheck.*;
 import sheet.api.EffectiveValue;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
@@ -32,24 +31,6 @@ public class SpreadSheetImpl implements Serializable {
         sheetBeforeChange=deepCopy();
     }
 
-//    public SpreadSheetImpl deepCopy() {
-//        try {
-//            // Serialize the object to a byte array
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-//            objectOutputStream.writeObject(this);
-//            objectOutputStream.flush();
-//            objectOutputStream.close();
-//
-//            // Deserialize the byte array to a new object
-//            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-//            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-//            return (SpreadSheetImpl) objectInputStream.readObject();
-//
-//        } catch (IOException | ClassNotFoundException e) {
-//            throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
-//        }
-//    }
 public SpreadSheetImpl deepCopy() {
     try {
         // Serialize the object to a byte array
@@ -72,24 +53,6 @@ public SpreadSheetImpl deepCopy() {
     }
 }
 
-//    public SpreadSheetImpl deepCopy() {
-//        try {
-//            // Serialize the current object to a byte array
-//            ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
-//            ObjectOutputStream objectOutStream = new ObjectOutputStream(byteOutStream);
-//            objectOutStream.writeObject(this);
-//            objectOutStream.flush();
-//
-//            // Deserialize the byte array to create a deep copy
-//            ByteArrayInputStream byteInStream = new ByteArrayInputStream(byteOutStream.toByteArray());
-//            ObjectInputStream objectInStream = new ObjectInputStream(byteInStream);
-//            return (SpreadSheetImpl) objectInStream.readObject();
-//        } catch (Exception e) {
-//            throw new RuntimeException("Deep copy failed.", e);
-//        }
-//    }
-
-
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
         this.activeCells = new HashMap<>();
@@ -109,6 +72,7 @@ public SpreadSheetImpl deepCopy() {
     }
 
     public void changeCell(String id, String newOriginalVal) {
+            CellImpl.setSpreadSheet(this);
             CellImpl cell = activeCells.get(id);
             cell.setOriginalValue(newOriginalVal);
             updateVersionNumber();
@@ -144,6 +108,7 @@ public SpreadSheetImpl deepCopy() {
         if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
         }
+        CellImpl.setSpreadSheet(this);
         CellImpl cell = activeCells.get(cellId);
         if (cell == null) {
             throw new RuntimeException("No such cell, it contains nothing, before referring to it you should update its content.");
@@ -183,8 +148,6 @@ public SpreadSheetImpl deepCopy() {
         return rowHeight;
     }
 
-
-
     public void setSheetMap(Map<Integer, SpreadSheetImpl> sheetMap) {
         this.sheetMap = sheetMap;
     }
@@ -208,7 +171,6 @@ public SpreadSheetImpl deepCopy() {
     public SpreadSheetImpl getSheetBeforeChange() {
         return sheetBeforeChange;
     }
-
 
 }
 
