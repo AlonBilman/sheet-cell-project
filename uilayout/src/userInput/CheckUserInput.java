@@ -4,7 +4,6 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.sheetDTO;
 import FileCheck.STLSheet;
-import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 import engineImpl.EngineImpl;
 import java.io.File;
@@ -117,7 +116,7 @@ public class CheckUserInput {
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     spreadSheet = new SpreadSheetImpl(stlSheet);
                     engine.setSheet(spreadSheet);
-		integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display(spreadSheet));
+		            integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display());
 		    
                     break;
 
@@ -152,37 +151,33 @@ public class CheckUserInput {
                         sheet = new sheetDTO(spreadSheet);// This is redundant but safe
                         integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     }
-                    catch(Exception e){
-                        System.out.println(e);
-                        sheet = new sheetDTO(spreadSheet);
-                        break;
-                    }
+
 
 
                     break;
 
-                case VERSIONS_PRINT:
-                    System.out.println("The versions print is:");
-                    int versionNum;
-                    sheetDTO versionsSheet;
-                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
-                        versionsSheet = engine.showVersions(spreadSheet.getSheetMap().get(i));
-                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
-                    }
-                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
-                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
-                    }
-                    System.out.println("Please pick a version to peek at");
-                    scanner = new Scanner(System.in);
-                    versionNum = scanner.nextInt();
-                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
-                        System.out.println("Invalid version. Please try again.");
-                        versionNum = scanner.nextInt();
-                    }
-                    printSheet(integersheetDTOMap.get(versionNum));
-
-
-                    break;
+//                case VERSIONS_PRINT:
+//                    System.out.println("The versions print is:");
+//                    int versionNum;
+//                    sheetDTO versionsSheet;
+//                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
+//                        versionsSheet = engine.showVersions(spreadSheet.getSheetMap().get(i));
+//                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
+//                    }
+//                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
+//                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
+//                    }
+//                    System.out.println("Please pick a version to peek at");
+//                    scanner = new Scanner(System.in);
+//                    versionNum = scanner.nextInt();
+//                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
+//                        System.out.println("Invalid version. Please try again.");
+//                        versionNum = scanner.nextInt();
+//                    }
+//                    printSheet(integersheetDTOMap.get(versionNum));
+//
+//
+//                    break;
 
                 case EXIT_SYSTEM:
                     System.out.println("Exiting system...");

@@ -27,8 +27,8 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public sheetDTO Display(SpreadSheetImpl sheet) {
-            return new sheetDTO(sheet);
+    public sheetDTO Display() {
+            return new sheetDTO(this.spreadSheet);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class EngineImpl implements Engine {
     }
 
     public boolean isNotValid() {
-        return loadedFile == null;
+        return (loadedFile == null);
     }
     @Override
     public exitDTO exitSystem() {

@@ -1,6 +1,8 @@
 package DTO;
+
 import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,14 @@ public class sheetDTO {
         this.sheetVersionNumber = sheet.getSheetVersionNumber();
 
     }
-
+    private Map<String, CellDataDTO> convertCells(SpreadSheetImpl sheet) {
+        Map<String, CellDataDTO> convertedCells = new HashMap<>();
+        for (Map.Entry<String, CellImpl> entry : sheet.getSTLCells().entrySet()) {
+            // Avoid recursion by checking if the cell's parent sheet is the current sheet
+            convertedCells.put(entry.getKey(), new CellDataDTO(entry.getValue()));
+        }
+        return convertedCells;
+    }
 
     public int getRowSize() {
         return rowSize;
