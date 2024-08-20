@@ -1,4 +1,4 @@
-package engineImpl;
+package engine.api;
 
 import DTO.CellDataDTO;
 import DTO.LoadDTO;
@@ -9,7 +9,6 @@ import DTO.sheetDTO;
 import java.io.File;
 
 public interface Engine {
-
 
     LoadDTO Load(File newFile);
 

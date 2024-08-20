@@ -1,10 +1,10 @@
-package engineImpl;
+package engine.impl;
 
 import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.exitDTO;
 import DTO.sheetDTO;
-import sheet.impl.CellImpl;
+import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.File;
@@ -55,6 +55,10 @@ public class EngineImpl implements Engine {
     @Override
     public LoadDTO Load(File newFile) {
         return new LoadDTO(newFile);
+    }
+
+    public int getVersionNumber(){
+        return this.spreadSheet.getSheetVersionNumber();
     }
 
     public boolean isNotValid() {

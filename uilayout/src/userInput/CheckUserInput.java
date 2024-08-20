@@ -4,9 +4,8 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.sheetDTO;
 import FileCheck.STLSheet;
-import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
-import engineImpl.EngineImpl;
+import engine.impl.EngineImpl;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +57,7 @@ public class CheckUserInput {
     }
 
     public void UserStartMenuInput() {
-        EngineImpl engine = new EngineImpl();
+        EngineImpl engine = new EngineImpl(null);
         Scanner scanner = new Scanner(System.in);
         File newFile = null, oldFile = null;
         String input;
@@ -118,11 +117,12 @@ public class CheckUserInput {
 
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     spreadSheet = new SpreadSheetImpl(stlSheet);
-                    integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), engine.Display(spreadSheet));
+                    engine.setSheet(spreadSheet);
+                    integersheetDTOMap.put(engine.getVersionNumber(), engine.Display());
                     break;
 
                 case LOAD_CURRENT_SHEET:
-                    sheet = engine.Display(spreadSheet);
+                    sheet = engine.Display();
                     printSheet(sheet);
                     break;
 
@@ -130,7 +130,7 @@ public class CheckUserInput {
                     System.out.println("Enter specific cell id:");
                     String cellId = scanner.nextLine();
                     try {
-                        cellData = engine.showCell(spreadSheet.getCell(cellId));
+                        cellData = engine.showCell(cellId);
                         printCell(cellData);
                     } catch (Exception noSuchCell) {
                         System.out.println("Specific cell id not found. Please try again.");
@@ -143,7 +143,7 @@ public class CheckUserInput {
                     System.out.println("Enter new cell value:");
                     String newValue = scanner.nextLine();
                     try {
-                        sheet = engine.updateCell(spreadSheet, cellToUpdate, newValue);
+                        sheet = engine.updateCell(cellToUpdate, newValue);
                         System.out.println("Cell updated.");
                         integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     } catch (Exception e) {
@@ -158,7 +158,7 @@ public class CheckUserInput {
                     int versionNum;
                     sheetDTO versionsSheet;
                     for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
-                        versionsSheet = engine.showVersions(spreadSheet.getSheetMap().get(i));
+                        versionsSheet = engine.showVersions();
                         integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
                     }
                     for (int i = 1; i <= integersheetDTOMap.size(); i++) {

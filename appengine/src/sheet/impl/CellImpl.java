@@ -24,11 +24,11 @@ public class CellImpl implements Serializable {
     private String originalValue;
     private EffectiveValue effectiveValue;
 
+    private static SpreadSheetImpl currSpreadSheet;
+
     public static SpreadSheetImpl getCurrSpreadSheet() {
         return currSpreadSheet;
     }
-
-    private static SpreadSheetImpl currSpreadSheet;
 
     public CellImpl(int row, String col,String newOriginalVal, int versionNumber) {
         this.row = row;
@@ -63,7 +63,6 @@ public class CellImpl implements Serializable {
         affectsOn = new HashSet<>();
         setOriginalValue(cell.getSTLOriginalValue());
     }
-    //maybe I get a string? and then edit the cell? {Bla Bla}?
 
     public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
         currSpreadSheet = spreadSheet;
@@ -238,5 +237,4 @@ public class CellImpl implements Serializable {
     public String getCol() {
         return col;
     }
-
 }
