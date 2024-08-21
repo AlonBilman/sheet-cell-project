@@ -15,7 +15,6 @@ public class SpreadSheetImpl implements Serializable {
     private Map<String, CellImpl> activeCells;
     private final String sheetName;
     private int sheetVersionNumber;
-    private Map<Integer, SpreadSheetImpl> sheetMap;
     private SpreadSheetImpl sheetBeforeChange=null;
 
     public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
@@ -26,21 +25,20 @@ public class SpreadSheetImpl implements Serializable {
         this.rowHeight = rowHeight;
         this.sheetVersionNumber = 1;
         this.activeCells = new HashMap<>();
-        this.sheetMap = new HashMap<>();
         CellImpl.setSpreadSheet(this);
         sheetBeforeChange=deepCopy();
     }
 
 public SpreadSheetImpl deepCopy() {
     try {
-        // Serialize the object to a byte array
+        //serialize
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(this);
         objectOutputStream.flush();
         objectOutputStream.close();
 
-        // Deserialize the byte array to a new object
+        //deserialize
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
         return (SpreadSheetImpl) objectInputStream.readObject();
@@ -62,8 +60,6 @@ public SpreadSheetImpl deepCopy() {
         this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
         this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
         this.sheetName = stlSheet.getName();
-        this.sheetMap = new HashMap<>();
-        this.sheetMap.put(this.sheetVersionNumber, this); // Need to be fixed
         STLCells stlCells = stlSheet.getSTLCells();
         if(stlCells != null) {
             addCells(stlCells.getSTLCell());
@@ -143,9 +139,6 @@ public SpreadSheetImpl deepCopy() {
         return activeCells;
     }
 
-    public Map<Integer, SpreadSheetImpl> getSheets() {
-        return sheetMap;
-    }
     public int getRowSize() {
         return rowSize;
     }
@@ -160,14 +153,6 @@ public SpreadSheetImpl deepCopy() {
 
     public int getRowHeight() {
         return rowHeight;
-    }
-
-    public void setSheetMap(Map<Integer, SpreadSheetImpl> sheetMap) {
-        this.sheetMap = sheetMap;
-    }
-
-    public Map<Integer, SpreadSheetImpl> getSheetMap() {
-        return sheetMap;
     }
 
     public String getSheetName() {

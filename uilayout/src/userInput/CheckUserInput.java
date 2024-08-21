@@ -4,27 +4,36 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.sheetDTO;
 import FileCheck.STLSheet;
-import sheet.impl.SpreadSheetImpl;
 import engine.impl.EngineImpl;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 import static FileCheck.CheckForXMLFile.getXMLFile;
 import static FileCheck.CheckForXMLFile.loadXMLFile;
 
 public class CheckUserInput {
-    private static final char FILE_INPUT = '1';
-    private static final char LOAD_CURRENT_SHEET = '2';
-    private static final char LOAD_SPECIFIC_CELL = '3';
-    private static final char UPDATE_SPECIFIC_CELL = '4';
-    private static final char VERSIONS_PRINT = '5';
-    private static final char EXIT_SYSTEM = '6';
+    private static final String FILE_INPUT = "1";
+    private static final String LOAD_CURRENT_SHEET = "2";
+    private static final String LOAD_SPECIFIC_CELL = "3";
+    private static final String UPDATE_SPECIFIC_CELL = "4";
+    private static final String VERSIONS_PRINT = "5";
+    private static final String EXIT_SYSTEM = "6";
 
+    private EngineImpl engine;
+    private Scanner scanner;
+    private File newFile, oldFile;
+    private String userInput;
+    private STLSheet stlSheet;
+    private sheetDTO sheetDto;
+    private LoadDTO loadResult;
+    private CellDataDTO cellData;
 
+    public CheckUserInput() {
+        engine = new EngineImpl();
+        scanner = new Scanner(System.in);
+    }
 
-     public static void printMenu() {
+    public static void printMenu() {
         // ANSI escape codes for bold and reset
         final String BOLD = "\033[1m";
         final String ITALIC = "\033[3m";
@@ -53,78 +62,62 @@ public class CheckUserInput {
 
         // Print the menu footer
         System.out.println("+------------------------------------------+");
-
     }
 
     public void UserStartMenuInput() {
-        EngineImpl engine = new EngineImpl(null);
-        Scanner scanner = new Scanner(System.in);
-        File newFile = null, oldFile = null;
-        String input;
-        STLSheet stlSheet;
-        Map<Integer,sheetDTO> integersheetDTOMap = new HashMap<>();
-        sheetDTO sheet = null;
-        char userInput = 0;
-        LoadDTO loadResult = null;
-        SpreadSheetImpl spreadSheet = null;
-        CellDataDTO cellData;
-
         do {
             printMenu();
-            input = scanner.nextLine();
-            if (input.isEmpty()) {
-                System.out.println("Input cannot be empty, please enter a valid option.");
-                input= scanner.nextLine();  // Prompt the user again
-            }
-
-
-            userInput = input.charAt(0);
-            if(userInput != FILE_INPUT && (spreadSheet == null)) {
-                if (userInput != EXIT_SYSTEM) {
-                    System.out.println("Please enter an XML file before proceeding.");
-                    UserStartMenuInput();
-                } else {
+            userInput = scanner.nextLine();
+            while (!userInput.equals(FILE_INPUT) && (!engine.containSheet())) {
+                if (userInput.equals(EXIT_SYSTEM)) {
                     System.out.println("Exiting system...");
                     System.exit(0);
                 }
+                System.out.println("Please enter an XML file before proceeding.");
+                printMenu();
+                userInput = scanner.nextLine();
             }
 
             switch (userInput) {
                 case FILE_INPUT:
-
-                        if (spreadSheet != null) {
-                            System.out.println("A file is already loaded. Loading a new file will override it.");
-                        }
-
-                        System.out.println("Please load a new XML file...");
-                        newFile = checkFileUserInput();
-                        loadResult = engine.Load(newFile);
-
-                        if (loadResult.isNotValid() && spreadSheet == null) {
-                            System.out.println("Invalid file. Ensure it exists and is an XML file.");
-                        }
-
-
-                    if (!loadResult.isNotValid()) {
-                        oldFile = newFile;
+                    if (engine.containSheet()) {
+                        System.out.println("A file is already loaded. Loading a new file will override it.");
                     }
-
-                    if (loadResult.isNotValid() && oldFile != null) {
-                        System.out.println("Invalid file. The previous file is retained.");
-                        loadResult = engine.Load(oldFile);
-                    }
-                    if(oldFile == null) {
+                    System.out.println("Please load a new XML file - Enter a file path Or press Enter to go back to the main menu:");
+                    userInput = scanner.nextLine();
+                    if(userInput.isEmpty()) {
                         break;
                     }
+                    newFile = checkFileUserInput();
+                    loadResult = engine.Load(newFile);
+                    if(loadResult.isNotValid()) {
+                        if(!engine.containSheet()) {
+                            System.out.println("Invalid file. Ensure it exists and it is an XML file.");
+                            break;
+                        }
+                        else if(oldFile != null){
+                            System.out.println("Invalid file. The previous file is retained.");
+                            loadResult = engine.Load(oldFile);
+                            break;
+                        }
+                    }
+                    else {
+                        oldFile = newFile;
+                    }
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
-                    spreadSheet = new SpreadSheetImpl(stlSheet);
-                    engine.setSheet(spreadSheet);
-                    integersheetDTOMap.put(engine.getVersionNumber(), engine.Display());
-                    break;
+                    try{
+                        engine.initSheet(stlSheet);
+                        break;
+                    }
+                   catch(Exception e){
+                       System.out.println("Problem with Loading XML file.");
+                        System.out.println(e.getMessage());
+                        break;
+                   }
 
                 case LOAD_CURRENT_SHEET:
-                    sheet = engine.Display();
-                    printSheet(sheet);
+                    sheetDto = engine.Display();
+                    printSheet(sheetDto);
                     break;
 
                 case LOAD_SPECIFIC_CELL:
@@ -134,7 +127,7 @@ public class CheckUserInput {
                         cellData = engine.showCell(cellId);
                         printCell(cellData);
                     } catch (Exception noSuchCell) {
-                        System.out.println("Specific cell id not found. Please try again.");
+                        System.out.println(noSuchCell.getMessage());
                     }
                     break;
 
@@ -144,51 +137,46 @@ public class CheckUserInput {
                     System.out.println("Enter new cell value:");
                     String newValue = scanner.nextLine();
                     try {
-                        sheet = engine.updateCell(cellToUpdate, newValue);
+                        sheetDto = engine.updateCell(cellToUpdate, newValue);
                         System.out.println("Cell updated.");
-                        integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
-                        sheet = new sheetDTO(spreadSheet);// This is redundant but safe
-                        integersheetDTOMap.put(sheet.getSheetVersionNumber(), sheet);
+                        sheetDto = engine.Display();
                     }
                     break;
 
                 case VERSIONS_PRINT:
-                    System.out.println("The versions print is:");
-                    int versionNum;
-                    sheetDTO versionsSheet;
-                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
-                        versionsSheet = engine.showVersions();
-                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
-                    }
-                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
-                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
-                    }
-                    System.out.println("Please pick a version to peek at");
-                    scanner = new Scanner(System.in);
-                    versionNum = scanner.nextInt();
-                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
-                        System.out.println("Invalid version. Please try again.");
-                        versionNum = scanner.nextInt();
-                    }
-                    printSheet(integersheetDTOMap.get(versionNum));
+//                    System.out.println("The versions print is:");
+//                    int versionNum;
+//                    sheetDTO versionsSheet;
+//                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
+//                        versionsSheet = engine.showVersions();
+//                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
+//                    }
+//                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
+//                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
+//                    }
+//                    System.out.println("Please pick a version to peek at");
+//                    scanner = new Scanner(System.in);
+//                    versionNum = scanner.nextInt();
+//                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
+//                        System.out.println("Invalid version. Please try again.");
+//                        versionNum = scanner.nextInt();
+//                    }
+//                    printSheet(integersheetDTOMap.get(versionNum));
                     break;
-
 
                 case EXIT_SYSTEM:
                     System.out.println("Exiting system...");
                     break;
-
                 default:
                     System.out.println("Invalid option, please enter a valid option.");
                     break;
             }
-        } while (userInput != EXIT_SYSTEM);
+        } while (!userInput.equals(EXIT_SYSTEM));
 
         System.exit(engine.exitSystem().getExitStatus());
     }
-
     public void printSheet(sheetDTO sheet) {
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
@@ -241,7 +229,6 @@ public class CheckUserInput {
 
         }
     }
-
     public void printCell(CellDataDTO cell) {
         System.out.println("Cell id: " + cell.getId() + "\n");
         System.out.println("Cell original Value: " + cell.getOriginalValue() + "\n");
@@ -249,20 +236,11 @@ public class CheckUserInput {
         System.out.println("Cell last changed at version: " + cell.getLastChangeAt() + "\n");
         System.out.println("Cell depending on: " + cell.getDependsOn() + "\n");
         System.out.println("Cell affects cells: " + cell.getAffectsOn() + "\n");
-
     }
-
-    public static File checkFileUserInput() {
-        String filePath;
-        Scanner scanner = new Scanner(System.in);
+    public File checkFileUserInput() {
         File fileToCheck;
-
-
-        System.out.print("Enter the file path: ");
-        filePath = scanner.nextLine();
-        fileToCheck = getXMLFile(filePath);
-
-
+        fileToCheck = getXMLFile(userInput);
         return fileToCheck;
     }
 }
+

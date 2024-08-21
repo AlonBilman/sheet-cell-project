@@ -26,10 +26,6 @@ public class CellImpl implements Serializable {
 
     private static SpreadSheetImpl currSpreadSheet;
 
-    public static SpreadSheetImpl getCurrSpreadSheet() {
-        return currSpreadSheet;
-    }
-
     public CellImpl(int row, String col,String newOriginalVal, int versionNumber) {
         this.row = row;
         this.col = col;
@@ -204,7 +200,7 @@ public class CellImpl implements Serializable {
     }
 
     public void updateLastChangeAt(int currVersion) {
-        lastChangeAt = currVersion++;
+        lastChangeAt = ++currVersion;
     }
 
     public String getOriginalValue() {

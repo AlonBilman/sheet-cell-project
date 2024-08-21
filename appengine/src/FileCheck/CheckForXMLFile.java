@@ -11,13 +11,14 @@ public class CheckForXMLFile {
         File file = new File(fileName);
         return file.getName().toLowerCase().endsWith(".xml");
     }
+
     protected static boolean doesFileExist(File fileToCheck) {
         return fileToCheck.exists();
     }
+
     public static File getXMLFile(String filePath) {
         File file = new File(filePath);
         if (doesFileExist(file) && isXMLFile(filePath)) {
-            System.out.print("file loaded successfully \n");
             return file;
         }
         return null;
@@ -25,19 +26,17 @@ public class CheckForXMLFile {
 
     public static STLSheet loadXMLFile(File file) {
         return readXMLFile(file.getAbsolutePath());
-
     }
+
     public static STLSheet readXMLFile(String filePath) {
-      try {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance("FileCheck");
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            return (STLSheet) unmarshaller.unmarshal(new File(filePath));
+        } catch (JAXBException e) {
+            return null;
 
-        JAXBContext jaxbContext = JAXBContext.newInstance("FileCheck");
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        return   (STLSheet) unmarshaller.unmarshal(new File(filePath));
-    }
-      catch(JAXBException e) {
-          System.out.println("Error reading file " + filePath );
-          return null;
-      }
+        }
     }
 }
 

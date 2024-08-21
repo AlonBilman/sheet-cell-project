@@ -4,26 +4,24 @@ import DTO.CellDataDTO;
 import DTO.LoadDTO;
 import DTO.exitDTO;
 import DTO.sheetDTO;
+import FileCheck.STLSheet;
 import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
-
 import java.io.File;
 
 public class EngineImpl implements Engine {
-    private final File loadedFile = null;
 
     private SpreadSheetImpl spreadSheet;
 
-    public SpreadSheetImpl getSpreadSheet() {
-        return spreadSheet;
+   public EngineImpl() {
+        this.spreadSheet = null;
     }
 
-   public EngineImpl(SpreadSheetImpl spreadSheet) {
-        this.spreadSheet = spreadSheet;
-    }
-
-    public void setSheet(SpreadSheetImpl sheet){
-       this.spreadSheet = sheet;
+    public void initSheet(STLSheet stlSheet){
+       if (stlSheet == null) {
+          throw new NullPointerException("STLSheet is null");
+       }
+       this.spreadSheet = new SpreadSheetImpl(stlSheet);
     }
 
     @Override
@@ -57,13 +55,14 @@ public class EngineImpl implements Engine {
         return new LoadDTO(newFile);
     }
 
+    public boolean containSheet(){
+       return this.spreadSheet != null;
+    }
+
     public int getVersionNumber(){
         return this.spreadSheet.getSheetVersionNumber();
     }
 
-    public boolean isNotValid() {
-        return (loadedFile == null);
-    }
     @Override
     public exitDTO exitSystem() {
         return new DTO.exitDTO();
