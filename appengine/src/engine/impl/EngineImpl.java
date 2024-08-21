@@ -8,10 +8,13 @@ import FileCheck.STLSheet;
 import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EngineImpl implements Engine {
 
     private SpreadSheetImpl spreadSheet;
+    Map<Integer,sheetDTO> sheets = new HashMap<>();
 
    public EngineImpl() {
         this.spreadSheet = null;
@@ -22,6 +25,8 @@ public class EngineImpl implements Engine {
           throw new NullPointerException("STLSheet is null");
        }
        this.spreadSheet = new SpreadSheetImpl(stlSheet);
+       sheets.put(this.spreadSheet.getSheetVersionNumber(),new sheetDTO(this.spreadSheet));
+
     }
 
     @Override
@@ -38,6 +43,7 @@ public class EngineImpl implements Engine {
     public sheetDTO updateCell(String cellId, String value) {
         try {
             this.spreadSheet.changeCell(cellId, value);
+            sheets.put(this.spreadSheet.getSheetVersionNumber(),new sheetDTO(this.spreadSheet));
         } catch (Exception e) {
             this.spreadSheet = this.spreadSheet.getSheetBeforeChange(); //1 snapshot back
             throw e;
@@ -63,6 +69,13 @@ public class EngineImpl implements Engine {
         return this.spreadSheet.getSheetVersionNumber();
     }
 
+    public Map<Integer, sheetDTO> getSheets() {
+        return sheets;
+    }
+
+    public sheetDTO getSheet(int version){
+       return sheets.get(version);
+    }
     @Override
     public exitDTO exitSystem() {
         return new DTO.exitDTO();

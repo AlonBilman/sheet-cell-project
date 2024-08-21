@@ -76,6 +76,7 @@ public SpreadSheetImpl deepCopy() {
             {
                 checkCellId(id);
                 addCell(id.charAt(1)- '0', id.substring(0,1), newOriginalVal);
+                updateVersionNumber();
             }
             else {
                 cell.setOriginalValue(newOriginalVal);
@@ -164,7 +165,7 @@ public SpreadSheetImpl deepCopy() {
     }
 
     public void updateVersionNumber() {
-        this.sheetVersionNumber++;
+        ++this.sheetVersionNumber;
     }
 
     public SpreadSheetImpl getSheetBeforeChange() {

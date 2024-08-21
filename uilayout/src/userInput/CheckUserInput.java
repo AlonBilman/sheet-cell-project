@@ -146,24 +146,19 @@ public class CheckUserInput {
                     break;
 
                 case VERSIONS_PRINT:
-//                    System.out.println("The versions print is:");
-//                    int versionNum;
-//                    sheetDTO versionsSheet;
-//                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
-//                        versionsSheet = engine.showVersions();
-//                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
-//                    }
-//                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
-//                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
-//                    }
-//                    System.out.println("Please pick a version to peek at");
-//                    scanner = new Scanner(System.in);
-//                    versionNum = scanner.nextInt();
-//                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
-//                        System.out.println("Invalid version. Please try again.");
-//                        versionNum = scanner.nextInt();
-//                    }
-//                    printSheet(integersheetDTOMap.get(versionNum));
+                    System.out.println("The versions print is:");
+                    int versionNum;
+                    for (int i = 1; i <= engine.getSheets().size(); i++) {
+                        System.out.println("version " + i + ": " + " | " + "Active cells: " + engine.getSheet(i).getActiveCells().size());
+                    }
+                    System.out.println("Please pick a version to peek at");
+                    versionNum = scanner.nextInt();
+                    while (versionNum < 0 || versionNum > engine.getSheets().size()) {
+                        System.out.println("Invalid version. Please try again.");
+                        versionNum = scanner.nextInt();
+                    }
+                    printSheet(engine.getSheet(versionNum));
+                    scanner.nextLine();
                     break;
 
                 case EXIT_SYSTEM:
