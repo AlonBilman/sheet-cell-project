@@ -123,7 +123,7 @@ public class CheckUserInput {
 
                 case LOAD_SPECIFIC_CELL:
                     System.out.println("Enter specific cell id:");
-                    String cellId = scanner.nextLine();
+                    String cellId = scanner.nextLine().trim();
                     try {
                         cellData = engine.showCell(cellId);
                         printCell(cellData);
@@ -134,7 +134,7 @@ public class CheckUserInput {
 
                 case UPDATE_SPECIFIC_CELL:
                     System.out.println("Enter specific cell id:");
-                    String cellToUpdate = scanner.nextLine();
+                    String cellToUpdate = scanner.nextLine().trim();
                     System.out.println("Enter new cell value:");
                     String newValue = scanner.nextLine();
                     try {
