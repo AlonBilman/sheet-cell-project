@@ -1,4 +1,5 @@
 package sheet.impl;
+
 import FileCheck.STLCell;
 import expression.api.Expression;
 import expression.api.ObjType;
@@ -8,6 +9,7 @@ import expression.impl.function.CellReferenceFunc;
 import expression.impl.function.ConcatFunction;
 import expression.impl.function.PlusFunction;
 import sheet.api.EffectiveValue;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +28,7 @@ public class CellImpl implements Serializable {
 
     private static SpreadSheetImpl currSpreadSheet;
 
-    public CellImpl(int row, String col,String newOriginalVal, int versionNumber) {
+    public CellImpl(int row, String col, String newOriginalVal, int versionNumber) {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
@@ -36,9 +38,9 @@ public class CellImpl implements Serializable {
         lastChangeAt = ++versionNumber;
     }
 
-    private void checkRowAndCol(int row, String col){
-        if(!(col != null && col.length() == 1 && Character.isLetter(col.charAt(0)))){
-            throw new IllegalArgumentException("One or more of the Cells have invalid id. found: \"" + col+ "\" as col.\n" +
+    private void checkRowAndCol(int row, String col) {
+        if (!(col != null && col.length() == 1 && Character.isLetter(col.charAt(0)))) {
+            throw new IllegalArgumentException("One or more of the Cells have invalid id. found: \"" + col + "\" as col.\n" +
                     "Cell's ID must contain a letter followed by a number. Meaning column has to be a letter.");
         }
         int colInt = Character.getNumericValue(col.charAt(0)) - Character.getNumericValue('A'); //getting the col
@@ -53,7 +55,7 @@ public class CellImpl implements Serializable {
         lastChangeAt = 1;
         this.row = cell.getRow();
         this.col = cell.getColumn();
-        checkRowAndCol(row,col);
+        checkRowAndCol(row, col);
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
@@ -66,11 +68,10 @@ public class CellImpl implements Serializable {
 
     public void calculateEffectiveValue() {
         if (originalValue != null) {
-            if(!originalValue.isEmpty()){
+            if (!originalValue.isEmpty()) {
                 Expression expression = parseExpression(originalValue);
                 this.effectiveValue = expression.eval();
-            }
-            else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
+            } else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
         } else {
             //handle the case where there is no valid expression
             this.effectiveValue = null;
@@ -181,7 +182,7 @@ public class CellImpl implements Serializable {
             CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
             affectedCell.calculateEffectiveValue();
         }
-        updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());;
+        updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
     }
 
     private void detectCircularDependency(Set<String> visitedCells) {
@@ -218,6 +219,7 @@ public class CellImpl implements Serializable {
     public void addAffectsOnId(String id) {
         affectsOn.add(id);
     }
+
     public Set<String> getAffectsOn() {
         return affectsOn;
     }

@@ -2,10 +2,11 @@ package sheet.impl;
 
 import FileCheck.*;
 import sheet.api.EffectiveValue;
+
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SpreadSheetImpl implements Serializable {
     private final int rowSize;
@@ -15,41 +16,29 @@ public class SpreadSheetImpl implements Serializable {
     private Map<String, CellImpl> activeCells;
     private final String sheetName;
     private int sheetVersionNumber;
-    private SpreadSheetImpl sheetBeforeChange=null;
+    private SpreadSheetImpl sheetBeforeChange = null;
 
-    public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
-        this.sheetName = sheetName;
-        this.rowSize = rowSize;
-        this.columnSize = columnSize;
-        this.colWidth = colWidth;
-        this.rowHeight = rowHeight;
-        this.sheetVersionNumber = 1;
-        this.activeCells = new HashMap<>();
-        CellImpl.setSpreadSheet(this);
-        sheetBeforeChange=deepCopy();
+    public SpreadSheetImpl deepCopy() {
+        try {
+            //serialize
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+            //deserialize
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return (SpreadSheetImpl) objectInputStream.readObject();
+
+        } catch (NotSerializableException e) {
+            System.err.println("A field is not serializable: " + e.getMessage());
+            throw new RuntimeException("Failed to deep copy SpreadSheetImpl due to non-serializable field", e);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
+        }
     }
-
-public SpreadSheetImpl deepCopy() {
-    try {
-        //serialize
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(this);
-        objectOutputStream.flush();
-        objectOutputStream.close();
-
-        //deserialize
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        return (SpreadSheetImpl) objectInputStream.readObject();
-
-    } catch (NotSerializableException e) {
-        System.err.println("A field is not serializable: " + e.getMessage());
-        throw new RuntimeException("Failed to deep copy SpreadSheetImpl due to non-serializable field", e);
-    } catch (IOException | ClassNotFoundException e) {
-        throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
-    }
-}
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
@@ -61,33 +50,31 @@ public SpreadSheetImpl deepCopy() {
         this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
         this.sheetName = stlSheet.getName();
         STLCells stlCells = stlSheet.getSTLCells();
-        if(stlCells != null) {
+        if (stlCells != null) {
             addCells(stlCells.getSTLCell());
         }
-        sheetBeforeChange=deepCopy();
+        sheetBeforeChange = deepCopy();
     }
 
     public void changeCell(String id, String newOriginalVal) {
-            sheetBeforeChange=deepCopy();
-            CellImpl.setSpreadSheet(this);
+        sheetBeforeChange = deepCopy();
+        CellImpl.setSpreadSheet(this);
+        checkCellId(id);
+        CellImpl cell = activeCells.get(id);
+        if (cell == null) //meaning there is no cell like this activated
+        {
             checkCellId(id);
-            CellImpl cell = activeCells.get(id);
-            if(cell==null) //meaning there is no cell like this activated
-            {
-                checkCellId(id);
-                addCell(id.charAt(1)- '0', id.substring(0,1), newOriginalVal);
-            }
-            else {
-                cell.setOriginalValue(newOriginalVal);
-                updateVersionNumber();
-            }
-
+            addCell(id.charAt(1) - '0', id.substring(0, 1), newOriginalVal);
+        } else {
+            cell.setOriginalValue(newOriginalVal);
+            updateVersionNumber();
+        }
     }
 
-    public void addCell(int row, String col, String newOriginalVal){
+    public void addCell(int row, String col, String newOriginalVal) {
         CellImpl.setSpreadSheet(this);
-        sheetBeforeChange=deepCopy();
-        CellImpl cell = new CellImpl(row,col,newOriginalVal,this.sheetVersionNumber);
+        sheetBeforeChange = deepCopy();
+        CellImpl cell = new CellImpl(row, col, newOriginalVal, this.sheetVersionNumber);
         activeCells.put(cell.getId(), cell);
     }
 
@@ -102,7 +89,7 @@ public SpreadSheetImpl deepCopy() {
     }
 
     public CellImpl getCell(String cellId) {
-       checkCellId(cellId);
+        checkCellId(cellId);
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
         int row = Integer.parseInt(cellId.substring(1));
@@ -123,15 +110,74 @@ public SpreadSheetImpl deepCopy() {
         }
     }
 
-    public void addCells(List<STLCell> cells) {
+    private void addCells(List<STLCell> cells) {
         CellImpl.setSpreadSheet(this);
-        if(cells == null || cells.isEmpty()) {
+        if (cells == null || cells.isEmpty()) {
             return;
         }
-        CellImpl.setSpreadSheet(this);
-        for (STLCell cell : cells) {
+        List<STLCell> sortedCells = topologicalSort(cells); //could fail duo to circular dep
+        for (STLCell cell : sortedCells) {
             CellImpl cellImpl = new CellImpl(cell);
             this.activeCells.put(cellImpl.getId(), cellImpl);
+        }
+    }
+
+    private List<STLCell> topologicalSort(List<STLCell> cells) {
+        List<STLCell> sortedCells = new ArrayList<>();
+        Set<String> visited = new HashSet<>();
+        Set<String> inProcess = new HashSet<>();
+        Map<String, STLCell> cellMap = new HashMap<>();
+        Map<String, List<String>> dependencyGraph = dependancyGraphBuild(cells, cellMap);
+        for (String cellId : dependencyGraph.keySet()) {
+            if (!visited.contains(cellId)) {
+                dfs(cellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
+            }
+        }
+        return sortedCells;
+    }
+
+    private Map<String, List<String>> dependancyGraphBuild(List<STLCell> cells, Map<String, STLCell> cellMap) {
+        Map<String, List<String>> dependencyGraph = new HashMap<>();
+        for (STLCell cell : cells) {
+            String cellId = cell.getColumn() + cell.getRow();
+            cellMap.put(cellId, cell);  // Map cell ID to STLCell object
+            List<String> dependencies = extractDependencies(cell);
+            dependencyGraph.put(cellId, dependencies);
+        }
+        return dependencyGraph;
+    }
+
+    private List<String> extractDependencies(STLCell cell) {
+        List<String> dependencies = new ArrayList<>();
+        String expression = cell.getSTLOriginalValue();
+        Pattern pattern = Pattern.compile("\\{REF,([^}]+)}");
+        Matcher matcher = pattern.matcher(expression);
+        while (matcher.find()) {
+            dependencies.add(matcher.group(1));
+        }
+        return dependencies;
+    }
+
+    private void dfs(String cellId, Map<String, List<String>> dependencyGraph,
+                     Set<String> visited, Set<String> inProcess,
+                     List<STLCell> sortedCells, Map<String, STLCell> cellMap) {
+
+        if (inProcess.contains(cellId)) {
+            throw new IllegalStateException("Circular dependency detected!");
+        }
+
+        if (!visited.contains(cellId)) {
+            inProcess.add(cellId);
+            try {
+                for (String dependentCellId : dependencyGraph.get(cellId)) {
+                    dfs(dependentCellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
+                }
+                inProcess.remove(cellId);
+                visited.add(cellId);
+                sortedCells.add(cellMap.get(cellId));  //Add the actual cell to the sorted list
+            } catch (Exception e) {
+                throw new RuntimeException("Problem with dependency of cell " + cellId + ":" + dependencyGraph.get(cellId));
+            }
         }
     }
 
@@ -171,4 +217,3 @@ public SpreadSheetImpl deepCopy() {
         return sheetBeforeChange;
     }
 }
-

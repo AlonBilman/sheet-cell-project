@@ -1,4 +1,5 @@
 package expression.impl.function;
+
 import expression.api.Expression;
 import expression.api.ObjType;
 import sheet.api.EffectiveValue;
@@ -8,17 +9,19 @@ public class CellReferenceFunc implements Expression {
     Expression cellId;
     SpreadSheetImpl currSheet;
     String calledById;
+
     public CellReferenceFunc(Expression cellId, SpreadSheetImpl currSheet, String calledById) {
         this.cellId = cellId;
         this.currSheet = currSheet;
         this.calledById = calledById;
     }
+
     @Override
     public EffectiveValue eval() {
         EffectiveValue evaluateCell = cellId.eval();
         if (evaluateCell.getObjType() != ObjType.STRING)
             throw new IllegalArgumentException("REF function is only applicable to String! - provided Double");
-        return currSheet.ref(cellId.eval(), calledById); 
+        return currSheet.ref(cellId.eval(), calledById);
     }
 
     @Override
