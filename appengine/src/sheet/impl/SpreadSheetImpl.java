@@ -39,6 +39,7 @@ public class SpreadSheetImpl implements Serializable {
             throw new RuntimeException("Failed to deep copy SpreadSheetImpl", e);
         }
     }
+}
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
@@ -65,6 +66,7 @@ public class SpreadSheetImpl implements Serializable {
         {
             checkCellId(id);
             addCell(id.charAt(1) - '0', id.substring(0, 1), newOriginalVal);
+	    updateVersionNumber();
         } else {
             cell.setOriginalValue(newOriginalVal);
             updateVersionNumber();
@@ -217,3 +219,4 @@ public class SpreadSheetImpl implements Serializable {
         return sheetBeforeChange;
     }
 }
+

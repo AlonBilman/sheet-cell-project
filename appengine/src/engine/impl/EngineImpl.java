@@ -7,38 +7,43 @@ import DTO.sheetDTO;
 import FileCheck.STLSheet;
 import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EngineImpl implements Engine {
 
     private SpreadSheetImpl spreadSheet;
+    Map<Integer,sheetDTO> sheets = new HashMap<>();
 
-    public EngineImpl() {
+   public EngineImpl() {
         this.spreadSheet = null;
     }
 
-    public void initSheet(STLSheet stlSheet) {
-        if (stlSheet == null) {
-            throw new NullPointerException("STLSheet is null");
-        }
-        this.spreadSheet = new SpreadSheetImpl(stlSheet);
+    public void initSheet(STLSheet stlSheet){
+       if (stlSheet == null) {
+          throw new NullPointerException("STLSheet is null");
+       }
+       this.spreadSheet = new SpreadSheetImpl(stlSheet);
+       sheets.put(this.spreadSheet.getSheetVersionNumber(),new sheetDTO(this.spreadSheet));
+
     }
 
     @Override
     public sheetDTO Display() {
-        return new sheetDTO(this.spreadSheet);
+            return new sheetDTO(this.spreadSheet);
     }
 
     @Override
     public CellDataDTO showCell(String id) {
-        return new CellDataDTO(this.spreadSheet.getCell(id));
-    }
+       return new CellDataDTO(this.spreadSheet.getCell(id));
+        }
 
     @Override
     public sheetDTO updateCell(String cellId, String value) {
         try {
             this.spreadSheet.changeCell(cellId, value);
+            sheets.put(this.spreadSheet.getSheetVersionNumber(),new sheetDTO(this.spreadSheet));
         } catch (Exception e) {
             this.spreadSheet = this.spreadSheet.getSheetBeforeChange(); //1 snapshot back
             throw e;
@@ -56,14 +61,21 @@ public class EngineImpl implements Engine {
         return new LoadDTO(newFile);
     }
 
-    public boolean containSheet() {
-        return this.spreadSheet != null;
+    public boolean containSheet(){
+       return this.spreadSheet != null;
     }
 
-    public int getVersionNumber() {
+    public int getVersionNumber(){
         return this.spreadSheet.getSheetVersionNumber();
     }
 
+    public Map<Integer, sheetDTO> getSheets() {
+        return sheets;
+    }
+
+    public sheetDTO getSheet(int version){
+       return sheets.get(version);
+    }
     @Override
     public exitDTO exitSystem() {
         return new DTO.exitDTO();

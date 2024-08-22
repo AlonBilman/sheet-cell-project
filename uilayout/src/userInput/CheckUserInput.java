@@ -146,24 +146,27 @@ public class CheckUserInput {
                     break;
 
                 case VERSIONS_PRINT:
-//                    System.out.println("The versions print is:");
-//                    int versionNum;
-//                    sheetDTO versionsSheet;
-//                    for (int i = 1; i <= spreadSheet.getSheetMap().size(); i++) {
-//                        versionsSheet = engine.showVersions();
-//                        integersheetDTOMap.put(spreadSheet.getSheetVersionNumber(), versionsSheet);
-//                    }
-//                    for (int i = 1; i <= integersheetDTOMap.size(); i++) {
-//                        System.out.println("version " + i + ": " + " | " + "Active cells: " + integersheetDTOMap.get(i).getActiveCells().size());
-//                    }
-//                    System.out.println("Please pick a version to peek at");
-//                    scanner = new Scanner(System.in);
-//                    versionNum = scanner.nextInt();
-//                    while (versionNum < 0 || versionNum > integersheetDTOMap.size()) {
-//                        System.out.println("Invalid version. Please try again.");
-//                        versionNum = scanner.nextInt();
-//                    }
-//                    printSheet(integersheetDTOMap.get(versionNum));
+                    System.out.println("The versions print is:");
+
+                    // Display all available versions with their respective active cell counts
+                    for (int i = 1; i <= engine.getSheets().size(); i++) {
+                        System.out.println("Version " + i + ": | Active cells: " + engine.getSheet(i).getActiveCells().size());
+                    }
+
+                    int versionNum;
+                    try {
+                        System.out.println("Please pick a version to peek at:");
+                        versionNum = Integer.parseInt(scanner.nextLine());
+
+                        // Validate if the input is within the valid range
+                        if (versionNum >= 1 && versionNum <= engine.getSheets().size()) {
+                            printSheet(engine.getSheet(versionNum));
+                        } else {
+                            System.out.println("Invalid version. Please enter a number between 1 and " + engine.getSheets().size() + ".");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    }
                     break;
 
                 case EXIT_SYSTEM:
