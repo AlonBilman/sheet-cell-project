@@ -5,9 +5,8 @@ import expression.api.Expression;
 import expression.api.ObjType;
 import expression.impl.Mystring;
 import expression.impl.Number;
-import expression.impl.function.CellReferenceFunc;
-import expression.impl.function.ConcatFunction;
-import expression.impl.function.PlusFunction;
+import expression.impl.function.*;
+import expression.impl.function.AbsFunction;
 import sheet.api.EffectiveValue;
 
 import java.io.Serializable;
@@ -82,7 +81,6 @@ public class CellImpl implements Serializable {
         if (originalValue.startsWith("{") && originalValue.endsWith("}")) {
             originalValue = originalValue.substring(1, originalValue.length() - 1);
 
-
             int firstCommaIndex = originalValue.indexOf(',');
             if (firstCommaIndex == -1) {
                 throw new IllegalArgumentException("Invalid expression format: " + originalValue);
@@ -99,6 +97,30 @@ public class CellImpl implements Serializable {
                         throw new IllegalArgumentException("PLUS function requires two arguments.");
                     }
                     return new PlusFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "ABS":
+                    if (parsedArguments.size() != 1) {
+                        throw new IllegalArgumentException("ABS function requires one arguments.");
+                    }
+                    return new AbsFunction(parsedArguments.get(0));
+
+                case "POW":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("POW function requires two arguments.");
+                    }
+                    return new PowFunction(parsedArguments.get(0),parsedArguments.get(1));
+
+                case "MOD":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("MOD function requires two arguments.");
+                    }
+                    return new ModFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "MINUS":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("MINUS function requires two arguments.");
+                    }
+                    return new MinusFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "CONCAT":
                     if (parsedArguments.size() != 2) {
@@ -152,7 +174,13 @@ public class CellImpl implements Serializable {
 
     private Expression parseSimpleValue(String value) {
         if (value.isEmpty() || value.matches(".*[^0-9].*"))
-            return new Mystring(value);
+            if (value.startsWith("-")) {
+                try {
+                    return new Number(Double.valueOf(value));
+                } catch (NumberFormatException ignored) {
+                }
+            } else return new Mystring(value);
+
         return new Number(Double.valueOf(value));
     }
 

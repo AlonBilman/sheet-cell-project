@@ -37,7 +37,13 @@ public class EngineImpl implements Engine {
 
     @Override
     public CellDataDTO showCell(String id) {
-        return new CellDataDTO(this.spreadSheet.getCell(id));
+        try{
+            return new CellDataDTO(this.spreadSheet.getCell(id));
+        }
+       catch(NullPointerException e){
+            throw new NullPointerException("The cell you refer to is null, meaning you did not create it" +
+                    "\nIn order to inspect its content you have to modify it first.");
+       }
     }
 
     @Override
@@ -64,10 +70,6 @@ public class EngineImpl implements Engine {
 
     public boolean containSheet() {
         return this.spreadSheet != null;
-    }
-
-    public int getVersionNumber() {
-        return this.spreadSheet.getSheetVersionNumber();
     }
 
     public Map<Integer, sheetDTO> getSheets() {

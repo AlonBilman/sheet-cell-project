@@ -65,10 +65,10 @@ public class SpreadSheetImpl implements Serializable {
         if (cell == null) //meaning there is no cell like this activated
         {
             checkCellId(id);
-            addCell(id.charAt(1) - '0', id.substring(0, 1), newOriginalVal);
-        } else {
-            cell.setOriginalValue(newOriginalVal);
+            addCell(Integer.parseInt(id.substring(1)), id.substring(0,1) , newOriginalVal);
+            cell = getCell(id);
         }
+        cell.setOriginalValue(newOriginalVal);
         updateVersionNumber();
     }
 
@@ -96,7 +96,6 @@ public class SpreadSheetImpl implements Serializable {
         if (col < 0 || row <= 0 || row >= rowSize || col >= columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Inserted: " + cellId + "\nPlease make sure that the Cell slot you refer to exists.");
         }
-
         return activeCells.get(cellId);
     }
 
