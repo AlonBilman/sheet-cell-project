@@ -18,6 +18,23 @@ public class SpreadSheetImpl implements Serializable {
     private int sheetVersionNumber;
     private SpreadSheetImpl sheetBeforeChange = null;
 
+
+    public SpreadSheetImpl(STLSheet stlSheet) {
+        CellImpl.setSpreadSheet(this);
+        this.activeCells = new HashMap<>();
+        this.sheetVersionNumber = 1;
+        this.rowSize = stlSheet.getSTLLayout().getRows();
+        this.columnSize = stlSheet.getSTLLayout().getColumns();
+        this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
+        this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
+        this.sheetName = stlSheet.getName();
+        STLCells stlCells = stlSheet.getSTLCells();
+        if (stlCells != null) {
+            addCells(stlCells.getSTLCell());
+        }
+        sheetBeforeChange = deepCopy();
+    }
+
     public SpreadSheetImpl deepCopy() {
         try {
             //serialize
@@ -40,27 +57,11 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-    public SpreadSheetImpl(STLSheet stlSheet) {
-        CellImpl.setSpreadSheet(this);
-        this.activeCells = new HashMap<>();
-        this.sheetVersionNumber = 1;
-        this.rowSize = stlSheet.getSTLLayout().getRows();
-        this.columnSize = stlSheet.getSTLLayout().getColumns();
-        this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
-        this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
-        this.sheetName = stlSheet.getName();
-        STLCells stlCells = stlSheet.getSTLCells();
-        if (stlCells != null) {
-            addCells(stlCells.getSTLCell());
-        }
-        sheetBeforeChange = deepCopy();
-    }
-
     public void changeCell(String id, String newOriginalVal) {
         sheetBeforeChange = deepCopy();
         CellImpl.setSpreadSheet(this);
         checkCellId(id);
-        CellImpl cell = activeCells.get(id);
+        CellImpl cell = getCell(id);
         if (cell == null) //meaning there is no cell like this activated
         {
             checkCellId(id);
@@ -78,7 +79,6 @@ public class SpreadSheetImpl implements Serializable {
         activeCells.put(cell.getId(), cell);
     }
 
-
     public EffectiveValue ref(EffectiveValue id, String IdThatCalledMe) {
         String theCellThatRefIsReferringTo = (String) id.getValue();
         CellImpl curr = getCell(theCellThatRefIsReferringTo);
@@ -93,20 +93,16 @@ public class SpreadSheetImpl implements Serializable {
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
         int row = Integer.parseInt(cellId.substring(1));
-        if (col < 0 || row < 0 || row >= rowSize || col >= columnSize) {
-            throw new IllegalArgumentException("The specified column or row number is invalid. Found: " + cellId + " please make sure that the CellImpl you refer to exists.");
+        if (col < 0 || row <= 0 || row >= rowSize || col >= columnSize) {
+            throw new IllegalArgumentException("The specified column or row number is invalid. Inserted: " + cellId + "\nPlease make sure that the Cell slot you refer to exists.");
         }
-        CellImpl.setSpreadSheet(this);
-        CellImpl cell = activeCells.get(cellId);
-        if (cell == null) {
-            throw new RuntimeException("No such cell, it contains nothing, before referring to it you should update its content.");
-        }
-        return cell;
+
+        return activeCells.get(cellId);
     }
 
     private void checkCellId(String id) {
-        if (!id.matches("^[A-Za-z]\\d+$")) {
-            throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + id);
+        if (!id.matches("^[A-Z]\\d+$")) {
+            throw new IllegalArgumentException("Input must be in the format of a Capita letter followed by one or more digits. Found: " + id);
         }
     }
 
@@ -140,7 +136,7 @@ public class SpreadSheetImpl implements Serializable {
         Map<String, List<String>> dependencyGraph = new HashMap<>();
         for (STLCell cell : cells) {
             String cellId = cell.getColumn() + cell.getRow();
-            cellMap.put(cellId, cell);  // Map cell ID to STLCell object
+            cellMap.put(cellId, cell);  //map cell ID to STLCell object
             List<String> dependencies = extractDependencies(cell);
             dependencyGraph.put(cellId, dependencies);
         }
@@ -174,7 +170,7 @@ public class SpreadSheetImpl implements Serializable {
                 }
                 inProcess.remove(cellId);
                 visited.add(cellId);
-                sortedCells.add(cellMap.get(cellId));  //Add the actual cell to the sorted list
+                sortedCells.add(cellMap.get(cellId));  //add the actual cell to the sorted list
             } catch (Exception e) {
                 throw new RuntimeException("Problem with dependency of cell " + cellId + ":" + dependencyGraph.get(cellId));
             }
@@ -210,7 +206,7 @@ public class SpreadSheetImpl implements Serializable {
     }
 
     public void updateVersionNumber() {
-        this.sheetVersionNumber++;
+        ++this.sheetVersionNumber;
     }
 
     public SpreadSheetImpl getSheetBeforeChange() {

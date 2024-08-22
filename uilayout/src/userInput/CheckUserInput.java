@@ -52,7 +52,7 @@ public class CheckUserInput {
 
         // Print the menu header
         System.out.println("+------------------------------------------+");
-        System.out.println("|" + BOLD + BOLD + "          Please choose an option" + RESET + "         |");
+        System.out.println("|" + BOLD + BOLD+  "          Please choose an option" + RESET + "         |");
         System.out.println("+------------------------------------------+");
 
         // Print the menu options
@@ -86,28 +86,31 @@ public class CheckUserInput {
                     }
                     System.out.println("Please load a new XML file - Enter a file path Or press Enter to go back to the main menu:");
                     userInput = scanner.nextLine();
-                    if (userInput.isEmpty()) {
+                    if(userInput.isEmpty()) {
                         break;
                     }
                     newFile = checkFileUserInput();
                     loadResult = engine.Load(newFile);
-                    if (loadResult.isNotValid()) {
-                        if (!engine.containSheet()) {
+                    if(loadResult.isNotValid()) {
+                        if(!engine.containSheet()) {
                             System.out.println("Invalid file. Ensure it exists and it is an XML file.");
                             break;
-                        } else if (oldFile != null) {
+                        }
+                        else if(oldFile != null){
                             System.out.println("Invalid file. The previous file is retained.");
                             loadResult = engine.Load(oldFile);
                             break;
                         }
-                    } else {
+                    }
+                    else {
                         oldFile = newFile;
                     }
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
-                    try {
+                    try{
                         engine.initSheet(stlSheet);
                         break;
-                    } catch (Exception e) {
+                    }
+                    catch(Exception e){
                         System.out.println("Problem with Loading XML file.");
                         System.out.println(e.getMessage());
                         break;
@@ -160,10 +163,10 @@ public class CheckUserInput {
                         if (versionNum >= 1 && versionNum <= engine.getSheets().size()) {
                             printSheet(engine.getSheet(versionNum));
                         } else {
-                            System.out.println("Invalid version. Please enter a number between 1 and " + engine.getSheets().size() + ".");
+                            System.out.println("Invalid version number. Please enter a version between 1 and " + engine.getSheets().size() + ".");
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please enter a valid number.");
+                        System.out.println("Invalid input. Please enter a valid number, according to the version table options.");
                     }
                     break;
 
@@ -178,7 +181,6 @@ public class CheckUserInput {
 
         System.exit(engine.exitSystem().getExitStatus());
     }
-
     public void printSheet(sheetDTO sheet) {
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
@@ -186,7 +188,7 @@ public class CheckUserInput {
         String newLineString = "\n".repeat(sheet.getRowHeight() + 1);
         char letter;
 
-        System.out.println("Sheet name is: " + sheetName);
+        System.out.println("Sheet name is: " +  sheetName);
         System.out.println("Sheet version is: " + sheet.getSheetVersionNumber() + "\n");
 
         // Print column headers
@@ -231,7 +233,6 @@ public class CheckUserInput {
 
         }
     }
-
     public void printCell(CellDataDTO cell) {
         System.out.println("Cell id: " + cell.getId() + "\n");
         System.out.println("Cell original Value: " + cell.getOriginalValue() + "\n");
@@ -240,7 +241,6 @@ public class CheckUserInput {
         System.out.println("Cell depending on: " + cell.getDependsOn() + "\n");
         System.out.println("Cell affects cells: " + cell.getAffectsOn() + "\n");
     }
-
     public File checkFileUserInput() {
         File fileToCheck;
         fileToCheck = getXMLFile(userInput);
