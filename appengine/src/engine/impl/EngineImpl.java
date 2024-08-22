@@ -8,11 +8,11 @@ import FileCheck.STLSheet;
 import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
 
-import java.io.File;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EngineImpl implements Engine {
+public class EngineImpl implements Engine,Serializable {
 
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
@@ -56,6 +56,27 @@ public class EngineImpl implements Engine {
             throw e;
         }
         return new sheetDTO(this.spreadSheet);
+    }
+
+    public void savePositionToFile(String folderPath,String fileName) throws IOException {
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File file = new File(folder, fileName.trim()+".ser"); //trim in order to remove spaces
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(this);
+        }
+    }
+
+    public static EngineImpl resumePositionToEngine(String filePath,String fileName) throws IOException, ClassNotFoundException {
+        File file = new File(filePath+"\\"+fileName.trim()+".ser");
+        if (!file.exists()) {
+            throw new FileNotFoundException("File not found: " + filePath);
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            return (EngineImpl) ois.readObject();
+        }
     }
 
     @Override

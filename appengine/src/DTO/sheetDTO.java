@@ -3,10 +3,11 @@ package DTO;
 import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class sheetDTO {
+public class sheetDTO implements Serializable {
     private final int rowSize;
     private final int colSize;
     private final int rowHeight;

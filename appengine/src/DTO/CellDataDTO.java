@@ -2,9 +2,11 @@ package DTO;
 
 import sheet.api.EffectiveValue;
 import sheet.impl.CellImpl;
+
+import java.io.Serializable;
 import java.util.Set;
 
-public class CellDataDTO {
+public class CellDataDTO implements Serializable {
     private final int row;
     private final String col;
     private final String id;

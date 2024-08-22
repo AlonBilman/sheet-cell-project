@@ -1,8 +1,9 @@
 package DTO;
 
 import java.io.File;
+import java.io.Serializable;
 
-public class LoadDTO {
+public class LoadDTO implements Serializable {
     private File loadedFile = null;
 
     public LoadDTO(File newFile) {

@@ -7,6 +7,7 @@ import FileCheck.STLSheet;
 import engine.impl.EngineImpl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 import static FileCheck.CheckForXMLFile.getXMLFile;
@@ -18,8 +19,12 @@ public class CheckUserInput {
     private static final String LOAD_SPECIFIC_CELL = "3";
     private static final String UPDATE_SPECIFIC_CELL = "4";
     private static final String VERSIONS_PRINT = "5";
-    private static final String EXIT_SYSTEM = "6";
+    private static final String SAVE_SHEET = "6";
+    private static final String LOAD_SAVED_SHEET = "7";
+    private static final String EXIT_SYSTEM = "8";
 
+
+    private String filePath;
     private EngineImpl engine;
     private Scanner scanner;
     private File newFile, oldFile;
@@ -47,6 +52,8 @@ public class CheckUserInput {
                 "Load specific cell",
                 "Update specific cell",
                 "Print sheet versions",
+                "Save sheet",
+                "Load saved sheet",
                 "Exit system"
         };
 
@@ -65,16 +72,18 @@ public class CheckUserInput {
         System.out.println("+------------------------------------------+");
     }
 
-    public void UserStartMenuInput() {
+    public void UserStartMenuInput() throws IOException, ClassNotFoundException {
         do {
             printMenu();
             userInput = scanner.nextLine();
-            while (!userInput.equals(FILE_INPUT) && (!engine.containSheet())) {
+            while ((!userInput.equals(FILE_INPUT) && !userInput.equals(LOAD_SAVED_SHEET)) && !engine.containSheet()
+            ) {
                 if (userInput.equals(EXIT_SYSTEM)) {
                     System.out.println("Exiting system...");
                     System.exit(0);
                 }
-                System.out.println("Please enter an XML file before proceeding.");
+                System.out.println("Please enter an XML file before proceeding.\n" +
+                                   "Or load an existing saved sheet-file");
                 printMenu();
                 userInput = scanner.nextLine();
             }
@@ -108,6 +117,7 @@ public class CheckUserInput {
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     try{
                         engine.initSheet(stlSheet);
+                        System.out.println("XML File loaded.");
                         break;
                     }
                     catch(Exception e){
@@ -169,7 +179,35 @@ public class CheckUserInput {
                         System.out.println("Invalid input. Please enter a valid number, according to the version table options.");
                     }
                     break;
-
+                case SAVE_SHEET:
+                    System.out.println("Please enter the absolute path to the file you would like to save:");
+                    String newFilePath = scanner.nextLine();
+                    System.out.println("Next, please enter the name of the file you would like to save as:");
+                    String fileName = scanner.nextLine();
+                    try{
+                        engine.savePositionToFile(newFilePath,fileName);
+                        System.out.println("File saved");
+                    }
+                    catch(Exception e){
+                        System.out.println("Could not save the file. make sure that the path is correct\n"
+                        + e.getMessage());
+                    }
+                    break;
+                case LOAD_SAVED_SHEET:
+                    System.out.println("Loading a saved sheet...");
+                    System.out.println("Please enter the file path:");
+                    String filePathToLoad = scanner.nextLine();
+                    System.out.println("Please Enter the name of the file you would like to load (without .<fileType>)");
+                    String fileNameToLoad = scanner.nextLine();
+                    try{
+                        engine = EngineImpl.resumePositionToEngine(filePathToLoad,fileNameToLoad);
+                        System.out.println("File loaded.");
+                    }
+                    catch (Exception e){
+                        System.out.println("Something went wrong when loading the saved sheet." +
+                                "\n"+e.getMessage());
+                    }
+                    break;
                 case EXIT_SYSTEM:
                     System.out.println("Exiting system...");
                     break;

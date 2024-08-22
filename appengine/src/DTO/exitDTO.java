@@ -1,6 +1,8 @@
 package DTO;
 
-public class exitDTO{
+import java.io.Serializable;
+
+public class exitDTO implements Serializable {
     int exitStatus;
     public exitDTO(){
         exitStatus = 0;
