@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EngineImpl implements Engine,Serializable {
-
+    private static final long maxRows = 50;
+    private static final long maxCols = 20;
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
 
@@ -24,6 +25,12 @@ public class EngineImpl implements Engine,Serializable {
     public void initSheet(STLSheet stlSheet) {
         if (stlSheet == null) {
             throw new NullPointerException("STLSheet is null");
+        }
+        if(stlSheet.getSTLLayout().getRows() > maxRows) {
+            throw new IllegalArgumentException("XML file inserted more than 50 rows");
+        }
+        if(stlSheet.getSTLLayout().getColumns() > maxCols){
+            throw new IllegalArgumentException("XML file inserted contains more than 20 columns");
         }
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
         sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));

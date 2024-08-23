@@ -93,7 +93,7 @@ public class SpreadSheetImpl implements Serializable {
         char letter = cellId.charAt(0); //taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
         int row = Integer.parseInt(cellId.substring(1));
-        if (col < 0 || row <= 0 || row >= rowSize || col >= columnSize) {
+        if (col < 0 || row <= 0 || row > rowSize || col > columnSize) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Inserted: " + cellId + "\nPlease make sure that the Cell slot you refer to exists.");
         }
         return activeCells.get(cellId);
