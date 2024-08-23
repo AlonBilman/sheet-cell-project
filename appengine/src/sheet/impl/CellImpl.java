@@ -66,18 +66,22 @@ public class CellImpl implements Serializable {
     }
 
     public void calculateEffectiveValue() {
-        for(String id : dependsOn) {
-            CellImpl dep = currSpreadSheet.getCell(id);
-            dep.calculateEffectiveValue();
-        }
         if (originalValue != null) {
             if (!originalValue.isEmpty()) {
                 Expression expression = parseExpression(originalValue);
                 this.effectiveValue = expression.eval();
-            } else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
+                detectCircularDependency(new HashSet<>());
+                //recursive like dps algo aka - "Maham".
+                for (String affectid : affectsOn) {
+                    CellImpl dep = currSpreadSheet.getCell(affectid);
+                    dep.calculateEffectiveValue();
+                }
+            } else {
+                this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
+            }
         } else {
-            //handle the case where there is no valid expression
             this.effectiveValue = null;
+            //handle the case where there is no valid expression
         }
     }
 
@@ -226,12 +230,11 @@ public class CellImpl implements Serializable {
     public void setOriginalValue(String originalValue) {
         this.originalValue = originalValue;
         removeDependsOn();
-        detectCircularDependency(new HashSet<>());
         calculateEffectiveValue();
-        for (String affectedId : affectsOn) {
-            CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
-            affectedCell.calculateEffectiveValue();
-        }
+//        for (String affectedId : affectsOn) {
+//            CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
+//            affectedCell.calculateEffectiveValue();
+//        }
         updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
     }
 
