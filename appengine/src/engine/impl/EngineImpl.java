@@ -40,6 +40,7 @@ public class EngineImpl implements Engine, Serializable {
             throw new IllegalArgumentException("XML file inserted less than " + minRowsAndCols + " columns");
         }
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
+        sheets.clear();
         sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
     }
 
