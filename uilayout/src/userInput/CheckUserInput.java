@@ -226,17 +226,17 @@ public class CheckUserInput {
         String newLineString = "\n".repeat(sheet.getRowHeight() + 1);
         char letter;
 
-        System.out.println("Sheet name is: " +  sheetName);
+        System.out.println("Sheet name is: " + sheetName);
         System.out.println("Sheet version is: " + sheet.getSheetVersionNumber() + "\n");
 
-        // Print column headers
-        System.out.print(" ");
+        // Print column headers with correct alignment
+        System.out.print("  "); // Two spaces for alignment with row numbers
         for (int col = 0; col < sheet.getColSize(); col++) {
             letter = (char) ('A' + col % 26);
-            System.out.print(spaceString + letter + spaceString + columnDivider);
+            String header = String.valueOf(letter);
+            System.out.print(fitToWidth(header, sheet.getColWidth()) + columnDivider);
         }
-        // End divider
-        System.out.print(newLineString);
+        System.out.print("\n");
 
         // Print the grid rows with numbers and dividers
         for (int row = 1; row <= sheet.getRowSize(); row++) {
@@ -253,27 +253,28 @@ public class CheckUserInput {
                 // Fetch and print the cell value, or an empty space if the cell does not exist
                 CellDataDTO cell = sheet.getActiveCells().get(cellKey);
                 if (cell != null) {
-                    // Ensure cell value is treated as a string
-                    Object valueObject = cell.getEffectiveValue().getValue();
-                    cellValue = (valueObject != null) ? valueObject.toString() : "";
-
-                    int paddingSize = sheet.getColWidth() * 2 + 1 - cellValue.length();
-                    if(paddingSize < 0){
-                        paddingSize = sheet.getColWidth() * 2 + 1;
-                    }
-                    int leftPadding = paddingSize / 2;
-                    int rightPadding = paddingSize - leftPadding;
-                    System.out.print(" ".repeat(leftPadding) + cellValue + " ".repeat(rightPadding) + columnDivider);
+                    cellValue = cell.getEffectiveValue().getValue().toString();
+                    System.out.print(fitToWidth(cellValue, sheet.getColWidth()) + columnDivider);
                 } else {
-                    System.out.print(spaceString + " " + spaceString + columnDivider);
+                    System.out.print(" ".repeat(sheet.getColWidth()) + columnDivider);
                 }
+
             }
             // End divider
-            System.out.print(newLineString);
-
+            System.out.print("\n".repeat(sheet.getRowHeight()));
         }
     }
-    public void printCell(CellDataDTO cell) {
+
+    // Helper method to fit text to a specific width with padding
+    private String fitToWidth(String text, int width) {
+        if (text.length() > width) {
+            return text.substring(0, width); // Cut off the text if it's too long
+        } else {
+            return String.format("%-" + width + "s", text); // Pad with spaces to the right if it's too short
+        }
+    }
+
+    void printCell(CellDataDTO cell) {
         System.out.println("Cell id: " + cell.getId() + "\n");
         System.out.println("Cell original Value: " + cell.getOriginalValue() + "\n");
         System.out.println("Cell effective value: " + cell.getEffectiveValue().getValue() + "\n");
