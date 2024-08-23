@@ -2,11 +2,9 @@ package expression.impl.function;
 
 import expression.api.Expression;
 import expression.api.ObjType;
-import expression.impl.BinaryExpression;
+import expression.impl.simple.expression.BinaryExpression;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
-
-import static java.lang.Math.pow;
 
 public class PlusFunction extends BinaryExpression {
     private final String name;
@@ -32,7 +30,7 @@ public class PlusFunction extends BinaryExpression {
             throw new NullPointerException("The parameters cannot be null, you may referred to an uninitiated cell");
         if (o1.getObjType() == ObjType.STRING || o1.getObjType() == ObjType.STRING_ERROR
                 || o2.getObjType() == ObjType.STRING_ERROR || o2.getObjType() == ObjType.STRING) {
-            throw new ArithmeticException("This PLUS function only works on Doubles! (or Integers..)\n" +
+            throw new ArithmeticException("The PLUS function only works on Doubles! (or Integers..)\n" +
                     "Please make sure to provide the correct argument type...");
         } else if (o1.getObjType() == ObjType.NUMERIC && o2.getObjType() == ObjType.NUMERIC) {
             double res = (double) o1.getValue() + (double) o2.getValue();

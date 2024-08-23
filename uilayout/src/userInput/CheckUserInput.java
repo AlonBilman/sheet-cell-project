@@ -1,13 +1,12 @@
 package userInput;
 
-import DTO.CellDataDTO;
-import DTO.LoadDTO;
-import DTO.sheetDTO;
+import dto.CellDataDTO;
+import dto.LoadDTO;
+import dto.sheetDTO;
 import FileCheck.STLSheet;
 import engine.impl.EngineImpl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Scanner;
 
 import static FileCheck.CheckForXMLFile.getXMLFile;
@@ -23,8 +22,6 @@ public class CheckUserInput {
     private static final String LOAD_SAVED_SHEET = "7";
     private static final String EXIT_SYSTEM = "8";
 
-
-    private String filePath;
     private EngineImpl engine;
     private Scanner scanner;
     private File newFile, oldFile;
@@ -59,7 +56,7 @@ public class CheckUserInput {
 
         // Print the menu header
         System.out.println("+------------------------------------------+");
-        System.out.println("|" + BOLD + BOLD+  "          Please choose an option" + RESET + "         |");
+        System.out.println("|" + BOLD + BOLD + "          Please choose an option" + RESET + "         |");
         System.out.println("+------------------------------------------+");
 
         // Print the menu options
@@ -72,7 +69,7 @@ public class CheckUserInput {
         System.out.println("+------------------------------------------+");
     }
 
-    public void UserStartMenuInput() throws IOException, ClassNotFoundException {
+    public void UserStartMenuInput() {
         do {
             printMenu();
             userInput = scanner.nextLine();
@@ -83,7 +80,7 @@ public class CheckUserInput {
                     System.exit(0);
                 }
                 System.out.println("Please enter an XML file before proceeding.\n" +
-                                   "Or load an existing saved sheet-file");
+                        "Or load an existing saved sheet-file");
                 printMenu();
                 userInput = scanner.nextLine();
             }
@@ -95,32 +92,29 @@ public class CheckUserInput {
                     }
                     System.out.println("Please load a new XML file - Enter a file path Or press Enter to go back to the main menu:");
                     userInput = scanner.nextLine();
-                    if(userInput.isEmpty()) {
+                    if (userInput.isEmpty()) {
                         break;
                     }
                     newFile = checkFileUserInput();
                     loadResult = engine.Load(newFile);
-                    if(loadResult.isNotValid()) {
-                        if(!engine.containSheet()) {
+                    if (loadResult.isNotValid()) {
+                        if (!engine.containSheet()) {
                             System.out.println("Invalid file. Ensure it exists and it is an XML file.");
                             break;
-                        }
-                        else if(oldFile != null){
+                        } else if (oldFile != null) {
                             System.out.println("Invalid file. The previous file is retained.");
                             loadResult = engine.Load(oldFile);
                             break;
                         }
-                    }
-                    else {
+                    } else {
                         oldFile = newFile;
                     }
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
-                    try{
+                    try {
                         engine.initSheet(stlSheet);
                         System.out.println("XML File loaded.");
                         break;
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println("Problem with Loading XML file.");
                         System.out.println(e.getMessage());
                         break;
@@ -184,13 +178,12 @@ public class CheckUserInput {
                     String newFilePath = scanner.nextLine();
                     System.out.println("Next, please enter the name of the file you would like to save as:");
                     String fileName = scanner.nextLine();
-                    try{
-                        engine.savePositionToFile(newFilePath,fileName);
+                    try {
+                        engine.savePositionToFile(newFilePath, fileName);
                         System.out.println("File saved");
-                    }
-                    catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println("Could not save the file. make sure that the path is correct\n"
-                        + e.getMessage());
+                                + e.getMessage());
                     }
                     break;
                 case LOAD_SAVED_SHEET:
@@ -199,13 +192,12 @@ public class CheckUserInput {
                     String filePathToLoad = scanner.nextLine();
                     System.out.println("Please Enter the name of the file you would like to load (without .<fileType>)");
                     String fileNameToLoad = scanner.nextLine();
-                    try{
-                        engine = EngineImpl.resumePositionToEngine(filePathToLoad,fileNameToLoad);
+                    try {
+                        engine = EngineImpl.resumePositionToEngine(filePathToLoad, fileNameToLoad);
                         System.out.println("File loaded.");
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         System.out.println("Something went wrong when loading the saved sheet." +
-                                "\n"+e.getMessage());
+                                "\n" + e.getMessage());
                     }
                     break;
                 case EXIT_SYSTEM:
@@ -219,28 +211,27 @@ public class CheckUserInput {
 
         System.exit(engine.exitSystem().getExitStatus());
     }
+
     public void printSheet(sheetDTO sheet) {
         String sheetName = sheet.getSheetName();
         String columnDivider = "|";
-        String spaceString = " ".repeat(sheet.getColWidth());
-        String newLineString = "\n".repeat(sheet.getRowHeight() + 1);
         char letter;
-
         System.out.println("Sheet name is: " + sheetName);
         System.out.println("Sheet version is: " + sheet.getSheetVersionNumber() + "\n");
-
         // Print column headers with correct alignment
-        System.out.print("  "); // Two spaces for alignment with row numbers
+        System.out.print("  |"); // Two spaces for alignment with row numbers
         for (int col = 0; col < sheet.getColSize(); col++) {
             letter = (char) ('A' + col % 26);
             String header = String.valueOf(letter);
             System.out.print(fitToWidth(header, sheet.getColWidth()) + columnDivider);
         }
-        System.out.print("\n");
+        System.out.print("\n".repeat(sheet.getRowHeight()));
 
         // Print the grid rows with numbers and dividers
         for (int row = 1; row <= sheet.getRowSize(); row++) {
-            System.out.print(row); // Row number
+            // Format the row number with leading zeros
+            String formattedRowNumber = String.format("%02d", row);
+            System.out.print(formattedRowNumber);
             for (int col = 0; col < sheet.getColSize(); col++) {
                 letter = (char) ('A' + col % 26);
                 String cellKey = letter + String.valueOf(row);
@@ -249,7 +240,6 @@ public class CheckUserInput {
                 if (col == 0) {
                     System.out.print(columnDivider);
                 }
-
                 // Fetch and print the cell value, or an empty space if the cell does not exist
                 CellDataDTO cell = sheet.getActiveCells().get(cellKey);
                 if (cell != null) {
@@ -258,12 +248,12 @@ public class CheckUserInput {
                 } else {
                     System.out.print(" ".repeat(sheet.getColWidth()) + columnDivider);
                 }
-
             }
             // End divider
             System.out.print("\n".repeat(sheet.getRowHeight()));
         }
     }
+
 
     // Helper method to fit text to a specific width with padding
     private String fitToWidth(String text, int width) {
@@ -282,6 +272,7 @@ public class CheckUserInput {
         System.out.println("Cell depending on: " + cell.getDependsOn() + "\n");
         System.out.println("Cell affects cells: " + cell.getAffectsOn() + "\n");
     }
+
     public File checkFileUserInput() {
         File fileToCheck;
         fileToCheck = getXMLFile(userInput);

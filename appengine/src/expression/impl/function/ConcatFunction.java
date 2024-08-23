@@ -2,7 +2,7 @@ package expression.impl.function;
 
 import expression.api.Expression;
 import expression.api.ObjType;
-import expression.impl.BinaryExpression;
+import expression.impl.simple.expression.BinaryExpression;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
 
@@ -22,14 +22,13 @@ public class ConcatFunction extends BinaryExpression {
     @Override
     protected EffectiveValue evaluate(EffectiveValue o1, EffectiveValue o2) {
         if (o1.getObjType() == ObjType.NUMERIC || o2.getObjType() == ObjType.NUMERIC_ERROR ||
-                o1.getObjType()==ObjType.NUMERIC_ERROR || o2.getObjType()==ObjType.NUMERIC) {
-            throw new ArithmeticException("This function only works on Strings! (or Expressions that returns String..), Please make sure to provide the correct argument type...");
-        }
-        else if (o1.getObjType()==ObjType.STRING&&o2.getObjType()==ObjType.STRING) {
+                o1.getObjType() == ObjType.NUMERIC_ERROR || o2.getObjType() == ObjType.NUMERIC) {
+            throw new ArithmeticException("The CONCAT function only works on Strings! (or Expressions that returns String..)\nPlease make sure to provide the correct argument type...");
+        } else if (o1.getObjType() == ObjType.STRING && o2.getObjType() == ObjType.STRING) {
             String res = (String) o1.getValue() + (String) o2.getValue();
             return new EffectiveValueImpl(res, type());
         }
-       return new EffectiveValueImpl("!UNDEFINED!", ObjType.STRING_ERROR);
+        return new EffectiveValueImpl("!UNDEFINED!", ObjType.STRING_ERROR);
     }
 
     public String getName() {

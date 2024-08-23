@@ -1,9 +1,9 @@
 package engine.api;
 
-import DTO.CellDataDTO;
-import DTO.LoadDTO;
-import DTO.exitDTO;
-import DTO.sheetDTO;
+import dto.CellDataDTO;
+import dto.LoadDTO;
+import dto.exitDTO;
+import dto.sheetDTO;
 
 
 import java.io.File;
@@ -17,8 +17,6 @@ public interface Engine {
     CellDataDTO showCell(String id);
 
     sheetDTO updateCell(String cellId, String value);
-
-    sheetDTO showVersions();
 
     exitDTO exitSystem();
 

@@ -2,7 +2,7 @@ package expression.impl.function;
 
 import expression.api.Expression;
 import expression.api.ObjType;
-import expression.impl.TrinaryExpression;
+import expression.impl.simple.expression.TrinaryExpression;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
 
@@ -31,7 +31,7 @@ public class SubFunction extends TrinaryExpression {
 
         if (sourceValue.getObjType() == ObjType.NUMERIC || sourceValue.getObjType() == ObjType.NUMERIC_ERROR
                 || startValue.getObjType() != ObjType.NUMERIC || endValue.getObjType() != ObjType.NUMERIC) {
-            throw new IllegalArgumentException("This SUB function requires a string as the first argument and numeric " +
+            throw new IllegalArgumentException("The SUB function requires a string as the first argument and numeric " +
                     "values as the second and third arguments. Found :"
                     + sourceValue.getObjType() + " " + startValue.getObjType() + " " + endValue.getObjType());
         } else if (sourceValue.getObjType() == ObjType.STRING_ERROR) {

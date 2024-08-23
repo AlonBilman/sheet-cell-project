@@ -1,10 +1,11 @@
-package DTO;
+package dto;
 
 import java.io.Serializable;
 
 public class exitDTO implements Serializable {
     int exitStatus;
-    public exitDTO(){
+
+    public exitDTO() {
         exitStatus = 0;
     }
 

@@ -1,4 +1,4 @@
-package DTO;
+package dto;
 
 import sheet.api.EffectiveValue;
 import sheet.impl.CellImpl;
@@ -26,21 +26,27 @@ public class CellDataDTO implements Serializable {
         this.originalValue = cell.getOriginalValue();
         this.effectiveValue = cell.getEffectiveValue();
     }
+
     public String getId() {
         return id;
     }
+
     public int getLastChangeAt() {
         return lastChangeAt;
     }
+
     public Set<String> getDependsOn() {
         return dependsOn;
     }
+
     public Set<String> getAffectsOn() {
         return affectsOn;
     }
+
     public String getOriginalValue() {
         return originalValue;
     }
+
     public EffectiveValue getEffectiveValue() {
         return effectiveValue;
     }

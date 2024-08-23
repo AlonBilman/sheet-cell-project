@@ -1,4 +1,4 @@
-package DTO;
+package dto;
 
 import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
@@ -27,6 +27,7 @@ public class sheetDTO implements Serializable {
         this.sheetVersionNumber = sheet.getSheetVersionNumber();
 
     }
+
     private Map<String, CellDataDTO> convertCells(SpreadSheetImpl sheet) {
         Map<String, CellDataDTO> convertedCells = new HashMap<>();
         for (Map.Entry<String, CellImpl> entry : sheet.getSTLCells().entrySet()) {
@@ -39,21 +40,27 @@ public class sheetDTO implements Serializable {
     public int getRowSize() {
         return rowSize;
     }
+
     public int getColSize() {
         return colSize;
     }
+
     public int getRowHeight() {
         return rowHeight;
     }
+
     public int getColWidth() {
         return colWidth;
     }
+
     public Map<String, CellDataDTO> getActiveCells() {
         return activeCells;
     }
+
     public String getSheetName() {
         return sheetName;
     }
+
     public int getSheetVersionNumber() {
         return sheetVersionNumber;
     }

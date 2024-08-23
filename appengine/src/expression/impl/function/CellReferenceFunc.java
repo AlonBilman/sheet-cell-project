@@ -20,7 +20,7 @@ public class CellReferenceFunc implements Expression {
     public EffectiveValue eval() {
         EffectiveValue evaluateCell = cellId.eval();
         if (evaluateCell.getObjType() != ObjType.STRING)
-            throw new IllegalArgumentException("REF function is only applicable to Strings! (Cell ID). \n- provided Double");
+            throw new IllegalArgumentException("The REF function is only applicable to Strings! (Cell ID). \n- provided Double");
         return currSheet.ref(cellId.eval(), calledById);
     }
 

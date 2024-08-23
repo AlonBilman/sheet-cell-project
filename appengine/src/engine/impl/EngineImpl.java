@@ -1,9 +1,9 @@
 package engine.impl;
 
-import DTO.CellDataDTO;
-import DTO.LoadDTO;
-import DTO.exitDTO;
-import DTO.sheetDTO;
+import dto.CellDataDTO;
+import dto.LoadDTO;
+import dto.exitDTO;
+import dto.sheetDTO;
 import FileCheck.STLSheet;
 import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
@@ -12,9 +12,10 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EngineImpl implements Engine,Serializable {
-    private static final long maxRows = 50;
-    private static final long maxCols = 20;
+public class EngineImpl implements Engine, Serializable {
+    private final int maxRows = 50;
+    private final int minRowsAndCols = 1;
+    private final int maxCols = 20;
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
 
@@ -26,15 +27,20 @@ public class EngineImpl implements Engine,Serializable {
         if (stlSheet == null) {
             throw new NullPointerException("STLSheet is null");
         }
-        if(stlSheet.getSTLLayout().getRows() > maxRows) {
+        if (stlSheet.getSTLLayout().getRows() > maxRows) {
             throw new IllegalArgumentException("XML file inserted more than 50 rows");
         }
-        if(stlSheet.getSTLLayout().getColumns() > maxCols){
+        if (stlSheet.getSTLLayout().getRows() < minRowsAndCols) {
+            throw new IllegalArgumentException("XML file inserted less than " + minRowsAndCols + " rows");
+        }
+        if (stlSheet.getSTLLayout().getColumns() > maxCols) {
             throw new IllegalArgumentException("XML file inserted contains more than 20 columns");
+        }
+        if (stlSheet.getSTLLayout().getColumns() < minRowsAndCols) {
+            throw new IllegalArgumentException("XML file inserted less than " + minRowsAndCols + " columns");
         }
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
         sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
-
     }
 
     @Override
@@ -44,13 +50,12 @@ public class EngineImpl implements Engine,Serializable {
 
     @Override
     public CellDataDTO showCell(String id) {
-        try{
+        try {
             return new CellDataDTO(this.spreadSheet.getCell(id));
-        }
-       catch(NullPointerException e){
+        } catch (NullPointerException e) {
             throw new NullPointerException("The cell you refer to is null, meaning you did not create it" +
                     "\nIn order to inspect its content you have to modify it first.");
-       }
+        }
     }
 
     @Override
@@ -65,19 +70,19 @@ public class EngineImpl implements Engine,Serializable {
         return new sheetDTO(this.spreadSheet);
     }
 
-    public void savePositionToFile(String folderPath,String fileName) throws IOException {
+    public void savePositionToFile(String folderPath, String fileName) throws IOException {
         File folder = new File(folderPath);
         if (!folder.exists()) {
             folder.mkdirs();
         }
-        File file = new File(folder, fileName.trim()+".ser"); //trim in order to remove spaces
+        File file = new File(folder, fileName.trim() + ".ser"); //trim in order to remove spaces
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(this);
         }
     }
 
-    public static EngineImpl resumePositionToEngine(String filePath,String fileName) throws IOException, ClassNotFoundException {
-        File file = new File(filePath+"\\"+fileName.trim()+".ser");
+    public static EngineImpl resumePositionToEngine(String filePath, String fileName) throws IOException, ClassNotFoundException {
+        File file = new File(filePath + "\\" + fileName.trim() + ".ser");
         if (!file.exists()) {
             throw new FileNotFoundException("File not found: " + filePath);
         }
@@ -86,10 +91,6 @@ public class EngineImpl implements Engine,Serializable {
         }
     }
 
-    @Override
-    public sheetDTO showVersions() {
-        return new sheetDTO(this.spreadSheet);
-    }
 
     @Override
     public LoadDTO Load(File newFile) {
@@ -110,6 +111,6 @@ public class EngineImpl implements Engine,Serializable {
 
     @Override
     public exitDTO exitSystem() {
-        return new DTO.exitDTO();
+        return new dto.exitDTO();
     }
 }
