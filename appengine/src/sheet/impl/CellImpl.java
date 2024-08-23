@@ -104,6 +104,12 @@ public class CellImpl implements Serializable {
                     }
                     return new AbsFunction(parsedArguments.get(0));
 
+                case "TIMES":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("TIMES function requires two arguments.");
+                    }
+                    return new TimesFunction(parsedArguments.get(0),parsedArguments.get(1));
+
                 case "POW":
                     if (parsedArguments.size() != 2) {
                         throw new IllegalArgumentException("POW function requires two arguments.");
