@@ -111,9 +111,7 @@ public class CheckUserInput {
                     }
                     stlSheet = loadXMLFile(loadResult.getLoadedFile());
                     try {
-                        EngineImpl newEngine = new EngineImpl();
-                        newEngine.initSheet(stlSheet);
-                        engine = newEngine;
+                        engine.initSheet(stlSheet);
                         System.out.println("XML File loaded.");
                         break;
                     } catch (Exception e) {
