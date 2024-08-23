@@ -12,10 +12,6 @@ public class Number implements Expression {
         this.value = value;
     }
 
-    public Number(Integer value) {
-        this.value = Double.valueOf(value);
-    }
-
     public ObjType type() {
         return ObjType.NUMERIC;
     }

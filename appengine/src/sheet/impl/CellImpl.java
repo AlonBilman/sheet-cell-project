@@ -66,6 +66,10 @@ public class CellImpl implements Serializable {
     }
 
     public void calculateEffectiveValue() {
+        for(String id : dependsOn) {
+            CellImpl dep = currSpreadSheet.getCell(id);
+            dep.calculateEffectiveValue();
+        }
         if (originalValue != null) {
             if (!originalValue.isEmpty()) {
                 Expression expression = parseExpression(originalValue);
@@ -104,11 +108,23 @@ public class CellImpl implements Serializable {
                     }
                     return new AbsFunction(parsedArguments.get(0));
 
+                case "SUB":
+                    if (parsedArguments.size() != 3) {
+                        throw new IllegalArgumentException("SUB function requires three arguments.");
+                    }
+                    return new SubFunction(parsedArguments.get(0),parsedArguments.get(1), parsedArguments.get(2));
+
                 case "TIMES":
                     if (parsedArguments.size() != 2) {
                         throw new IllegalArgumentException("TIMES function requires two arguments.");
                     }
                     return new TimesFunction(parsedArguments.get(0),parsedArguments.get(1));
+
+                case "DIVIDE":
+                    if (parsedArguments.size() != 2) {
+                        throw new IllegalArgumentException("DIVIDE function requires two arguments.");
+                    }
+                    return new DivideFunction(parsedArguments.get(0),parsedArguments.get(1));
 
                 case "POW":
                     if (parsedArguments.size() != 2) {
@@ -206,18 +222,19 @@ public class CellImpl implements Serializable {
     private void removeAffectsOn(String id) {
         affectsOn.remove(id);
     }
-
+    //proplem with setOriginalValue aka maham calculation
     public void setOriginalValue(String originalValue) {
         this.originalValue = originalValue;
         removeDependsOn();
-        calculateEffectiveValue();
         detectCircularDependency(new HashSet<>());
+        calculateEffectiveValue();
         for (String affectedId : affectsOn) {
             CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
             affectedCell.calculateEffectiveValue();
         }
         updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
     }
+
 
     private void detectCircularDependency(Set<String> visitedCells) {
         if (visitedCells.contains(this.id)) {

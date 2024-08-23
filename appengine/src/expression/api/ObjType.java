@@ -3,5 +3,6 @@ package expression.api;
 import java.io.Serializable;
 
 public enum ObjType implements Serializable {
-    NUMERIC, STRING, BOOLEAN
+    NUMERIC, STRING, BOOLEAN, NUMERIC_ERROR , STRING_ERROR
 }
+

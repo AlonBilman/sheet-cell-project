@@ -5,7 +5,7 @@ import expression.api.ObjType;
 import sheet.api.EffectiveValue;
 
 public abstract class BinaryExpression implements Expression {
-    private Expression expression1, expression2;
+    private final Expression expression1, expression2;
 
     public BinaryExpression(Expression expression1, Expression expression2) {
         this.expression1 = expression1;

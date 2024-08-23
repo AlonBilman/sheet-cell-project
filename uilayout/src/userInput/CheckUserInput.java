@@ -258,13 +258,15 @@ public class CheckUserInput {
                     cellValue = (valueObject != null) ? valueObject.toString() : "";
 
                     int paddingSize = sheet.getColWidth() * 2 + 1 - cellValue.length();
+                    if(paddingSize < 0){
+                        paddingSize = sheet.getColWidth() * 2 + 1;
+                    }
                     int leftPadding = paddingSize / 2;
                     int rightPadding = paddingSize - leftPadding;
                     System.out.print(" ".repeat(leftPadding) + cellValue + " ".repeat(rightPadding) + columnDivider);
                 } else {
                     System.out.print(spaceString + " " + spaceString + columnDivider);
                 }
-
             }
             // End divider
             System.out.print(newLineString);

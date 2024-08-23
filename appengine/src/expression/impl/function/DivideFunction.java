@@ -1,3 +1,4 @@
+
 package expression.impl.function;
 
 import expression.api.Expression;
@@ -6,12 +7,12 @@ import expression.impl.BinaryExpression;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
 
-public class MinusFunction extends BinaryExpression {
+public class DivideFunction extends BinaryExpression {
     private final String name;
 
-    public MinusFunction(Expression arg1, Expression arg2) {
+    public DivideFunction(Expression arg1, Expression arg2) {
         super(arg1, arg2);
-        name = "MINUS";
+        name = "DIVIDE";
     }
 
     public String getName() {
@@ -27,15 +28,18 @@ public class MinusFunction extends BinaryExpression {
     protected EffectiveValue evaluate(EffectiveValue o1, EffectiveValue o2) {
         if (o1 == null || o2 == null)
             throw new NullPointerException("The parameters cannot be null, you may referred to an uninitiated cell");
-        if (o1.getObjType() == ObjType.STRING || o1.getObjType() == ObjType.STRING_ERROR
-                || o2.getObjType() == ObjType.STRING_ERROR || o2.getObjType() == ObjType.STRING) {
-            throw new ArithmeticException("This MINUS function only works on Doubles! (or Integers..)\n" +
+        if(o1.getObjType()==ObjType.STRING ||o1.getObjType()== ObjType.STRING_ERROR
+                || o2.getObjType()==ObjType.STRING_ERROR || o2.getObjType()==ObjType.STRING) {
+            throw new ArithmeticException("This DIVIDE function only works on Doubles! (or Integers..)\n" +
                     "Please make sure to provide the correct argument type...");
-        } else if (o1.getObjType() == ObjType.NUMERIC && o2.getObjType() == ObjType.NUMERIC) {
-            double res = (double) o1.getValue() - (double) o2.getValue();
-            return new EffectiveValueImpl(res, type());
+        }
+        else if(o1.getObjType()==ObjType.NUMERIC && o2.getObjType()==ObjType.NUMERIC) {
+            if((double)o2.getValue()!=0){
+                double res = (double) o1.getValue() / (double) o2.getValue();
+                return new EffectiveValueImpl(res, type());
+            }
         }
         //else - numeric error.
-        return new EffectiveValueImpl("NaN", ObjType.NUMERIC_ERROR);
+        return new EffectiveValueImpl("NaN",ObjType.NUMERIC_ERROR);
     }
 }

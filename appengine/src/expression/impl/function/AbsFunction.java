@@ -6,6 +6,7 @@ import expression.api.ObjType;
 import expression.impl.UnaryExpression;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
+
 import static java.lang.Math.abs;
 
 
@@ -30,11 +31,14 @@ public class AbsFunction extends UnaryExpression {
     protected EffectiveValue evaluate(EffectiveValue o1) {
         if (o1 == null)
             throw new NullPointerException("The parameters cannot be null, you may referred to an uninitiated cell");
-        if (o1.getObjType() != ObjType.NUMERIC)
-            throw new ArithmeticException("This ABS function only works on a Double (or Integer..)\n" +
+        if (o1.getObjType() == ObjType.STRING || o1.getObjType() == ObjType.STRING_ERROR) {
+            throw new ArithmeticException("This ABS function only works on Doubles! (or Integers..)\n" +
                     "Please make sure to provide the correct argument type...");
-
-        double res = abs((double) o1.getValue());
-        return new EffectiveValueImpl(res, type());
+        } else if (o1.getObjType() == ObjType.NUMERIC) {
+            double res = abs((double) o1.getValue());
+            return new EffectiveValueImpl(res, type());
+        }
+        //else - numeric error.
+        return new EffectiveValueImpl("NaN", ObjType.NUMERIC_ERROR);
     }
 }
