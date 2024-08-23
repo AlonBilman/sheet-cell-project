@@ -116,25 +116,25 @@ public class CellImpl implements Serializable {
                     if (parsedArguments.size() != 3) {
                         throw new IllegalArgumentException("SUB function requires three arguments.");
                     }
-                    return new SubFunction(parsedArguments.get(0),parsedArguments.get(1), parsedArguments.get(2));
+                    return new SubFunction(parsedArguments.get(0), parsedArguments.get(1), parsedArguments.get(2));
 
                 case "TIMES":
                     if (parsedArguments.size() != 2) {
                         throw new IllegalArgumentException("TIMES function requires two arguments.");
                     }
-                    return new TimesFunction(parsedArguments.get(0),parsedArguments.get(1));
+                    return new TimesFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "DIVIDE":
                     if (parsedArguments.size() != 2) {
                         throw new IllegalArgumentException("DIVIDE function requires two arguments.");
                     }
-                    return new DivideFunction(parsedArguments.get(0),parsedArguments.get(1));
+                    return new DivideFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "POW":
                     if (parsedArguments.size() != 2) {
                         throw new IllegalArgumentException("POW function requires two arguments.");
                     }
-                    return new PowFunction(parsedArguments.get(0),parsedArguments.get(1));
+                    return new PowFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "MOD":
                     if (parsedArguments.size() != 2) {
@@ -153,7 +153,6 @@ public class CellImpl implements Serializable {
                         throw new IllegalArgumentException("CONCAT function requires two arguments.");
                     }
                     return new ConcatFunction(parsedArguments.get(0), parsedArguments.get(1));
-                //NEED TO ADD MORE FUNCTIONS OBV
 
                 case "REF":
                     if (parsedArguments.size() != 1) {
@@ -226,18 +225,13 @@ public class CellImpl implements Serializable {
     private void removeAffectsOn(String id) {
         affectsOn.remove(id);
     }
-    //proplem with setOriginalValue aka maham calculation
+
     public void setOriginalValue(String originalValue) {
         this.originalValue = originalValue;
         removeDependsOn();
         calculateEffectiveValue();
-//        for (String affectedId : affectsOn) {
-//            CellImpl affectedCell = currSpreadSheet.getCell(affectedId);
-//            affectedCell.calculateEffectiveValue();
-//        }
         updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
     }
-
 
     private void detectCircularDependency(Set<String> visitedCells) {
         if (visitedCells.contains(this.id)) {
