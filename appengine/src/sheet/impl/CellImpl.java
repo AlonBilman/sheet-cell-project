@@ -1,6 +1,6 @@
 package sheet.impl;
 
-import file.check.STLCell;
+import checkfile.STLCell;
 import expression.api.Expression;
 import expression.api.ObjType;
 import expression.impl.simple.expression.Mystring;

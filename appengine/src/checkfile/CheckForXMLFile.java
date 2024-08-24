@@ -1,4 +1,4 @@
-package file.check;
+package checkfile;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -31,7 +31,7 @@ public class CheckForXMLFile {
 
     public static STLSheet readXMLFile(String filePath) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance("file/check");
+            JAXBContext jaxbContext = JAXBContext.newInstance("checkfile");
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return (STLSheet) unmarshaller.unmarshal(new File(filePath));
         } catch (JAXBException e) {

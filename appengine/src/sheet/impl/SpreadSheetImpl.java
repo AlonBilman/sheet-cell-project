@@ -1,8 +1,8 @@
 package sheet.impl;
 
-import file.check.STLCell;
-import file.check.STLCells;
-import file.check.STLSheet;
+import checkfile.STLCell;
+import checkfile.STLCells;
+import checkfile.STLSheet;
 import sheet.api.EffectiveValue;
 
 import java.io.*;

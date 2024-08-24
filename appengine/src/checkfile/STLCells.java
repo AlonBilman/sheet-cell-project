@@ -5,7 +5,7 @@
 //
 
 
-package file.check;
+package checkfile;
 
 import java.util.ArrayList;
 import java.util.List;

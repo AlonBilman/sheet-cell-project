@@ -5,7 +5,7 @@
 //
 
 
-package file.check;
+package checkfile;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
