@@ -240,7 +240,7 @@ public class CellImpl implements Serializable {
     private void detectCircularDependency(Set<String> visitedCells) {
 
         if (visitedCells.contains(this.id)) {
-            throw new IllegalArgumentException("Circular dependency detected. Trace: " + this.id);
+            throw new IllegalArgumentException("Circular dependency detected! Trace: " + this.id);
         }
         try {
             visitedCells.add(this.id);

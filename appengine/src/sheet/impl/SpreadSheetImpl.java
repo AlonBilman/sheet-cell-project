@@ -167,7 +167,7 @@ public class SpreadSheetImpl implements Serializable {
                      List<STLCell> sortedCells, Map<String, STLCell> cellMap) {
 
         if (inProcess.contains(cellId)) {
-            throw new IllegalStateException("Circular dependency detected! (Trace above) From Cell " + cellId);
+            throw new IllegalStateException("Circular dependency detected! Trace: " + cellId);
         }
 
         if (!visited.contains(cellId)) {
@@ -180,8 +180,7 @@ public class SpreadSheetImpl implements Serializable {
                 visited.add(cellId);
                 sortedCells.add(cellMap.get(cellId));  //add the actual cell to the sorted list
             } catch (Exception e) {
-                throw new RuntimeException("Problem with dependency of cell " + cellId + ":" +
-                        dependencyGraph.get(cellId) + "\n" + e.getMessage());
+                throw new RuntimeException(e.getMessage()+" -> " + cellId);
             }
         }
     }
