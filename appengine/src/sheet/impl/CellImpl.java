@@ -238,13 +238,18 @@ public class CellImpl implements Serializable {
     }
 
     private void detectCircularDependency(Set<String> visitedCells) {
+
         if (visitedCells.contains(this.id)) {
-            throw new IllegalArgumentException("Circular dependency detected involving cell: " + this.id);
+            throw new IllegalArgumentException("Circular dependency detected. Trace: " + this.id);
         }
-        visitedCells.add(this.id);
-        for (String dependencyId : dependsOn) {
-            CellImpl dependentCell = currSpreadSheet.getCell(dependencyId);
-            dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
+        try {
+            visitedCells.add(this.id);
+            for (String dependencyId : dependsOn) {
+                CellImpl dependentCell = currSpreadSheet.getCell(dependencyId);
+                dependentCell.detectCircularDependency(new HashSet<>(visitedCells));
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage() + " -> " + this.id);
         }
     }
 
