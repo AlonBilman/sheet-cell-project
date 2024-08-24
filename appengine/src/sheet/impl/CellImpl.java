@@ -1,6 +1,6 @@
 package sheet.impl;
 
-import FileCheck.STLCell;
+import file.check.STLCell;
 import expression.api.Expression;
 import expression.api.ObjType;
 import expression.impl.simple.expression.Mystring;
@@ -69,7 +69,11 @@ public class CellImpl implements Serializable {
         if (originalValue != null) {
             if (!originalValue.isEmpty()) {
                 Expression expression = parseExpression(originalValue);
-                this.effectiveValue = expression.eval();
+                try {
+                    this.effectiveValue = expression.eval();
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Involving Cell " + id + "\n" + e.getMessage());
+                }
                 detectCircularDependency(new HashSet<>());
                 //recursive like dps algo aka - "Maham".
                 for (String affectid : affectsOn) {
@@ -192,25 +196,25 @@ public class CellImpl implements Serializable {
             }
         }
         if (!currentArgument.isEmpty()) {
-            result.add(parseExpression(currentArgument.toString().trim()));
+            result.add(parseExpression(currentArgument.toString()));
         }
         return result;
     }
 
     private Expression parseSimpleValue(String value) {
-        if (value.isEmpty() || value.matches(".*[^0-9].*"))
+        if (value.isEmpty() || value.matches(".*[^0-9 ].*")) {
             if (value.startsWith("-")) {
                 try {
                     return new Number(Double.valueOf(value));
                 } catch (NumberFormatException ignored) {
                 }
             } else return new Mystring(value);
-
+        }
         return new Number(Double.valueOf(value));
     }
 
     private String generateId(String col, int row) {
-        char letter = col.charAt(0);
+        char letter = Character.toUpperCase(col.charAt(0));
         return letter + String.valueOf(row);
     }
 

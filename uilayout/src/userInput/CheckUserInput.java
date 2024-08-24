@@ -3,14 +3,14 @@ package userInput;
 import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
-import FileCheck.STLSheet;
+import file.check.STLSheet;
 import engine.impl.EngineImpl;
 
 import java.io.File;
 import java.util.Scanner;
 
-import static FileCheck.CheckForXMLFile.getXMLFile;
-import static FileCheck.CheckForXMLFile.loadXMLFile;
+import static file.check.CheckForXMLFile.getXMLFile;
+import static file.check.CheckForXMLFile.loadXMLFile;
 
 public class CheckUserInput {
     private static final String FILE_INPUT = "1";

@@ -4,7 +4,7 @@ import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.exitDTO;
 import dto.sheetDTO;
-import FileCheck.STLSheet;
+import file.check.STLSheet;
 import engine.api.Engine;
 import sheet.impl.SpreadSheetImpl;
 
@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EngineImpl implements Engine, Serializable {
-    private final int maxRows = 50;
-    private final int minRowsAndCols = 1;
-    private final int maxCols = 20;
+    private static final int MAX_ROWS = 50;
+    private static final int MIN_ROWS_AND_COLS = 1;
+    private static final int MAX_COLS = 20;
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
 
@@ -27,17 +27,17 @@ public class EngineImpl implements Engine, Serializable {
         if (stlSheet == null) {
             throw new NullPointerException("STLSheet is null");
         }
-        if (stlSheet.getSTLLayout().getRows() > maxRows) {
+        if (stlSheet.getSTLLayout().getRows() > MAX_ROWS) {
             throw new IllegalArgumentException("XML file inserted more than 50 rows");
         }
-        if (stlSheet.getSTLLayout().getRows() < minRowsAndCols) {
-            throw new IllegalArgumentException("XML file inserted less than " + minRowsAndCols + " rows");
+        if (stlSheet.getSTLLayout().getRows() < MIN_ROWS_AND_COLS) {
+            throw new IllegalArgumentException("XML file inserted less than " + MIN_ROWS_AND_COLS + " rows");
         }
-        if (stlSheet.getSTLLayout().getColumns() > maxCols) {
+        if (stlSheet.getSTLLayout().getColumns() > MAX_COLS) {
             throw new IllegalArgumentException("XML file inserted contains more than 20 columns");
         }
-        if (stlSheet.getSTLLayout().getColumns() < minRowsAndCols) {
-            throw new IllegalArgumentException("XML file inserted less than " + minRowsAndCols + " columns");
+        if (stlSheet.getSTLLayout().getColumns() < MIN_ROWS_AND_COLS) {
+            throw new IllegalArgumentException("XML file inserted less than " + MIN_ROWS_AND_COLS + " columns");
         }
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
         sheets.clear();

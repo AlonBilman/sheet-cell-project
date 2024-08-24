@@ -5,7 +5,7 @@
 //
 
 
-package FileCheck;
+package file.check;
 
 import javax.xml.namespace.QName;
 import jakarta.xml.bind.JAXBElement;
