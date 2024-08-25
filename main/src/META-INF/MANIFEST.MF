@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: Main
+Class-Path: jaxb-jxc.jar jaxb-xjc.jar jaxb-core.jar jaxb-impl.jar angus-
+ activation.jar jakarta.xml.bind-api.jar jakarta.activation-api.jar jaxb
+ -jxc.jar jaxb-xjc.jar jaxb-core.jar jaxb-impl.jar angus-activation.jar 
+ jakarta.xml.bind-api.jar jakarta.activation-api.jar
+
