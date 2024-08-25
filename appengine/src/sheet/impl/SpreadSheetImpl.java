@@ -23,7 +23,7 @@ public class SpreadSheetImpl implements Serializable {
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
         this.activeCells = new HashMap<>();
-        this.sheetVersionNumber = 1;
+        this.sheetVersionNumber = 0; //starting with 0
         this.rowSize = stlSheet.getSTLLayout().getRows();
         this.columnSize = stlSheet.getSTLLayout().getColumns();
         this.colWidth = stlSheet.getSTLLayout().getSTLSize().getColumnWidthUnits();
@@ -33,6 +33,7 @@ public class SpreadSheetImpl implements Serializable {
         if (stlCells != null) {
             addCells(stlCells.getSTLCell());
         }
+        this.sheetVersionNumber = 1; //adding all the cells -> sheetV = 1
         sheetBeforeChange = deepCopy();
     }
 
