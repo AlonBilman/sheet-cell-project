@@ -36,12 +36,6 @@ public class CheckUserInput {
     }
 
     public static void printMenu() {
-        // ANSI escape codes for bold and reset
-        final String BOLD = "\033[1m";
-        final String ITALIC = "\033[3m";
-        final String RESET = "\033[0m";
-
-        // Define the menu options and their descriptions
         String[] options = {
                 "Load a new XML file",
                 "Load current sheet",
@@ -55,12 +49,12 @@ public class CheckUserInput {
 
         // Print the menu header
         System.out.println("+------------------------------------------+");
-        System.out.println("|" + BOLD + BOLD + "          Please choose an option" + RESET + "         |");
+        System.out.println("|          Please choose an option         |");
         System.out.println("+------------------------------------------+");
 
         // Print the menu options
         for (int i = 0; i < options.length; i++) {
-            String option = String.format("| %2d. %s%-34s%s   |", i + 1, ITALIC, options[i], RESET);
+            String option = String.format("| %2d. %-34s   |", i + 1, options[i]);
             System.out.println(option);
         }
 
