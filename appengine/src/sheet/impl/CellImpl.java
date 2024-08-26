@@ -74,7 +74,7 @@ public class CellImpl implements Serializable {
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Involving Cell " + id + "\n" + e.getMessage());
                 }
-            } else this.effectiveValue = new EffectiveValueImpl(" ", ObjType.STRING);
+            } else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
 
             detectCircularDependency(new HashSet<>());
             //recursive like dps algo aka - "Maham". -> dfs with circle detection
