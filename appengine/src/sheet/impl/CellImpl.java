@@ -75,13 +75,15 @@ public class CellImpl implements Serializable {
                     throw new IllegalArgumentException("Involving Cell " + id + "\n" + e.getMessage());
                 }
                 detectCircularDependency(new HashSet<>());
-                //recursive like dps algo aka - "Maham".
+                //recursive like dps algo aka - "Maham". -> dfs with circle detection
                 for (String affectid : affectsOn) {
                     CellImpl dep = currSpreadSheet.getCell(affectid);
                     dep.calculateEffectiveValue();
                 }
             } else {
-                this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
+                //this is where you can init a cell and put there a "nothing" value
+                //also this is a way to delete a cell -> changing it and put enter or space instead of original val
+                this.effectiveValue = new EffectiveValueImpl(" ", ObjType.STRING);
             }
         } else {
             this.effectiveValue = null;
@@ -202,7 +204,7 @@ public class CellImpl implements Serializable {
     }
 
     private Expression parseSimpleValue(String value) {
-        if (value.isEmpty() || value.matches(".*[^0-9 ].*")) {
+        if (value.isEmpty() || value.matches(".*[^0-9 ].*") || value.matches("^\\s*$")) {
             if (value.startsWith("-")) {
                 try {
                     return new Number(Double.valueOf(value));

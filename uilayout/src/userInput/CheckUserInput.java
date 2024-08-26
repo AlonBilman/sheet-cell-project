@@ -133,7 +133,7 @@ public class CheckUserInput {
                     System.out.println("Enter specific cell id:");
                     String cellToUpdate = scanner.nextLine().trim();
                     System.out.println("Enter new cell value:");
-                    String newValue = scanner.nextLine().trim();
+                    String newValue = scanner.nextLine();
                     try {
                         sheetDto = engine.updateCell(cellToUpdate, newValue);
                         System.out.println("Cell updated.");

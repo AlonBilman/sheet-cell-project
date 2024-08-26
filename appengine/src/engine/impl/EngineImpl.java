@@ -61,6 +61,8 @@ public class EngineImpl implements Engine, Serializable {
 
     @Override
     public sheetDTO updateCell(String cellId, String value) {
+        if (value != null && value.matches(".*\\S.*"))
+            value = value.trim();
         try {
             this.spreadSheet.changeCell(cellId, value);
             sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
