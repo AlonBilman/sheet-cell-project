@@ -65,7 +65,7 @@ public class CheckUserInput {
     public void UserStartMenuInput() {
         do {
             printMenu();
-            userInput = scanner.nextLine();
+            userInput = scanner.nextLine().trim();
             while ((!userInput.equals(FILE_INPUT) && !userInput.equals(LOAD_SAVED_SHEET)) && !engine.containSheet()
             ) {
                 if (userInput.equals(EXIT_SYSTEM)) {
@@ -75,7 +75,7 @@ public class CheckUserInput {
                 System.out.println("Please enter an XML file before proceeding.\n" +
                         "Or load an existing saved sheet-file");
                 printMenu();
-                userInput = scanner.nextLine();
+                userInput = scanner.nextLine().trim();
             }
 
             switch (userInput) {
@@ -84,7 +84,7 @@ public class CheckUserInput {
                         System.out.println("A file is already loaded. Loading a new file will override it.");
                     }
                     System.out.println("Please load a new XML file - Enter a file path Or press Enter to go back to the main menu:");
-                    userInput = scanner.nextLine();
+                    userInput = scanner.nextLine().trim();
                     if (userInput.isEmpty()) {
                         break;
                     }
@@ -133,7 +133,7 @@ public class CheckUserInput {
                     System.out.println("Enter specific cell id:");
                     String cellToUpdate = scanner.nextLine().trim();
                     System.out.println("Enter new cell value:");
-                    String newValue = scanner.nextLine();
+                    String newValue = scanner.nextLine().trim();
                     try {
                         sheetDto = engine.updateCell(cellToUpdate, newValue);
                         System.out.println("Cell updated.");
@@ -154,7 +154,7 @@ public class CheckUserInput {
                     int versionNum;
                     try {
                         System.out.println("Please pick a version to peek at:");
-                        versionNum = Integer.parseInt(scanner.nextLine());
+                        versionNum = Integer.parseInt(scanner.nextLine().trim());
 
                         // Validate if the input is within the valid range
                         if (versionNum >= 1 && versionNum <= engine.getSheets().size()) {
@@ -168,9 +168,9 @@ public class CheckUserInput {
                     break;
                 case SAVE_SHEET:
                     System.out.println("Please enter the absolute path to the file you would like to save:");
-                    String newFilePath = scanner.nextLine();
+                    String newFilePath = scanner.nextLine().trim();
                     System.out.println("Next, please enter the name of the file you would like to save as:");
-                    String fileName = scanner.nextLine();
+                    String fileName = scanner.nextLine().trim();
                     try {
                         engine.savePositionToFile(newFilePath, fileName);
                         System.out.println("File saved");
@@ -182,9 +182,9 @@ public class CheckUserInput {
                 case LOAD_SAVED_SHEET:
                     System.out.println("Loading a saved sheet...");
                     System.out.println("Please enter the file path:");
-                    String filePathToLoad = scanner.nextLine();
+                    String filePathToLoad = scanner.nextLine().trim();
                     System.out.println("Please Enter the name of the file you would like to load (without .<fileType>)");
-                    String fileNameToLoad = scanner.nextLine();
+                    String fileNameToLoad = scanner.nextLine().trim();
                     try {
                         engine = EngineImpl.resumePositionToEngine(filePathToLoad, fileNameToLoad);
                         System.out.println("File loaded.");

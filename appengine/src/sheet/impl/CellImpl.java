@@ -44,7 +44,7 @@ public class CellImpl implements Serializable {
         }
         int colInt = Character.getNumericValue(col.charAt(0)) - Character.getNumericValue('A'); //getting the col
 
-        if (colInt < 0 || row < 0 || row >= currSpreadSheet.getRowSize() || colInt >= currSpreadSheet.getColumnSize()) {
+        if (colInt < 0 || row <= 0 || row > currSpreadSheet.getRowSize() || colInt > currSpreadSheet.getColumnSize() - 1) {
             throw new IllegalArgumentException("One or more cells are out of sheet boundaries. Found \"" + col + "\" as column and \"" + row + "\" as row.");
         }
         //everything is fine. well in that case...return..

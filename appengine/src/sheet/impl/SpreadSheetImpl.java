@@ -106,7 +106,7 @@ public class SpreadSheetImpl implements Serializable {
         char letter = Character.toUpperCase(id.charAt(0));//taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
         int row = Integer.parseInt(id.substring(1));
-        if (col < 0 || row <= 0 || row > rowSize || col > columnSize-1) {
+        if (col < 0 || row <= 0 || row > rowSize || col > columnSize - 1) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Inserted: " + id + "\nPlease make sure that the Cell slot you refer to exists.");
         }
     }
@@ -163,6 +163,9 @@ public class SpreadSheetImpl implements Serializable {
         return dependencies;
     }
 
+    /* this dfs also contain checks for cells that did not initiate and circular dep
+     (in order to cut the topologicalSort that does not work with circular graphs)
+    */
     private void dfs(String cellId, Map<String, List<String>> dependencyGraph,
                      Set<String> visited, Set<String> inProcess,
                      List<STLCell> sortedCells, Map<String, STLCell> cellMap) {
@@ -174,17 +177,28 @@ public class SpreadSheetImpl implements Serializable {
         if (!visited.contains(cellId)) {
             inProcess.add(cellId);
             try {
+                if (!dependencyGraph.containsKey(cellId)) {
+                    throw new RuntimeException("No such cell - " + cellId + ". Create it in order to refer it");
+                }
+
                 for (String dependentCellId : dependencyGraph.get(cellId)) {
                     dfs(dependentCellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
                 }
+
                 inProcess.remove(cellId);
                 visited.add(cellId);
-                sortedCells.add(cellMap.get(cellId));  //add the actual cell to the sorted list
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage()+" -> " + cellId);
+                sortedCells.add(cellMap.get(cellId));
+
+            } catch (RuntimeException e) {
+                if (e.getMessage().contains("Circular dependency detected!")) {
+                    throw new RuntimeException(e.getMessage() + " -> " + cellId);
+                } else {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         }
     }
+
 
     public Map<String, CellImpl> getSTLCells() {
         return activeCells;
