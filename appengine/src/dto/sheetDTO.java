@@ -31,7 +31,6 @@ public class sheetDTO implements Serializable {
     private Map<String, CellDataDTO> convertCells(SpreadSheetImpl sheet) {
         Map<String, CellDataDTO> convertedCells = new HashMap<>();
         for (Map.Entry<String, CellImpl> entry : sheet.getSTLCells().entrySet()) {
-            // Avoid recursion by checking if the cell's parent sheet is the current sheet
             convertedCells.put(entry.getKey(), new CellDataDTO(entry.getValue()));
         }
         return convertedCells;

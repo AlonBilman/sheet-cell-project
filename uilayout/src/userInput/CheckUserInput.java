@@ -187,6 +187,7 @@ public class CheckUserInput {
                     String fileNameToLoad = scanner.nextLine().trim();
                     try {
                         engine = EngineImpl.resumePositionToEngine(filePathToLoad, fileNameToLoad);
+                        oldFile = new File(filePathToLoad);
                         System.out.println("File loaded.");
                     } catch (Exception e) {
                         System.out.println("Something went wrong when loading the saved sheet." +
