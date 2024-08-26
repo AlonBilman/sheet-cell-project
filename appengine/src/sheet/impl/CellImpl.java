@@ -74,16 +74,13 @@ public class CellImpl implements Serializable {
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Involving Cell " + id + "\n" + e.getMessage());
                 }
-                detectCircularDependency(new HashSet<>());
-                //recursive like dps algo aka - "Maham". -> dfs with circle detection
-                for (String affectid : affectsOn) {
-                    CellImpl dep = currSpreadSheet.getCell(affectid);
-                    dep.calculateEffectiveValue();
-                }
-            } else {
-                //this is where you can init a cell and put there a "nothing" value
-                //also this is a way to delete a cell -> changing it and put enter or space instead of original val
-                this.effectiveValue = new EffectiveValueImpl(" ", ObjType.STRING);
+            } else this.effectiveValue = new EffectiveValueImpl(" ", ObjType.STRING);
+
+            detectCircularDependency(new HashSet<>());
+            //recursive like dps algo aka - "Maham". -> dfs with circle detection
+            for (String affectid : affectsOn) {
+                CellImpl dep = currSpreadSheet.getCell(affectid);
+                dep.calculateEffectiveValue();
             }
         } else {
             this.effectiveValue = null;
