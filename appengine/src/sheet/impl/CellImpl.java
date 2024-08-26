@@ -206,6 +206,7 @@ public class CellImpl implements Serializable {
                 try {
                     return new Number(Double.valueOf(value));
                 } catch (NumberFormatException ignored) {
+                    return new Mystring(value);
                 }
             } else return new Mystring(value);
         }
