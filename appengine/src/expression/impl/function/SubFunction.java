@@ -1,5 +1,6 @@
 package expression.impl.function;
 
+import expression.api.ErrorValues;
 import expression.api.Expression;
 import expression.api.ObjType;
 import expression.impl.simple.expression.TrinaryExpression;
@@ -21,31 +22,21 @@ public class SubFunction extends TrinaryExpression {
 
     @Override
     public ObjType type() {
-        return ObjType.STRING; // this function returns a string.
+        return ObjType.STRING; // this function returns a expString.
     }
 
     @Override
     protected EffectiveValue evaluate(EffectiveValue sourceValue, EffectiveValue startValue, EffectiveValue endValue) {
         if (sourceValue == null || startValue == null || endValue == null)
             throw new NullPointerException("The parameters cannot be null; you may have referred to an uninitiated cell");
-
-        if (sourceValue.getObjType() == ObjType.NUMERIC || sourceValue.getObjType() == ObjType.NUMERIC_ERROR
-                || startValue.getObjType() != ObjType.NUMERIC || endValue.getObjType() != ObjType.NUMERIC) {
-            throw new IllegalArgumentException("The SUB function requires a string as the first argument and numeric " +
-                    "values as the second and third arguments. Found :"
-                    + sourceValue.getObjType() + " " + startValue.getObjType() + " " + endValue.getObjType());
-        } else if (sourceValue.getObjType() == ObjType.STRING_ERROR) {
-            return new EffectiveValueImpl("!UNDEFINED!", ObjType.STRING_ERROR);
+        if (sourceValue.getObjType() == ObjType.STRING && startValue.getObjType() == ObjType.NUMERIC && endValue.getObjType() == ObjType.NUMERIC) {
+            String source = (String) sourceValue.getValue();
+            int start = ((Double) startValue.getValue()).intValue();
+            int end = ((Double) endValue.getValue()).intValue();
+            if (!(start < 0 || end >= source.length() || start > end))
+                return new EffectiveValueImpl(source.substring(start, end + 1), type());
         }
-        //survived the building process - check real values
-        //It's ok to cast now.
-        String source = (String) sourceValue.getValue();
-        int start = ((Double) startValue.getValue()).intValue();
-        int end = ((Double) endValue.getValue()).intValue();
-
-        if (start < 0 || end >= source.length() || start > end) {
-            return new EffectiveValueImpl("!UNDEFINED!", ObjType.STRING_ERROR);
-        }
-        return new EffectiveValueImpl(source.substring(start, end + 1), type());
+        //if one of them is not numeric or the if inside was false (There's a not there!)
+        return new EffectiveValueImpl(ErrorValues.STRING_ERROR.getErrorMessage(), ObjType.UNKNOWN);
     }
 }

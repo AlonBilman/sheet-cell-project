@@ -1,9 +1,10 @@
 package sheet.impl;
 
 import checkfile.STLCell;
+import expression.api.ErrorValues;
 import expression.api.Expression;
 import expression.api.ObjType;
-import expression.impl.simple.expression.Mystring;
+import expression.impl.simple.expression.expString;
 import expression.impl.simple.expression.Number;
 import expression.impl.function.*;
 import expression.impl.function.AbsFunction;
@@ -66,25 +67,23 @@ public class CellImpl implements Serializable {
     }
 
     public void calculateEffectiveValue() {
-        if (originalValue != null) {
-            if (!originalValue.isEmpty()) {
-                Expression expression = parseExpression(originalValue);
-                try {
-                    this.effectiveValue = expression.eval();
-                } catch (Exception e) {
-                    throw new IllegalArgumentException("Involving Cell " + id + "\n" + e.getMessage());
-                }
-            } else this.effectiveValue = new EffectiveValueImpl("", ObjType.STRING);
-
-            detectCircularDependency(new HashSet<>());
-            //recursive like dps algo aka - "Maham". -> dfs with circle detection
-            for (String affectid : affectsOn) {
-                CellImpl dep = currSpreadSheet.getCell(affectid);
-                dep.calculateEffectiveValue();
+        if (originalValue == null || originalValue.isEmpty()) {
+            originalValue = "Empty Cell";
+            this.effectiveValue = new EffectiveValueImpl(ErrorValues.EMPTY.getErrorMessage(), ObjType.EMPTY);
+        }
+        else {
+            Expression expression = parseExpression(originalValue);
+            try {
+                this.effectiveValue = expression.eval();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Involving Cell " + id + "\n" + e.getMessage());
             }
-        } else {
-            this.effectiveValue = null;
-            //handle the case where there is no valid expression
+        }
+        detectCircularDependency(new HashSet<>());
+        //recursive like dps algo aka - "Maham". -> dfs with circle detection
+        for (String affectid : affectsOn) {
+            CellImpl dep = currSpreadSheet.getCell(affectid);
+            dep.calculateEffectiveValue();
         }
     }
 
@@ -206,9 +205,9 @@ public class CellImpl implements Serializable {
                 try {
                     return new Number(Double.valueOf(value));
                 } catch (NumberFormatException ignored) {
-                    return new Mystring(value);
+                    return new expString(value);
                 }
-            } else return new Mystring(value);
+            } else return new expString(value);
         }
         return new Number(Double.valueOf(value));
     }

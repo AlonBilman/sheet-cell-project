@@ -64,10 +64,8 @@ public class SpreadSheetImpl implements Serializable {
         CellImpl.setSpreadSheet(this);
         checkCellId(id);
         CellImpl cell = getCell(id);
-        if (cell == null) //meaning there is no cell like this activated
-        {
-            checkCellId(id);
-            addCell(Integer.parseInt(id.substring(1)), id.substring(0, 1), newOriginalVal);
+        if (cell == null) { //meaning there is no cell like this activated
+            initNullCell(id, newOriginalVal);
             cell = getCell(id);
         }
         cell.setOriginalValue(newOriginalVal);
@@ -82,22 +80,41 @@ public class SpreadSheetImpl implements Serializable {
         activeCells.put(cell.getId(), cell);
     }
 
+    private void initNullCell(String id, String newOriginalVal) {
+        checkCellId(id);
+        addCell(Integer.parseInt(id.substring(1)), id.substring(0, 1), newOriginalVal);
+    }
+
     public EffectiveValue ref(EffectiveValue id, String IdThatCalledMe) {
         String theCellThatRefIsReferringTo = (String) id.getValue();
         CellImpl curr = getCell(theCellThatRefIsReferringTo);
-        if (curr == null)
-            throw new RuntimeException("No such cell - " + theCellThatRefIsReferringTo + ", create it before referring to it.");
+        // create it ! (used to return an error).we're here after string check so the CellId is valid
+        if (curr == null) {
+            initNullCell(theCellThatRefIsReferringTo, null);
+            curr = getCell(theCellThatRefIsReferringTo);
+        }
         curr.addAffectsOnId(IdThatCalledMe);
         return curr.getEffectiveValue(); //returns EffectiveValue
     }
 
+    public String cleanId(String cellId) {
+        return cellId.trim().toUpperCase();
+    }
+
     public CellImpl getCell(String cellId) {
-        cellId = cellId.trim();
-        cellId = cellId.toUpperCase();
+        cellId = cleanId(cellId);
         checkCellId(cellId);
         return activeCells.get(cellId);
     }
 
+    public CellImpl getCellOrCreateIt(String cellId) {
+        cellId = cleanId(cellId);
+        CellImpl curr = getCell(cellId);
+        if (curr == null) {
+            initNullCell(cellId, null);
+        }
+        return activeCells.get(cellId);
+    }
 
     private void checkCellId(String id) {
         if (!id.matches("^[A-Za-z]\\d+$")) {

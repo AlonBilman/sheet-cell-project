@@ -28,7 +28,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *         <element ref="{}STL-Original-Value"/>
  *       </sequence>
  *       <attribute name="row" use="required" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       <attribute name="column" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       <attribute name="column" use="required" type="{http://www.w3.org/2001/XMLSchema}expString" />
  *     </restriction>
  *   </complexContent>
  * </complexType>

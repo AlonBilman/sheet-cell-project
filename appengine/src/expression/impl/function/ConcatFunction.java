@@ -14,24 +14,22 @@ public class ConcatFunction extends BinaryExpression {
         name = "CONCAT";
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public ObjType type() {
-        return ObjType.STRING; // this function returns string.
+        return ObjType.STRING; // this function returns expString.
     }
 
     @Override
     protected EffectiveValue evaluate(EffectiveValue o1, EffectiveValue o2) {
-        if (o1.getObjType() == ObjType.NUMERIC || o2.getObjType() == ObjType.NUMERIC_ERROR ||
-                o1.getObjType() == ObjType.NUMERIC_ERROR || o2.getObjType() == ObjType.NUMERIC) {
-            throw new ArithmeticException("The CONCAT function only works on Strings! (or Expressions that returns String..)\nPlease make sure to provide the correct argument type...");
-        } else if (o1.getObjType() == ObjType.STRING && o2.getObjType() == ObjType.STRING) {
-            String res = (String) o1.getValue() + (String) o2.getValue();
-            return new EffectiveValueImpl(res, type());
+        if (o1 == null || o2 == null)
+            throw new NullPointerException("The parameters cannot be null, you may referred to an uninitiated cell");
+        if (o1.getObjType() == ObjType.STRING && o2.getObjType() == ObjType.STRING) {
+            return new EffectiveValueImpl((String) o1.getValue() + (String) o2.getValue(), type());
         }
-        return new EffectiveValueImpl("!UNDEFINED!", ObjType.STRING_ERROR);
-    }
-
-    public String getName() {
-        return name;
+        return new EffectiveValueImpl("!UNDEFINED!", ObjType.UNKNOWN);
     }
 }

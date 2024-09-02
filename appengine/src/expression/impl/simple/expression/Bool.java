@@ -5,15 +5,15 @@ import expression.api.ObjType;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
 
-public class Mystring implements Expression {
-    private final String value;
+public class Bool implements Expression {
+    private final Boolean value;
 
-    public Mystring(String value) {
+    public Bool(Boolean value) {
         this.value = value;
     }
 
     public ObjType type() {
-        return ObjType.STRING;
+        return ObjType.BOOLEAN;
     }
 
     @Override
@@ -21,4 +21,7 @@ public class Mystring implements Expression {
         return new EffectiveValueImpl(value, type());
     }
 }
+
+
+
 

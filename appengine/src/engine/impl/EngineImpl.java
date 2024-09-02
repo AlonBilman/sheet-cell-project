@@ -51,12 +51,7 @@ public class EngineImpl implements Engine, Serializable {
 
     @Override
     public CellDataDTO showCell(String id) {
-        try {
-            return new CellDataDTO(this.spreadSheet.getCell(id));
-        } catch (NullPointerException e) {
-            throw new NullPointerException("The cell you refer to is null, meaning you did not create it" +
-                    "\nIn order to inspect its content you have to modify it first.");
-        }
+        return new CellDataDTO(this.spreadSheet.getCellOrCreateIt(id));
     }
 
     @Override

@@ -28,7 +28,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *         <element ref="{}STL-Layout"/>
  *         <element ref="{}STL-Cells"/>
  *       </sequence>
- *       <attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       <attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}expString" />
  *     </restriction>
  *   </complexContent>
  * </complexType>
