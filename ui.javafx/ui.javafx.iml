@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="uilayout" />
     <orderEntry type="library" name="lib1" level="project" />
+    <orderEntry type="module" module-name="appengine" />
   </component>
 </module>
