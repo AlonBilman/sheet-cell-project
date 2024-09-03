@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="19.0" prefWidth="595.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
    <children>
-      <Text layoutX="260.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sheet Cell" underline="true">
+      <Text layoutX="260.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sheet Cell" underline="true" style="-fx-font-weight: bold; -fx-font-style: italic;">
          <font>
             <Font size="17.0" />
          </font>

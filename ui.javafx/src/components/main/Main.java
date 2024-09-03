@@ -18,15 +18,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader();
-        URL mainFXML = getClass().getResource("sheetCell.fxml");
+        URL mainFXML = getClass().getResource("app.fxml");
         loader.setLocation(mainFXML);
         BorderPane root = loader.load();
 
-        SheetCellController controller = loader.getController();
+        AppController controller = loader.getController();
         EngineImpl engine = new EngineImpl();
         controller.setPrimaryStage(primaryStage);
         controller.setEngine(engine);
-
 
         primaryStage.setTitle("Sheet Cell task 2");
         Scene scene = new Scene(root);
