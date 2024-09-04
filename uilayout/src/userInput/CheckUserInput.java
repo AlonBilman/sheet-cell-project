@@ -2,6 +2,7 @@ package userInput;
 
 import dto.CellDataDTO;
 import dto.LoadDTO;
+import dto.RangeDTO;
 import dto.sheetDTO;
 import checkfile.STLSheet;
 import engine.impl.EngineImpl;
@@ -20,6 +21,8 @@ public class CheckUserInput {
     private static final String SAVE_SHEET = "6";
     private static final String LOAD_SAVED_SHEET = "7";
     private static final String EXIT_SYSTEM = "8";
+    private static final String ADD_RANGE = "9";
+    private static final String PRINT_RANGE = "10";
 
     private EngineImpl engine;
     private Scanner scanner;
@@ -44,7 +47,9 @@ public class CheckUserInput {
                 "Print sheet versions",
                 "Save sheet",
                 "Load saved sheet",
-                "Exit system"
+                "Exit system",
+                "range",
+                "print range"
         };
 
         // Print the menu header
@@ -197,6 +202,30 @@ public class CheckUserInput {
                 case EXIT_SYSTEM:
                     System.out.println("Exiting system...");
                     break;
+
+                case ADD_RANGE:
+                    System.out.println("name of range? :");
+                    String rangeName = scanner.nextLine().trim();
+                    System.out.println("from where to where?");
+                    String rangeParams = scanner.nextLine().trim();
+                    try {
+                        // Assuming addRange method returns a RangeDTO object
+                        engine.addRange(rangeName, rangeParams);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+
+                case PRINT_RANGE:
+                    System.out.println("Enter the name of the range you want to print:");
+                    String rangeToPrint = scanner.nextLine().trim();
+                    try {
+                        RangeDTO range = engine.getRangeDto(rangeToPrint);
+                        printRange(range);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
                 default:
                     System.out.println("Invalid option, please enter a valid option.");
                     break;
@@ -272,5 +301,15 @@ public class CheckUserInput {
         fileToCheck = getXMLFile(userInput);
         return fileToCheck;
     }
-}
 
+    public void printRange(RangeDTO rangeDto) {
+        System.out.println("Range name: " + rangeDto.getName());
+        System.out.println("Cells in range:");
+
+        for (CellDataDTO cell : rangeDto.getCells()) {
+            System.out.print(cell.getId()+",");
+        }
+        System.out.println();
+    }
+
+}

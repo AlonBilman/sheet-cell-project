@@ -1,16 +1,14 @@
 package engine.impl;
 
-import dto.CellDataDTO;
-import dto.LoadDTO;
-import dto.exitDTO;
-import dto.sheetDTO;
+import dto.*;
 import checkfile.STLSheet;
 import engine.api.Engine;
+import sheet.impl.CellImpl;
+import sheet.impl.Range;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class EngineImpl implements Engine, Serializable {
     private static final int MAX_ROWS = 50;
@@ -89,6 +87,33 @@ public class EngineImpl implements Engine, Serializable {
         }
     }
 
+    //-------------------------------------------------------------------------------------
+    public void addRange(String name, String params) {
+        if (params == null || !params.contains("..")) {
+            throw new IllegalArgumentException("Invalid range format. Expected format: <Letter,Number>..<Letter,Number>");
+        }
+
+        String[] cellIdentifiers = params.split("\\.\\.");
+        if (cellIdentifiers.length != 2) {
+            throw new IllegalArgumentException("Invalid range format. Expected format: <Letter,Number>..<Letter,Number>");
+        }
+
+        String topLeftCellId = cellIdentifiers[0];
+        String bottomRightCellId = cellIdentifiers[1];
+        try {
+            spreadSheet.addRange(name, topLeftCellId, bottomRightCellId);
+        } catch (Exception e) {
+            spreadSheet = this.spreadSheet.getSheetBeforeChange();
+            throw e;
+        }
+    }
+
+    public RangeDTO getRangeDto(String id) {
+      sheetDTO sheet = this.Display();
+      return sheet.getRange(id);
+    }
+
+    //-------------------------------------------------------------------------------------
 
     @Override
     public LoadDTO Load(File newFile) {

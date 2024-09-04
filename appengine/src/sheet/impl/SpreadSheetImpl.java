@@ -19,10 +19,12 @@ public class SpreadSheetImpl implements Serializable {
     private final String sheetName;
     private int sheetVersionNumber;
     private SpreadSheetImpl sheetBeforeChange = null;
+    private Map<String, Range> activeRanges;
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
         this.activeCells = new HashMap<>();
+        this.activeRanges = new HashMap<>();
         this.sheetVersionNumber = 0; //starting with 0
         this.rowSize = stlSheet.getSTLLayout().getRows();
         this.columnSize = stlSheet.getSTLLayout().getColumns();
@@ -36,6 +38,27 @@ public class SpreadSheetImpl implements Serializable {
         this.sheetVersionNumber = 1; //adding all the cells -> sheetV = 1
         sheetBeforeChange = deepCopy();
     }
+
+    //JUST FOR TESTING!
+
+    public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
+        CellImpl.setSpreadSheet(this);
+        this.activeCells = new HashMap<>();
+        this.activeRanges = new HashMap<>();
+        //this.sheetVersionNumber = 0; // starting with 0
+        this.rowSize = rowSize;
+        this.columnSize = columnSize;
+        this.colWidth = colWidth;
+        this.rowHeight = rowHeight;
+        this.sheetName = sheetName;
+
+
+        this.sheetVersionNumber = 1; // Initial version after setup
+        sheetBeforeChange = deepCopy();
+    }
+
+
+//TESTING !!!
 
     public SpreadSheetImpl deepCopy() {
         try {
@@ -116,17 +139,26 @@ public class SpreadSheetImpl implements Serializable {
         return activeCells.get(cellId);
     }
 
+    private char getLetterCol(String id) {
+        return Character.toUpperCase(id.charAt(0));
+    }
+
+    private int getNumberRow(String id) {
+        return Integer.parseInt(id.substring(1));
+    }
+
     private void checkCellId(String id) {
         if (!id.matches("^[A-Za-z]\\d+$")) {
             throw new IllegalArgumentException("Input must be in the format of a letter followed by one or more digits. Found: " + id);
         }
-        char letter = Character.toUpperCase(id.charAt(0));//taking the char
+        char letter = getLetterCol(id);//taking the char
         int col = Character.getNumericValue(letter) - Character.getNumericValue('A'); //getting the col
-        int row = Integer.parseInt(id.substring(1));
+        int row = getNumberRow(id);
         if (col < 0 || row <= 0 || row > rowSize || col > columnSize - 1) {
             throw new IllegalArgumentException("The specified column or row number is invalid. Inserted: " + id + "\nPlease make sure that the Cell slot you refer to exists.");
         }
     }
+
 
     private void addCells(List<STLCell> cells) {
         CellImpl.setSpreadSheet(this);
@@ -217,8 +249,66 @@ public class SpreadSheetImpl implements Serializable {
     }
 
 
-    public Map<String, CellImpl> getSTLCells() {
+    public void addRange(String rangeName, String topLeftCellId, String bottomRightCellId) {
+        topLeftCellId = cleanId(topLeftCellId);
+        bottomRightCellId = cleanId(bottomRightCellId);
+        checkCellId(topLeftCellId);
+        checkCellId(bottomRightCellId);
+        if (activeRanges.containsKey(rangeName)) {
+            throw new IllegalArgumentException("Range name already exists.\n\"" + rangeName + "\" is taken");
+        }
+        Set<CellImpl> cells = getSetOfCellsForRange(topLeftCellId, bottomRightCellId);
+        Range range = new Range(rangeName, topLeftCellId, bottomRightCellId, cells);
+        activeRanges.put(rangeName, range);
+    }
+
+    public Range getRange(String name){
+        Range range = activeRanges.get(name);
+        if(range == null){
+            throw new IllegalArgumentException("No such range - " + name);
+        }
+        return range;
+    }
+
+
+
+    private Set<CellImpl> getSetOfCellsForRange(String topLeftCellId, String bottomRightCellId) {
+        Set<CellImpl> cellsInRange = new HashSet<>();
+        //the borders
+        int startRow = getNumberRow(topLeftCellId);
+        int endRow = getNumberRow(bottomRightCellId);
+        char startCol = getLetterCol(topLeftCellId);
+        char endCol = getLetterCol(bottomRightCellId);
+        //now I need to get all the cells in the borders
+
+        for (int row = startRow; row <= endRow; row++) {
+            for (char col = startCol; col <= endCol; col++) {
+                String cellId = "" + col + row;
+                CellImpl cell = getCellOrCreateIt(cellId);
+                cellsInRange.add(cell);
+            }
+        }
+        if(cellsInRange.isEmpty()) {
+            throw new RuntimeException("The cells Id you've given did not match the format.\n" +
+                    "In order to create a range please provide first topLeftCellId and bottomRightCellId - in this order");
+        }
+        return cellsInRange;
+    }
+    //---------------------------------------------------------------------------------------------------
+// JUST FOR TESTING, NEED TO DELETE
+//    public void printRange(Range range) {
+//        Set<CellImpl> set = range.getRangeCells();
+//        for (CellImpl cell : set) {
+//            System.out.println(cell.getId());
+//        }
+//    }
+// JUST FOR TESTING, NEED TO DELETE
+    public Map<String, CellImpl> getActiveCells() {
         return activeCells;
+    }
+
+    public Map<String, Range> getActiveRanges() {
+        return activeRanges;
     }
 
     public int getRowSize() {
