@@ -4,6 +4,7 @@ import checkfile.STLCell;
 import expression.api.ErrorValues;
 import expression.api.Expression;
 import expression.api.ObjType;
+import expression.impl.simple.expression.Bool;
 import expression.impl.simple.expression.expString;
 import expression.impl.simple.expression.Number;
 import expression.impl.function.*;
@@ -200,6 +201,9 @@ public class CellImpl implements Serializable {
     }
 
     private Expression parseSimpleValue(String value) {
+        if(value.equals("TRUE")||value.equals("FALSE"))
+            return new Bool(Boolean.valueOf(value));
+
         if (value.isEmpty() || value.matches(".*[^0-9 ].*") || value.matches("^\\s*$")) {
             if (value.startsWith("-")) {
                 try {

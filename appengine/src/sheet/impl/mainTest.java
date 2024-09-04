@@ -67,7 +67,6 @@ public class mainTest {
         Range range = spreadsheet.getRange(rangeName);
         if (range != null) {
             System.out.println("Cells in range \"" + rangeName + "\":");
-            //spreadsheet.printRange(range);
             System.out.println();
         } else {
             System.out.println("Range \"" + rangeName + "\" not found.");
