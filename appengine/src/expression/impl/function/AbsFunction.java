@@ -10,7 +10,6 @@ import sheet.impl.EffectiveValueImpl;
 
 import static java.lang.Math.abs;
 
-
 public class AbsFunction extends UnaryExpression {
     private final String name;
 

@@ -16,10 +16,11 @@ public class SpreadSheetImpl implements Serializable {
     private final int colWidth;
     private final int rowHeight;
     private Map<String, CellImpl> activeCells;
+    private Map<String, Range> activeRanges;
     private final String sheetName;
     private int sheetVersionNumber;
     private SpreadSheetImpl sheetBeforeChange = null;
-    private Map<String, Range> activeRanges;
+
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
@@ -38,27 +39,6 @@ public class SpreadSheetImpl implements Serializable {
         this.sheetVersionNumber = 1; //adding all the cells -> sheetV = 1
         sheetBeforeChange = deepCopy();
     }
-
-    //JUST FOR TESTING!
-
-    public SpreadSheetImpl(String sheetName, int rowSize, int columnSize, int colWidth, int rowHeight) {
-        CellImpl.setSpreadSheet(this);
-        this.activeCells = new HashMap<>();
-        this.activeRanges = new HashMap<>();
-        //this.sheetVersionNumber = 0; // starting with 0
-        this.rowSize = rowSize;
-        this.columnSize = columnSize;
-        this.colWidth = colWidth;
-        this.rowHeight = rowHeight;
-        this.sheetName = sheetName;
-
-
-        this.sheetVersionNumber = 1; // Initial version after setup
-        sheetBeforeChange = deepCopy();
-    }
-
-
-//TESTING !!!
 
     public SpreadSheetImpl deepCopy() {
         try {
@@ -159,7 +139,6 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-
     private void addCells(List<STLCell> cells) {
         CellImpl.setSpreadSheet(this);
         if (cells == null || cells.isEmpty()) {
@@ -248,7 +227,6 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-
     public void addRange(String rangeName, String topLeftCellId, String bottomRightCellId) {
         topLeftCellId = cleanId(topLeftCellId);
         bottomRightCellId = cleanId(bottomRightCellId);
@@ -261,7 +239,7 @@ public class SpreadSheetImpl implements Serializable {
         Range range = new Range(rangeName, topLeftCellId, bottomRightCellId, cells);
         activeRanges.put(rangeName, range);
     }
-
+    //will be used in the functions
     public Range getRange(String name){
         Range range = activeRanges.get(name);
         if(range == null){
@@ -269,8 +247,6 @@ public class SpreadSheetImpl implements Serializable {
         }
         return range;
     }
-
-
 
     private Set<CellImpl> getSetOfCellsForRange(String topLeftCellId, String bottomRightCellId) {
         Set<CellImpl> cellsInRange = new HashSet<>();
@@ -294,15 +270,7 @@ public class SpreadSheetImpl implements Serializable {
         }
         return cellsInRange;
     }
-    //---------------------------------------------------------------------------------------------------
-// JUST FOR TESTING, NEED TO DELETE
-//    public void printRange(Range range) {
-//        Set<CellImpl> set = range.getRangeCells();
-//        for (CellImpl cell : set) {
-//            System.out.println(cell.getId());
-//        }
-//    }
-// JUST FOR TESTING, NEED TO DELETE
+
     public Map<String, CellImpl> getActiveCells() {
         return activeCells;
     }
