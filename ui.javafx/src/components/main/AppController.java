@@ -23,6 +23,7 @@ import java.io.File;
 import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
+
     private Stage stage;
     private EngineImpl engine;
     private File newFile, oldFile;
@@ -47,8 +48,6 @@ public class AppController {
     //controllers
     @FXML
     private TableFunctionalityController tableFunctionalityController;
-    @FXML
-    private CellController cellController;
     @FXML
     private GridSheetController gridSheetController;
     @FXML
@@ -107,10 +106,9 @@ public class AppController {
         stlSheet = loadXMLFile(loadResult.getLoadedFile());
         try {
             engine.initSheet(stlSheet);
+            gridSheetController.updateTable(engine.Display());
             loadFileController.editFilePath(file.getAbsolutePath());
             tableFunctionalityController.setActiveButtons(true);
-            //send to tableview to print the table and set the cells "EditAndPrint"
-
         } catch (Exception e) {
             loadFileController.showInfoAlert(e.getMessage());
         }

@@ -3,8 +3,6 @@ package engine.impl;
 import dto.*;
 import checkfile.STLSheet;
 import engine.api.Engine;
-import sheet.impl.CellImpl;
-import sheet.impl.Range;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.*;
