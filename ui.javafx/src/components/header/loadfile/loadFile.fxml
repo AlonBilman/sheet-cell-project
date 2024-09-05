@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox prefHeight="57.0" spacing="15.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadFile.LoadFileController">
+<HBox prefHeight="57.0" spacing="15.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadfile.LoadFileController">
    <children>
       <Button id="LoadNewFileButton" fx:id="loadFileButton" accessibleRoleDescription="LoadFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadFileListener" text="Load New File" underline="true">
          <HBox.margin>

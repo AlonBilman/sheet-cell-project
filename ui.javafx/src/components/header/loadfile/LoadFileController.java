@@ -1,4 +1,4 @@
-package components.header.loadFile;
+package components.header.loadfile;
 
 import components.main.AppController;
 import javafx.event.ActionEvent;
@@ -12,23 +12,22 @@ import java.io.File;
 
 public class LoadFileController {
 
-    private AppController appController;
+    private AppController appController;;
     @FXML
     private Button loadFileButton;
 
     @FXML
     private TextArea filePathText;
 
-    public LoadFileController() {
-        appController = new AppController();
+    public void setMainController(AppController mainController){
+        this.appController = mainController;
     }
 
-    public void showInfoAlert() {
+    public void showInfoAlert(String problem) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("ERROR");
         alert.setHeaderText("Error while loading file");
-        alert.setContentText("Something went wrong when loading a file.");
-
+        alert.setContentText(problem);
         alert.showAndWait();
     }
     @FXML
@@ -41,19 +40,7 @@ public class LoadFileController {
         if (file == null) {
             return;
         }
-
-        if(appController.checkFile(file))
-            filePathText.setText(file.getAbsolutePath());
-        else {
-            showInfoAlert();
-        }
-
-        // Set the selected file's path to the TextArea
-
-
-
-
-
+        appController.checkAndLoadFile(file);
 
     }
 }
