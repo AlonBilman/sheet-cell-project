@@ -20,6 +20,7 @@ import java.io.File;
 import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
+    private Stage stage;
     private EngineImpl engine;
     private File newFile, oldFile;
     private String userInput;
