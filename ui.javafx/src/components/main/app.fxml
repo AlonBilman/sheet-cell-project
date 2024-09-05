@@ -11,18 +11,18 @@
          <content>
          <FlowPane alignment="CENTER" depthTest="DISABLE" minHeight="140.0" minWidth="595.0" prefWrapLength="0.0" rowValignment="TOP">
             <VBox alignment="CENTER">
-               <fx:include source="/components/header/title/titleCard.fxml" />
-               <fx:include source="/components/header/loadFile/loadFile.fxml" />
-               <fx:include source="/components/header/cellfunction/cellFunctions.fxml" />
+               <fx:include source="../header/title/titleCard.fxml" />
+               <fx:include source="../header/loadFile/loadFile.fxml" />
+               <fx:include source="../header/cellfunction/cellFunctions.fxml" />
             </VBox>
          </FlowPane>
          </content>
       </ScrollPane>
 </top>
 <center>
-   <fx:include source="/components/body/table/view/tableView.fxml" />
+   <fx:include source="../body/table/view/tableView.fxml" />
 </center>
 <left>
-   <fx:include source="/components/body/table/func/tableFunctionality.fxml" />
+   <fx:include source="../body/table/func/tableFunctionality.fxml" />
 </left>
 </BorderPane>
