@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Label?>
 <HBox prefHeight="57.0" spacing="15.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadFile.LoadFileController">
    <children>
       <Button id="LoadNewFileButton" fx:id="loadFileButton" accessibleRoleDescription="LoadFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadFileListener" text="Load New File" underline="true">
@@ -19,11 +20,11 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <TextArea id="LoadNewFileTextBox" fx:id="filePathText" disable="true" editable="false" maxHeight="-Infinity" prefHeight="30.0" prefWidth="390.0" promptText="Loaded file path will show here" style="-fx-border-color: blue;">
+      <Label id="LoadNewFileTextBox" prefHeight="100.0" prefWidth="500.0" text="Loaded file path will show here" >
          <font>
             <Font size="15.0" />
          </font>
-      </TextArea>
+      </Label>
    </children>
    <padding>
       <Insets top="10.0" />
