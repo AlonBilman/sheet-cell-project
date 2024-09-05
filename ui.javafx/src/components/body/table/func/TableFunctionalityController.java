@@ -9,11 +9,6 @@ public class TableFunctionalityController {
     Boolean activeButtons;
     private AppController appController;
 
-    public void setMainController(AppController mainController){
-        this.appController = mainController;
-        activeButtons = false;
-    }
-
     @FXML
     private Button setColButton;
 
@@ -77,6 +72,10 @@ public class TableFunctionalityController {
         System.out.println("View Range button clicked");
     }
 
+    public void setMainController(AppController mainController){
+        this.appController = mainController;
+        activeButtons = false;
+    }
 
     public void updateButtonStates() {
         boolean isEnabled = Boolean.TRUE.equals(activeButtons);

@@ -2,7 +2,8 @@ package components.main;
 
 import checkfile.STLSheet;
 import components.body.table.func.TableFunctionalityController;
-import components.body.table.view.TableViewController;
+import components.body.table.view.CellController;
+import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
@@ -11,9 +12,11 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.io.File;
 
@@ -35,16 +38,19 @@ public class AppController {
     @FXML
     private HBox cellFunctions;
     @FXML
-    private ScrollPane tableView;
-    @FXML
     private ScrollPane tableFunctionality;
     @FXML
     private HBox loadFile;
+    @FXML
+    private ScrollPane gridSheet;
+
     //controllers
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
-    private TableViewController tableViewController;
+    private CellController cellController;
+    @FXML
+    private GridSheetController gridSheetController;
     @FXML
     private CellFunctionsController cellFunctionsController;
     @FXML
@@ -52,8 +58,12 @@ public class AppController {
     @FXML
     private TitleCardController titleCardController;
 
-    public void setTableViewController(TableViewController tableViewController) {
-        this.tableViewController = tableViewController;
+    public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
+        this.tableFunctionalityController = tableFunctionalityController;
+    }
+
+    public void setGridSheetController(GridSheetController gridSheetController) {
+        this.gridSheetController = gridSheetController;
     }
 
     public void setCellFunctionsController(CellFunctionsController cellFunctionsController) {
@@ -68,18 +78,15 @@ public class AppController {
         this.titleCardController = titleCardController;
     }
 
-    public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
-        this.tableFunctionalityController = tableFunctionalityController;
-    }
 
     public void initialize() {
-        if (tableFunctionalityController != null && tableViewController != null &&
+        if (tableFunctionalityController != null && gridSheetController != null &&
                 cellFunctionsController != null && loadFileController != null && titleCardController != null) {
             tableFunctionalityController.setMainController(this);
-            tableViewController.setMainController(this);
             cellFunctionsController.setMainController(this);
             loadFileController.setMainController(this);
             titleCardController.setMainController(this);
+            gridSheetController.setMainController(this);
             engine = new EngineImpl();
         }
     }

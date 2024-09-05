@@ -11,15 +11,13 @@ public class GridSheetController {
         @FXML Pane cell;
         @FXML GridPane gridPane;
         @FXML private CellController cellController;
+
         private AppController appController;
 
-        public void setMainController(AppController appController) {
-                this.appController = appController;
+        public void setMainController(AppController mainController){
+                this.appController = mainController;
         }
 
-        @FXML
-        private void initialize() {
-        }
         public void listenerToLoadFile(sheetDTO sheetCopy) {
                 // Get dimensions from the engine
                 int row = sheetCopy .getRowSize();

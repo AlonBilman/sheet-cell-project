@@ -8,7 +8,6 @@
 <ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.view.GridSheetController">
     <content>
         <GridPane gridLinesVisible="true">
-            <fx:include fx:id="cell" source="cell.fxml"/>
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
             </columnConstraints>
