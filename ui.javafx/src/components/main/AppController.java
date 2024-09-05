@@ -2,7 +2,6 @@ package components.main;
 
 import checkfile.STLSheet;
 import components.body.table.func.TableFunctionalityController;
-import components.body.table.view.CellController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.loadfile.LoadFileController;
@@ -12,7 +11,6 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
