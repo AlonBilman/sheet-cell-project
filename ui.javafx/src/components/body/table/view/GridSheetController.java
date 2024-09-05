@@ -1,27 +1,31 @@
 package components.body.table.view;
 
 import components.main.AppController;
+import dto.sheetDTO;
 import javafx.fxml.FXML;
-import javafx.scene.control.Cell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 public class GridSheetController {
 
-        @FXML private GridPane gridPane;
-
+        @FXML Pane cell;
+        @FXML GridPane gridPane;
+        @FXML private CellController cellController;
         private AppController appController;
 
         public void setMainController(AppController appController) {
                 this.appController = appController;
         }
 
-        public void initialize() {
+        @FXML
+        private void initialize() {
+        }
+        public void listenerToLoadFile(sheetDTO sheetCopy) {
                 // Get dimensions from the engine
-                int row = appController.getEngine().Display().getRowSize();
-                int col = appController.getEngine().Display().getColSize();
-                int rowHeight = appController.getEngine().Display().getRowHeight();
-                int colWidth = appController.getEngine().Display().getColWidth();
+                int row = sheetCopy .getRowSize();
+                int col = sheetCopy.getColSize();
+                int rowHeight = sheetCopy.getRowHeight();
+                int colWidth = sheetCopy.getColWidth();
 
                 // Loop to add cells to the grid
                 for (int i = 0; i < row; i++) {
@@ -33,11 +37,10 @@ public class GridSheetController {
                                 }
 
                                 // Create a new Pane (with a label inside) and size it
-                                Pane cellPane = cellController.getCellPane();
-                                cellPane.setPrefSize(colWidth, rowHeight);
+                                cell.setPrefSize(colWidth, rowHeight);
 
                                 // Add the pane to the grid
-                                gridPane.add(cellPane, j, i);
+                                gridPane.add(cell, j, i);
                         }
                 }
         }
