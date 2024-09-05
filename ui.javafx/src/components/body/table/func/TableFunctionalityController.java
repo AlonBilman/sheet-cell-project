@@ -6,11 +6,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
 public class TableFunctionalityController {
-
+    Boolean activeButtons;
     private AppController appController;
 
     public void setMainController(AppController mainController){
         this.appController = mainController;
+        activeButtons = false;
     }
 
     @FXML
@@ -74,5 +75,24 @@ public class TableFunctionalityController {
     private void viewExistingRangeListener() {
         // Implement the action for the "View Range" button
         System.out.println("View Range button clicked");
+    }
+
+
+    public void updateButtonStates() {
+        boolean isEnabled = Boolean.TRUE.equals(activeButtons);
+
+        setColButton.setDisable(!isEnabled);
+        setRowButton.setDisable(!isEnabled);
+        alignmentSetButton.setDisable(!isEnabled);
+        cellStyleButton.setDisable(!isEnabled);
+        addNewRangeButton.setDisable(!isEnabled);
+        deleteExistingRangeButton.setDisable(!isEnabled);
+        viewExistingRangeButton.setDisable(!isEnabled);
+    }
+
+    // Setter for activeButtons
+    public void setActiveButtons(Boolean activeButtons) {
+        this.activeButtons = activeButtons;
+        updateButtonStates(); // Update the button states whenever activeButtons is changed
     }
 }

@@ -4,20 +4,23 @@ import components.main.AppController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.stage.FileChooser;
+import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.FileChooser;
 import java.io.File;
 
 public class LoadFileController {
 
-    private AppController appController;;
+    //Boolean isFileLoaded = false;
+
+    private AppController appController;
+
     @FXML
     private Button loadFileButton;
 
     @FXML
-    private TextArea filePathText;
+    private Label filePathLabel;
 
     public void setMainController(AppController mainController){
         this.appController = mainController;
@@ -25,22 +28,26 @@ public class LoadFileController {
 
     public void showInfoAlert(String problem) {
         Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("ERROR");
+        alert.setTitle("!ERROR!");
         alert.setHeaderText("Error while loading file");
         alert.setContentText(problem);
         alert.showAndWait();
     }
+
+    public void editFilePath(String filePath) {
+        filePathLabel.setText(filePath);
+    }
+
     @FXML
     public void loadFileListener(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file - Allowed only .xml files");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML File", "*.xml"));
         File file = fileChooser.showOpenDialog(loadFileButton.getScene().getWindow());
-        //no file has been selected
+        // No file has been selected
         if (file == null) {
             return;
         }
         appController.checkAndLoadFile(file);
-
     }
 }

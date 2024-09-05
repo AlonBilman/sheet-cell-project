@@ -1,12 +1,10 @@
-
-
 package components.header.cellfunction;
 
 import components.main.AppController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
 
 public class CellFunctionsController {
 
@@ -17,16 +15,16 @@ public class CellFunctionsController {
     }
 
     @FXML
-    private TextArea cellIdProperty;
+    private Label cellIdProperty;
 
     @FXML
-    private TextArea cellValueProperty;
+    private Label cellValueProperty;
 
     @FXML
     private Button updateCellButton;
 
     @FXML
-    private TextArea cellUpdatedProperty;
+    private Label cellUpdatedProperty;
 
     @FXML
     private ChoiceBox<String> versionPickerChoiceBox;

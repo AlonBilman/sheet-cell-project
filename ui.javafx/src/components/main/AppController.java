@@ -16,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
 import java.io.File;
+
 import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
@@ -80,7 +81,6 @@ public class AppController {
             titleCardController.setMainController(this);
             engine = new EngineImpl();
         }
-
     }
 
     public void checkAndLoadFile(File file) {
@@ -89,7 +89,6 @@ public class AppController {
         if (loadResult.isNotValid()) {
             if (!engine.containSheet()) {
                 loadFileController.showInfoAlert("Invalid file. Ensure it exists and it is an XML file.");
-
             } else if (oldFile != null) {
                 loadFileController.showInfoAlert("Invalid file. The previous file is retained.");
                 loadResult = engine.Load(oldFile);
@@ -100,55 +99,19 @@ public class AppController {
         stlSheet = loadXMLFile(loadResult.getLoadedFile());
         try {
             engine.initSheet(stlSheet);
+            loadFileController.editFilePath(file.getAbsolutePath());
+            tableFunctionalityController.setActiveButtons(true);
+            //send to tableview to print the table and set the cells "EditAndPrint"
+
         } catch (Exception e) {
             loadFileController.showInfoAlert(e.getMessage());
         }
     }
 
-
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//
 //    package userInput;
 //
 //import dto.CellDataDTO;
