@@ -20,7 +20,7 @@ public class Main extends Application {
         URL mainFXML = getClass().getResource("app.fxml");
         loader.setLocation(mainFXML);
         Parent root = loader.load();
-        Scene scene = new Scene(root, 800, 700);
+        Scene scene = new Scene(root, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

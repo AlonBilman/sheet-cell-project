@@ -112,6 +112,27 @@ public class AppController {
         }
     }
 
+    public void CellClicked(String id) {
+        CellDataDTO cell =engine.showCell(id);
+        cellFunctionsController.showCell(cell);
+    }
+    public void loadClicked(){
+        cellFunctionsController.outOfFocus();
+    }
+
+
+    public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
+        try{
+            engine.updateCell(cellToUpdate, newOriginalValue);
+            cellFunctionsController.outOfFocus();
+            gridSheetController.updateTable(engine.Display());
+        }
+        catch(Exception e){
+            cellFunctionsController.showInfoAlert(e.getMessage());
+
+        }
+      //can fail. thrown back to the caller
+    }
 }
 
 

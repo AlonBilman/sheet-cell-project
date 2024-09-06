@@ -4,21 +4,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox prefHeight="55.0" prefWidth="576.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
+<HBox prefHeight="56.0" prefWidth="579.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
    <children>
-      <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="100.0" prefHeight="31.0" prefWidth="89.0" style="-fx-border-color: blue;" text="Selected Cell ID">
+      <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="105.0" prefHeight="37.0" prefWidth="105.0" style="-fx-border-color: blue;" text="Selected Cell ID" textAlignment="CENTER">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>
       </Label>
-      <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="38.0" maxWidth="114.0" prefHeight="20.0" prefWidth="104.0" style="-fx-border-color: blue;" text="Original Cell Value" />
-      <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="41.0" prefWidth="78.0" styleClass="WaitForFileLoad" text="Update Cell" underline="true">
-         <HBox.margin>
-            <Insets top="5.0" />
-         </HBox.margin>
-      </Button>
-      <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="38.0" maxWidth="135.0" prefHeight="30.0" prefWidth="135.0" style="-fx-border-color: blue;" text="Last updated cell version" />
-      <ChoiceBox id="VersionPickerChoiceBox" fx:id="versionPickerChoiceBox" disable="true" prefHeight="25.0" prefWidth="98.0" styleClass="WaitForFileLoad">
+      <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="38.0" maxWidth="132.0" prefHeight="31.0" prefWidth="132.0" style="-fx-border-color: blue;" text="Original Cell Value" textAlignment="CENTER" />
+      <VBox prefHeight="63.0" prefWidth="116.0">
+         <children>
+            <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="124.0" styleClass="WaitForFileLoad" text="Update Cell" underline="true" />
+            <TextField fx:id="newOriginalValText" prefHeight="25.0" prefWidth="0.0" text="new original val" disable="true" />
+         </children>
+      </VBox>
+      <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="38.0" maxWidth="137.0" prefHeight="31.0" prefWidth="127.0" style="-fx-border-color: blue;" text="Cell version" textAlignment="CENTER" />
+      <ChoiceBox id="VersionPickerChoiceBox" fx:id="versionPickerChoiceBox" disable="true" prefHeight="24.0" prefWidth="49.0" styleClass="WaitForFileLoad">
          <HBox.margin>
             <Insets right="7.0" top="3.0" />
          </HBox.margin>

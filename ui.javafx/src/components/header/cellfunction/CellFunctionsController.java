@@ -1,10 +1,9 @@
 package components.header.cellfunction;
 
 import components.main.AppController;
+import dto.CellDataDTO;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
 public class CellFunctionsController {
 
@@ -13,6 +12,8 @@ public class CellFunctionsController {
     public void setMainController(AppController mainController){
         this.appController = mainController;
     }
+
+    String currCellShown;
 
     @FXML
     private Label cellIdProperty;
@@ -30,13 +31,45 @@ public class CellFunctionsController {
     private ChoiceBox<String> versionPickerChoiceBox;
 
     @FXML
+    private TextField newOriginalValText;
+
+    @FXML
     public void initialize() {
         // Initialization logic if needed
         System.out.println("CellFunctionsController initialized.");
     }
 
+    public void showCell(CellDataDTO cell){
+        currCellShown = cell.getId();
+        cellIdProperty.setText(currCellShown);
+        cellUpdatedProperty.setText(String.valueOf(cell.getLastChangeAt()));
+        cellValueProperty.setText(cell.getOriginalValue());
+        newOriginalValText.setDisable(false);
+        newOriginalValText.setText("");
+        updateCellButton.setDisable(false);
+    }
+
+    public void showInfoAlert(String problem) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("!ERROR!");
+        alert.setHeaderText("Error while updating A cell");
+        alert.setContentText(problem);
+        alert.showAndWait();
+        outOfFocus();
+    }
+
+    public void outOfFocus(){
+        currCellShown = null;
+        cellIdProperty.setText("Selected Cell Id");
+        cellUpdatedProperty.setText("Cell Version");
+        cellValueProperty.setText("Original Cell Value");
+        newOriginalValText.setText("New Original Value");
+        newOriginalValText.setDisable(true);
+        updateCellButton.setDisable(true);
+    }
     @FXML
     private void updateCellActionListener() {
-        // Action listener logic
+        String newOriginalValue = newOriginalValText.getText();
+        appController.updateCellClicked(currCellShown,newOriginalValue);
     }
 }

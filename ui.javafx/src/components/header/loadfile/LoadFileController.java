@@ -40,11 +40,12 @@ public class LoadFileController {
 
     @FXML
     public void loadFileListener(ActionEvent actionEvent) {
+        appController.loadClicked();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file - Allowed only .xml files");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML File", "*.xml"));
         File file = fileChooser.showOpenDialog(loadFileButton.getScene().getWindow());
-        // No file has been selected
+        //in case of cancel or X
         if (file == null) {
             return;
         }
