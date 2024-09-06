@@ -1,5 +1,6 @@
 package components.body.table.view;
 
+import com.sun.jdi.BooleanType;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
@@ -27,10 +28,9 @@ public class GridSheetController {
 
     public void initialize() {
         // Set fixed size for the GridPane
-        gridPane.setPrefSize(600, 400); // Adjust these values as needed
+        gridPane.setPrefSize(600, 400);
         gridPane.setMinSize(600, 400);
         gridPane.setMaxSize(600, 400);
-
         // Ensure the ScrollPane reacts to the overflow
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
@@ -84,7 +84,13 @@ public class GridSheetController {
                 CellDataDTO curr = cells.get(id);
                 if (curr == null) {
                     cellLabel.setText("");
-                } else cellLabel.setText(curr.getEffectiveValue().getValue().toString());
+                } else {
+                    //ASK AVIAD
+                    if(curr.getEffectiveValue().getValue() instanceof Boolean) {
+                        cellLabel.setText(curr.getEffectiveValue().getValue().toString().toUpperCase());
+                    }
+                    else cellLabel.setText(curr.getEffectiveValue().getValue().toString());
+                }
                 setCellFunctionality(cellLabel, maxCol, maxRow, id);
                 gridPane.add(cellLabel, j, i);
             }

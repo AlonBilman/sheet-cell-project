@@ -36,8 +36,11 @@ public class CellImpl implements Serializable {
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         setOriginalValue(newOriginalVal);
-        lastChangeAt = ++versionNumber;
+        if(newOriginalVal==null)
+            lastChangeAt = 1;
+        else lastChangeAt = ++versionNumber;
     }
+
 
     private void checkRowAndCol(int row, String col) {
         if (!(col != null && col.length() == 1 && Character.isLetter(col.charAt(0)))) {
@@ -201,7 +204,7 @@ public class CellImpl implements Serializable {
     }
 
     private Expression parseSimpleValue(String value) {
-        if(value.equals("TRUE")||value.equals("FALSE"))
+        if(value.equalsIgnoreCase("TRUE")||value.equalsIgnoreCase("FALSE"))
             return new Bool(Boolean.valueOf(value));
 
         if (value.isEmpty() || value.matches(".*[^0-9 ].*") || value.matches("^\\s*$")) {
