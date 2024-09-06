@@ -12,13 +12,13 @@
          </HBox.margin>
       </Label>
       <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="38.0" maxWidth="132.0" prefHeight="31.0" prefWidth="132.0" style="-fx-border-color: blue;" text="Original Cell Value" textAlignment="CENTER" />
-      <VBox prefHeight="63.0" prefWidth="116.0">
+      <VBox prefHeight="51.0" prefWidth="151.0">
          <children>
-            <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="124.0" styleClass="WaitForFileLoad" text="Update Cell" underline="true" />
-            <TextField fx:id="newOriginalValText" prefHeight="25.0" prefWidth="0.0" text="new original val" disable="true" />
+            <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="214.0" styleClass="WaitForFileLoad" text="Update Cell" underline="true" />
+            <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="25.0" prefWidth="162.0" text="new original val" />
          </children>
       </VBox>
-      <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="38.0" maxWidth="137.0" prefHeight="31.0" prefWidth="127.0" style="-fx-border-color: blue;" text="Cell version" textAlignment="CENTER" />
+      <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="38.0" maxWidth="137.0" prefHeight="38.0" prefWidth="65.0" style="-fx-border-color: blue;" text="Cell version" textAlignment="CENTER" />
       <ChoiceBox id="VersionPickerChoiceBox" fx:id="versionPickerChoiceBox" disable="true" prefHeight="24.0" prefWidth="49.0" styleClass="WaitForFileLoad">
          <HBox.margin>
             <Insets right="7.0" top="3.0" />

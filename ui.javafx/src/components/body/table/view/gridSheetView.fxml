@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.view.GridSheetController">
+<ScrollPane fx:id = "scrollPane" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.view.GridSheetController">
     <content>
         <GridPane fx:id = "gridPane" gridLinesVisible="true" prefHeight="426.0" prefWidth="484.0">
             <columnConstraints>
