@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.func.TableFunctionalityController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="401.0" prefWidth="146.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.func.TableFunctionalityController">
    <content>
-      <VBox alignment="TOP_CENTER" minHeight="300.0" minWidth="106.0">
+      <VBox alignment="TOP_CENTER" minHeight="600.0" minWidth="106.0">
          <children>
             <VBox alignment="CENTER" spacing="15.0" VBox.vgrow="SOMETIMES">
                <children>
-                  <Button id="ColSetButton" fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" styleClass="WaitForFileLoad" text="Set Col Number" underline="true" />
-                  <Button id="RowSetButton" fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" styleClass="WaitForFileLoad" text="Set Row Number" underline="true">
+                  <Button id="ColSetButton" fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="25.0" prefWidth="129.0" styleClass="WaitForFileLoad" text="Set Col Number" underline="true" />
+                  <Button id="RowSetButton" fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="25.0" prefWidth="131.0" styleClass="WaitForFileLoad" text="Set Row Number" underline="true">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#AlignmentSetListener" prefHeight="25.0" prefWidth="103.0" styleClass="WaitForFileLoad" text="Alignment Set" underline="true" />
-                  <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="25.0" prefWidth="101.0" styleClass="WaitForFileLoad" text="Cell text color" underline="true" />
+                  <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="25.0" prefWidth="131.0" styleClass="WaitForFileLoad" text="Alignment Set" underline="true" />
+                  <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="25.0" prefWidth="131.0" styleClass="WaitForFileLoad" text="Cell text color" underline="true" />
                   <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" text="Cell background color" />
+                  <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#resetCellStyleListener" prefHeight="25.0" prefWidth="135.0" text="Reset Style" textAlignment="CENTER" underline="true" />
                </children>
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="106.0" spacing="15.0" VBox.vgrow="SOMETIMES">
+            <VBox alignment="CENTER" prefHeight="82.0" prefWidth="143.0" spacing="15.0" VBox.vgrow="SOMETIMES">
                <children>
-                  <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" styleClass="WaitForFileLoad" text="Add Range Set">
+                  <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" styleClass="WaitForFileLoad" text="Add Range Set">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" styleClass="WaitForFileLoad" text="Delete Range" />
-                  <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" styleClass="WaitForFileLoad" text="View Range" />
+                  <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="136.0" styleClass="WaitForFileLoad" text="Delete Range" />
+                  <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="139.0" styleClass="WaitForFileLoad" text="View Range" />
                </children>
                <VBox.margin>
                   <Insets top="10.0" />

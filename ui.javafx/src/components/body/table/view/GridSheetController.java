@@ -53,7 +53,7 @@ public class GridSheetController {
         labelMap.clear();
     }
 
-    private void addBorders(int rows, int cols,int maxRow,int maxCol) {
+    private void addBorders(int rows, int cols, int maxRow, int maxCol) {
         Label emptyLabel = new Label();
         gridPane.add(emptyLabel, 0, 0);
 
@@ -78,16 +78,18 @@ public class GridSheetController {
         //for now.
     }
 
-    public void populateTableView(sheetDTO sheetCopy, boolean isInitialLoad) {
+    public void populateTableView(sheetDTO sheetCopy, boolean isLoad) {
         int row = sheetCopy.getRowSize();
         int col = sheetCopy.getColSize();
         int maxRow = sheetCopy.getRowHeight();
         int maxCol = sheetCopy.getColWidth();
         Map<String, CellDataDTO> cells = sheetCopy.getActiveCells();
 
-        if (isInitialLoad) {
+        if (isLoad) {
+            labelMap.clear();
+            originalBackgrounds.clear();
             clearGridPane();
-            addBorders(row, col,maxRow,maxCol);
+            addBorders(row, col, maxRow, maxCol);
         }
 
         // Loop to add or update cells in the grid
@@ -96,7 +98,7 @@ public class GridSheetController {
                 String id = String.valueOf((char) ('A' + (j - 1))) + i;
                 Label cellLabel;
 
-                if (isInitialLoad) {
+                if (isLoad) {
                     cellLabel = new Label();
                     setCellFunctionality(cellLabel, maxCol, maxRow, id);
                     gridPane.add(cellLabel, j, i);
@@ -188,5 +190,21 @@ public class GridSheetController {
         }
     }
 
+    //listener
+    public void resetUserPreferences() {
+
+    }
+
+    public void changeTextColor(String cellId, Color newColor) {
+        Label label = labelMap.get(cellId);
+        label.setTextFill(newColor);
+    }
+
+    public void changeBackgroundColor(String cellId, Color newColor) {
+        originalBackgrounds.remove(cellId);
+        originalBackgrounds.put(cellId, new Background(new BackgroundFill(newColor, CornerRadii.EMPTY, null)));
+        Label label = labelMap.get(cellId);
+        label.setBackground(originalBackgrounds.get(cellId));
+    }
 
 }

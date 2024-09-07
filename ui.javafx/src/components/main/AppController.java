@@ -144,7 +144,13 @@ public class AppController {
     }
 
 
-    public void applyColor(Color selectedColor) {
+    public void backgroundColorPicked(Color selectedColor) {
+        String id = cellFunctionsController.getCellIdFocused();
+        gridSheetController.changeBackgroundColor(id, selectedColor);
+    }
+    public void textColorPicked(Color selectedColor) {
+        String id = cellFunctionsController.getCellIdFocused();
+        gridSheetController.changeTextColor(id, selectedColor);
     }
 }
 

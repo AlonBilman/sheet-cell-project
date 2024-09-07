@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 
 public class TableFunctionalityController {
 
+
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -26,6 +27,9 @@ public class TableFunctionalityController {
 
     private AppController appController;
 
+
+    @FXML
+    public Button resetButton;
     @FXML
     private Button setColButton;
     @FXML
@@ -44,8 +48,11 @@ public class TableFunctionalityController {
     @FXML
     private Button viewExistingRangeButton;
 
-    public void AlignmentSetListener(ActionEvent actionEvent) {
+    public void alignmentSetListener(ActionEvent actionEvent) {
     }
+
+
+
 
     public enum ButtonState {
         LOADING_FILE,
@@ -198,15 +205,14 @@ public class TableFunctionalityController {
     @FXML
     private void cellTextColorPick() {
         buildColorPickerPopup("Choose a Color", (selectedColor) -> {
-            // Use the color, e.g., apply it to an element or pass it to the appController
-            appController.applyColor(selectedColor);
+            appController.textColorPicked(selectedColor);
         });
     }
+
     @FXML
     private void cellBackgroundColorPick() {
         buildColorPickerPopup("Choose a Color", (selectedColor) -> {
-            // Use the color, e.g., apply it to an element or pass it to the appController
-            appController.applyColor(selectedColor);
+            appController.backgroundColorPicked(selectedColor);
         });
     }
 
@@ -223,6 +229,11 @@ public class TableFunctionalityController {
     @FXML
     private void viewExistingRangeListener() {
         System.out.println("View Range button clicked");
+    }
+
+    @FXML
+    public void resetCellStyleListener(ActionEvent actionEvent) {
+        //ההמשך יבוא
     }
 
 }

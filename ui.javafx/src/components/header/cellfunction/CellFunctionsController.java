@@ -74,4 +74,8 @@ public class CellFunctionsController {
         String newOriginalValue = newOriginalValText.getText();
         appController.updateCellClicked(currCellShown,newOriginalValue);
     }
+
+    public String getCellIdFocused() {
+        return currCellShown;
+    }
 }
