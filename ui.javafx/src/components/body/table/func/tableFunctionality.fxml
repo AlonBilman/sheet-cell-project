@@ -16,7 +16,8 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#AlignmentSetListener" prefHeight="25.0" prefWidth="103.0" styleClass="WaitForFileLoad" text="Alignment Set" underline="true" />
+                  <!-- Corrected the onAction method name here -->
+                  <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="25.0" prefWidth="103.0" styleClass="WaitForFileLoad" text="Alignment Set" underline="true" />
                   <Button fx:id="cellStyleButton" disable="true" mnemonicParsing="false" onAction="#cellStyleListener" prefHeight="25.0" prefWidth="104.0" styleClass="WaitForFileLoad" text="Cell Styling" underline="true" />
                </children>
                <VBox.margin>

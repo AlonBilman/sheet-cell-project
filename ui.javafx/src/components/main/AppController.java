@@ -107,6 +107,7 @@ public class AppController {
             gridSheetController.populateTableView(engine.Display(),true);
             loadFileController.editFilePath(file.getAbsolutePath());
             tableFunctionalityController.setActiveButtons(true);
+            //tableFunctionalityController.add version o mashu
         } catch (Exception e) {
             loadFileController.showInfoAlert(e.getMessage());
         }

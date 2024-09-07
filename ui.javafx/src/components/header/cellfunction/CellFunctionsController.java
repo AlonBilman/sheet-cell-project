@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 
 public class CellFunctionsController {
 
+
     private AppController appController;
 
     public void setMainController(AppController mainController){
@@ -28,7 +29,7 @@ public class CellFunctionsController {
     private Label cellUpdatedProperty;
 
     @FXML
-    private ChoiceBox<String> versionPickerChoiceBox;
+    public ComboBox<String> versionPickerComboBox;
 
     @FXML
     private TextField newOriginalValText;
