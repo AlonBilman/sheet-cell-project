@@ -103,10 +103,10 @@ public class AppController {
         stlSheet = loadXMLFile(loadResult.getLoadedFile());
         try {
             engine.initSheet(stlSheet);
-            gridSheetController.populateTableView(engine.Display(),true);
+            gridSheetController.populateTableView(engine.Display(), true);
             loadFileController.editFilePath(file.getAbsolutePath());
             tableFunctionalityController.setActiveButtons
-                    (TableFunctionalityController.ButtonState.LOADING_FILE,true);
+                    (TableFunctionalityController.ButtonState.LOADING_FILE, true);
             //tableFunctionalityController.add version o mashu
         } catch (Exception e) {
             loadFileController.showInfoAlert(e.getMessage());
@@ -115,36 +115,33 @@ public class AppController {
 
     public void CellClicked(String id) {
         cellFunctionsController.outOfFocus();
-        CellDataDTO cell =engine.showCell(id);
+        CellDataDTO cell = engine.showCell(id);
         cellFunctionsController.showCell(cell);
         tableFunctionalityController.setActiveButtons(
-                TableFunctionalityController.ButtonState.CLICKING_CELL,true);
-        gridSheetController.colorizeImportantCells(engine.Display(),id);
+                TableFunctionalityController.ButtonState.CLICKING_CELL, true);
+        gridSheetController.colorizeImportantCells(engine.Display(), id);
     }
 
-    public void loadClicked(){
+    public void loadClicked() {
         cellFunctionsController.outOfFocus();
         tableFunctionalityController.outOfFocus();
     }
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
-        try{
+        try {
             engine.updateCell(cellToUpdate, newOriginalValue);
             cellFunctionsController.outOfFocus();
-            gridSheetController.populateTableView(engine.Display(),false);
-        }
-        catch(Exception e){
+            gridSheetController.populateTableView(engine.Display(), false);
+        } catch (Exception e) {
             cellFunctionsController.showInfoAlert(e.getMessage());
-
         }
-      //can fail. thrown back to the caller
+        //can fail. thrown back to the caller
     }
 
     public void cellOutOfFocus() {
         gridSheetController.returnOldColors();
     }
 }
-
 
 
 //    package userInput;

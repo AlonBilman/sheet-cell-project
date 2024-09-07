@@ -53,22 +53,25 @@ public class GridSheetController {
         labelMap.clear();
     }
 
-    private void addBorders(int rows, int cols) {
+    private void addBorders(int rows, int cols,int maxRow,int maxCol) {
         Label emptyLabel = new Label();
         gridPane.add(emptyLabel, 0, 0);
 
         for (int i = 1; i <= cols; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf((char) ('A' + (i - 1))));
-            cellLabel.setMinSize(10, 10);
+            cellLabel.setPrefSize(maxRow, 10);
             gridPane.add(cellLabel, i, 0);
+            cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
             makeClickVisuallyClicked(cellLabel);
         }
+
         for (int i = 1; i <= rows; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf(i));
-            cellLabel.setMinSize(10, 10);
+            cellLabel.setPrefSize(15, maxCol);
             gridPane.add(cellLabel, 0, i);
+            cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
             makeClickVisuallyClicked(cellLabel);
         }
         //no need any functionality for them
@@ -84,7 +87,7 @@ public class GridSheetController {
 
         if (isInitialLoad) {
             clearGridPane();
-            addBorders(row, col);
+            addBorders(row, col,maxRow,maxCol);
         }
 
         // Loop to add or update cells in the grid
@@ -127,17 +130,16 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
-
     private void makeClickVisuallyClicked(Label cellLabel) {
         cellLabel.setOnMousePressed(event -> cellLabel.setStyle("-fx-border-color: red; -fx-border-width: 1;"));
-        cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;"));
+        cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;"));
     }
 
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         cellLabel.setAlignment(Pos.CENTER);
         cellLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null)));
-        cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;");
+        cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
         final Background[] originalBackground = new Background[1];
 
         cellLabel.setOnMouseEntered(event -> {
