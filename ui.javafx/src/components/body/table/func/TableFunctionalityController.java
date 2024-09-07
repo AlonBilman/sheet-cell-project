@@ -1,13 +1,21 @@
 package components.body.table.func;
 
 import components.main.AppController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.awt.*;
+import java.util.function.Consumer;
 
 public class TableFunctionalityController {
 
@@ -25,13 +33,19 @@ public class TableFunctionalityController {
     @FXML
     private Button alignmentSetButton;
     @FXML
-    private Button cellStyleButton;
+    private Button cellTextPick;
+
+    @FXML
+    private Button cellBackgroundPick;
     @FXML
     private Button addNewRangeButton;
     @FXML
     private Button deleteExistingRangeButton;
     @FXML
     private Button viewExistingRangeButton;
+
+    public void AlignmentSetListener(ActionEvent actionEvent) {
+    }
 
     public enum ButtonState {
         LOADING_FILE,
@@ -62,7 +76,8 @@ public class TableFunctionalityController {
         setColButton.setDisable(!this.activeButtonsWhenClickingColumn);
         setRowButton.setDisable(!this.activeButtonsWhenClickingRow);
         alignmentSetButton.setDisable(!(this.activeButtonsWhenClickingColumn || this.activeButtonsWhenClickingRow));
-        cellStyleButton.setDisable(!this.activeButtonsWhenClickingCell);
+        cellTextPick.setDisable(!this.activeButtonsWhenClickingCell);
+        cellBackgroundPick.setDisable(!this.activeButtonsWhenClickingCell);
         addNewRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         deleteExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         viewExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
@@ -92,6 +107,44 @@ public class TableFunctionalityController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void buildColorPickerPopup(String title, Consumer<Color> colorCallback) {
+        // Create a new popup stage
+        Stage popupStage = new Stage();
+        popupStage.setTitle(title);
+
+        // Create a ColorPicker
+        ColorPicker colorPicker = new ColorPicker();
+
+        // Handle color selection
+        colorPicker.setOnAction(e -> {
+            try {
+                // Get the selected color
+                Color selectedColor = colorPicker.getValue();
+                System.out.println("Selected Color: " + selectedColor);
+
+                // Pass the selected color to the callback
+                colorCallback.accept(selectedColor);
+
+                // Close the popup after the color is picked
+                popupStage.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        // Create a layout to hold the ColorPicker
+        VBox vbox = new VBox(10, colorPicker);  // VBox with spacing of 10px
+        vbox.setAlignment(Pos.CENTER);  // Center align the ColorPicker
+        vbox.setPadding(new Insets(15));  // Add padding around the layout
+
+        // Create the scene and set it in the stage
+        Scene scene = new Scene(vbox, 300, 150);  // Set the scene size (width and height)
+        popupStage.setScene(scene);
+
+        // Show the popup window
+        popupStage.show();
     }
 
     private void buildPopup(String title, String promptText, boolean isColumn) {
@@ -143,8 +196,18 @@ public class TableFunctionalityController {
     }
 
     @FXML
-    private void cellStyleListener() {
-        System.out.println("Cell Styling button clicked");
+    private void cellTextColorPick() {
+        buildColorPickerPopup("Choose a Color", (selectedColor) -> {
+            // Use the color, e.g., apply it to an element or pass it to the appController
+            appController.applyColor(selectedColor);
+        });
+    }
+    @FXML
+    private void cellBackgroundColorPick() {
+        buildColorPickerPopup("Choose a Color", (selectedColor) -> {
+            // Use the color, e.g., apply it to an element or pass it to the appController
+            appController.applyColor(selectedColor);
+        });
     }
 
     @FXML
