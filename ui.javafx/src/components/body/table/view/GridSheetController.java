@@ -31,6 +31,11 @@ public class GridSheetController {
 
     private Map<String, Background> originalBackgrounds = new HashMap<>();
 
+    private Color backgroundDefaultColor;
+    private Background defaultBackground;
+    private Color textDefaultColor;
+
+
     public void initialize() {
         // Set fixed size for the GridPane
         gridPane.setPrefSize(600, 400);
@@ -40,6 +45,13 @@ public class GridSheetController {
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         labelMap = new HashMap<>();
+        initDefaultColors();
+    }
+
+    private void initDefaultColors() {
+        backgroundDefaultColor = Color.WHITE;
+        textDefaultColor = Color.BLACK;
+        defaultBackground = new Background(new BackgroundFill(backgroundDefaultColor, CornerRadii.EMPTY, null));
     }
 
     public void setMainController(AppController mainController) {
@@ -140,7 +152,7 @@ public class GridSheetController {
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         cellLabel.setAlignment(Pos.CENTER);
-        cellLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null)));
+        cellLabel.setBackground(defaultBackground);
         cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
         final Background[] originalBackground = new Background[1];
 
@@ -190,11 +202,6 @@ public class GridSheetController {
         }
     }
 
-    //listener
-    public void resetUserPreferences() {
-
-    }
-
     public void changeTextColor(String cellId, Color newColor) {
         Label label = labelMap.get(cellId);
         label.setTextFill(newColor);
@@ -205,6 +212,11 @@ public class GridSheetController {
         originalBackgrounds.put(cellId, new Background(new BackgroundFill(newColor, CornerRadii.EMPTY, null)));
         Label label = labelMap.get(cellId);
         label.setBackground(originalBackgrounds.get(cellId));
+    }
+
+    public void resetToDefaultColors(String id) {
+        changeBackgroundColor(id,backgroundDefaultColor);
+        changeTextColor(id,textDefaultColor);
     }
 
 }

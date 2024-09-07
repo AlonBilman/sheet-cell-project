@@ -48,12 +48,9 @@ public class TableFunctionalityController {
     @FXML
     private Button viewExistingRangeButton;
 
+
     public void alignmentSetListener(ActionEvent actionEvent) {
     }
-
-
-
-
     public enum ButtonState {
         LOADING_FILE,
         CLICKING_CELL,
@@ -85,6 +82,7 @@ public class TableFunctionalityController {
         alignmentSetButton.setDisable(!(this.activeButtonsWhenClickingColumn || this.activeButtonsWhenClickingRow));
         cellTextPick.setDisable(!this.activeButtonsWhenClickingCell);
         cellBackgroundPick.setDisable(!this.activeButtonsWhenClickingCell);
+        resetButton.setDisable(!this.activeButtonsWhenClickingCell);
         addNewRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         deleteExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         viewExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
@@ -233,7 +231,7 @@ public class TableFunctionalityController {
 
     @FXML
     public void resetCellStyleListener(ActionEvent actionEvent) {
-        //ההמשך יבוא
+        appController.resetStyleClicked();
     }
 
 }

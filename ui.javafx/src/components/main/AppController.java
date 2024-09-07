@@ -152,6 +152,11 @@ public class AppController {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.changeTextColor(id, selectedColor);
     }
+
+    public void resetStyleClicked() {
+        String id = cellFunctionsController.getCellIdFocused();
+        gridSheetController.resetToDefaultColors(id);
+    }
 }
 
 
