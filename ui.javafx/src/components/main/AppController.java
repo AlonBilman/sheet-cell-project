@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -140,6 +141,10 @@ public class AppController {
 
     public void cellOutOfFocus() {
         gridSheetController.returnOldColors();
+    }
+
+
+    public void applyColor(Color selectedColor) {
     }
 }
 
