@@ -104,7 +104,7 @@ public class AppController {
         stlSheet = loadXMLFile(loadResult.getLoadedFile());
         try {
             engine.initSheet(stlSheet);
-            gridSheetController.updateTable(engine.Display());
+            gridSheetController.populateTableView(engine.Display(),true);
             loadFileController.editFilePath(file.getAbsolutePath());
             tableFunctionalityController.setActiveButtons(true);
         } catch (Exception e) {
@@ -113,8 +113,10 @@ public class AppController {
     }
 
     public void CellClicked(String id) {
+        cellFunctionsController.outOfFocus();
         CellDataDTO cell =engine.showCell(id);
         cellFunctionsController.showCell(cell);
+        gridSheetController.colorizeImportantCells(engine.Display(),id);
     }
     public void loadClicked(){
         cellFunctionsController.outOfFocus();
@@ -125,13 +127,17 @@ public class AppController {
         try{
             engine.updateCell(cellToUpdate, newOriginalValue);
             cellFunctionsController.outOfFocus();
-            gridSheetController.updateTable(engine.Display());
+            gridSheetController.populateTableView(engine.Display(),false);
         }
         catch(Exception e){
             cellFunctionsController.showInfoAlert(e.getMessage());
 
         }
       //can fail. thrown back to the caller
+    }
+
+    public void cellOutOfFocus() {
+        gridSheetController.returnOldColors();
     }
 }
 

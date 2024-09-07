@@ -1,6 +1,5 @@
 package components.body.table.view;
 
-import com.sun.jdi.BooleanType;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
@@ -14,7 +13,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class GridSheetController {
 
@@ -26,6 +27,10 @@ public class GridSheetController {
 
     private AppController appController;
 
+    Map<String, Label> labelMap;
+
+    private Map<String, Background> originalBackgrounds = new HashMap<>();
+
     public void initialize() {
         // Set fixed size for the GridPane
         gridPane.setPrefSize(600, 400);
@@ -34,6 +39,7 @@ public class GridSheetController {
         // Ensure the ScrollPane reacts to the overflow
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
+        labelMap = new HashMap<>();
     }
 
     public void setMainController(AppController mainController) {
@@ -44,6 +50,7 @@ public class GridSheetController {
         gridPane.getChildren().clear();
         gridPane.getColumnConstraints().clear();
         gridPane.getRowConstraints().clear();
+        labelMap.clear();
     }
 
     private void addBorders(int rows, int cols) {
@@ -66,47 +73,103 @@ public class GridSheetController {
         //for now.
     }
 
-    public void updateTable(sheetDTO sheetCopy) {
-        // Get dimensions from the DTO
+    public void populateTableView(sheetDTO sheetCopy, boolean isInitialLoad) {
         int row = sheetCopy.getRowSize();
         int col = sheetCopy.getColSize();
         int maxRow = sheetCopy.getRowHeight();
         int maxCol = sheetCopy.getColWidth();
         Map<String, CellDataDTO> cells = sheetCopy.getActiveCells();
-        clearGridPane();
-        addBorders(row, col);
 
-        // Loop to add cells to the grid
+        if (isInitialLoad) {
+            clearGridPane();
+            addBorders(row, col);
+        }
+
+        // Loop to add or update cells in the grid
         for (int i = 1; i <= row; i++) {
             for (int j = 1; j <= col; j++) {
-                Label cellLabel = new Label();
                 String id = String.valueOf((char) ('A' + (j - 1))) + i;
-                CellDataDTO curr = cells.get(id);
-                if (curr == null) {
-                    cellLabel.setText("");
+                Label cellLabel;
+
+                if (isInitialLoad) {
+                    cellLabel = new Label();
+                    setCellFunctionality(cellLabel, maxCol, maxRow, id);
+                    gridPane.add(cellLabel, j, i);
+                    labelMap.put(id, cellLabel);
                 } else {
-                    //ASK AVIAD
-                    if(curr.getEffectiveValue().getValue() instanceof Boolean) {
-                        cellLabel.setText(curr.getEffectiveValue().getValue().toString().toUpperCase());
-                    }
-                    else cellLabel.setText(curr.getEffectiveValue().getValue().toString());
+                    //getting the current Label to update (if needed)
+                    //we already init the table, so we cellLabel not null.
+                    cellLabel = getNodeFromGridPane(id);
                 }
-                setCellFunctionality(cellLabel, maxCol, maxRow, id);
-                gridPane.add(cellLabel, j, i);
+                //update the cell data
+                updateCellLabel(cellLabel, cells.get(id));
             }
         }
+    }
+
+    private void updateCellLabel(Label cellLabel, CellDataDTO cellData) {
+        if (cellData == null) {
+            cellLabel.setText("");
+        } else {
+            Object value = cellData.getEffectiveValue().getValue();
+            //I'm sorry... I couldn't think of another way...
+            if (value instanceof Boolean) {
+                cellLabel.setText(value.toString().toUpperCase());
+            } else {
+                cellLabel.setText(value.toString());
+            }
+        }
+    }
+
+    private Label getNodeFromGridPane(String labelId) {
+        return labelMap.get(labelId);
     }
 
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         cellLabel.setAlignment(Pos.CENTER);
         cellLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null)));
+        originalBackgrounds.put(cellId,cellLabel.getBackground());
         cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;");
         cellLabel.setOnMouseEntered(event -> cellLabel.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY.deriveColor(0, 1.0, 1.0, 0.5), CornerRadii.EMPTY, null))));
-        cellLabel.setOnMouseExited(event -> cellLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null))));
+        cellLabel.setOnMouseExited(event -> cellLabel.setBackground(originalBackgrounds.get(cellId)));
         cellLabel.setOnMousePressed(event -> cellLabel.setStyle("-fx-border-color: red; -fx-border-width: 1;"));
         cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;"));
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
+    }
 
+    private void setColumnFunctionality(Label cellLabel, int maxColWidth, String cellId) {
+        //something
+    }
+
+
+    public void colorizeImportantCells(sheetDTO curr, String id) {
+        Map<String, CellDataDTO> cells = curr.getActiveCells();
+        CellDataDTO cellData = cells.get(id); // won't be null
+        Set<String> affectsOn = cellData.getAffectsOn();
+        Set<String> depOn = cellData.getDependsOn();
+
+        for (String dep : depOn) {
+            Label label = labelMap.get(dep);
+            if (!originalBackgrounds.containsKey(dep)) {
+                originalBackgrounds.put(dep, label.getBackground());
+            }
+            label.setBackground(new Background(new BackgroundFill(Color.LIGHTSALMON, CornerRadii.EMPTY, null)));
+        }
+
+        for (String affect : affectsOn) {
+            Label label = labelMap.get(affect);
+            if (!originalBackgrounds.containsKey(affect)) {
+                originalBackgrounds.put(affect, label.getBackground());
+            }
+            label.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, null)));
+        }
+    }
+
+    public void returnOldColors() {
+        for(String id : originalBackgrounds.keySet()) {
+            Label label = labelMap.get(id);
+            label.setBackground(originalBackgrounds.get(id));
+        }
     }
 }

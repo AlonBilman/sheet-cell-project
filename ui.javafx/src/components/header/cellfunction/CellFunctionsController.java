@@ -66,6 +66,7 @@ public class CellFunctionsController {
         newOriginalValText.setText("New Original Value");
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
+        appController.cellOutOfFocus();
     }
     @FXML
     private void updateCellActionListener() {
