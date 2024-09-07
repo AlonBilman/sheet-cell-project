@@ -129,14 +129,25 @@ public class GridSheetController {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         cellLabel.setAlignment(Pos.CENTER);
         cellLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, null)));
-        originalBackgrounds.put(cellId,cellLabel.getBackground());
         cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;");
-        cellLabel.setOnMouseEntered(event -> cellLabel.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY.deriveColor(0, 1.0, 1.0, 0.5), CornerRadii.EMPTY, null))));
-        cellLabel.setOnMouseExited(event -> cellLabel.setBackground(originalBackgrounds.get(cellId)));
+        final Background[] originalBackground = new Background[1];
+
+        cellLabel.setOnMouseEntered(event -> {
+            originalBackground[0] = cellLabel.getBackground();  //save the original background
+            Color currentColor = ((Color) cellLabel.getBackground().getFills().get(0).getFill());
+            Color hoverColor = currentColor.interpolate(Color.LIGHTGRAY, 0.5);
+            cellLabel.setBackground(new Background(new BackgroundFill(hoverColor, CornerRadii.EMPTY, null)));
+        });
+
+        cellLabel.setOnMouseExited(event -> {
+            cellLabel.setBackground(originalBackground[0]);  // Restore the original background
+        });
+
         cellLabel.setOnMousePressed(event -> cellLabel.setStyle("-fx-border-color: red; -fx-border-width: 1;"));
         cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;"));
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
+
 
     private void setColumnFunctionality(Label cellLabel, int maxColWidth, String cellId) {
         //something
