@@ -75,7 +75,6 @@ public class AppController {
         this.titleCardController = titleCardController;
     }
 
-
     public void initialize() {
         if (tableFunctionalityController != null && gridSheetController != null &&
                 cellFunctionsController != null && loadFileController != null && titleCardController != null) {
@@ -106,7 +105,8 @@ public class AppController {
             engine.initSheet(stlSheet);
             gridSheetController.populateTableView(engine.Display(),true);
             loadFileController.editFilePath(file.getAbsolutePath());
-            tableFunctionalityController.setActiveButtons(true);
+            tableFunctionalityController.setActiveButtons
+                    (TableFunctionalityController.ButtonState.LOADING_FILE,true);
             //tableFunctionalityController.add version o mashu
         } catch (Exception e) {
             loadFileController.showInfoAlert(e.getMessage());
@@ -117,12 +117,15 @@ public class AppController {
         cellFunctionsController.outOfFocus();
         CellDataDTO cell =engine.showCell(id);
         cellFunctionsController.showCell(cell);
+        tableFunctionalityController.setActiveButtons(
+                TableFunctionalityController.ButtonState.CLICKING_CELL,true);
         gridSheetController.colorizeImportantCells(engine.Display(),id);
     }
+
     public void loadClicked(){
         cellFunctionsController.outOfFocus();
+        tableFunctionalityController.outOfFocus();
     }
-
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         try{

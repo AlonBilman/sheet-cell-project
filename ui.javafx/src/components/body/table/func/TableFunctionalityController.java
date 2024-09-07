@@ -11,7 +11,11 @@ import javafx.stage.Stage;
 
 public class TableFunctionalityController {
 
-    private Boolean activeButtons;
+    private Boolean activeButtonsWhenLoadingFile;
+    private Boolean activeButtonsWhenClickingCell;
+    private Boolean activeButtonsWhenClickingRow;
+    private Boolean activeButtonsWhenClickingColumn;
+
     private AppController appController;
 
     @FXML
@@ -29,24 +33,56 @@ public class TableFunctionalityController {
     @FXML
     private Button viewExistingRangeButton;
 
+    public enum ButtonState {
+        LOADING_FILE,
+        CLICKING_CELL,
+        CLICKING_ROW,
+        CLICKING_COLUMN
+    }
+
+    public void initialize() {
+        activeButtonsWhenLoadingFile = false;
+        activeButtonsWhenClickingCell = false;
+        activeButtonsWhenClickingRow = false;
+        activeButtonsWhenClickingColumn = false;
+    }
+
+    public void outOfFocus() {
+        activeButtonsWhenClickingCell = false;
+        activeButtonsWhenClickingRow = false;
+        activeButtonsWhenClickingColumn = false;
+        updateButtonStates();
+    }
+
     public void setMainController(AppController mainController) {
         this.appController = mainController;
-        setActiveButtons(false);
     }
 
     public void updateButtonStates() {
-        boolean isEnabled = Boolean.TRUE.equals(activeButtons);
-        setColButton.setDisable(!isEnabled);
-        setRowButton.setDisable(!isEnabled);
-        alignmentSetButton.setDisable(!isEnabled);
-        cellStyleButton.setDisable(!isEnabled);
-        addNewRangeButton.setDisable(!isEnabled);
-        deleteExistingRangeButton.setDisable(!isEnabled);
-        viewExistingRangeButton.setDisable(!isEnabled);
+        setColButton.setDisable(!this.activeButtonsWhenClickingColumn);
+        setRowButton.setDisable(!this.activeButtonsWhenClickingRow);
+        alignmentSetButton.setDisable(!(this.activeButtonsWhenClickingColumn || this.activeButtonsWhenClickingRow));
+        cellStyleButton.setDisable(!this.activeButtonsWhenClickingCell);
+        addNewRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
+        deleteExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
+        viewExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
     }
 
-    public void setActiveButtons(Boolean activeButtons) {
-        this.activeButtons = activeButtons;
+    public void setActiveButtons(ButtonState state, boolean isActive) {
+        switch (state) {
+            case LOADING_FILE:
+                this.activeButtonsWhenLoadingFile = isActive;
+                break;
+            case CLICKING_CELL:
+                this.activeButtonsWhenClickingCell = isActive;
+                break;
+            case CLICKING_ROW:
+                this.activeButtonsWhenClickingRow = isActive;
+                break;
+            case CLICKING_COLUMN:
+                this.activeButtonsWhenClickingColumn = isActive;
+                break;
+        }
         updateButtonStates();
     }
 
@@ -125,4 +161,5 @@ public class TableFunctionalityController {
     private void viewExistingRangeListener() {
         System.out.println("View Range button clicked");
     }
+
 }

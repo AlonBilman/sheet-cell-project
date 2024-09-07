@@ -62,12 +62,14 @@ public class GridSheetController {
             cellLabel.setText(String.valueOf((char) ('A' + (i - 1))));
             cellLabel.setMinSize(10, 10);
             gridPane.add(cellLabel, i, 0);
+            makeClickVisuallyClicked(cellLabel);
         }
         for (int i = 1; i <= rows; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf(i));
             cellLabel.setMinSize(10, 10);
             gridPane.add(cellLabel, 0, i);
+            makeClickVisuallyClicked(cellLabel);
         }
         //no need any functionality for them
         //for now.
@@ -125,6 +127,12 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
+
+    private void makeClickVisuallyClicked(Label cellLabel) {
+        cellLabel.setOnMousePressed(event -> cellLabel.setStyle("-fx-border-color: red; -fx-border-width: 1;"));
+        cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;"));
+    }
+
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         cellLabel.setAlignment(Pos.CENTER);
@@ -138,19 +146,13 @@ public class GridSheetController {
             Color hoverColor = currentColor.interpolate(Color.LIGHTGRAY, 0.5);
             cellLabel.setBackground(new Background(new BackgroundFill(hoverColor, CornerRadii.EMPTY, null)));
         });
-
+        //Problem!
         cellLabel.setOnMouseExited(event -> {
             cellLabel.setBackground(originalBackground[0]);  // Restore the original background
         });
 
-        cellLabel.setOnMousePressed(event -> cellLabel.setStyle("-fx-border-color: red; -fx-border-width: 1;"));
-        cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: lightgray; -fx-border-width: 0.5;"));
+        makeClickVisuallyClicked(cellLabel);
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
-    }
-
-
-    private void setColumnFunctionality(Label cellLabel, int maxColWidth, String cellId) {
-        //something
     }
 
 
@@ -178,7 +180,7 @@ public class GridSheetController {
     }
 
     public void returnOldColors() {
-        for(String id : originalBackgrounds.keySet()) {
+        for (String id : originalBackgrounds.keySet()) {
             Label label = labelMap.get(id);
             label.setBackground(originalBackgrounds.get(id));
         }
