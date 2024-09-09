@@ -111,6 +111,10 @@ public class EngineImpl implements Engine, Serializable {
       return sheet.getRange(id);
     }
 
+    public void deleteRange(String name){
+        this.spreadSheet.deleteRange(name);
+    }
+
     //-------------------------------------------------------------------------------------
 
     @Override

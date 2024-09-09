@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="43.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
+<AnchorPane prefHeight="43.0" stylesheets="@titleCard.css" prefWidth="820.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
    <children>
       <Text layoutX="373.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sheet Cell" underline="true">
          <font>

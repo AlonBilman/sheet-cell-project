@@ -165,16 +165,42 @@ public class CellImpl implements Serializable {
                         throw new IllegalArgumentException("REF function requires one argument.");
                     }
                     Expression argument = parsedArguments.get(0);
+
                     Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
                     String referencedId = argument.eval().getValue().toString();
                     dependsOn.add(referencedId);
                     return res;
+
+                case "AVERAGE":
+                    if (parsedArguments.size() != 1) {
+                        throw new IllegalArgumentException("AVERAGE function requires one argument.");
+                    }
+                    Expression name = parsedArguments.get(0);
+                    Range range = avgFuncCheck(name);
+                    return new AverageFunction(range);
+
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
             }
         } else {
             return parseSimpleValue(originalValue);
         }
+    }
+
+    private Range avgFuncCheck(Expression name) {
+        EffectiveValue effectiveValue =  name.eval();
+        if(effectiveValue.getObjType()!=ObjType.STRING) {
+            throw new IllegalArgumentException("AVERAGE function requires a string argument (Range name).");
+        }
+        String arg = name.eval().getValue().toString();
+        Range range = currSpreadSheet.getRange(arg);
+        if(range!=null){
+            for(CellImpl cell : range.getRangeCells()) {
+                cell.addAffectsOnId(this.id);
+                dependsOn.add(cell.getId());
+            }
+        }
+        return range;
     }
 
     private List<Expression> parseArguments(String arguments) {

@@ -46,26 +46,30 @@
 
 /* Adjustments for specific button IDs */
 #ColSetButton, #RowSetButton, #alignmentSetButton, #cellTextPick, #cellBackgroundPick, #resetButton {
-    -fx-background-color: #6c757d; /* Neutral gray color */
-    -fx-border-color: #6c757d; /* Matching border color */
+    -fx-background-color: #5a9bd4; /* Light blue color */
+    -fx-border-color: #5a9bd4; /* Matching border color */
     -fx-text-fill: #ffffff; /* White text */
 }
 
 #ColSetButton:hover, #RowSetButton:hover, #alignmentSetButton:hover, #cellTextPick:hover, #cellBackgroundPick:hover, #resetButton:hover {
-    -fx-background-color: #5a6268; /* Darker gray on hover */
-    -fx-border-color: #5a6268; /* Matching border color on hover */
+    -fx-background-color: #3b7bbf; /* Darker blue on hover */
+    -fx-border-color: #3b7bbf; /* Matching border color on hover */
+    -fx-text-fill: #ffffff; /* White text */
 }
 
 /* Specific styles for Add Range Set, Delete Range, and View Range buttons */
 #addNewRangeButton, #deleteExistingRangeButton, #viewExistingRangeButton {
-    -fx-background-color: #28a745; /* Fresh green background */
-    -fx-border-color: #28a745; /* Matching border color */
+    -fx-background-color: #5a9bd4; /* Light blue color */
+    -fx-border-color: #5a9bd4; /* Matching border color */
+    -fx-text-fill: #ffffff; /* White text */
 }
 
 #addNewRangeButton:hover, #deleteExistingRangeButton:hover, #viewExistingRangeButton:hover {
-    -fx-background-color: #218838; /* Darker green on hover */
-    -fx-border-color: #218838; /* Matching border color on hover */
+    -fx-background-color: #3b7bbf; /* Darker blue on hover */
+    -fx-border-color: #3b7bbf; /* Matching border color on hover */
+    -fx-text-fill: #ffffff; /* White text */
 }
+
 
 /* Margin settings */
 .vbox > .children > .button {

@@ -1,57 +1,61 @@
 /* General styling for HBox */
-HBox {
-    -fx-background-color: #f0f0f0; /* Light gray background */
+.hbox {
+    -fx-background-color: #f0f0f0; /* Light gray background for modern look */
     -fx-padding: 10px; /* Padding around the content */
     -fx-spacing: 15px; /* Space between children */
+    -fx-border-color: #e0e0e0; /* Subtle gray border */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-background-insets: 0, 0; /* Remove default insets */
 }
 
 /* Styling for Labels */
 #CellIDLabel, #OriginalCellValueLabel, #LastUpdatedVersionLabel {
-    -fx-background-color: #ffffff; /* White background */
-    -fx-border-color: #0078d4; /* Blue border */
+    -fx-background-color: #ffffff; /* Clean white background */
+    -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
     -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 4px; /* Rounded corners */
-    -fx-padding: 5px; /* Padding inside the label */
-    -fx-text-fill: #333333; /* Dark gray text color */
-    -fx-font-size: 12px; /* Font size */
-    -fx-font-weight: bold; /* Bold text */
+    -fx-border-radius: 5px; /* Rounded corners to match buttons */
+    -fx-padding: 10px; /* Padding inside the label for a spacious look */
+    -fx-text-fill: #333333; /* Dark gray text color for readability */
+    -fx-font-size: 14px; /* Larger font size to match buttons */
+    -fx-font-weight: bold; /* Bold text for emphasis */
 }
 
 /* Styling for Button */
 #UpdateNewCellValueButton {
-    -fx-background-color: #0078d4; /* Blue background */
+    -fx-background-color: #007bff; /* Vibrant blue background to match theme */
     -fx-text-fill: #ffffff; /* White text */
-    -fx-border-radius: 4px; /* Rounded corners */
-    -fx-font-size: 12px; /* Font size */
-    -fx-padding: 5px 10px; /* Padding inside the button */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0.5, 0, 1); /* Shadow effect */
+    -fx-border-radius: 5px; /* Rounded corners to match labels */
+    -fx-font-size: 14px; /* Larger font size for consistency */
+    -fx-padding: 10px 15px; /* Padding inside the button */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
     -fx-cursor: hand; /* Pointer cursor on hover */
 }
 
 #UpdateNewCellValueButton:hover {
-    -fx-background-color: #005a9e; /* Darker blue on hover */
+    -fx-background-color: #0056b3; /* Darker blue for hover effect */
+    -fx-border-color: #0056b3; /* Matching border color on hover */
 }
 
 /* Styling for TextField */
 #newOriginalValText {
-    -fx-background-color: #ffffff; /* White background */
+    -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #cccccc; /* Light gray border */
     -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 4px; /* Rounded corners */
-    -fx-padding: 5px; /* Padding inside the text field */
-    -fx-font-size: 12px; /* Font size */
+    -fx-border-radius: 5px; /* Rounded corners to match other elements */
+    -fx-padding: 10px; /* Padding inside the text field for consistency */
+    -fx-font-size: 14px; /* Larger font size for better readability */
 }
 
 /* Styling for ComboBox */
 #VersionPickerComboBox {
-    -fx-background-color: #ffffff; /* White background */
+    -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #cccccc; /* Light gray border */
     -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 4px; /* Rounded corners */
-    -fx-font-size: 12px; /* Font size */
+    -fx-border-radius: 5px; /* Rounded corners to match other elements */
+    -fx-font-size: 14px; /* Larger font size for consistency */
 }
 
 /* Styling for disabled elements */
 .disabled {
-    -fx-opacity: 0.6; /* Make disabled elements slightly transparent */
+    -fx-opacity: 0.6; /* Slightly transparent for disabled elements */
 }

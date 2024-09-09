@@ -100,6 +100,7 @@ public class SpreadSheetImpl implements Serializable {
         return curr.getEffectiveValue(); //returns EffectiveValue
     }
 
+
     public String cleanId(String cellId) {
         return cellId.trim().toUpperCase();
     }
@@ -241,11 +242,7 @@ public class SpreadSheetImpl implements Serializable {
     }
     //will be used in the functions
     public Range getRange(String name){
-        Range range = activeRanges.get(name);
-        if(range == null){
-            throw new IllegalArgumentException("No such range - " + name);
-        }
-        return range;
+        return activeRanges.get(name);
     }
 
     private Set<CellImpl> getSetOfCellsForRange(String topLeftCellId, String bottomRightCellId) {
@@ -256,7 +253,6 @@ public class SpreadSheetImpl implements Serializable {
         char startCol = getLetterCol(topLeftCellId);
         char endCol = getLetterCol(bottomRightCellId);
         //now I need to get all the cells in the borders
-
         for (int row = startRow; row <= endRow; row++) {
             for (char col = startCol; col <= endCol; col++) {
                 String cellId = "" + col + row;
@@ -269,6 +265,12 @@ public class SpreadSheetImpl implements Serializable {
                     "In order to create a range please provide first topLeftCellId and bottomRightCellId - in this order");
         }
         return cellsInRange;
+    }
+
+    public void deleteRange(String name) {
+        if(activeRanges.containsKey(name)){
+            activeRanges.remove(name);
+        } else throw new IllegalArgumentException("No such range - " + name);
     }
 
     public Map<String, CellImpl> getActiveCells() {
@@ -310,4 +312,6 @@ public class SpreadSheetImpl implements Serializable {
     public SpreadSheetImpl getSheetBeforeChange() {
         return sheetBeforeChange;
     }
+
+
 }

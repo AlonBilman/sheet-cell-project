@@ -1,0 +1,42 @@
+/* General styling for HBox */
+.hbox {
+    -fx-background-color: #f0f0f0; /* Light gray background for modern look */
+    -fx-padding: 10px; /* Padding around the content */
+    -fx-spacing: 15px; /* Space between children */
+    -fx-border-color: #e0e0e0; /* Subtle gray border */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-background-insets: 0, 0; /* Remove default insets */
+}
+
+/* Styling for Button */
+#LoadNewFileButton {
+    -fx-background-color: #007bff; /* Vibrant blue background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 17px; /* Font size as specified in FXML */
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded background corners */
+    -fx-padding: 10px 15px; /* Padding inside the button */
+    -fx-border-color: #007bff; /* Matching border color */
+    -fx-border-width: 2px; /* Slightly thicker border for better visibility */
+    -fx-cursor: hand; /* Pointer cursor on hover */
+    -fx-underline: true; /* Underline text */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
+}
+
+#LoadNewFileButton:hover {
+    -fx-background-color: #0056b3; /* Darker blue for hover effect */
+    -fx-border-color: #0056b3; /* Matching border color on hover */
+}
+
+/* Styling for Label */
+#LoadNewFileLabel {
+    -fx-background-color: #ffffff; /* Clean white background */
+    -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-padding: 5px; /* Padding inside the label */
+    -fx-text-fill: #333333; /* Dark gray text color for readability */
+    -fx-font-size: 15px; /* Font size as specified in FXML */
+    -fx-font-weight: normal; /* Regular font weight for label */
+}

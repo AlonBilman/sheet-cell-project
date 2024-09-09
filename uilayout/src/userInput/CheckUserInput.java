@@ -216,6 +216,17 @@ public class CheckUserInput {
                     }
                     break;
 
+                case "11":
+                    System.out.println("name of range? :");
+                    String rangeName2 = scanner.nextLine().trim();
+                    try {
+                        engine.deleteRange(rangeName2);
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+
                 case PRINT_RANGE:
                     System.out.println("Enter the name of the range you want to print:");
                     String rangeToPrint = scanner.nextLine().trim();
