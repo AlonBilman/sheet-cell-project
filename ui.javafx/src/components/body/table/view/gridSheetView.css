@@ -1,61 +1,55 @@
-/* ScrollPane styling */
 .scroll-pane {
-    -fx-background-color: transparent; /* Ensures background remains transparent */
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-padding: 10;
 }
 
-/* GridPane styling */
 .grid-pane {
-    -fx-background-color: #f9f9f9; /* Light background for the grid */
-    -fx-grid-lines-visible: true; /* Shows grid lines */
+    -fx-background-color: white;
+    -fx-grid-lines-visible: true;
 }
 
-/* Default styling for labels inside the grid */
-.label {
-    -fx-background-color: white; /* Default cell background */
-    -fx-border-color: lightgray; /* Light gray border around cells */
-    -fx-border-width: 0.5; /* Border thickness */
-    -fx-alignment: center; /* Center align text in cells */
-    -fx-pref-width: 100px; /* Default preferred width for the cells */
-    -fx-pref-height: 100px; /* Default preferred height for the cells */
-    -fx-font-size: 14px; /* Default font size */
+.boarder {
+    -fx-border-color: gray;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
 }
 
-/* Hover effect for labels */
-.label:hover {
-    -fx-border-color: #6294ed; /* Blue border on hover */
+.cell-default {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-color: lightgray;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
 }
 
-/* Clicked label styling (when pressed) */
-.label.pressed {
-    -fx-border-color: red; /* Red border when clicked */
-    -fx-border-width: 2px; /* Thicker border on click */
+.cell-default.cell-selected , .cell-non-default.cell-selected{
+    -fx-border-color: blue;
+    -fx-border-width: 2px;
+    -fx-font-size: 16px;
 }
 
-/* Styling for the top header cells (column labels) */
-.label.column-header {
-    -fx-background-color: #dcdcdc; /* Light gray for headers */
-    -fx-font-weight: bold; /* Bold font for headers */
+.cell-non-default {
+    -fx-border-color: lightgray;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
 }
 
-/* Styling for the left header cells (row labels) */
-.label.row-header {
-    -fx-background-color: #dcdcdc; /* Same light gray as column headers */
-    -fx-font-weight: bold; /* Bold font for row headers */
+.cell-default:hover, .cell-non-default:hover, .boarder:hover {
+    -fx-border-color: blue;
+    -fx-border-width: 2px;
 }
 
-/* Highlighting cells when they are part of dependencies or affecting others */
-.label.dependency-cell {
-    -fx-background-color: lightsalmon; /* For cells that this cell depends on */
+.cell-default:pressed, .cell-non-default:pressed, .boarder:pressed {
+    -fx-border-color: red;
+    -fx-border-width: 3px;
 }
 
-.label.affect-cell {
-    -fx-background-color: lightgreen; /* For cells affected by this cell */
+.cell-dependsOn {
+    -fx-background-color: lightsalmon;
 }
 
-/* A common class for error cells */
-.label.error {
-    -fx-background-color: tomato;
-    -fx-text-fill: white; /* White text on error */
+.cell-affectsOn {
+    -fx-background-color: lightgreen;
 }
+

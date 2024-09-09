@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox prefHeight="56.0" prefWidth="579.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
+<HBox prefHeight="56.0" prefWidth="579.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController" stylesheets="@cellFunctions.css">
    <children>
       <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="105.0" prefHeight="37.0" prefWidth="105.0" style="-fx-border-color: blue;" text="Selected Cell ID" textAlignment="CENTER">
          <HBox.margin>

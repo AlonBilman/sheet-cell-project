@@ -7,15 +7,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
-import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GridSheetController {
 
@@ -27,31 +24,15 @@ public class GridSheetController {
 
     private AppController appController;
 
-    Map<String, Label> labelMap;
-
+    private Map<String, Label> labelMap;
     private Map<String, Background> originalBackgrounds = new HashMap<>();
-
-    private Color backgroundDefaultColor;
-    private Background defaultBackground;
-    private Color textDefaultColor;
-
+    private List<Label> focusedOn;
 
     public void initialize() {
-        // Set fixed size for the GridPane
-        gridPane.setPrefSize(600, 400);
-        gridPane.setMinSize(600, 400);
-        gridPane.setMaxSize(600, 400);
-        // Ensure the ScrollPane reacts to the overflow
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
+        gridPane.getStyleClass().add("grid-pane");
+        scrollPane.getStyleClass().add("scroll-pane");
         labelMap = new HashMap<>();
-        initDefaultColors();
-    }
-
-    private void initDefaultColors() {
-        backgroundDefaultColor = Color.WHITE;
-        textDefaultColor = Color.BLACK;
-        defaultBackground = new Background(new BackgroundFill(backgroundDefaultColor, CornerRadii.EMPTY, null));
+        focusedOn = new ArrayList<>();
     }
 
     public void setMainController(AppController mainController) {
@@ -68,26 +49,20 @@ public class GridSheetController {
     private void addBorders(int rows, int cols, int maxRow, int maxCol) {
         Label emptyLabel = new Label();
         gridPane.add(emptyLabel, 0, 0);
-
         for (int i = 1; i <= cols; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf((char) ('A' + (i - 1))));
-            cellLabel.setPrefSize(maxRow, 10);
+            cellLabel.setMinSize(maxCol, 10);
             gridPane.add(cellLabel, i, 0);
-            cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
-            makeClickVisuallyClicked(cellLabel);
+            cellLabel.getStyleClass().add("boarder");
         }
-
         for (int i = 1; i <= rows; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf(i));
-            cellLabel.setPrefSize(15, maxCol);
+            cellLabel.setMinSize(20, maxRow);
             gridPane.add(cellLabel, 0, i);
-            cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
-            makeClickVisuallyClicked(cellLabel);
+            cellLabel.getStyleClass().add("boarder");
         }
-        //no need any functionality for them
-        //for now.
     }
 
     public void populateTableView(sheetDTO sheetCopy, boolean isLoad) {
@@ -112,15 +87,13 @@ public class GridSheetController {
 
                 if (isLoad) {
                     cellLabel = new Label();
-                    setCellFunctionality(cellLabel, maxCol, maxRow, id);
+                    setCellFunctionality(cellLabel, maxRow, maxCol, id);
                     gridPane.add(cellLabel, j, i);
                     labelMap.put(id, cellLabel);
                 } else {
-                    //getting the current Label to update (if needed)
-                    //we already init the table, so we cellLabel not null.
                     cellLabel = getNodeFromGridPane(id);
                 }
-                //update the cell data
+
                 updateCellLabel(cellLabel, cells.get(id));
             }
         }
@@ -131,7 +104,6 @@ public class GridSheetController {
             cellLabel.setText("");
         } else {
             Object value = cellData.getEffectiveValue().getValue();
-            //I'm sorry... I couldn't think of another way...
             if (value instanceof Boolean) {
                 cellLabel.setText(value.toString().toUpperCase());
             } else {
@@ -144,66 +116,43 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
-    private void makeClickVisuallyClicked(Label cellLabel) {
-        cellLabel.setOnMousePressed(event -> cellLabel.setStyle("-fx-border-color: red; -fx-border-width: 1;"));
-        cellLabel.setOnMouseReleased(event -> cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;"));
-    }
-
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
-        cellLabel.setAlignment(Pos.CENTER);
-        cellLabel.setBackground(defaultBackground);
-        cellLabel.setStyle("-fx-border-color: gray; -fx-border-width: 0.5;");
-        final Background[] originalBackground = new Background[1];
-
-        cellLabel.setOnMouseEntered(event -> {
-            originalBackground[0] = cellLabel.getBackground();  //save the original background
-            Color currentColor = ((Color) cellLabel.getBackground().getFills().get(0).getFill());
-            Color hoverColor = currentColor.interpolate(Color.LIGHTGRAY, 0.5);
-            cellLabel.setBackground(new Background(new BackgroundFill(hoverColor, CornerRadii.EMPTY, null)));
-        });
-        //Problem!
-        cellLabel.setOnMouseExited(event -> {
-            cellLabel.setBackground(originalBackground[0]);  // Restore the original background
-        });
-
-        makeClickVisuallyClicked(cellLabel);
+        cellLabel.getStyleClass().add("cell-default");
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
 
-
     public void colorizeImportantCells(sheetDTO curr, String id) {
+        Label currCell = labelMap.get(id);
+        currCell.getStyleClass().add("cell-selected");
+        focusedOn.add(currCell);
         Map<String, CellDataDTO> cells = curr.getActiveCells();
-        CellDataDTO cellData = cells.get(id); // won't be null
+        CellDataDTO cellData = cells.get(id);
         Set<String> affectsOn = cellData.getAffectsOn();
         Set<String> depOn = cellData.getDependsOn();
 
         for (String dep : depOn) {
             Label label = labelMap.get(dep);
-            if (!originalBackgrounds.containsKey(dep)) {
-                originalBackgrounds.put(dep, label.getBackground());
-            }
-            label.setBackground(new Background(new BackgroundFill(Color.LIGHTSALMON, CornerRadii.EMPTY, null)));
+            focusedOn.add(label);
+            label.getStyleClass().add("cell-dependsOn");
         }
 
         for (String affect : affectsOn) {
             Label label = labelMap.get(affect);
-            if (!originalBackgrounds.containsKey(affect)) {
-                originalBackgrounds.put(affect, label.getBackground());
-            }
-            label.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, null)));
+            focusedOn.add(label);
+            label.getStyleClass().add("cell-affectsOn");
         }
     }
 
     public void returnOldColors() {
-        for (String id : originalBackgrounds.keySet()) {
-            Label label = labelMap.get(id);
-            label.setBackground(originalBackgrounds.get(id));
-        }
+        for (Label label : focusedOn)
+            label.getStyleClass().removeAll("cell-dependsOn", "cell-affectsOn","cell-selected");
+        focusedOn.clear();
     }
 
     public void changeTextColor(String cellId, Color newColor) {
         Label label = labelMap.get(cellId);
+        changeCellCssId(label, "cell-default", "cell-non-default");
         label.setTextFill(newColor);
     }
 
@@ -211,12 +160,27 @@ public class GridSheetController {
         originalBackgrounds.remove(cellId);
         originalBackgrounds.put(cellId, new Background(new BackgroundFill(newColor, CornerRadii.EMPTY, null)));
         Label label = labelMap.get(cellId);
+        changeCellCssId(label, "cell-default", "cell-non-default");
         label.setBackground(originalBackgrounds.get(cellId));
     }
 
-    public void resetToDefaultColors(String id) {
-        changeBackgroundColor(id,backgroundDefaultColor);
-        changeTextColor(id,textDefaultColor);
+    private void removeLabelLayout(Label label) {
+        label.setBackground(null);
+        label.setTextFill(null);
+        label.setAlignment(null);
     }
+
+    private void changeCellCssId(Label label, String remove, String add) {
+        label.getStyleClass().remove(remove);
+        label.getStyleClass().add(add);
+    }
+
+    public void resetToDefaultColors(String id) {
+        Label label = labelMap.get(id);
+        originalBackgrounds.remove(id);
+        removeLabelLayout(label);
+        changeCellCssId(label, "cell-non-default", "cell-default");
+    }
+
 
 }

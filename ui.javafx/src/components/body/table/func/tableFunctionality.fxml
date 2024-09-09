@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="401.0" prefWidth="146.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.func.TableFunctionalityController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="401.0" prefWidth="146.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.func.TableFunctionalityController" stylesheets="@tableFunctionality.css">
    <content>
       <VBox alignment="TOP_CENTER" minHeight="600.0" minWidth="106.0">
          <children>
