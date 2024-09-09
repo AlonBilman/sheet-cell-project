@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox prefHeight="57.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadfile.LoadFileController">
+<HBox prefHeight="43.0" prefWidth="820.0" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadfile.LoadFileController">
    <children>
-      <Button id="LoadNewFileButton" fx:id="loadFileButton" accessibleRoleDescription="LoadFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadFileListener" text="Load New File" underline="true">
+      <Button id="LoadNewFileButton" fx:id="loadFileButton" accessibleRoleDescription="LoadFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadFileListener" prefHeight="38.0" prefWidth="175.0" text="Load New File" underline="true">
          <HBox.margin>
             <Insets left="5.0" top="5.0" />
          </HBox.margin>
@@ -18,7 +18,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Label id="LoadNewFileLabel" fx:id="filePathLabel" maxHeight="-Infinity" prefHeight="48.0" prefWidth="390.0" style="-fx-border-color: blue;" text="Loaded file path will show here">
+      <Label id="LoadNewFileLabel" fx:id="filePathLabel" maxHeight="-Infinity" prefHeight="43.0" prefWidth="573.0" style="-fx-border-color: blue;" text="Loaded file path will show here">
          <font>
             <Font size="15.0" />
          </font>

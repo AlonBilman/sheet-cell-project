@@ -13,7 +13,7 @@ HBox {
     -fx-border-radius: 4px; /* Rounded corners */
     -fx-padding: 5px; /* Padding inside the label */
     -fx-text-fill: #333333; /* Dark gray text color */
-    -fx-font-size: 10px; /* Font size */
+    -fx-font-size: 12px; /* Font size */
     -fx-font-weight: bold; /* Bold text */
 }
 
@@ -22,7 +22,7 @@ HBox {
     -fx-background-color: #0078d4; /* Blue background */
     -fx-text-fill: #ffffff; /* White text */
     -fx-border-radius: 4px; /* Rounded corners */
-    -fx-font-size: 10px; /* Font size */
+    -fx-font-size: 12px; /* Font size */
     -fx-padding: 5px 10px; /* Padding inside the button */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0.5, 0, 1); /* Shadow effect */
     -fx-cursor: hand; /* Pointer cursor on hover */
@@ -39,7 +39,7 @@ HBox {
     -fx-border-width: 1px; /* Thin border */
     -fx-border-radius: 4px; /* Rounded corners */
     -fx-padding: 5px; /* Padding inside the text field */
-    -fx-font-size: 14px; /* Font size */
+    -fx-font-size: 12px; /* Font size */
 }
 
 /* Styling for ComboBox */
@@ -48,7 +48,7 @@ HBox {
     -fx-border-color: #cccccc; /* Light gray border */
     -fx-border-width: 1px; /* Thin border */
     -fx-border-radius: 4px; /* Rounded corners */
-    -fx-font-size: 14px; /* Font size */
+    -fx-font-size: 12px; /* Font size */
 }
 
 /* Styling for disabled elements */
