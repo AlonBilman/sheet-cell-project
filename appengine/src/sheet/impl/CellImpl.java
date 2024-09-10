@@ -36,7 +36,7 @@ public class CellImpl implements Serializable {
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         setOriginalValue(newOriginalVal);
-        if(newOriginalVal==null)
+        if (newOriginalVal == null)
             lastChangeAt = 1;
         else lastChangeAt = ++versionNumber;
     }
@@ -74,8 +74,7 @@ public class CellImpl implements Serializable {
         if (originalValue == null || originalValue.isEmpty()) {
             originalValue = "Empty Cell";
             this.effectiveValue = new EffectiveValueImpl(ErrorValues.EMPTY.getErrorMessage(), ObjType.EMPTY);
-        }
-        else {
+        } else {
             Expression expression = parseExpression(originalValue);
             try {
                 this.effectiveValue = expression.eval();
@@ -107,63 +106,53 @@ public class CellImpl implements Serializable {
 
             switch (functionName) {
                 case "PLUS":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("PLUS function requires two arguments.");
-                    }
                     return new PlusFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "ABS":
-                    if (parsedArguments.size() != 1) {
+                    if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("ABS function requires one arguments.");
-                    }
                     return new AbsFunction(parsedArguments.get(0));
 
                 case "SUB":
-                    if (parsedArguments.size() != 3) {
+                    if (parsedArguments.size() != 3)
                         throw new IllegalArgumentException("SUB function requires three arguments.");
-                    }
                     return new SubFunction(parsedArguments.get(0), parsedArguments.get(1), parsedArguments.get(2));
 
                 case "TIMES":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("TIMES function requires two arguments.");
-                    }
                     return new TimesFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "DIVIDE":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("DIVIDE function requires two arguments.");
-                    }
                     return new DivideFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "POW":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("POW function requires two arguments.");
-                    }
                     return new PowFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "MOD":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("MOD function requires two arguments.");
-                    }
                     return new ModFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "MINUS":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("MINUS function requires two arguments.");
-                    }
                     return new MinusFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "CONCAT":
-                    if (parsedArguments.size() != 2) {
+                    if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("CONCAT function requires two arguments.");
-                    }
                     return new ConcatFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 case "REF":
-                    if (parsedArguments.size() != 1) {
+                    if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("REF function requires one argument.");
-                    }
                     Expression argument = parsedArguments.get(0);
 
                     Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
@@ -172,20 +161,53 @@ public class CellImpl implements Serializable {
                     return res;
 
                 case "AVERAGE":
-                    if (parsedArguments.size() != 1) {
+                    if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("AVERAGE function requires one argument.");
-                    }
                     Expression name1 = parsedArguments.get(0);
                     Range range1 = avgFunctionCheck(name1);
                     return new AverageFunction(range1);
 
                 case "SUM":
-                    if (parsedArguments.size() != 1) {
+                    if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("SUM function requires one argument.");
-                    }
                     Expression name2 = parsedArguments.get(0);
                     Range range2 = sumFuncCheck(name2);
                     return new SumFunction(range2);
+
+                case "AND":
+                    if (parsedArguments.size() != 2)
+                        throw new IllegalArgumentException("AND function requires two arguments.");
+                    return new AndFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "BIGGER":
+                    if (parsedArguments.size() != 2)
+                        throw new IllegalArgumentException("BIGGER function requires two arguments.");
+                    return new BiggerFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "LESS":
+                    if (parsedArguments.size() != 2)
+                        throw new IllegalArgumentException("LESS function requires two arguments.");
+                    return new LessFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "NOT":
+                    if (parsedArguments.size() != 1)
+                        throw new IllegalArgumentException("NOT function requires one argument.");
+                    return new NotFunction(parsedArguments.get(0));
+
+                case "OR":
+                    if (parsedArguments.size() != 2)
+                        throw new IllegalArgumentException("OR function requires two arguments.");
+                    return new OrFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "IF":
+                    if (parsedArguments.size() != 3)
+                        throw new IllegalArgumentException("IF function requires three arguments.");
+                    return new ifCondition(parsedArguments.get(0), parsedArguments.get(1), parsedArguments.get(2));
+
+                case "PERCENT":
+                    if (parsedArguments.size() != 2)
+                        throw new IllegalArgumentException("PERCENT function requires two arguments.");
+                    return new PercentFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
@@ -195,26 +217,25 @@ public class CellImpl implements Serializable {
         }
     }
 
-
     private Range avgFunctionCheck(Expression name1) {
-        return rangeFunctionCheck(name1,true);
+        return rangeFunctionCheck(name1, true);
     }
 
     private Range sumFuncCheck(Expression name2) {
-       return rangeFunctionCheck(name2,false);
+        return rangeFunctionCheck(name2, false);
     }
 
-    private Range rangeFunctionCheck(Expression name,Boolean isAverage) {
-        EffectiveValue effectiveValue =  name.eval();
-        if(effectiveValue.getObjType()!=ObjType.STRING) {
-            if(isAverage)
+    private Range rangeFunctionCheck(Expression name, Boolean isAverage) {
+        EffectiveValue effectiveValue = name.eval();
+        if (effectiveValue.getObjType() != ObjType.STRING) {
+            if (isAverage)
                 throw new IllegalArgumentException("AVERAGE function requires a string argument (Range name).");
             throw new IllegalArgumentException("SUM function requires a string argument (Range name).");
         }
         String arg = name.eval().getValue().toString();
         Range range = currSpreadSheet.getRange(arg);
-        if(range!=null){
-            for(CellImpl cell : range.getRangeCells()) {
+        if (range != null) {
+            for (CellImpl cell : range.getRangeCells()) {
                 cell.addAffectsOnId(this.id);
                 dependsOn.add(cell.getId());
             }
@@ -249,7 +270,7 @@ public class CellImpl implements Serializable {
     }
 
     private Expression parseSimpleValue(String value) {
-        if(value.equalsIgnoreCase("TRUE")||value.equalsIgnoreCase("FALSE"))
+        if (value.equalsIgnoreCase("TRUE") || value.equalsIgnoreCase("FALSE"))
             return new Bool(Boolean.valueOf(value));
 
         if (value.isEmpty() || value.matches(".*[^0-9 ].*") || value.matches("^\\s*$")) {
