@@ -156,7 +156,7 @@ public class CellImpl implements Serializable {
                     Expression argument = parsedArguments.get(0);
 
                     Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
-                    String referencedId = argument.eval().getValue().toString();
+                    String referencedId = argument.eval().getValue().toString().toUpperCase();
                     dependsOn.add(referencedId);
                     return res;
 
@@ -273,7 +273,7 @@ public class CellImpl implements Serializable {
         if (value.equalsIgnoreCase("TRUE") || value.equalsIgnoreCase("FALSE"))
             return new Bool(Boolean.valueOf(value));
 
-        if (value.isEmpty() || value.matches(".*[^0-9 ].*") || value.matches("^\\s*$")) {
+        if (value.isEmpty() || value.matches(".*[^0-9].*") || value.matches("^\\s*$")) {
             if (value.startsWith("-")) {
                 try {
                     return new Number(Double.valueOf(value));
