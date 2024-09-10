@@ -20,6 +20,10 @@ public class AverageFunction implements Expression {
         this.name = "AVERAGE";
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public ObjType type() {
         return ObjType.NUMERIC;

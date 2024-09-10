@@ -175,9 +175,17 @@ public class CellImpl implements Serializable {
                     if (parsedArguments.size() != 1) {
                         throw new IllegalArgumentException("AVERAGE function requires one argument.");
                     }
-                    Expression name = parsedArguments.get(0);
-                    Range range = avgFuncCheck(name);
-                    return new AverageFunction(range);
+                    Expression name1 = parsedArguments.get(0);
+                    Range range1 = avgFunctionCheck(name1);
+                    return new AverageFunction(range1);
+
+                case "SUM":
+                    if (parsedArguments.size() != 1) {
+                        throw new IllegalArgumentException("SUM function requires one argument.");
+                    }
+                    Expression name2 = parsedArguments.get(0);
+                    Range range2 = sumFuncCheck(name2);
+                    return new SumFunction(range2);
 
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);
@@ -187,10 +195,21 @@ public class CellImpl implements Serializable {
         }
     }
 
-    private Range avgFuncCheck(Expression name) {
+
+    private Range avgFunctionCheck(Expression name1) {
+        return rangeFunctionCheck(name1,true);
+    }
+
+    private Range sumFuncCheck(Expression name2) {
+       return rangeFunctionCheck(name2,false);
+    }
+
+    private Range rangeFunctionCheck(Expression name,Boolean isAverage) {
         EffectiveValue effectiveValue =  name.eval();
         if(effectiveValue.getObjType()!=ObjType.STRING) {
-            throw new IllegalArgumentException("AVERAGE function requires a string argument (Range name).");
+            if(isAverage)
+                throw new IllegalArgumentException("AVERAGE function requires a string argument (Range name).");
+            throw new IllegalArgumentException("SUM function requires a string argument (Range name).");
         }
         String arg = name.eval().getValue().toString();
         Range range = currSpreadSheet.getRange(arg);
