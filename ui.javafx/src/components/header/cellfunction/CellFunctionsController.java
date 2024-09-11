@@ -14,7 +14,7 @@ public class CellFunctionsController {
         this.appController = mainController;
     }
 
-    String currCellShown;
+    private String currCellShown;
 
     @FXML
     private Label cellIdProperty;
@@ -67,7 +67,6 @@ public class CellFunctionsController {
         newOriginalValText.setText("New Original Value");
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
-        appController.cellOutOfFocus();
     }
     @FXML
     private void updateCellActionListener() {

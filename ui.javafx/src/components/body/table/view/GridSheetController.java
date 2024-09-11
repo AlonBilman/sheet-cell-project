@@ -27,12 +27,14 @@ public class GridSheetController {
     private Map<String, Label> labelMap;
     private Map<String, Background> originalBackgrounds = new HashMap<>();
     private List<Label> focusedOn;
+    private Map<String,Label> borderMap;
 
     public void initialize() {
         gridPane.getStyleClass().add("grid-pane");
         scrollPane.getStyleClass().add("scroll-pane");
         labelMap = new HashMap<>();
         focusedOn = new ArrayList<>();
+        borderMap = new HashMap<>();
     }
 
     public void setMainController(AppController mainController) {
@@ -44,6 +46,7 @@ public class GridSheetController {
         gridPane.getColumnConstraints().clear();
         gridPane.getRowConstraints().clear();
         labelMap.clear();
+        borderMap.clear();
     }
 
     private void addBorders(int rows, int cols, int maxRow, int maxCol) {
@@ -51,19 +54,19 @@ public class GridSheetController {
         gridPane.add(emptyLabel, 0, 0);
         for (int i = 1; i <= cols; i++) {
             Label cellLabel = new Label();
-            String id = ((char) ('A' + (i - 1))) + "0";
             cellLabel.setText(String.valueOf((char) ('A' + (i - 1))));
             cellLabel.setMinSize(maxCol, 10);
+            borderMap.put(cellLabel.getText(), cellLabel);
             gridPane.add(cellLabel, i, 0);
-            setBoardersFunctionality(cellLabel,id);
+            setBoardersFunctionality(cellLabel);
         }
         for (int i = 1; i <= rows; i++) {
             Label cellLabel = new Label();
-            String id = "0" + i;
             cellLabel.setText(String.valueOf(i));
             cellLabel.setMinSize(20, maxRow);
+            borderMap.put(cellLabel.getText(), cellLabel);
             gridPane.add(cellLabel, 0, i);
-            setBoardersFunctionality(cellLabel,id);
+            setBoardersFunctionality(cellLabel);
         }
     }
 
@@ -123,9 +126,9 @@ public class GridSheetController {
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
 
-    private void setBoardersFunctionality(Label cellLabel,String id) {
+    private void setBoardersFunctionality(Label cellLabel) {
         cellLabel.getStyleClass().add("boarder");
-        cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(id));
+        cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(cellLabel.getText()));
 }
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);
@@ -187,5 +190,30 @@ public class GridSheetController {
         changeCellCssId(label, "cell-non-default", "cell-default");
     }
 
+    public void updateSize(double size, String id) {
+        if(Character.isDigit(id.charAt(0))) {
+            borderMap.get(id).setMinHeight(size);
+            for (Label label : focusedOn)
+                label.setMinHeight(size);
+            return;
+        }
+        borderMap.get(id).setMinWidth(size);
+        for (Label label : focusedOn)
+            label.setMinWidth(size);
+    }
+
+    public void focusOnDesiredCells(String borderId) {
+        if(Character.isDigit(borderId.charAt(0))) {
+            for(int i=1; i< gridPane.getColumnCount(); i++) {
+                char columnLetter = (char) ('A' + (i - 1));
+                focusedOn.add(labelMap.get(columnLetter + borderId));
+            }
+        }
+        else {
+            for(int i=1; i< gridPane.getRowCount(); i++) {
+                focusedOn.add(labelMap.get(borderId + i));
+            }
+        }
+    }
 
 }

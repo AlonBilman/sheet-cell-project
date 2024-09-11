@@ -11,8 +11,8 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -116,7 +116,8 @@ public class AppController {
     }
 
     public void CellClicked(String id) {
-        cellFunctionsController.outOfFocus();
+        cellOutOfFocus();
+        boardOutOfFocus();
         CellDataDTO cell = engine.showCell(id);
         cellFunctionsController.showCell(cell);
         tableFunctionalityController.setActiveButtons(
@@ -132,7 +133,8 @@ public class AppController {
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         try {
             engine.updateCell(cellToUpdate, newOriginalValue);
-            cellFunctionsController.outOfFocus();
+            cellOutOfFocus();
+            boardOutOfFocus();
             gridSheetController.populateTableView(engine.Display(), false);
         } catch (Exception e) {
             cellFunctionsController.showInfoAlert(e.getMessage());
@@ -141,7 +143,10 @@ public class AppController {
     }
 
     public void cellOutOfFocus() {
+        cellFunctionsController.outOfFocus();
         gridSheetController.returnOldColors();
+        tableFunctionalityController.setActiveButtons(
+                TableFunctionalityController.ButtonState.CLICKING_CELL, false);
     }
 
 
@@ -159,15 +164,27 @@ public class AppController {
         gridSheetController.resetToDefaultColors(id);
     }
 
-    public void BoarderClicked(String boarderId) {
-        cellFunctionsController.outOfFocus();
-        cellFunctionsController.setFocus(boarderId);
-        if (boarderId.startsWith("0"))
+    public void BoarderClicked(String boarderTextId) {
+        cellOutOfFocus();
+        boardOutOfFocus();
+        cellFunctionsController.setFocus(boarderTextId);
+        gridSheetController.focusOnDesiredCells(boarderTextId);
+        if (Character.isDigit(boarderTextId.charAt(0)))
             tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_ROW, true);
         else
             tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_COLUMN, true);
     }
 
+    public void boardOutOfFocus() {
+        gridSheetController.returnOldColors();
+        tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_ROW, false);
+        tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_COLUMN, false);
+    }
+
+    public void updateSize(double inputField) {
+        String id = cellFunctionsController.getCellIdFocused();
+        gridSheetController.updateSize(inputField,id);
+    }
 }
 
 

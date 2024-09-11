@@ -148,19 +148,15 @@ public class TableFunctionalityController {
     private VBox createModifySizePopupVBox(TextField inputField, Stage popupStage, String promptText, boolean isColumn) {
         Label promptLabel = new Label(promptText);
         Button confirmButton = new Button(isColumn ? "Set Width" : "Set Height");
-        confirmButton.setOnAction(event -> handleModifySizePopupConfirm(inputField, popupStage, isColumn));
+        confirmButton.setOnAction(event -> handleModifySizePopupConfirm(inputField, popupStage));
         return new VBox(20, promptLabel, inputField, confirmButton);
     }
 
-    private void handleModifySizePopupConfirm(TextField inputField, Stage popupStage, boolean isColumn) {
+    private void handleModifySizePopupConfirm(TextField inputField, Stage popupStage) {
         try {
-            int newSize = Integer.parseInt(inputField.getText());
+            double newSize = Double.parseDouble(inputField.getText());
             if (newSize > 0) {
-                if(isColumn)
-                // Notify AppController about the new size
-                //
-                //
-                //
+                appController.updateSize(newSize);
                 popupStage.close();
             } else {
                 showInfoAlert("Error: Entered 0 or a negative value.");
@@ -169,6 +165,7 @@ public class TableFunctionalityController {
             showInfoAlert("Error: Entered value is not a number.");
         }
     }
+
 
     @FXML
     private void setColActionListener() {
