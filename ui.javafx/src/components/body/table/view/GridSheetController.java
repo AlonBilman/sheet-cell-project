@@ -51,17 +51,19 @@ public class GridSheetController {
         gridPane.add(emptyLabel, 0, 0);
         for (int i = 1; i <= cols; i++) {
             Label cellLabel = new Label();
+            String id = ((char) ('A' + (i - 1))) + "0";
             cellLabel.setText(String.valueOf((char) ('A' + (i - 1))));
             cellLabel.setMinSize(maxCol, 10);
             gridPane.add(cellLabel, i, 0);
-            cellLabel.getStyleClass().add("boarder");
+            setBoardersFunctionality(cellLabel,id);
         }
         for (int i = 1; i <= rows; i++) {
             Label cellLabel = new Label();
+            String id = "0" + i;
             cellLabel.setText(String.valueOf(i));
             cellLabel.setMinSize(20, maxRow);
             gridPane.add(cellLabel, 0, i);
-            cellLabel.getStyleClass().add("boarder");
+            setBoardersFunctionality(cellLabel,id);
         }
     }
 
@@ -79,7 +81,6 @@ public class GridSheetController {
             addBorders(row, col, maxRow, maxCol);
         }
 
-        // Loop to add or update cells in the grid
         for (int i = 1; i <= row; i++) {
             for (int j = 1; j <= col; j++) {
                 String id = String.valueOf((char) ('A' + (j - 1))) + i;
@@ -122,6 +123,10 @@ public class GridSheetController {
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
 
+    private void setBoardersFunctionality(Label cellLabel,String id) {
+        cellLabel.getStyleClass().add("boarder");
+        cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(id));
+}
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);
         currCell.getStyleClass().add("cell-selected");

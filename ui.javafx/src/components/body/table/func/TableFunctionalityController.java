@@ -12,13 +12,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.util.function.Consumer;
 
 public class TableFunctionalityController {
-
 
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
@@ -26,7 +25,6 @@ public class TableFunctionalityController {
     private Boolean activeButtonsWhenClickingColumn;
 
     private AppController appController;
-
 
     @FXML
     public Button resetButton;
@@ -38,7 +36,6 @@ public class TableFunctionalityController {
     private Button alignmentSetButton;
     @FXML
     private Button cellTextPick;
-
     @FXML
     private Button cellBackgroundPick;
     @FXML
@@ -51,6 +48,7 @@ public class TableFunctionalityController {
 
     public void alignmentSetListener(ActionEvent actionEvent) {
     }
+
     public enum ButtonState {
         LOADING_FILE,
         CLICKING_CELL,
@@ -115,48 +113,31 @@ public class TableFunctionalityController {
     }
 
     private void buildColorPickerPopup(String title, Consumer<Color> colorCallback) {
-        // Create a new popup stage
         Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.setTitle(title);
-
-        // Create a ColorPicker
         ColorPicker colorPicker = new ColorPicker();
-
-        // Handle color selection
         colorPicker.setOnAction(e -> {
             try {
-                // Get the selected color
                 Color selectedColor = colorPicker.getValue();
                 System.out.println("Selected Color: " + selectedColor);
-
-                // Pass the selected color to the callback
                 colorCallback.accept(selectedColor);
-
-                // Close the popup after the color is picked
                 popupStage.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            } catch (Exception ex) {/*ignore*/}
         });
-
-        // Create a layout to hold the ColorPicker
-        VBox vbox = new VBox(10, colorPicker);  // VBox with spacing of 10px
-        vbox.setAlignment(Pos.CENTER);  // Center align the ColorPicker
-        vbox.setPadding(new Insets(15));  // Add padding around the layout
-
-        // Create the scene and set it in the stage
-        Scene scene = new Scene(vbox, 300, 150);  // Set the scene size (width and height)
+        VBox vbox = new VBox(10, colorPicker);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(15));
+        Scene scene = new Scene(vbox, 300, 150);
         popupStage.setScene(scene);
-
-        // Show the popup window
-        popupStage.show();
+        popupStage.showAndWait();
     }
 
-    private void buildPopup(String title, String promptText, boolean isColumn) {
+    private void buildModifySizePopup(String title, String promptText, boolean isColumn) {
         Stage popupStage = new Stage();
         popupStage.setTitle(title);
         TextField inputField = new TextField();
-        VBox vbox = createPopupVBox(inputField, popupStage, promptText, isColumn);
+        VBox vbox = createModifySizePopupVBox(inputField, popupStage, promptText, isColumn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(10));
         Scene scene = new Scene(vbox, 320, 150);
@@ -164,18 +145,22 @@ public class TableFunctionalityController {
         popupStage.show();
     }
 
-    private VBox createPopupVBox(TextField inputField, Stage popupStage, String promptText, boolean isColumn) {
+    private VBox createModifySizePopupVBox(TextField inputField, Stage popupStage, String promptText, boolean isColumn) {
         Label promptLabel = new Label(promptText);
         Button confirmButton = new Button(isColumn ? "Set Width" : "Set Height");
-        confirmButton.setOnAction(event -> handlePopupConfirm(inputField, popupStage, isColumn));
+        confirmButton.setOnAction(event -> handleModifySizePopupConfirm(inputField, popupStage, isColumn));
         return new VBox(20, promptLabel, inputField, confirmButton);
     }
 
-    private void handlePopupConfirm(TextField inputField, Stage popupStage, boolean isColumn) {
+    private void handleModifySizePopupConfirm(TextField inputField, Stage popupStage, boolean isColumn) {
         try {
             int newSize = Integer.parseInt(inputField.getText());
             if (newSize > 0) {
+                if(isColumn)
                 // Notify AppController about the new size
+                //
+                //
+                //
                 popupStage.close();
             } else {
                 showInfoAlert("Error: Entered 0 or a negative value.");
@@ -187,12 +172,12 @@ public class TableFunctionalityController {
 
     @FXML
     private void setColActionListener() {
-        buildPopup("Enter New Column Width", "Please input new width:", true);
+        buildModifySizePopup("Enter New Column Width", "Please input new width:", true);
     }
 
     @FXML
     private void setRowActionListener() {
-        buildPopup("Enter New Row Height", "Please input new height:", false);
+        buildModifySizePopup("Enter New Row Height", "Please input new height:", false);
     }
 
     @FXML

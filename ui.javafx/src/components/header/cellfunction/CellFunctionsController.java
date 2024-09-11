@@ -78,4 +78,8 @@ public class CellFunctionsController {
     public String getCellIdFocused() {
         return currCellShown;
     }
+
+    public void setFocus(String boarderId) {
+        currCellShown = boarderId;
+    }
 }

@@ -11,6 +11,7 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -157,6 +158,16 @@ public class AppController {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.resetToDefaultColors(id);
     }
+
+    public void BoarderClicked(String boarderId) {
+        cellFunctionsController.outOfFocus();
+        cellFunctionsController.setFocus(boarderId);
+        if (boarderId.startsWith("0"))
+            tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_ROW, true);
+        else
+            tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_COLUMN, true);
+    }
+
 }
 
 
