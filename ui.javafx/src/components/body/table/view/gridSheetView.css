@@ -31,7 +31,7 @@
 
 .cell-non-default {
     -fx-border-color: lightgray;
-    -fx-alignment: center;
+
     -fx-font-size: 14px;
 }
 
@@ -40,7 +40,7 @@
     -fx-border-width: 2px;
 }
 
-.cell-default:pressed, .cell-non-default:pressed, .boarder:pressed,.focused-on:pressed {
+.cell-default:pressed, .cell-non-default:pressed, .boarder:pressed {
     -fx-border-color: red;
     -fx-border-width: 3px;
 }

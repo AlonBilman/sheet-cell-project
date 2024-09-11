@@ -161,7 +161,8 @@ public class AppController {
 
     public void resetStyleClicked() {
         String id = cellFunctionsController.getCellIdFocused();
-        gridSheetController.resetToDefaultColors(id);
+        gridSheetController.resetToDefault(id);
+
     }
 
     public void BoarderClicked(String boarderTextId) {
@@ -185,6 +186,11 @@ public class AppController {
     public void updateSize(double inputField) {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.updateSize(inputField,id);
+    }
+
+    public void setAlignment(String alignment) {
+        String id = cellFunctionsController.getCellIdFocused();
+        gridSheetController.updateAliment(alignment,id);
     }
 }
 

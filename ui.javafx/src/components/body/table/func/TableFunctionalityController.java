@@ -46,9 +46,6 @@ public class TableFunctionalityController {
     private Button viewExistingRangeButton;
 
 
-    public void alignmentSetListener(ActionEvent actionEvent) {
-    }
-
     public enum ButtonState {
         LOADING_FILE,
         CLICKING_CELL,
@@ -166,7 +163,6 @@ public class TableFunctionalityController {
         }
     }
 
-
     @FXML
     private void setColActionListener() {
         buildModifySizePopup("Enter New Column Width", "Please input new width:", true);
@@ -179,8 +175,51 @@ public class TableFunctionalityController {
 
     @FXML
     private void alignmentSetListener() {
+        buildAlimentPopup();
         System.out.println("Alignment Set button clicked");
     }
+
+    private void buildAlimentPopup() {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Set Alignment");
+
+        RadioButton leftAlign = new RadioButton("Left");
+        RadioButton centerAlign = new RadioButton("Center");
+        RadioButton rightAlign = new RadioButton("Right");
+
+        ToggleGroup alignmentGroup = new ToggleGroup();
+        leftAlign.setToggleGroup(alignmentGroup);
+        centerAlign.setToggleGroup(alignmentGroup);
+        rightAlign.setToggleGroup(alignmentGroup);
+        centerAlign.setSelected(true);
+
+        Button confirmButton = getButtonForAlimentPopup(alignmentGroup, popupStage);
+
+        VBox vbox = new VBox(10, leftAlign, centerAlign, rightAlign, confirmButton);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(15));
+
+        Scene scene = new Scene(vbox, 300, 150);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+    }
+
+    private Button getButtonForAlimentPopup(ToggleGroup alignmentGroup, Stage popupStage) {
+        Button confirmButton = new Button("Set Alignment");
+        confirmButton.setOnAction(event -> {
+            RadioButton selectedButton = (RadioButton) alignmentGroup.getSelectedToggle();
+            if (selectedButton != null) {
+                //is there a better way?
+                String alignment = "BASELINE_"+selectedButton.getText().toUpperCase(); //WE HAVE TOO. because pos enum...
+
+                appController.setAlignment(alignment);
+                popupStage.close();
+            }
+        });
+        return confirmButton;
+    }
+
 
     @FXML
     private void cellTextColorPick() {

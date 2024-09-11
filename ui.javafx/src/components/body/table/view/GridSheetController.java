@@ -4,6 +4,7 @@ import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
@@ -27,7 +28,7 @@ public class GridSheetController {
     private Map<String, Label> labelMap;
     private Map<String, Background> originalBackgrounds = new HashMap<>();
     private List<Label> focusedOn;
-    private Map<String,Label> borderMap;
+    private Map<String, Label> borderMap;
 
     public void initialize() {
         gridPane.getStyleClass().add("grid-pane");
@@ -129,7 +130,8 @@ public class GridSheetController {
     private void setBoardersFunctionality(Label cellLabel) {
         cellLabel.getStyleClass().add("boarder");
         cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(cellLabel.getText()));
-}
+    }
+
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);
         currCell.getStyleClass().add("cell-selected");
@@ -154,7 +156,7 @@ public class GridSheetController {
 
     public void returnOldColors() {
         for (Label label : focusedOn)
-            label.getStyleClass().removeAll("cell-dependsOn", "cell-affectsOn","cell-selected","focused-on");
+            label.getStyleClass().removeAll("cell-dependsOn", "cell-affectsOn", "cell-selected", "focused-on");
         focusedOn.clear();
     }
 
@@ -183,15 +185,13 @@ public class GridSheetController {
         label.getStyleClass().add(add);
     }
 
-    public void resetToDefaultColors(String id) {
-        Label label = labelMap.get(id);
+    public void resetToDefaultColors(Label label,String id) {
         originalBackgrounds.remove(id);
-        removeLabelLayout(label);
         changeCellCssId(label, "cell-non-default", "cell-default");
     }
 
     public void updateSize(double size, String id) {
-        if(Character.isDigit(id.charAt(0))) {
+        if (Character.isDigit(id.charAt(0))) {
             borderMap.get(id).setMinHeight(size);
             for (Label label : focusedOn)
                 label.setMinHeight(size);
@@ -203,21 +203,38 @@ public class GridSheetController {
     }
 
     public void focusOnDesiredCells(String borderId) {
-        if(Character.isDigit(borderId.charAt(0))) {
-            for(int i=1; i< gridPane.getColumnCount(); i++) {
+        if (Character.isDigit(borderId.charAt(0))) {
+            for (int i = 1; i < gridPane.getColumnCount(); i++) {
                 char columnLetter = (char) ('A' + (i - 1));
-                Label label = labelMap.get(columnLetter+borderId);
+                Label label = labelMap.get(columnLetter + borderId);
                 focusedOn.add(label);
                 label.getStyleClass().add("focused-on");
             }
-        }
-        else {
-            for(int i=1; i< gridPane.getRowCount(); i++) {
-                Label label =labelMap.get(borderId + i);
+        } else {
+            for (int i = 1; i < gridPane.getRowCount(); i++) {
+                Label label = labelMap.get(borderId + i);
                 focusedOn.add(label);
                 label.getStyleClass().add("focused-on");
             }
         }
     }
 
+    public void updateAliment(String alignment, String id) {
+        for (Label label : focusedOn) {
+            label.getStyleClass().remove("cell-default");
+            label.getStyleClass().add("cell-non-default");
+            label.setAlignment(Pos.valueOf(alignment));
+        }
+    }
+
+    public void resetToDefault(String id) {
+        Label label = labelMap.get(id);
+        removeLabelLayout(label);
+        resetToDefaultColors(label,id);
+        resetToDefaultAlignment(label,id);
+    }
+
+    private void resetToDefaultAlignment(Label label,String id) {
+        label.getStyleClass().remove("set-Alignment");
+    }
 }

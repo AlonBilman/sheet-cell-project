@@ -6,7 +6,7 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="401.0" prefWidth="225.0" stylesheets="@tableFunctionality.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.func.TableFunctionalityController">
    <content>
-      <VBox alignment="TOP_CENTER" minHeight="600.0" minWidth="106.0">
+      <VBox alignment="TOP_CENTER" minHeight="550.0" minWidth="106.0">
          <children>
             <VBox alignment="CENTER" spacing="15.0" VBox.vgrow="SOMETIMES">
                <children>
