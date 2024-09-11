@@ -40,7 +40,7 @@
     -fx-border-width: 2px;
 }
 
-.cell-default:pressed, .cell-non-default:pressed, .boarder:pressed {
+.cell-default:pressed, .cell-non-default:pressed, .boarder:pressed,.focused-on:pressed {
     -fx-border-color: red;
     -fx-border-width: 3px;
 }
@@ -53,3 +53,6 @@
     -fx-background-color: lightgreen;
 }
 
+.focused-on {
+    -fx-background-color: lightblue;
+}

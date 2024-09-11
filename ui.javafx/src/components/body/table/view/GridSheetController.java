@@ -154,7 +154,7 @@ public class GridSheetController {
 
     public void returnOldColors() {
         for (Label label : focusedOn)
-            label.getStyleClass().removeAll("cell-dependsOn", "cell-affectsOn","cell-selected");
+            label.getStyleClass().removeAll("cell-dependsOn", "cell-affectsOn","cell-selected","focused-on");
         focusedOn.clear();
     }
 
@@ -206,12 +206,16 @@ public class GridSheetController {
         if(Character.isDigit(borderId.charAt(0))) {
             for(int i=1; i< gridPane.getColumnCount(); i++) {
                 char columnLetter = (char) ('A' + (i - 1));
-                focusedOn.add(labelMap.get(columnLetter + borderId));
+                Label label = labelMap.get(columnLetter+borderId);
+                focusedOn.add(label);
+                label.getStyleClass().add("focused-on");
             }
         }
         else {
             for(int i=1; i< gridPane.getRowCount(); i++) {
-                focusedOn.add(labelMap.get(borderId + i));
+                Label label =labelMap.get(borderId + i);
+                focusedOn.add(label);
+                label.getStyleClass().add("focused-on");
             }
         }
     }

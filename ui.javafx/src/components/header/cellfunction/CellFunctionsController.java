@@ -34,12 +34,6 @@ public class CellFunctionsController {
     @FXML
     private TextField newOriginalValText;
 
-    @FXML
-    public void initialize() {
-        // Initialization logic if needed
-        System.out.println("CellFunctionsController initialized.");
-    }
-
     public void showCell(CellDataDTO cell){
         currCellShown = cell.getId();
         cellIdProperty.setText(currCellShown);

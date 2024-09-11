@@ -175,6 +175,7 @@ public class AppController {
             tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_COLUMN, true);
     }
 
+
     public void boardOutOfFocus() {
         gridSheetController.returnOldColors();
         tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_ROW, false);

@@ -32,9 +32,6 @@ public class TitleCardController {
 
     @FXML
     private Text sheetCellText;
-
-
-    // Add methods to handle ChoiceBox interactions if needed
 }
 
 
