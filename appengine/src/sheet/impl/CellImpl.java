@@ -24,6 +24,7 @@ public class CellImpl implements Serializable {
     private int lastChangeAt;
     private Set<String> dependsOn;
     private Set<String> affectsOn;
+    private Set<Range> dependsOnRange;
     private String originalValue;
     private EffectiveValue effectiveValue;
 
@@ -35,6 +36,7 @@ public class CellImpl implements Serializable {
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
+        dependsOnRange = new HashSet<>();
         setOriginalValue(newOriginalVal);
         if (newOriginalVal == null)
             lastChangeAt = 1;
@@ -63,6 +65,7 @@ public class CellImpl implements Serializable {
         this.id = generateId(col, row);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
+        dependsOnRange = new HashSet<>();
         setOriginalValue(cell.getSTLOriginalValue());
     }
 
@@ -84,8 +87,8 @@ public class CellImpl implements Serializable {
         }
         detectCircularDependency(new HashSet<>());
         //recursive like dps algo aka - "Maham". -> dfs with circle detection
-        for (String affectid : affectsOn) {
-            CellImpl dep = currSpreadSheet.getCell(affectid);
+        for (String affectId : affectsOn) {
+            CellImpl dep = currSpreadSheet.getCell(affectId);
             dep.calculateEffectiveValue();
         }
     }
@@ -154,7 +157,6 @@ public class CellImpl implements Serializable {
                     if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("REF function requires one argument.");
                     Expression argument = parsedArguments.get(0);
-
                     Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
                     String referencedId = argument.eval().getValue().toString().toUpperCase();
                     dependsOn.add(referencedId);
@@ -165,14 +167,20 @@ public class CellImpl implements Serializable {
                         throw new IllegalArgumentException("AVERAGE function requires one argument.");
                     Expression name1 = parsedArguments.get(0);
                     Range range1 = avgFunctionCheck(name1);
-                    return new AverageFunction(range1);
+                    Expression avgFunc = new AverageFunction(range1);
+                    dependsOnRange.add(range1);
+                    range1.addAffectsOnCells(this);
+                    return avgFunc;
 
                 case "SUM":
                     if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("SUM function requires one argument.");
                     Expression name2 = parsedArguments.get(0);
                     Range range2 = sumFuncCheck(name2);
-                    return new SumFunction(range2);
+                    Expression sumFunc = new SumFunction(range2);
+                    dependsOnRange.add(range2);
+                    range2.addAffectsOnCells(this);
+                    return sumFunc;
 
                 case "AND":
                     if (parsedArguments.size() != 2)
@@ -296,6 +304,10 @@ public class CellImpl implements Serializable {
             cell.removeAffectsOn(this.id);
         }
         dependsOn.clear();
+        for (Range range : dependsOnRange) {
+            range.removeAffectsOnCells(this);
+        }
+        dependsOnRange.clear();
     }
 
     private void removeAffectsOn(String id) {

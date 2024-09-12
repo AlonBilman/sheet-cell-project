@@ -157,7 +157,7 @@ public class SpreadSheetImpl implements Serializable {
         Set<String> visited = new HashSet<>();
         Set<String> inProcess = new HashSet<>();
         Map<String, STLCell> cellMap = new HashMap<>();
-        Map<String, List<String>> dependencyGraph = dependancyGraphBuild(cells, cellMap);
+        Map<String, List<String>> dependencyGraph = dependencyGraphBuild(cells, cellMap);
         for (String cellId : dependencyGraph.keySet()) {
             if (!visited.contains(cellId)) {
                 dfs(cellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
@@ -166,7 +166,7 @@ public class SpreadSheetImpl implements Serializable {
         return sortedCells;
     }
 
-    private Map<String, List<String>> dependancyGraphBuild(List<STLCell> cells, Map<String, STLCell> cellMap) {
+    private Map<String, List<String>> dependencyGraphBuild(List<STLCell> cells, Map<String, STLCell> cellMap) {
         Map<String, List<String>> dependencyGraph = new HashMap<>();
         for (STLCell cell : cells) {
             String cellId = cell.getColumn() + cell.getRow();
@@ -240,8 +240,9 @@ public class SpreadSheetImpl implements Serializable {
         Range range = new Range(rangeName, topLeftCellId, bottomRightCellId, cells);
         activeRanges.put(rangeName, range);
     }
+
     //will be used in the functions
-    public Range getRange(String name){
+    public Range getRange(String name) {
         return activeRanges.get(name);
     }
 
@@ -260,7 +261,7 @@ public class SpreadSheetImpl implements Serializable {
                 cellsInRange.add(cell);
             }
         }
-        if(cellsInRange.isEmpty()) {
+        if (cellsInRange.isEmpty()) {
             throw new RuntimeException("The cells Id you've given did not match the format.\n" +
                     "In order to create a range please provide first topLeftCellId and bottomRightCellId - in this order");
         }
@@ -268,8 +269,12 @@ public class SpreadSheetImpl implements Serializable {
     }
 
     public void deleteRange(String name) {
-        if(activeRanges.containsKey(name)){
-            activeRanges.remove(name);
+        if (activeRanges.containsKey(name)) {
+            Range range = activeRanges.get(name);
+            Set<String> setId = range.getCellsThatTheRangeAffects();
+            if (setId.isEmpty()) {
+                activeRanges.remove(name);
+            } else throw new RuntimeException("Cannot delete this range.\nIt affects this cell(s): " + setId);
         } else throw new IllegalArgumentException("No such range - " + name);
     }
 
