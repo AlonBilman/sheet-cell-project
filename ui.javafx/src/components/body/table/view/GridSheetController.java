@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Paint;
 
 import java.util.*;
 
@@ -176,7 +177,7 @@ public class GridSheetController {
 
     private void removeLabelLayout(Label label) {
         label.setBackground(null);
-        label.setTextFill(null);
+        label.setTextFill(Paint.valueOf("Black"));
         label.setAlignment(null);
     }
 
@@ -221,9 +222,14 @@ public class GridSheetController {
 
     public void updateAliment(String alignment, String id) {
         for (Label label : focusedOn) {
-            label.getStyleClass().remove("cell-default");
-            label.getStyleClass().add("cell-non-default");
-            label.setAlignment(Pos.valueOf(alignment));
+            changeCellCssId(label, "cell-default","cell-non-default" );
+            resetToDefaultAlignment(label,id);
+            if(alignment.equals("Left")) {
+                label.getStyleClass().add("alignment-left");
+            }
+            else if(alignment.equals("Right")) {
+                label.getStyleClass().add("alignment-right");
+            }
         }
     }
 
@@ -235,6 +241,6 @@ public class GridSheetController {
     }
 
     private void resetToDefaultAlignment(Label label,String id) {
-        label.getStyleClass().remove("set-Alignment");
+        label.getStyleClass().removeAll("alignment-left","alignment-right");
     }
 }

@@ -211,7 +211,7 @@ public class TableFunctionalityController {
             RadioButton selectedButton = (RadioButton) alignmentGroup.getSelectedToggle();
             if (selectedButton != null) {
                 //is there a better way?
-                String alignment = "BASELINE_"+selectedButton.getText().toUpperCase(); //WE HAVE TOO. because pos enum...
+                String alignment = selectedButton.getText(); //WE HAVE TOO. because pos enum...
 
                 appController.setAlignment(alignment);
                 popupStage.close();

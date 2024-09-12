@@ -23,16 +23,17 @@
     -fx-font-size: 14px;
 }
 
-.cell-default.cell-selected , .cell-non-default.cell-selected{
+.cell-default.cell-selected, .cell-non-default.cell-selected {
     -fx-border-color: blue;
     -fx-border-width: 2px;
     -fx-font-size: 16px;
 }
 
+/* Initial centering for cell-non-default */
 .cell-non-default {
     -fx-border-color: lightgray;
-
     -fx-font-size: 14px;
+    -fx-alignment: center; /* Center alignment by default */
 }
 
 .cell-default:hover, .cell-non-default:hover, .boarder:hover {
@@ -55,4 +56,13 @@
 
 .focused-on {
     -fx-background-color: lightblue;
+}
+
+
+.cell-non-default.alignment-left {
+    -fx-alignment: center-left;
+}
+
+.cell-non-default.alignment-right {
+    -fx-alignment: center-right;
 }
