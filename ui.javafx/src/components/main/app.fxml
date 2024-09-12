@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="200.0" minWidth="200.0" prefHeight="605.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.AppController">
+<BorderPane minHeight="200.0" minWidth="200.0" prefHeight="605.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.AppController">
    <top>
       <ScrollPane>
          <FlowPane alignment="CENTER" depthTest="DISABLE" minHeight="140.0" minWidth="595.0" prefWrapLength="0.0" rowValignment="BASELINE">
