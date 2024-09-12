@@ -29,11 +29,11 @@
     -fx-font-size: 16px;
 }
 
-/* Initial centering for cell-non-default */
+
 .cell-non-default {
     -fx-border-color: lightgray;
     -fx-font-size: 14px;
-    -fx-alignment: center; /* Center alignment by default */
+    -fx-alignment: center;
 }
 
 .cell-default:hover, .cell-non-default:hover, .boarder:hover {
