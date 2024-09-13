@@ -27,7 +27,6 @@ public class CellImpl implements Serializable {
     private Set<Range> dependsOnRange;
     private String originalValue;
     private EffectiveValue effectiveValue;
-
     private static SpreadSheetImpl currSpreadSheet;
 
     public CellImpl(int row, String col, String newOriginalVal, int versionNumber) {
@@ -244,7 +243,7 @@ public class CellImpl implements Serializable {
                 throw new IllegalArgumentException("AVERAGE function requires a string argument (Range name).");
             throw new IllegalArgumentException("SUM function requires a string argument (Range name).");
         }
-        String arg = name.eval().getValue().toString();
+        String arg = name.eval().getValue().toString(); //the name of the Range
         Range range = currSpreadSheet.getRange(arg);
         if (range != null) {
             for (CellImpl cell : range.getRangeCells()) {

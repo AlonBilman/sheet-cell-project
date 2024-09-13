@@ -21,9 +21,9 @@ public class Range implements Serializable {
 
     }
 
-    public Set<String> getCellsThatTheRangeAffects(){
+    public Set<String> getCellsThatTheRangeAffects() {
         Set<String> set = new HashSet<>();
-        for(CellImpl cell : affectsOnCells){
+        for (CellImpl cell : affectsOnCells) {
             set.add(cell.getId());
         }
         return set;

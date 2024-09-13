@@ -25,10 +25,9 @@ import jakarta.xml.bind.annotation.XmlType;
  *   <complexContent>
  *     <restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       <sequence>
- *         <element ref="{}STL-Original-Value"/>
+ *         <element ref="{}STL-Boundaries"/>
  *       </sequence>
- *       <attribute name="row" use="required" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       <attribute name="column" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       <attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     </restriction>
  *   </complexContent>
  * </complexType>
@@ -38,80 +37,62 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "stlOriginalValue"
+    "stlBoundaries"
 })
-@XmlRootElement(name = "STL-Cell")
-public class STLCell {
+@XmlRootElement(name = "STL-Range")
+public class STLRange {
 
-    @XmlElement(name = "STL-Original-Value", required = true)
-    protected String stlOriginalValue;
-    @XmlAttribute(name = "row", required = true)
-    protected int row;
-    @XmlAttribute(name = "column", required = true)
-    protected String column;
+    @XmlElement(name = "STL-Boundaries", required = true)
+    protected STLBoundaries stlBoundaries;
+    @XmlAttribute(name = "name", required = true)
+    protected String name;
 
     /**
-     * Gets the value of the stlOriginalValue property.
+     * Gets the value of the stlBoundaries property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link STLBoundaries }
+     *     
+     */
+    public STLBoundaries getSTLBoundaries() {
+        return stlBoundaries;
+    }
+
+    /**
+     * Sets the value of the stlBoundaries property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link STLBoundaries }
+     *     
+     */
+    public void setSTLBoundaries(STLBoundaries value) {
+        this.stlBoundaries = value;
+    }
+
+    /**
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getSTLOriginalValue() {
-        return stlOriginalValue;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the stlOriginalValue property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setSTLOriginalValue(String value) {
-        this.stlOriginalValue = value;
-    }
-
-    /**
-     * Gets the value of the row property.
-     * 
-     */
-    public int getRow() {
-        return row;
-    }
-
-    /**
-     * Sets the value of the row property.
-     * 
-     */
-    public void setRow(int value) {
-        this.row = value;
-    }
-
-    /**
-     * Gets the value of the column property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getColumn() {
-        return column;
-    }
-
-    /**
-     * Sets the value of the column property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setColumn(String value) {
-        this.column = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
 }
