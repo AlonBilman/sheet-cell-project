@@ -15,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -227,7 +226,6 @@ public class TableFunctionalityController {
         return confirmButton;
     }
 
-
     @FXML
     private void cellTextColorPick() {
         buildColorPickerPopup("Choose a Color", (selectedColor) -> {
@@ -242,11 +240,16 @@ public class TableFunctionalityController {
         });
     }
 
+    @FXML
+    public void resetCellStyleListener(ActionEvent actionEvent) {
+        appController.resetStyleClicked();
+    }
+
     private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage) {
         Button button = new Button("Confirm");
         button.setOnAction(event -> {
             String rangeName = rangeNameField.getText();
-            if(rangeName.trim().isEmpty())
+            if (rangeName.trim().isEmpty())
                 showInfoAlert("Error: Entered range name is empty.");
             else {
                 String fromCell = fromCellField.getText();
@@ -285,76 +288,63 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
-
-    @FXML
-    private void viewExistingRangeListener() {
-        // Get the range names
-        Set<String> rangeNames = appController.viewExistingRangeClicked();
-
-        // Check if there are no ranges
+    private void viewAndDeleteRangePopup(confirmType type) {
+        Set<String> rangeNames = appController.getExistingRanges();
         if (rangeNames.isEmpty()) {
             showInfoAlert("Error: There are 0 Ranges right now");
-            return; // Exit the method if there are no ranges
+            return;
         }
-
-        // Create a new stage (popup window)
         Stage popupStage = new Stage();
         popupStage.setTitle("Select a Range");
-
-        // Create VBox to hold the radio buttons and confirm button
-        VBox vbox = new VBox(10);
-        vbox.setPadding(new Insets(20));
-
-        // Create a ToggleGroup to allow only one selection at a time
+        VBox vbox = new VBox(15);
+        vbox.setPadding(new Insets(10));
         ToggleGroup toggleGroup = new ToggleGroup();
-
-        // Create a radio button for each range name
         for (String rangeName : rangeNames) {
             RadioButton radioButton = new RadioButton(rangeName);
             radioButton.setToggleGroup(toggleGroup);
             vbox.getChildren().add(radioButton);
         }
-
-        // Create the confirm button
-        Button confirmButton = new Button("Confirm");
-        confirmButton.setOnAction(e -> {
-            RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
-            if (selectedRadioButton != null) {
-                String selectedRangeName = selectedRadioButton.getText();
-                System.out.println("Selected range: " + selectedRangeName);
-                popupStage.close(); // Close the popup after selection
-            } else {
-                showInfoAlert("Please select a range before confirming.");
-            }
-        });
+        Button confirmButton = createViewOrDeleteRangeButton(type, popupStage, toggleGroup);
+        confirmButton.setAlignment(Pos.CENTER);
         vbox.getChildren().add(confirmButton);
-
-        // Wrap the VBox in a ScrollPane
         ScrollPane scrollPane = new ScrollPane(vbox);
-        scrollPane.setFitToWidth(true); // Ensure the ScrollPane resizes with the window width
-
-        // Set up the scene and show the popup stage
-        Scene scene = new Scene(scrollPane, 300, 400); // Adjust the height as needed
+        scrollPane.setFitToWidth(true);
+        Scene scene = new Scene(scrollPane, 300, 200);
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
     }
 
-    private void buildRangePickerPopup() {
+    private Button createViewOrDeleteRangeButton(confirmType type, Stage currStage, ToggleGroup toggleGroup) {
+        Button confirmButton = new Button("Confirm");
+        confirmButton.setOnAction(e -> {
+            RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
+            if (selectedRadioButton != null) {
+                String selectedRangeName = selectedRadioButton.getText();
+                if (type.equals(confirmType.VIEW_EXISTING_RANGE)) {
+                    // Show the range...calling the appController
+                    System.out.println("Selected range: " + selectedRangeName);
+                } else if (type.equals(confirmType.DELETE_EXISTING_RANGE)) {
+                    // Delete the range from the system...
+                    System.out.println("Selected range to delete: " + selectedRangeName);
+                }
+                currStage.close();
+            } else {
+                showInfoAlert("Please select a range before confirming.");
+            }
+        });
+        return confirmButton;
+    }
 
+    @FXML
+    private void viewExistingRangeListener() {
+        viewAndDeleteRangePopup(confirmType.VIEW_EXISTING_RANGE);
     }
 
     @FXML
     private void deleteExistingRangeListener() {
-        Set<String> RangesNames = new HashSet<>();
-        RangesNames = appController.deleteRangeClicked();
-        if(RangesNames.isEmpty())
-            showInfoAlert("Error: There are 0 Ranges right now");
+        viewAndDeleteRangePopup(confirmType.DELETE_EXISTING_RANGE);
     }
 
-    @FXML
-    public void resetCellStyleListener(ActionEvent actionEvent) {
-        appController.resetStyleClicked();
-    }
 
 }

@@ -204,7 +204,7 @@ public class AppController {
         engine.addRange(rangeName, params);
     }
 
-    private Set<String> getExistingRanges() {
+    public Set<String> getExistingRanges() {
         Set<String> rangeNames = engine.Display().getActiveRanges().keySet(); //get the names
         return rangeNames.stream()
                 .sorted() //sort the names
