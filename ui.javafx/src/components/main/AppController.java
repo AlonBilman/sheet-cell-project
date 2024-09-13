@@ -8,6 +8,7 @@ import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
 import dto.CellDataDTO;
 import dto.LoadDTO;
+import dto.RangeDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
@@ -19,6 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static checkfile.CheckForXMLFile.loadXMLFile;
 
@@ -154,6 +159,7 @@ public class AppController {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.changeBackgroundColor(id, selectedColor);
     }
+
     public void textColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.changeTextColor(id, selectedColor);
@@ -185,18 +191,37 @@ public class AppController {
 
     public void updateSize(double inputField) {
         String id = cellFunctionsController.getCellIdFocused();
-        gridSheetController.updateSize(inputField,id);
+        gridSheetController.updateSize(inputField, id);
     }
 
     public void setAlignment(String alignment) {
         String id = cellFunctionsController.getCellIdFocused();
-        gridSheetController.updateAliment(alignment,id);
+        gridSheetController.updateAliment(alignment, id);
     }
 
     public void addNewRange(String rangeName, String fromCell, String toCell) {
         String params = fromCell.trim() + ".." + toCell.trim();
         engine.addRange(rangeName, params);
     }
-}
 
+    private Set<String> getExistingRanges() {
+        Set<String> rangeNames = engine.Display().getActiveRanges().keySet(); //get the names
+        return rangeNames.stream()
+                .sorted() //sort the names
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<String> viewExistingRangeClicked() {
+        // need to focus the cells
+        return getExistingRanges();
+        //Do some logic
+
+    }
+
+    public Set<String> deleteRangeClicked() {
+        return getExistingRanges();
+        //Do some logic
+    }
+
+}
 

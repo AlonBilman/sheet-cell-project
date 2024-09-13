@@ -79,6 +79,10 @@ public class sheetDTO implements Serializable {
         return activeCells;
     }
 
+    public Map<String,RangeDTO> getActiveRanges() {
+        return activeRanges;
+    }
+
     public String getSheetName() {
         return sheetName;
     }

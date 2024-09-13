@@ -32,8 +32,8 @@
                         <Insets top="15.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0" text="Delete Range" />
-                  <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0" text="View Range" />
+                  <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0" text="Delete Range" onAction="#deleteExistingRangeListener" />
+                  <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0" text="View Range" onAction="#viewExistingRangeListener"/>
                </children>
                <VBox.margin>
                   <Insets top="10.0" />

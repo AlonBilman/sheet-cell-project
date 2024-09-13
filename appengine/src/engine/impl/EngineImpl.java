@@ -98,12 +98,8 @@ public class EngineImpl implements Engine, Serializable {
 
         String topLeftCellId = cellIdentifiers[0];
         String bottomRightCellId = cellIdentifiers[1];
-        try {
-            spreadSheet.addRange(name, topLeftCellId, bottomRightCellId);
-        } catch (Exception e) {
-            spreadSheet = this.spreadSheet.getSheetBeforeChange();
-            throw e;
-        }
+        spreadSheet.addRange(name, topLeftCellId, bottomRightCellId); //may result exception
+        //there is no need to revert to the last spreadsheet
     }
 
     public RangeDTO getRangeDto(String id) {

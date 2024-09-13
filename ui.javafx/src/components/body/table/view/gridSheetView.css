@@ -29,7 +29,6 @@
     -fx-font-size: 16px;
 }
 
-
 .cell-non-default {
     -fx-border-color: lightgray;
     -fx-font-size: 14px;
