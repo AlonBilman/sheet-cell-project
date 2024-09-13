@@ -168,8 +168,10 @@ public class CellImpl implements Serializable {
                     Expression name1 = parsedArguments.get(0);
                     Range range1 = avgFunctionCheck(name1);
                     Expression avgFunc = new AverageFunction(range1);
-                    dependsOnRange.add(range1);
-                    range1.addAffectsOnCells(this);
+                    if(range1!=null) {
+                        dependsOnRange.add(range1);
+                        range1.addAffectsOnCells(this);
+                    }
                     return avgFunc;
 
                 case "SUM":
@@ -178,8 +180,10 @@ public class CellImpl implements Serializable {
                     Expression name2 = parsedArguments.get(0);
                     Range range2 = sumFuncCheck(name2);
                     Expression sumFunc = new SumFunction(range2);
-                    dependsOnRange.add(range2);
-                    range2.addAffectsOnCells(this);
+                    if(range2!=null){
+                        dependsOnRange.add(range2);
+                        range2.addAffectsOnCells(this);
+                    }
                     return sumFunc;
 
                 case "AND":
