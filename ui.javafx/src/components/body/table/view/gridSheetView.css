@@ -23,16 +23,17 @@
     -fx-font-size: 14px;
 }
 
-.cell-default.cell-selected, .cell-non-default.cell-selected {
-    -fx-border-color: blue;
-    -fx-border-width: 2px;
-    -fx-font-size: 16px;
-}
-
 .cell-non-default {
     -fx-border-color: lightgray;
     -fx-font-size: 14px;
     -fx-alignment: center;
+}
+
+
+.cell-default.cell-selected, .cell-non-default.cell-selected {
+    -fx-border-color: blue;
+    -fx-border-width: 2px;
+    -fx-font-size: 16px;
 }
 
 .cell-default:hover, .cell-non-default:hover, .boarder:hover {

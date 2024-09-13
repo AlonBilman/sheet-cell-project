@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
+
 import java.io.File;
 
 public class LoadFileController {
@@ -22,7 +23,7 @@ public class LoadFileController {
     @FXML
     private Label filePathLabel;
 
-    public void setMainController(AppController mainController){
+    public void setMainController(AppController mainController) {
         this.appController = mainController;
     }
 

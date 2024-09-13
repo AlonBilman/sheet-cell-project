@@ -185,7 +185,7 @@ public class GridSheetController {
         label.getStyleClass().add(add);
     }
 
-    public void resetToDefaultColors(Label label,String id) {
+    public void resetToDefaultColors(Label label, String id) {
         originalBackgrounds.remove(id);
         changeCellCssId(label, "cell-non-default", "cell-default");
     }
@@ -202,7 +202,15 @@ public class GridSheetController {
             label.setMinWidth(size);
     }
 
-    public void focusOnDesiredCells(String borderId) {
+    public void focusOnRangeCells(Set<String> cellsId) {
+        for (String cellId : cellsId) {
+            Label label = labelMap.get(cellId);
+            focusedOn.add(label);
+            label.getStyleClass().add("focused-on");
+        }
+    }
+
+    public void focusOnBorderAbilityCells(String borderId) {
         if (Character.isDigit(borderId.charAt(0))) {
             for (int i = 1; i < gridPane.getColumnCount(); i++) {
                 char columnLetter = (char) ('A' + (i - 1));
@@ -221,12 +229,11 @@ public class GridSheetController {
 
     public void updateAliment(String alignment, String id) {
         for (Label label : focusedOn) {
-            changeCellCssId(label, "cell-default","cell-non-default" );
-            resetToDefaultAlignment(label,id);
-            if(alignment.equals("Left")) {
+            changeCellCssId(label, "cell-default", "cell-non-default");
+            resetToDefaultAlignment(label, id);
+            if (alignment.equals("Left")) {
                 label.getStyleClass().add("alignment-left");
-            }
-            else if(alignment.equals("Right")) {
+            } else if (alignment.equals("Right")) {
                 label.getStyleClass().add("alignment-right");
             }
         }
@@ -235,11 +242,11 @@ public class GridSheetController {
     public void resetToDefault(String id) {
         Label label = labelMap.get(id);
         removeLabelLayout(label);
-        resetToDefaultColors(label,id);
-        resetToDefaultAlignment(label,id);
+        resetToDefaultColors(label, id);
+        resetToDefaultAlignment(label, id);
     }
 
-    private void resetToDefaultAlignment(Label label,String id) {
-        label.getStyleClass().removeAll("alignment-left","alignment-right");
+    private void resetToDefaultAlignment(Label label, String id) {
+        label.getStyleClass().removeAll("alignment-left", "alignment-right");
     }
 }

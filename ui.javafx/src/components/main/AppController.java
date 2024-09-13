@@ -8,12 +8,10 @@ import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
 import dto.CellDataDTO;
 import dto.LoadDTO;
-import dto.RangeDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -94,6 +92,11 @@ public class AppController {
         }
     }
 
+    private void outOfFocus() {
+        cellOutOfFocus();
+        boardOutOfFocus();
+    }
+
     public void checkAndLoadFile(File file) {
         newFile = file;
         loadResult = engine.Load(newFile);
@@ -121,8 +124,7 @@ public class AppController {
     }
 
     public void CellClicked(String id) {
-        cellOutOfFocus();
-        boardOutOfFocus();
+        outOfFocus();
         CellDataDTO cell = engine.showCell(id);
         cellFunctionsController.showCell(cell);
         tableFunctionalityController.setActiveButtons(
@@ -138,8 +140,7 @@ public class AppController {
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         try {
             engine.updateCell(cellToUpdate, newOriginalValue);
-            cellOutOfFocus();
-            boardOutOfFocus();
+            outOfFocus();
             gridSheetController.populateTableView(engine.Display(), false);
         } catch (Exception e) {
             cellFunctionsController.showInfoAlert(e.getMessage());
@@ -172,16 +173,14 @@ public class AppController {
     }
 
     public void BoarderClicked(String boarderTextId) {
-        cellOutOfFocus();
-        boardOutOfFocus();
+        outOfFocus();
         cellFunctionsController.setFocus(boarderTextId);
-        gridSheetController.focusOnDesiredCells(boarderTextId);
+        gridSheetController.focusOnBorderAbilityCells(boarderTextId);
         if (Character.isDigit(boarderTextId.charAt(0)))
             tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_ROW, true);
         else
             tableFunctionalityController.setActiveButtons(TableFunctionalityController.ButtonState.CLICKING_COLUMN, true);
     }
-
 
     public void boardOutOfFocus() {
         gridSheetController.returnOldColors();
@@ -200,6 +199,7 @@ public class AppController {
     }
 
     public void addNewRange(String rangeName, String fromCell, String toCell) {
+        outOfFocus();
         String params = fromCell.trim() + ".." + toCell.trim();
         engine.addRange(rangeName, params);
     }
@@ -211,17 +211,26 @@ public class AppController {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public Set<String> viewExistingRangeClicked() {
-        // need to focus the cells
-        return getExistingRanges();
-        //Do some logic
-
+    public void deleteRangeConfirmedClicked(String rangeToDelete) {
+        outOfFocus();
+        try {
+            engine.deleteRange(rangeToDelete);
+        } catch (Exception e) {
+            tableFunctionalityController.showInfoAlert(e.getMessage());
+        }
     }
 
-    public Set<String> deleteRangeClicked() {
-        return getExistingRanges();
-        //Do some logic
+    public void showRangeConfirmedClicked(String selectedRangeName) {
+        outOfFocus();
+        Set<String> labelNamesToFocus = new HashSet<>();
+        Set<CellDataDTO> focusCells =
+                engine.Display()
+                        .getActiveRanges()
+                        .get(selectedRangeName)
+                        .getCells();
+        for (CellDataDTO focusCell : focusCells) {
+            labelNamesToFocus.add(focusCell.getId());
+        }
+        gridSheetController.focusOnRangeCells(labelNamesToFocus);
     }
-
 }
-

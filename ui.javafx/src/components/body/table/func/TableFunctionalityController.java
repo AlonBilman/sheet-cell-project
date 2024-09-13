@@ -116,10 +116,10 @@ public class TableFunctionalityController {
         alert.showAndWait();
     }
 
-    private void buildColorPickerPopup(String title, Consumer<Color> colorCallback) {
+    private void buildColorPickerPopup(Consumer<Color> colorCallback) {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.setTitle(title);
+        popupStage.setTitle("Choose a Color");
         ColorPicker colorPicker = new ColorPicker();
         colorPicker.setOnAction(e -> {
             try {
@@ -228,14 +228,14 @@ public class TableFunctionalityController {
 
     @FXML
     private void cellTextColorPick() {
-        buildColorPickerPopup("Choose a Color", (selectedColor) -> {
+        buildColorPickerPopup((selectedColor) -> {
             appController.textColorPicked(selectedColor);
         });
     }
 
     @FXML
     private void cellBackgroundColorPick() {
-        buildColorPickerPopup("Choose a Color", (selectedColor) -> {
+        buildColorPickerPopup((selectedColor) -> {
             appController.backgroundColorPicked(selectedColor);
         });
     }
@@ -322,11 +322,9 @@ public class TableFunctionalityController {
             if (selectedRadioButton != null) {
                 String selectedRangeName = selectedRadioButton.getText();
                 if (type.equals(confirmType.VIEW_EXISTING_RANGE)) {
-                    // Show the range...calling the appController
-                    System.out.println("Selected range: " + selectedRangeName);
+                    appController.showRangeConfirmedClicked(selectedRangeName);
                 } else if (type.equals(confirmType.DELETE_EXISTING_RANGE)) {
-                    // Delete the range from the system...
-                    System.out.println("Selected range to delete: " + selectedRangeName);
+                    appController.deleteRangeConfirmedClicked(selectedRangeName);
                 }
                 currStage.close();
             } else {

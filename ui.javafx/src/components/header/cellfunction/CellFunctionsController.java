@@ -10,7 +10,7 @@ public class CellFunctionsController {
 
     private AppController appController;
 
-    public void setMainController(AppController mainController){
+    public void setMainController(AppController mainController) {
         this.appController = mainController;
     }
 
@@ -34,7 +34,7 @@ public class CellFunctionsController {
     @FXML
     private TextField newOriginalValText;
 
-    public void showCell(CellDataDTO cell){
+    public void showCell(CellDataDTO cell) {
         currCellShown = cell.getId();
         cellIdProperty.setText(currCellShown);
         cellUpdatedProperty.setText(String.valueOf(cell.getLastChangeAt()));
@@ -53,7 +53,7 @@ public class CellFunctionsController {
         outOfFocus();
     }
 
-    public void outOfFocus(){
+    public void outOfFocus() {
         currCellShown = null;
         cellIdProperty.setText("Selected Cell Id");
         cellUpdatedProperty.setText("Cell Version");
@@ -62,10 +62,11 @@ public class CellFunctionsController {
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
     }
+
     @FXML
     private void updateCellActionListener() {
         String newOriginalValue = newOriginalValText.getText();
-        appController.updateCellClicked(currCellShown,newOriginalValue);
+        appController.updateCellClicked(currCellShown, newOriginalValue);
     }
 
     public String getCellIdFocused() {
