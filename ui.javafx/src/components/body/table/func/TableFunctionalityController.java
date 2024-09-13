@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -51,6 +52,12 @@ public class TableFunctionalityController {
         CLICKING_CELL,
         CLICKING_ROW,
         CLICKING_COLUMN
+    }
+
+    private enum confirmType {
+        ADD_NEW_RANGE,
+        DELETE_EXISTING_RANGE,
+        VIEW_EXISTING_RANGE,
     }
 
     public void initialize() {
@@ -210,8 +217,7 @@ public class TableFunctionalityController {
         confirmButton.setOnAction(event -> {
             RadioButton selectedButton = (RadioButton) alignmentGroup.getSelectedToggle();
             if (selectedButton != null) {
-                //is there a better way?
-                String alignment = selectedButton.getText(); //WE HAVE TOO. because pos enum...
+                String alignment = selectedButton.getText();
 
                 appController.setAlignment(alignment);
                 popupStage.close();
@@ -235,19 +241,60 @@ public class TableFunctionalityController {
         });
     }
 
-    @FXML
-    private void addNewRangeListener() {
-        System.out.println("Add Range Set button clicked");
+    private Button createRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, confirmType type, Stage currStage) {
+        Button button = new Button("Confirm");
+        button.setOnAction(event -> {
+            String rangeName = rangeNameField.getText();
+            if (type.equals(confirmType.ADD_NEW_RANGE)) {
+                String fromCell = fromCellField.getText();
+                String toCell = toCellField.getText();
+                try {
+                    appController.addNewRange(rangeName, fromCell, toCell);
+                    currStage.close();
+                } catch (Exception e) {
+                    showInfoAlert(e.getMessage());
+                }
+
+            } else if (type.equals(confirmType.VIEW_EXISTING_RANGE)) {
+                //SOMETHING ELSE
+            } else { //DO SOMETHIGN
+            }
+
+        });
+        return button;
     }
 
     @FXML
-    private void deleteExistingRangeListener() {
-        System.out.println("Delete Range button clicked");
+    private void addNewRangeListener() {
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Add New Range");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+
+        TextField rangeNameField = new TextField();
+        rangeNameField.setPromptText("Name:");
+        TextField fromCellField = new TextField();
+        fromCellField.setPromptText("From: e.g., A1");
+        TextField toCellField = new TextField();
+        toCellField.setPromptText("To: e.g., A6");
+        Button confirmButton = createRangeButton(rangeNameField, fromCellField, toCellField, confirmType.ADD_NEW_RANGE, popupStage);
+        vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
+        Scene scene = new Scene(vbox, 300, 200);
+        popupStage.setScene(scene);
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.showAndWait();
+
     }
 
     @FXML
     private void viewExistingRangeListener() {
         System.out.println("View Range button clicked");
+    }
+
+    @FXML
+    private void deleteExistingRangeListener() {
+        System.out.println("Delete Range button clicked");
     }
 
     @FXML

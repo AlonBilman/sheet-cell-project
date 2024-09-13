@@ -27,7 +27,7 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="82.0" prefWidth="143.0" spacing="15.0" VBox.vgrow="SOMETIMES">
                <children>
-                  <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0"  text="Add Range Set">
+                  <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0"  text="Add Range Set" onAction="#addNewRangeListener">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>

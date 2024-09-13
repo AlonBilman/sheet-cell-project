@@ -192,6 +192,11 @@ public class AppController {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.updateAliment(alignment,id);
     }
+
+    public void addNewRange(String rangeName, String fromCell, String toCell) {
+        String params = fromCell.trim() + ".." + toCell.trim();
+        engine.addRange(rangeName, params);
+    }
 }
 
 
