@@ -10,12 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class TableFunctionalityController {
@@ -241,11 +242,13 @@ public class TableFunctionalityController {
         });
     }
 
-    private Button createRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, confirmType type, Stage currStage) {
+    private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage) {
         Button button = new Button("Confirm");
         button.setOnAction(event -> {
             String rangeName = rangeNameField.getText();
-            if (type.equals(confirmType.ADD_NEW_RANGE)) {
+            if(rangeName.trim().isEmpty())
+                showInfoAlert("Error: Entered range name is empty.");
+            else {
                 String fromCell = fromCellField.getText();
                 String toCell = toCellField.getText();
                 try {
@@ -254,12 +257,7 @@ public class TableFunctionalityController {
                 } catch (Exception e) {
                     showInfoAlert(e.getMessage());
                 }
-
-            } else if (type.equals(confirmType.VIEW_EXISTING_RANGE)) {
-                //SOMETHING ELSE
-            } else { //DO SOMETHIGN
             }
-
         });
         return button;
     }
@@ -268,7 +266,6 @@ public class TableFunctionalityController {
     private void addNewRangeListener() {
         Stage popupStage = new Stage();
         popupStage.setTitle("Add New Range");
-
         VBox vbox = new VBox(10);
         vbox.setPadding(new Insets(20));
 
@@ -278,23 +275,81 @@ public class TableFunctionalityController {
         fromCellField.setPromptText("From: e.g., A1");
         TextField toCellField = new TextField();
         toCellField.setPromptText("To: e.g., A6");
-        Button confirmButton = createRangeButton(rangeNameField, fromCellField, toCellField, confirmType.ADD_NEW_RANGE, popupStage);
+
+        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage);
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
+
         Scene scene = new Scene(vbox, 300, 200);
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
-
     }
+
 
     @FXML
     private void viewExistingRangeListener() {
-        System.out.println("View Range button clicked");
+        // Get the range names
+        Set<String> rangeNames = appController.viewExistingRangeClicked();
+
+        // Check if there are no ranges
+        if (rangeNames.isEmpty()) {
+            showInfoAlert("Error: There are 0 Ranges right now");
+            return; // Exit the method if there are no ranges
+        }
+
+        // Create a new stage (popup window)
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select a Range");
+
+        // Create VBox to hold the radio buttons and confirm button
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+
+        // Create a ToggleGroup to allow only one selection at a time
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        // Create a radio button for each range name
+        for (String rangeName : rangeNames) {
+            RadioButton radioButton = new RadioButton(rangeName);
+            radioButton.setToggleGroup(toggleGroup);
+            vbox.getChildren().add(radioButton);
+        }
+
+        // Create the confirm button
+        Button confirmButton = new Button("Confirm");
+        confirmButton.setOnAction(e -> {
+            RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
+            if (selectedRadioButton != null) {
+                String selectedRangeName = selectedRadioButton.getText();
+                System.out.println("Selected range: " + selectedRangeName);
+                popupStage.close(); // Close the popup after selection
+            } else {
+                showInfoAlert("Please select a range before confirming.");
+            }
+        });
+        vbox.getChildren().add(confirmButton);
+
+        // Wrap the VBox in a ScrollPane
+        ScrollPane scrollPane = new ScrollPane(vbox);
+        scrollPane.setFitToWidth(true); // Ensure the ScrollPane resizes with the window width
+
+        // Set up the scene and show the popup stage
+        Scene scene = new Scene(scrollPane, 300, 400); // Adjust the height as needed
+        popupStage.setScene(scene);
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.showAndWait();
+    }
+
+    private void buildRangePickerPopup() {
+
     }
 
     @FXML
     private void deleteExistingRangeListener() {
-        System.out.println("Delete Range button clicked");
+        Set<String> RangesNames = new HashSet<>();
+        RangesNames = appController.deleteRangeClicked();
+        if(RangesNames.isEmpty())
+            showInfoAlert("Error: There are 0 Ranges right now");
     }
 
     @FXML
