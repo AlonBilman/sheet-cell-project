@@ -13,8 +13,6 @@ import java.io.File;
 
 public class LoadFileController {
 
-    //Boolean isFileLoaded = false;
-
     private AppController appController;
 
     @FXML

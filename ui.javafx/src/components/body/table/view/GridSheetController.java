@@ -5,6 +5,7 @@ import dto.CellDataDTO;
 import dto.sheetDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -248,5 +249,13 @@ public class GridSheetController {
 
     private void resetToDefaultAlignment(Label label, String id) {
         label.getStyleClass().removeAll("alignment-left", "alignment-right");
+    }
+
+    public void disableGridPane() {
+        gridPane.setDisable(true);
+    }
+
+    public void enableGridPane() {
+        gridPane.setDisable(false);
     }
 }

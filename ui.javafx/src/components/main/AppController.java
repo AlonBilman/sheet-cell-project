@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -117,7 +118,7 @@ public class AppController {
             loadFileController.editFilePath(file.getAbsolutePath());
             tableFunctionalityController.setActiveButtons
                     (TableFunctionalityController.ButtonState.LOADING_FILE, true);
-            //tableFunctionalityController.add version o mashu
+            cellFunctionsController.wakeVersionButton();
         } catch (Exception e) {
             loadFileController.showInfoAlert(e.getMessage());
         }
@@ -233,4 +234,18 @@ public class AppController {
         }
         gridSheetController.focusOnRangeCells(labelNamesToFocus);
     }
+
+    public void getVersionClicked() {
+        cellFunctionsController.buildVersionPopup(engine.Display().getSheetVersionNumber());
+    }
+
+    public void confirmVersionClicked(Integer selectedVersion) {
+        try {
+            cellFunctionsController.showVersion(engine.getSheets().get(selectedVersion),selectedVersion);
+        }
+        catch (Exception e) {
+            cellFunctionsController.showInfoAlert(e.getMessage());
+        }
+    }
+
 }
