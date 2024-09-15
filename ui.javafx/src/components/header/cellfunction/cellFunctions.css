@@ -9,7 +9,7 @@
 }
 
 /* Styling for Labels */
-#CellIDLabel, #OriginalCellValueLabel, #LastUpdatedVersionLabel {
+.label-style {
     -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
     -fx-border-width: 1px; /* Thin border */
@@ -20,8 +20,8 @@
     -fx-font-weight: bold; /* Bold text for emphasis */
 }
 
-/* Styling for Button */
-#UpdateNewCellValueButton {
+/* Styling for Update Button */
+.update-button {
     -fx-background-color: #007bff; /* Vibrant blue background to match theme */
     -fx-text-fill: #ffffff; /* White text */
     -fx-border-radius: 5px; /* Rounded corners to match labels */
@@ -31,28 +31,39 @@
     -fx-cursor: hand; /* Pointer cursor on hover */
 }
 
-#UpdateNewCellValueButton:hover {
+.update-button:hover {
     -fx-background-color: #0056b3; /* Darker blue for hover effect */
     -fx-border-color: #0056b3; /* Matching border color on hover */
 }
 
+/* Styling for Version Button */
+.version-button {
+    -fx-background-color: #007bff; /* Vibrant blue background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-radius: 5px; /* Rounded corners to match the rest of the elements */
+    -fx-font-size: 14px; /* Consistent font size */
+    -fx-padding: 10px 15px; /* Padding for spacious look */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Shadow effect */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+.version-button:hover {
+    -fx-background-color: #0056b3; /* Darker blue on hover */
+    -fx-border-color: #0056b3; /* Matching border */
+}
+
+.version-button:disabled {
+    -fx-opacity: 0.6; /* Disabled state styling */
+}
+
 /* Styling for TextField */
-#newOriginalValText {
+.text-field-style {
     -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #cccccc; /* Light gray border */
     -fx-border-width: 1px; /* Thin border */
     -fx-border-radius: 5px; /* Rounded corners to match other elements */
     -fx-padding: 10px; /* Padding inside the text field for consistency */
     -fx-font-size: 14px; /* Larger font size for better readability */
-}
-
-/* Styling for ComboBox */
-#VersionPickerComboBox {
-    -fx-background-color: #ffffff; /* Clean white background */
-    -fx-border-color: #cccccc; /* Light gray border */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match other elements */
-    -fx-font-size: 14px; /* Larger font size for consistency */
 }
 
 /* Styling for disabled elements */
