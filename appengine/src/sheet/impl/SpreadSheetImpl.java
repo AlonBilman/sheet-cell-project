@@ -1,8 +1,6 @@
 package sheet.impl;
 
-import checkfile.STLCell;
-import checkfile.STLCells;
-import checkfile.STLSheet;
+import checkfile.*;
 import sheet.api.EffectiveValue;
 
 import java.io.*;
@@ -20,7 +18,7 @@ public class SpreadSheetImpl implements Serializable {
     private final String sheetName;
     private int sheetVersionNumber;
     private SpreadSheetImpl sheetBeforeChange = null;
-
+    private Set<String> cellsToCalcAfterLoadFaze = null;
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
@@ -33,10 +31,19 @@ public class SpreadSheetImpl implements Serializable {
         this.rowHeight = stlSheet.getSTLLayout().getSTLSize().getRowsHeightUnits();
         this.sheetName = stlSheet.getName();
         STLCells stlCells = stlSheet.getSTLCells();
-        if (stlCells != null) {
-            addCells(stlCells.getSTLCell());
-        }
+        STLRanges stlRanges = stlSheet.getSTLRanges();
+        cellsToCalcAfterLoadFaze = new HashSet<>();
+        if (stlCells != null)
+            //building all the cells from the xml
+            addCells(stlCells.getSTLCell(), stlRanges);
+        if (stlRanges != null)
+            //building all the ranges from the xml
+            buildRanges(stlRanges.getSTLRange());
+        //again after loading all the ranges - recalculate cells that use ranges
+        for (String id : cellsToCalcAfterLoadFaze)
+            activeCells.get(id).calculateEffectiveValue();
         this.sheetVersionNumber = 1; //adding all the cells -> sheetV = 1
+        cellsToCalcAfterLoadFaze = null;
         sheetBeforeChange = deepCopy();
     }
 
@@ -81,6 +88,16 @@ public class SpreadSheetImpl implements Serializable {
         col = col.toUpperCase();
         CellImpl cell = new CellImpl(row, col, newOriginalVal, this.sheetVersionNumber);
         activeCells.put(cell.getId(), cell);
+    }
+
+    private void buildRanges(List<STLRange> stlRanges) {
+        for (STLRange range : stlRanges) {
+            String rangeName = range.getName();
+            STLBoundaries boundaries = range.getSTLBoundaries();
+            String fromCell = boundaries.getFrom();
+            String toCell = boundaries.getTo();
+            addRange(rangeName, fromCell, toCell);
+        }
     }
 
     private void initNullCell(String id, String newOriginalVal) {
@@ -140,24 +157,28 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-    private void addCells(List<STLCell> cells) {
+    private void addCells(List<STLCell> cells, STLRanges stlRanges) {
         CellImpl.setSpreadSheet(this);
-        if (cells == null || cells.isEmpty()) {
+        List<STLRange> ranges = new ArrayList<>(); //so it won't be null
+        if (stlRanges != null)
+            ranges = stlRanges.getSTLRange();
+
+        if (cells == null || cells.isEmpty())
             return;
-        }
-        List<STLCell> sortedCells = topologicalSort(cells); //could fail duo to circular dep
+
+        List<STLCell> sortedCells = topologicalSort(cells, ranges); //could fail duo to circular dep
         for (STLCell cell : sortedCells) {
             CellImpl cellImpl = new CellImpl(cell);
             this.activeCells.put(cellImpl.getId(), cellImpl);
         }
     }
 
-    private List<STLCell> topologicalSort(List<STLCell> cells) {
+    private List<STLCell> topologicalSort(List<STLCell> cells, List<STLRange> ranges) {
         List<STLCell> sortedCells = new ArrayList<>();
         Set<String> visited = new HashSet<>();
         Set<String> inProcess = new HashSet<>();
         Map<String, STLCell> cellMap = new HashMap<>();
-        Map<String, List<String>> dependencyGraph = dependencyGraphBuild(cells, cellMap);
+        Map<String, List<String>> dependencyGraph = dependencyGraphBuild(cells, cellMap, ranges);
         for (String cellId : dependencyGraph.keySet()) {
             if (!visited.contains(cellId)) {
                 dfs(cellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
@@ -166,19 +187,34 @@ public class SpreadSheetImpl implements Serializable {
         return sortedCells;
     }
 
-    private Map<String, List<String>> dependencyGraphBuild(List<STLCell> cells, Map<String, STLCell> cellMap) {
+    private Map<String, List<String>> dependencyGraphBuild(List<STLCell> cells, Map<String, STLCell> cellMap, List<STLRange> ranges) {
         Map<String, List<String>> dependencyGraph = new HashMap<>();
         for (STLCell cell : cells) {
             String cellId = cell.getColumn() + cell.getRow();
             cellId = cellId.trim().toUpperCase();
             cellMap.put(cellId, cell);  //map cell ID to STLCell object
-            List<String> dependencies = extractDependencies(cell);
+            List<String> dependencies = extractDependencies(cell, ranges, cellId);
             dependencyGraph.put(cellId, dependencies);
         }
         return dependencyGraph;
     }
 
-    private List<String> extractDependencies(STLCell cell) {
+    private List<String> extractCellIdFromRange(STLRange range) {
+        List<String> list = new ArrayList<>();
+        int startRow = getNumberRow(range.getSTLBoundaries().getFrom());
+        int endRow = getNumberRow(range.getSTLBoundaries().getTo());
+        char startCol = getLetterCol(range.getSTLBoundaries().getFrom());
+        char endCol = getLetterCol(range.getSTLBoundaries().getTo());
+        for (int row = startRow; row <= endRow; row++) {
+            for (char col = startCol; col <= endCol; col++) {
+                String cellId = "" + col + row;
+                list.add(cellId);
+            }
+        }
+        return list;
+    }
+
+    private List<String> extractDependencies(STLCell cell, List<STLRange> ranges, String cellId) {
         List<String> dependencies = new ArrayList<>();
         String expression = cell.getSTLOriginalValue();
         Pattern pattern = Pattern.compile("\\{REF,([^}]+)}");
@@ -189,6 +225,17 @@ public class SpreadSheetImpl implements Serializable {
             checkCellId(id);
             dependencies.add(id);
         }
+        //check for range references
+        Pattern rangePattern = Pattern.compile("\\{(AVERAGE|SUM),([^}]+)}");
+        Matcher rangeMatcher = rangePattern.matcher(expression);
+        while (rangeMatcher.find()) {
+            String rangeName = rangeMatcher.group(2).trim();
+            ranges.stream()
+                    .filter(r -> rangeName.equals(r.getName()))
+                    .findFirst().ifPresent(range -> dependencies.addAll(extractCellIdFromRange(range)));
+            cellsToCalcAfterLoadFaze.add(cellId);
+        }
+
         return dependencies;
     }
 
@@ -206,17 +253,16 @@ public class SpreadSheetImpl implements Serializable {
         if (!visited.contains(cellId)) {
             inProcess.add(cellId);
             try {
-                if (!dependencyGraph.containsKey(cellId)) {
-                    throw new RuntimeException("No such cell - " + cellId + ". Create it in order to refer it");
+                if (dependencyGraph.containsKey(cellId)) {
+                    //IF NOT! meaning I don't care about the dependency of it, the xml did not create it ->
+                    //it's an empty cell so ill ignore it.
+                    for (String dependentCellId : dependencyGraph.get(cellId)) {
+                        dfs(dependentCellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
+                    }
+                    inProcess.remove(cellId);
+                    visited.add(cellId);
+                    sortedCells.add(cellMap.get(cellId));
                 }
-
-                for (String dependentCellId : dependencyGraph.get(cellId)) {
-                    dfs(dependentCellId, dependencyGraph, visited, inProcess, sortedCells, cellMap);
-                }
-
-                inProcess.remove(cellId);
-                visited.add(cellId);
-                sortedCells.add(cellMap.get(cellId));
 
             } catch (RuntimeException e) {
                 if (e.getMessage().contains("Circular dependency detected!")) {
