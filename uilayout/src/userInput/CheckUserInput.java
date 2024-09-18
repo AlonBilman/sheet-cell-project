@@ -8,6 +8,7 @@ import checkfile.STLSheet;
 import engine.impl.EngineImpl;
 
 import java.io.File;
+import java.util.List;
 import java.util.Scanner;
 
 import static checkfile.CheckForXMLFile.*;
@@ -226,6 +227,13 @@ public class CheckUserInput {
                         System.out.println(e.getMessage());
                     }
                     break;
+                case "12":
+                    System.out.println("range :");
+                    String rangeName3 = scanner.nextLine().trim();
+                    System.out.println("col to sort");
+                    String colToSortParams = scanner.nextLine().trim();
+                    List<String> list = List.of(colToSortParams.split("\\s+"));
+                    engine.sort(rangeName3,list);
 
                 case PRINT_RANGE:
                     System.out.println("Enter the name of the range you want to print:");

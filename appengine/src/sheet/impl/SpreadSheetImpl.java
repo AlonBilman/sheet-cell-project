@@ -292,7 +292,7 @@ public class SpreadSheetImpl implements Serializable {
         return activeRanges.get(name);
     }
 
-    private Set<CellImpl> getSetOfCellsForRange(String topLeftCellId, String bottomRightCellId) {
+    public Set<CellImpl> getSetOfCellsForRange(String topLeftCellId, String bottomRightCellId) {
         Set<CellImpl> cellsInRange = new HashSet<>();
         //the borders
         int startRow = getNumberRow(topLeftCellId);

@@ -5,10 +5,7 @@ import sheet.impl.Range;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class sheetDTO implements Serializable {
     private final int rowSize;
