@@ -122,15 +122,60 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
+    public void changeGridPaneStyle(AppController.Style style){
+        gridPane.getStyleClass().clear();
+        changeGridStyle(style);
+    }
+
+    private void changeGridStyle(AppController.Style style ) {
+        switch (style) {
+            case DEFAULT_STYLE -> {
+                gridPane.getStyleClass().add("grid-pane");
+                break;
+            }
+            case DARK_MODE -> {
+                gridPane.getStyleClass().add("grid-pane-dark-mode");
+                break;
+            }
+        }
+    }
+
+    private void changeLabelStyle(Label label, AppController.Style style ) {
+        switch (style) {
+            case DEFAULT_STYLE -> {
+                label.getStyleClass().add("cell-default");
+                break;
+            }
+            case DARK_MODE -> {
+                label.getStyleClass().add("cell-dark-mode");
+                break;
+            }
+        }
+    }
+
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
-        cellLabel.getStyleClass().add("cell-default");
+        changeLabelStyle(cellLabel, appController.getStyleChosen());
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
 
     private void setBoardersFunctionality(Label cellLabel) {
         cellLabel.getStyleClass().add("boarder");
         cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(cellLabel.getText()));
+    }
+
+
+    public void updateAllCellStyles(AppController.Style style) {
+        // Loop through all cells in the labelMap
+        for (Label label : labelMap.values()) {
+            // Reset and update each label's style
+            label.getStyleClass().clear(); // Clear previous styles
+            changeLabelStyle(label, style); // Apply the new style
+        }
+        for(Label label : borderMap.values()) {
+            label.getStyleClass().clear();
+            changeLabelStyle(label, style);
+        }
     }
 
     public void colorizeImportantCells(sheetDTO curr, String id) {
@@ -258,4 +303,5 @@ public class GridSheetController {
     public void enableGridPane() {
         gridPane.setDisable(false);
     }
+
 }

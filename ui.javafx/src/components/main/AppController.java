@@ -11,6 +11,7 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -18,7 +19,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,6 +28,11 @@ import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
 
+    public enum Style{
+        DEFAULT_STYLE,
+        DARK_MODE
+    }
+
     private Stage stage;
     private EngineImpl engine;
     private File newFile, oldFile;
@@ -36,7 +41,7 @@ public class AppController {
     private sheetDTO sheetDto;
     private LoadDTO loadResult;
     private CellDataDTO cellData;
-
+    public boolean isStyleChanged = false;
     //all the components
     @FXML
     private AnchorPane titleCard;
@@ -123,6 +128,7 @@ public class AppController {
             loadFileController.showInfoAlert(e.getMessage());
         }
     }
+
 
     public void CellClicked(String id) {
         outOfFocus();
@@ -247,5 +253,37 @@ public class AppController {
             cellFunctionsController.showInfoAlert(e.getMessage());
         }
     }
+
+    public void filterButtonClicked() {
+    }
+
+    private Style styleChosen = Style.DEFAULT_STYLE;
+
+    public void setStyleChosen(String styleName) {
+        switch (styleName) {
+            case "No style":
+                styleChosen = Style.DEFAULT_STYLE;
+                break;
+            case "Dark theme":
+                styleChosen = Style.DARK_MODE;
+                break;
+        }
+    }
+
+    public void setStyleOnParts(){
+        tableFunctionalityController.updateStyleOfVBox(getStyleChosen());
+        loadFileController.updateLoadHBoxStyle(getStyleChosen());
+        cellFunctionsController.updateCellHBoxStyle(getStyleChosen());
+        gridSheetController.changeGridPaneStyle(getStyleChosen());
+
+    }
+    public void updateCells(){
+        gridSheetController.updateAllCellStyles(getStyleChosen());
+    }
+
+    public Style getStyleChosen() {
+        return styleChosen;
+    }
+
 
 }

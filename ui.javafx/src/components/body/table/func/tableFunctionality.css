@@ -13,6 +13,12 @@
     -fx-spacing: 15px; /* Increased spacing between children */
 }
 
+.vbox-dark-mode {
+    -fx-background-color: #372A27;
+    -fx-padding: 20px; /* Increased padding for a spacious look */
+    -fx-spacing: 15px; /* Increased spacing between children */
+}
+
 /* Styling for Buttons */
 .button {
     -fx-background-color: #007bff; /* Vibrant blue background */
@@ -26,6 +32,27 @@
     -fx-border-width: 2px; /* Slightly thicker border for better visibility */
     -fx-cursor: hand; /* Pointer cursor on hover */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
+}
+
+.button-dark-mode{
+    -fx-background-color: #372A27;
+    -fx-text-fill: #DFDC39;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Rounded background corners */
+    -fx-padding: 10px 15px; /* Padding inside the button */
+    -fx-border-color: #007bff; /* Matching border color */
+    -fx-border-width: 2px; /* Slightly thicker border for better visibility */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 0, 0.2), 5, 0.5, 0, 2);
+}
+
+.button-dark-mode:hover {
+        -fx-background-color: #0056b3; /* Darker blue for hover effect */
+        -fx-border-color: #0056b3; /* Matching border color on hover */
+
 }
 
 .button:hover {
