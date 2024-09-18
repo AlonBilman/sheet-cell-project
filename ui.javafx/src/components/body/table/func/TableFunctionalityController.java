@@ -24,7 +24,7 @@ public class TableFunctionalityController {
 
     @FXML private VBox tableFuncVBox;
     private String columnToFilter;
-    private Set<String> selectedValues;
+    private Map<String,Set<String>> selectedValues;
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -58,30 +58,13 @@ public class TableFunctionalityController {
     public void sortButtonListener(ActionEvent actionEvent) {
     }
 
-    public void filterButtonListener(ActionEvent actionEvent) {
-        appController.filterButtonClicked();
-        Set<String> cellValues = new HashSet<>();
-      //  cellValues = getCellValues(getColPopup());
-        showPopupWithCellValues(cellValues);
-    }
-
-  //  private Set<String> getCellValues(Object colPopup) {
-        // Gather all values from the cells in the same column
-        Set<String> cellValues;
-       // for (int rowIndex = 1; rowIndex <= ; rowIndex++) {
-            //Label cell =(String.valueOf((char) ('A' + (columnIndex - 1))) + rowIndex);
-           // if (cell != null) {
-           //     cellValues.add(cell.getText());  // Get the text value of the cell
-          //  }
-
-       // }
 
 
     private String getColPopup() {
         return null;
     }
 
-    private void saveSelectedValues(Set<String> selectedValues) {
+    public void saveSelectedValues(Map<String,Set<String>> selectedValues) {
         // Process or save the selected values as needed
         this.selectedValues = selectedValues;
     }
@@ -128,6 +111,8 @@ public class TableFunctionalityController {
         addNewRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         deleteExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         viewExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
+        filterButton.setDisable(!this.activeButtonsWhenLoadingFile);
+        sortButton.setDisable(!this.activeButtonsWhenLoadingFile);
     }
 
     public void setActiveButtons(ButtonState state, boolean isActive) {
@@ -156,58 +141,10 @@ public class TableFunctionalityController {
         alert.showAndWait();
     }
 
-    private void showPopupWithCellValues(Set<String> cellValues) {
-        // Create a new Stage (popup window)
-        Stage popupStage = new Stage();
-        popupStage.setTitle("Select Cell Values");
-
-        // Create a VBox to hold the checkboxes
-        VBox vbox = new VBox();
-        vbox.setSpacing(20);
-        TextField getRange = new TextField();
-        getRange.setPromptText("Set cells to filter");
-        getRange.setOnAction(actionEvent -> {
-
-        });
-        vbox.getChildren().add(getRange);
-        // Create checkboxes for each value
-        List<CheckBox> checkBoxes = new ArrayList<>();
-        for (String value : cellValues) {
-            CheckBox checkBox = new CheckBox(value);
-            checkBoxes.add(checkBox);
-            vbox.getChildren().add(checkBox);
-        }
-
-        // Add a button to confirm the selection
-        Button confirmButton = new Button("Confirm Selection");
-        changeButtonStyle(confirmButton,appController.getStyleChosen());
-        confirmButton.setOnAction(e -> {
-            Set<String> selectedValues = new HashSet<>();
-            for (CheckBox checkBox : checkBoxes) {
-                if (checkBox.isSelected()) {
-                    selectedValues.add(checkBox.getText());
-                }
-            }
-            // Process selected values here
-            saveSelectedValues(selectedValues);// Save the selected values
-            for(String value : selectedValues) {
-                System.out.println(value);
-            }
-            popupStage.close();
-        });
-
-        vbox.getChildren().add(confirmButton);
-
-        // Wrap VBox inside a ScrollPane
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(vbox);
-        scrollPane.setFitToWidth(true);  // Ensure the content fits to the width of the ScrollPane
-
-        // Set up the Scene with the ScrollPane and display the popup
-        Scene popupScene = new Scene(scrollPane, 300, 300);
-        popupStage.setScene(popupScene);
-        popupStage.showAndWait();
+    public void filterButtonListener(ActionEvent actionEvent) {
+        appController.filterButtonClicked();
     }
+
 
     private void buildColorPickerPopup(Consumer<Color> colorCallback) {
         Stage popupStage = new Stage();

@@ -178,6 +178,10 @@ public class GridSheetController {
         }
     }
 
+    public GridPane getGridPane() {
+        return gridPane;
+    }
+
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);
         currCell.getStyleClass().add("cell-selected");

@@ -11,17 +11,20 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.w3c.dom.Text;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static checkfile.CheckForXMLFile.loadXMLFile;
@@ -254,8 +257,174 @@ public class AppController {
         }
     }
 
-    public void filterButtonClicked() {
+    // Method to build the popup for column selection
+    public void buildPopUpOfCols(List<String> colToFilterBy) {
+        int colNum = engine.Display().getColSize();
+        // Create a new Stage (popup window)
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select columns to filter by:");
+
+        // Create a VBox to hold the checkboxes
+        VBox vbox = new VBox();
+        vbox.setSpacing(20);
+        vbox.setAlignment(Pos.CENTER);
+        TextField rangeGetTextField = new TextField("Enter area to filter like A1..B2:");
+        //Add check of valid range
+        rangeGetTextField.setMinWidth(250);
+        rangeGetTextField.setFocusTraversable(false);
+        vbox.getChildren().add(rangeGetTextField);
+
+        List<CheckBox> checkBoxes = new ArrayList<>();
+        for (int i = 1; i <= colNum; i++) {
+            // Adjust column label to start from 'A'
+            CheckBox checkBox = new CheckBox(String.valueOf((char) ('A' + (i - 1))));
+            checkBoxes.add(checkBox);
+            vbox.getChildren().add(checkBox);
+        }
+
+        // Add a button to confirm the selection
+        Button confirmButton = new Button("Confirm Selection");
+        confirmButton.setOnAction(e -> {
+            colToFilterBy.clear();  // Clear existing selections
+            for (CheckBox checkBox : checkBoxes) {
+                if (checkBox.isSelected()) {
+                    colToFilterBy.add(checkBox.getText());
+                }
+            }
+            popupStage.close();
+        });
+
+        vbox.getChildren().add(confirmButton);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vbox);
+        popupStage.setScene(new Scene(scrollPane, 300, 300));
+        popupStage.showAndWait();
     }
+
+    private Label getNodeFromGridPane(GridPane gridPane, String cellPosition) {
+        // Assuming the gridPane's children are organized in a specific layout that we can identify by position
+        for (Node node : gridPane.getChildren()) {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+
+            if (colIndex != null && rowIndex != null) {
+                // Assuming the cellPosition format is "A1", "B3", etc.
+                String columnLetter = String.valueOf((char) ('A' + colIndex - 1));
+                String expectedPosition = columnLetter + rowIndex;
+                if (expectedPosition.equals(cellPosition) && node instanceof Label) {
+                    return (Label) node;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Map<String, Set<String>> getValuesFromCols(List<String> colToFilterBy, GridPane gridPane, int rows) {
+        Map<String, Set<String>> columnToCellValues = new HashMap<>();
+
+        for (String col : colToFilterBy) {
+            int colIndex = col.charAt(0) - 'A';  // Convert column letter to zero-based index
+
+            Set<String> cellValues = new HashSet<>();
+
+            for (int rowIndex = 1; rowIndex <= rows; rowIndex++) {
+                Label cell = getNodeFromGridPane(gridPane, String.valueOf((char) ('A' + colIndex)) + rowIndex);
+
+                if (cell != null) {
+                    String cellValue = cell.getText();
+                    if (cellValue != null && !cellValue.trim().isEmpty()) {
+                        cellValues.add(cellValue);
+                    }
+                }
+            }
+
+            columnToCellValues.put(col, cellValues);
+        }
+        return columnToCellValues;
+    }
+
+    // Method to display the popup with cell values for selection
+    private void showPopupWithCellValues(Map<String, Set<String>> columnToCellValues) {
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select Cell Values");
+
+        HBox hbox = new HBox();
+        hbox.setSpacing(30);
+        hbox.setAlignment(Pos.CENTER);
+
+        Map<String, Set<String>> selectedValues = new HashMap<>();
+
+        for (Map.Entry<String, Set<String>> entry : columnToCellValues.entrySet()) {
+            String column = entry.getKey();  // Column label should be correct
+            Set<String> cellValues = entry.getValue();
+
+            VBox columnVbox = new VBox();
+            columnVbox.setSpacing(10);
+            columnVbox.setAlignment(Pos.CENTER_LEFT);
+
+            Label columnLabel = new Label("Column: " + column);
+            columnVbox.getChildren().add(columnLabel);
+
+            Set<String> selectedColumnValues = new HashSet<>();
+            selectedValues.put(column, selectedColumnValues);
+
+            for (String value : cellValues) {
+                if (!Objects.equals(value, "")) {
+                    CheckBox checkBox = new CheckBox(value);
+
+                    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue) {
+                            selectedColumnValues.add(value);
+                        } else {
+                            selectedColumnValues.remove(value);
+                        }
+                    });
+
+                    columnVbox.getChildren().add(checkBox);
+                }
+            }
+
+            hbox.getChildren().add(columnVbox);
+        }
+
+        Button confirmButton = new Button("Confirm Selection");
+        confirmButton.setOnAction(e -> {
+            System.out.println("Selected values per column:");
+            selectedValues.forEach((column, values) -> {
+                System.out.println("Column: " + column + " -> Selected Values: " + values);
+            });
+            tableFunctionalityController.saveSelectedValues(selectedValues);
+            popupStage.close();
+        });
+
+        VBox mainVbox = new VBox();
+        mainVbox.setSpacing(20);
+        mainVbox.setAlignment(Pos.CENTER);
+        mainVbox.getChildren().addAll(hbox, confirmButton);
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(mainVbox);
+        scrollPane.setFitToWidth(true);
+
+        Scene popupScene = new Scene(scrollPane, 500, 400);
+        popupStage.setScene(popupScene);
+        popupStage.showAndWait();
+    }
+
+    // Example filter button clicked method
+    public void filterButtonClicked() {
+        List<String> colToFilterBy = new ArrayList<>();
+        buildPopUpOfCols(colToFilterBy);
+
+        // Get the cell values based on the columns to filter by
+        Map<String, Set<String>> cellValues = getValuesFromCols(colToFilterBy, gridSheetController.getGridPane(), engine.Display().getRowSize());
+
+        // Show the popup with the cell values for selection
+        if (!cellValues.isEmpty()) {
+            showPopupWithCellValues(cellValues);
+        }
+    }
+
 
     private Style styleChosen = Style.DEFAULT_STYLE;
 
@@ -284,6 +453,5 @@ public class AppController {
     public Style getStyleChosen() {
         return styleChosen;
     }
-
 
 }
