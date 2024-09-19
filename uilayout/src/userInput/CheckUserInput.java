@@ -233,7 +233,12 @@ public class CheckUserInput {
                     System.out.println("col to sort");
                     String colToSortParams = scanner.nextLine().trim();
                     List<String> list = List.of(colToSortParams.split("\\s+"));
-                    engine.sort(rangeName3,list);
+                    try {
+                        printSheet(engine.sort(rangeName3, list));
+                    }catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
 
                 case PRINT_RANGE:
                     System.out.println("Enter the name of the range you want to print:");

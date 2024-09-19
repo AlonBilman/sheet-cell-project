@@ -1,6 +1,8 @@
 package sheet.impl;
 
 import checkfile.*;
+import dto.CellDataDTO;
+import expression.api.ObjType;
 import sheet.api.EffectiveValue;
 
 import java.io.*;
@@ -331,6 +333,81 @@ public class SpreadSheetImpl implements Serializable {
     public Map<String, Range> getActiveRanges() {
         return activeRanges;
     }
+
+    private Double getColumnValue(Set<CellImpl> cells, String column) {
+        for (CellImpl cell : cells) {
+            if (cell.getCol().equals(column) && cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC)) {
+                return (Double) cell.getEffectiveValue().getValue();
+            }
+        }
+        return null;
+    }
+
+    public void sort(String[] params, List<String> sortBy) {
+        Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
+        List<Map.Entry<Integer, Set<CellImpl>>> rowEntries = getEntriesSorted(sortBy, rowMap);
+        Integer startFromRow =
+                rowMap.keySet()
+                        .stream()
+                        .min(Integer::compareTo)
+                        .orElse(null);
+
+        if(startFromRow != null) {
+            for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowEntries) {
+                Set<CellImpl> cells = rowEntry.getValue(); // Get the set of cells in this row
+
+                // For each CellImpl in this set, update the row number to startFromRow
+                for (CellImpl cell : cells) {
+                    cell.setRow(startFromRow);
+                    activeCells.put(cell.getId(),cell);
+                }
+                startFromRow++;
+            }
+        }
+    }
+
+    private List<Map.Entry<Integer, Set<CellImpl>>> getEntriesSorted(List<String> sortBy, Map<Integer, Set<CellImpl>> rowMap) {
+        List<Map.Entry<Integer, Set<CellImpl>>> rowEntries = new ArrayList<>(rowMap.entrySet());
+
+        rowEntries.sort((entry1, entry2) -> {
+            Set<CellImpl> row1Cells = entry1.getValue();
+            Set<CellImpl> row2Cells = entry2.getValue();
+
+            for (String column : sortBy) {
+                Double value1 = getColumnValue(row1Cells, column);
+                Double value2 = getColumnValue(row2Cells, column);
+                int comparison = compareValues(value1, value2);
+                if (comparison != 0) {
+                    return comparison;
+                }
+            }
+            return 0;
+        });
+        return rowEntries;
+    }
+
+    private Map<Integer, Set<CellImpl>> rowMapBuilder(String from, String to) {
+        Map<Integer, Set<CellImpl>> rowMap = new HashMap<>();
+        Set<CellImpl> setOfCells = getSetOfCellsForRange(from, to);
+
+        for (CellImpl cell : setOfCells) {
+            Integer rowKey = cell.getRow();
+            rowMap.computeIfAbsent(rowKey, k -> new HashSet<>()).add(cell);
+        }
+        return rowMap;
+    }
+
+    private int compareValues(Double value1, Double value2) {
+        if (value2 == null && value1 == null) {
+            return 0;
+        } else if (value2 == null) {
+            return -1;
+        } else if (value1 == null) {
+            return -1;
+        }
+        return Double.compare(value1, value2);
+    }
+
 
     public int getRowSize() {
         return rowSize;

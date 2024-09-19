@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 public class CellImpl implements Serializable {
-    private final int row;
-    private final String col;
-    private final String id;
+    private int row;
+    private String col;
+    private String id;
     private int lastChangeAt;
     private Set<String> dependsOn;
     private Set<String> affectsOn;
@@ -378,5 +378,15 @@ public class CellImpl implements Serializable {
 
     public String getCol() {
         return col;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+        this.id = generateId(this.col,this.row);
+    }
+
+    public void setCol(String col) {
+        this.col = col;
+        this.id = generateId(this.col,this.row);
     }
 }
