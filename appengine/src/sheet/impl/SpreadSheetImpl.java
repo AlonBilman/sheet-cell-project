@@ -401,13 +401,12 @@ public class SpreadSheetImpl implements Serializable {
         if (value2 == null && value1 == null) {
             return 0;
         } else if (value2 == null) {
-            return -1;
+            return 1;
         } else if (value1 == null) {
             return -1;
         }
         return Double.compare(value1, value2);
     }
-
 
     public int getRowSize() {
         return rowSize;
