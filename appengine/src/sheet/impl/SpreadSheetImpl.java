@@ -3,6 +3,7 @@ package sheet.impl;
 import checkfile.*;
 import dto.CellDataDTO;
 import expression.api.ObjType;
+import javafx.scene.control.Cell;
 import sheet.api.EffectiveValue;
 
 import java.io.*;
@@ -423,6 +424,7 @@ public class SpreadSheetImpl implements Serializable {
             rowMap.computeIfAbsent(rowKey, k -> new HashSet<>()).add(cell);
         }
         return rowMap;
+
     }
 
     private int compareValues(Double value1, Double value2) {
@@ -435,6 +437,42 @@ public class SpreadSheetImpl implements Serializable {
         }
         return Double.compare(value1, value2);
     }
+
+
+    public void filter(String[] params, List<String> filterBy) {
+        params[0] = cleanId(params[0]);
+        params[1] = cleanId(params[1]);
+        checkRangeParams(params[0], params[1]);
+        Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
+
+        List<Set<CellImpl>> sortedCells = rowMap.values().stream()
+                .sorted(Comparator.comparing(set -> set.stream()
+                        .noneMatch(cell -> filterBy.contains(cell.getEffectiveValue().getValue().toString()))))
+                .toList();
+
+        long approvedCount = sortedCells.stream()
+                .filter(set -> set.stream()
+                        .anyMatch(cell -> filterBy.contains(cell.getEffectiveValue().getValue().toString())))
+                .count();
+
+        Integer startFromRow = rowMap.keySet().stream()
+                .min(Integer::compareTo)
+                .orElse(null);
+
+        int i = 1;
+        for (Set<CellImpl> cells : sortedCells) {
+            if (i++ <= approvedCount) {
+                Integer finalStartFromRow = startFromRow;
+                cells.forEach(cell -> cell.setRow(finalStartFromRow));
+            } else {
+                cells.forEach(cell -> cell.setProhibitedEffectiveValue(new EffectiveValueImpl("", ObjType.EMPTY)));
+            }
+            startFromRow++;
+        }
+    }
+
+
+
 
     public int getRowSize() {
         return rowSize;

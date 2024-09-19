@@ -240,6 +240,18 @@ public class CheckUserInput {
                     }
                     break;
 
+                case "13":
+                    System.out.println("range :");
+                    String rangeName4 = scanner.nextLine().trim();
+                    System.out.println("val to filter");
+                    String filterParam = scanner.nextLine().trim();
+                    List<String> list2 = List.of(filterParam.split("\\s+"));
+                    try {
+                        printSheet(engine.filter(rangeName4, list2));
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+
                 case PRINT_RANGE:
                     System.out.println("Enter the name of the range you want to print:");
                     String rangeToPrint = scanner.nextLine().trim();

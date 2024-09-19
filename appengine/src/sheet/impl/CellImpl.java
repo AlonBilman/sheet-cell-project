@@ -389,4 +389,8 @@ public class CellImpl implements Serializable {
         this.col = col;
         this.id = generateId(this.col,this.row);
     }
+    //only for filtering algorithm in order to bypass the "Maham" calculation! // need to ask Aviad
+    public void setProhibitedEffectiveValue(EffectiveValue effectiveValue) {
+        this.effectiveValue = effectiveValue;
+    }
 }

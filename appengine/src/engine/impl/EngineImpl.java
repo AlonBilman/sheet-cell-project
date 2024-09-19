@@ -78,9 +78,18 @@ public class EngineImpl implements Engine, Serializable {
     public sheetDTO sort(String params, List<String> sortBy) {
         String[] cellIdentifiers = checkRangeParams(params);
         if(sortBy.isEmpty())
-            throw new RuntimeException("You did not specify what rows should I sort for\nPlease provide this information and run the sorting function again.");
+            throw new RuntimeException("You did not specify what rows should we sort for\nPlease provide this information and run the sorting function again.");
         SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
         spreadSheetCopy.sort(cellIdentifiers, sortBy);
+        return new sheetDTO(spreadSheetCopy);
+    }
+
+    public sheetDTO filter(String params, List<String> filterBy) {
+        String[] cellIdentifiers = checkRangeParams(params);
+        if (filterBy.isEmpty())
+            throw new RuntimeException("You did not specify what params should we filter for\nPlease provide this information and run the filter function again.");
+        SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
+        spreadSheetCopy.filter(cellIdentifiers, filterBy);
         return new sheetDTO(spreadSheetCopy);
     }
 
