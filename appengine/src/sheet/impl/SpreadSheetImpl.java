@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class SpreadSheetImpl implements Serializable {
     private final int rowSize;
@@ -276,11 +277,15 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
+    private void checkRangeParams(String p1, String p2) {
+        checkCellId(p1);
+        checkCellId(p2);
+    }
+
     public void addRange(String rangeName, String topLeftCellId, String bottomRightCellId) {
         topLeftCellId = cleanId(topLeftCellId);
         bottomRightCellId = cleanId(bottomRightCellId);
-        checkCellId(topLeftCellId);
-        checkCellId(bottomRightCellId);
+        checkRangeParams(topLeftCellId, bottomRightCellId);
         if (activeRanges.containsKey(rangeName)) {
             throw new IllegalArgumentException("Range name already exists.\n\"" + rangeName + "\" is taken");
         }
@@ -344,6 +349,10 @@ public class SpreadSheetImpl implements Serializable {
     }
 
     public void sort(String[] params, List<String> sortBy) {
+        params[0] = cleanId(params[0]);
+        params[1] = cleanId(params[1]);
+        checkRangeParams(params[0], params[1]);
+        sortBy = cleanListOfRow(sortBy);
         Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
         List<Map.Entry<Integer, Set<CellImpl>>> rowEntries = getEntriesSorted(sortBy, rowMap);
         Integer startFromRow =
@@ -352,14 +361,12 @@ public class SpreadSheetImpl implements Serializable {
                         .min(Integer::compareTo)
                         .orElse(null);
 
-        if(startFromRow != null) {
+        if (startFromRow != null) {
             for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowEntries) {
-                Set<CellImpl> cells = rowEntry.getValue(); // Get the set of cells in this row
-
-                // For each CellImpl in this set, update the row number to startFromRow
+                Set<CellImpl> cells = rowEntry.getValue();
                 for (CellImpl cell : cells) {
                     cell.setRow(startFromRow);
-                    activeCells.put(cell.getId(),cell);
+                    activeCells.put(cell.getId(), cell);
                 }
                 startFromRow++;
             }
@@ -384,6 +391,27 @@ public class SpreadSheetImpl implements Serializable {
             return 0;
         });
         return rowEntries;
+    }
+
+    private List<String> cleanListOfRow(List<String> sortBy) {
+        checkRowList(sortBy);
+        return sortBy.stream()
+                .map(this::cleanId)
+                .collect(Collectors.toList());
+        //I'm in love with this type of coding...!!
+    }
+
+
+    private void checkRowList(List<String> sortBy) {
+        for (String row : sortBy) {
+            if (!row.matches("^[A-Za-z]$"))
+                throw new IllegalArgumentException("Input must be a single letter representing a column. Found: " + row);
+            char letter = row.charAt(0);
+            int col = Character.getNumericValue(letter) - Character.getNumericValue('A');
+            if (col < 0 || col > columnSize - 1) {
+                throw new IllegalArgumentException("The specified column is invalid. Inserted: " + row + "\nPlease make sure the column exists.");
+            }
+        }
     }
 
     private Map<Integer, Set<CellImpl>> rowMapBuilder(String from, String to) {
