@@ -462,6 +462,7 @@ public class SpreadSheetImpl implements Serializable {
                 }
             }
         }
+        //now I need to move everything upwards. ehh....
     }
 
     public int getRowSize() {

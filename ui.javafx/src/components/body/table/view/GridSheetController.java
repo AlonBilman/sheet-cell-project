@@ -122,12 +122,12 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
-    public void changeGridPaneStyle(AppController.Style style){
+    public void changeGridPaneStyle(AppController.Style style) {
         gridPane.getStyleClass().clear();
         changeGridStyle(style);
     }
 
-    private void changeGridStyle(AppController.Style style ) {
+    private void changeGridStyle(AppController.Style style) {
         switch (style) {
             case DEFAULT_STYLE -> {
                 gridPane.getStyleClass().add("grid-pane");
@@ -140,7 +140,7 @@ public class GridSheetController {
         }
     }
 
-    private void changeLabelStyle(Label label, AppController.Style style ) {
+    private void changeLabelStyle(Label label, AppController.Style style) {
         switch (style) {
             case DEFAULT_STYLE -> {
                 label.getStyleClass().add("cell-default");
@@ -156,7 +156,12 @@ public class GridSheetController {
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         changeLabelStyle(cellLabel, appController.getStyleChosen());
+        setColorsIfNeeded(cellId);
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
+    }
+
+    private void setColorsIfNeeded(String cellId) {
+        appController.getColorsFromEngine(cellId);
     }
 
     private void setBoardersFunctionality(Label cellLabel) {
@@ -172,7 +177,7 @@ public class GridSheetController {
             label.getStyleClass().clear(); // Clear previous styles
             changeLabelStyle(label, style); // Apply the new style
         }
-        for(Label label : borderMap.values()) {
+        for (Label label : borderMap.values()) {
             label.getStyleClass().clear();
             changeLabelStyle(label, style);
         }

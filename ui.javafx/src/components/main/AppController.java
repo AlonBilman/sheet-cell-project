@@ -31,6 +31,7 @@ import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
 
+
     public enum Style{
         DEFAULT_STYLE,
         DARK_MODE
@@ -168,11 +169,13 @@ public class AppController {
 
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
+        engine.setBackgroundColor(id,selectedColor.toString());
         gridSheetController.changeBackgroundColor(id, selectedColor);
     }
 
     public void textColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
+        engine.setTextColor(id,selectedColor.toString());
         gridSheetController.changeTextColor(id, selectedColor);
     }
 
@@ -452,6 +455,17 @@ public class AppController {
 
     public Style getStyleChosen() {
         return styleChosen;
+    }
+
+    public void getColorsFromEngine(String cellId) {
+        String textColor = engine.getTextColor(cellId);
+        String backgroundColor = engine.getBackgroundColor(cellId);
+        if(textColor != null) {
+            gridSheetController.changeTextColor(cellId,Color.valueOf(textColor));
+        }
+        if(backgroundColor != null) {
+            gridSheetController.changeBackgroundColor(cellId,Color.valueOf(backgroundColor));
+        }
     }
 
 }

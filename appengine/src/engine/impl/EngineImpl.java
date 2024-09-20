@@ -3,6 +3,9 @@ package engine.impl;
 import dto.*;
 import checkfile.STLSheet;
 import engine.api.Engine;
+import javafx.scene.control.Cell;
+import javafx.scene.paint.Color;
+import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.*;
@@ -156,5 +159,25 @@ public class EngineImpl implements Engine, Serializable {
     @Override
     public exitDTO exitSystem() {
         return new dto.exitDTO();
+    }
+
+    public void setTextColor(String id, String selectedColor) {
+        this.spreadSheet.getCellOrCreateIt(id).setTextColor(selectedColor);
+    }
+
+    public void setBackgroundColor(String id, String selectedColor) {
+        this.spreadSheet.getCellOrCreateIt(id).setBackgroundColor(selectedColor);
+    }
+
+    public String getTextColor(String id) {
+        CellImpl cell = this.spreadSheet.getCell(id);
+        if(cell==null) {return null;}
+        return cell.getCellColor().getTextColor();
+    }
+
+    public String getBackgroundColor(String id) {
+        CellImpl cell = this.spreadSheet.getCell(id);
+        if(cell==null) {return null;}
+        return cell.getCellColor().getBackgroundColor();
     }
 }
