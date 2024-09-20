@@ -354,21 +354,14 @@ public class SpreadSheetImpl implements Serializable {
         sortBy = cleanListOfRow(sortBy);
         Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
         List<Map.Entry<Integer, Set<CellImpl>>> rowEntries = getEntriesSorted(sortBy, rowMap);
-        Integer startFromRow =
-                rowMap.keySet()
-                        .stream()
-                        .min(Integer::compareTo)
-                        .orElse(null);
-
-        if (startFromRow != null) {
-            for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowEntries) {
-                Set<CellImpl> cells = rowEntry.getValue();
-                for (CellImpl cell : cells) {
-                    cell.setRow(startFromRow);
-                    activeCells.put(cell.getId(), cell);
-                }
-                startFromRow++;
+        int startFromRow = rowMap.keySet().stream().min(Integer::compareTo).orElse(0);
+        for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowEntries) {
+            Set<CellImpl> cells = rowEntry.getValue();
+            for (CellImpl cell : cells) {
+                cell.setRow(startFromRow);
+                activeCells.put(cell.getId(), cell);
             }
+            startFromRow++;
         }
     }
 
