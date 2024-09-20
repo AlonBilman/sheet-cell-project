@@ -21,7 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.*;
@@ -182,6 +181,8 @@ public class AppController {
     public void resetStyleClicked() {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.resetToDefault(id);
+        engine.setTextColor(id,null);
+        engine.setBackgroundColor(id,null);
 
     }
 
@@ -455,17 +456,6 @@ public class AppController {
 
     public Style getStyleChosen() {
         return styleChosen;
-    }
-
-    public void getColorsFromEngine(String cellId) {
-        String textColor = engine.getTextColor(cellId);
-        String backgroundColor = engine.getBackgroundColor(cellId);
-        if(textColor != null) {
-            gridSheetController.changeTextColor(cellId,Color.valueOf(textColor));
-        }
-        if(backgroundColor != null) {
-            gridSheetController.changeBackgroundColor(cellId,Color.valueOf(backgroundColor));
-        }
     }
 
 }
