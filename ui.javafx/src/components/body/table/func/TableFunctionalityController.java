@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -24,7 +25,6 @@ public class TableFunctionalityController {
 
     @FXML private VBox tableFuncVBox;
     private String columnToFilter;
-    private Map<String,Set<String>> selectedValues;
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -55,19 +55,6 @@ public class TableFunctionalityController {
     @FXML
     private Button viewExistingRangeButton;
 
-    public void sortButtonListener(ActionEvent actionEvent) {
-    }
-
-
-
-    private String getColPopup() {
-        return null;
-    }
-
-    public void saveSelectedValues(Map<String,Set<String>> selectedValues) {
-        // Process or save the selected values as needed
-        this.selectedValues = selectedValues;
-    }
 
 
     public enum ButtonState {
@@ -141,10 +128,13 @@ public class TableFunctionalityController {
         alert.showAndWait();
     }
 
-    public void filterButtonListener(ActionEvent actionEvent) {
+    public void filterButtonListener(ActionEvent actionEvent) throws IOException {
         appController.filterButtonClicked();
     }
 
+    public void sortButtonListener(ActionEvent actionEvent) throws IOException {
+        appController.sortButtonClicked();
+    }
 
     private void buildColorPickerPopup(Consumer<Color> colorCallback) {
         Stage popupStage = new Stage();

@@ -10,9 +10,12 @@ import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -24,6 +27,8 @@ import javafx.stage.Stage;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,10 +36,12 @@ import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
 
+
     public enum Style{
         DEFAULT_STYLE,
         DARK_MODE
     }
+
 
     private Stage stage;
     private EngineImpl engine;
@@ -45,6 +52,9 @@ public class AppController {
     private LoadDTO loadResult;
     private CellDataDTO cellData;
     public boolean isStyleChanged = false;
+    private Map<String,Set<String>> selectedValues = new HashMap<>();
+    private String rangeParams;
+
     //all the components
     @FXML
     private AnchorPane titleCard;
@@ -99,6 +109,11 @@ public class AppController {
             gridSheetController.setMainController(this);
             engine = new EngineImpl();
         }
+    }
+
+    public void saveSelectedValues(Map<String,Set<String>> selectedValues) {
+        // Process or save the selected values as needed
+        this.selectedValues = selectedValues;
     }
 
     private void outOfFocus() {
@@ -257,8 +272,9 @@ public class AppController {
         }
     }
 
+
     // Method to build the popup for column selection
-    public void buildPopUpOfCols(List<String> colToFilterBy) {
+    public void buildPopUpOfCols(Set<String> colToFilterBy) {
         int colNum = engine.Display().getColSize();
         // Create a new Stage (popup window)
         Stage popupStage = new Stage();
@@ -268,7 +284,8 @@ public class AppController {
         VBox vbox = new VBox();
         vbox.setSpacing(20);
         vbox.setAlignment(Pos.CENTER);
-        TextField rangeGetTextField = new TextField("Enter area to filter like A1..B2:");
+        TextField rangeGetTextField = new TextField();
+        rangeGetTextField.setPromptText("Enter area to filter like A1..B2:");
         //Add check of valid range
         rangeGetTextField.setMinWidth(250);
         rangeGetTextField.setFocusTraversable(false);
@@ -291,6 +308,7 @@ public class AppController {
                     colToFilterBy.add(checkBox.getText());
                 }
             }
+            saveRangeParams(rangeGetTextField.getText());
             popupStage.close();
         });
 
@@ -299,6 +317,10 @@ public class AppController {
         scrollPane.setContent(vbox);
         popupStage.setScene(new Scene(scrollPane, 300, 300));
         popupStage.showAndWait();
+    }
+
+    private void saveRangeParams(String text) {
+        this.rangeParams = text;
     }
 
     private Label getNodeFromGridPane(GridPane gridPane, String cellPosition) {
@@ -319,7 +341,7 @@ public class AppController {
         return null;
     }
 
-    private Map<String, Set<String>> getValuesFromCols(List<String> colToFilterBy, GridPane gridPane, int rows) {
+    private Map<String, Set<String>> getValuesFromCols(Set<String> colToFilterBy, GridPane gridPane, int rows) {
         Map<String, Set<String>> columnToCellValues = new HashMap<>();
 
         for (String col : colToFilterBy) {
@@ -393,7 +415,7 @@ public class AppController {
             selectedValues.forEach((column, values) -> {
                 System.out.println("Column: " + column + " -> Selected Values: " + values);
             });
-            tableFunctionalityController.saveSelectedValues(selectedValues);
+            saveSelectedValues(selectedValues);
             popupStage.close();
         });
 
@@ -411,9 +433,15 @@ public class AppController {
         popupStage.showAndWait();
     }
 
-    // Example filter button clicked method
+    public void sortButtonClicked() throws IOException {
+        Set<String> colToFilterBy = new HashSet<>();
+        buildPopUpOfCols(colToFilterBy);
+
+        buildFilteredPopup(engine.sort(rangeParams,colToFilterBy.stream().toList()),false);
+    }
+
     public void filterButtonClicked() {
-        List<String> colToFilterBy = new ArrayList<>();
+        Set<String> colToFilterBy = new HashSet<>();
         buildPopUpOfCols(colToFilterBy);
 
         // Get the cell values based on the columns to filter by
@@ -423,6 +451,40 @@ public class AppController {
         if (!cellValues.isEmpty()) {
             showPopupWithCellValues(cellValues);
         }
+
+        if (!selectedValues.isEmpty()) {
+            Platform.runLater(() -> {
+                try {
+                    buildFilteredPopup(engine.filter(rangeParams, selectedValues),true);
+                } catch (IOException e) {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                }
+            });
+        }
+    }
+
+    private void buildFilteredPopup(sheetDTO filter, boolean isFilter) throws IOException {
+        Stage stage = new Stage();
+        if(isFilter) {
+            stage.setTitle("Filtered Sheet");
+        }
+        else {
+            stage.setTitle("Sorted Sheet");
+        }
+        FXMLLoader loader = new FXMLLoader();
+        URL versionFXML = getClass().getResource("/components/body/table/view/gridSheetView.fxml");
+        loader.setLocation(versionFXML);
+        Parent root = loader.load();
+
+        GridSheetController controller = loader.getController();
+        controller.setMainController(this);
+        controller.populateTableView(filter, true);
+        controller.disableGridPane();
+
+
+        Scene scene = new Scene(root, 800, 800);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 
 
