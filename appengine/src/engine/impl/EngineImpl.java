@@ -84,7 +84,7 @@ public class EngineImpl implements Engine, Serializable {
         return new sheetDTO(spreadSheetCopy);
     }
 
-    public sheetDTO filter(String params, List<String> filterBy) {
+    public sheetDTO filter(String params, Map<String, List<String>> filterBy) {
         String[] cellIdentifiers = checkRangeParams(params);
         if (filterBy.isEmpty())
             throw new RuntimeException("You did not specify what params should we filter for\nPlease provide this information and run the filter function again.");

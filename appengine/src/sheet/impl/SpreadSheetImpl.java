@@ -1,9 +1,7 @@
 package sheet.impl;
 
 import checkfile.*;
-import dto.CellDataDTO;
 import expression.api.ObjType;
-import javafx.scene.control.Cell;
 import sheet.api.EffectiveValue;
 
 import java.io.*;
@@ -395,7 +393,7 @@ public class SpreadSheetImpl implements Serializable {
     }
 
     private List<String> cleanListOfRow(List<String> sortBy) {
-        checkRowList(sortBy);
+        checkColList(sortBy);
         return sortBy.stream()
                 .map(this::cleanId)
                 .collect(Collectors.toList());
@@ -403,14 +401,14 @@ public class SpreadSheetImpl implements Serializable {
     }
 
 
-    private void checkRowList(List<String> sortBy) {
-        for (String row : sortBy) {
-            if (!row.matches("^[A-Za-z]$"))
-                throw new IllegalArgumentException("Input must be a single letter representing a column. Found: " + row);
-            char letter = row.charAt(0);
-            int col = Character.getNumericValue(letter) - Character.getNumericValue('A');
-            if (col < 0 || col > columnSize - 1) {
-                throw new IllegalArgumentException("The specified column is invalid. Inserted: " + row + "\nPlease make sure the column exists.");
+    private void checkColList(List<String> sortBy) {
+        for (String col : sortBy) {
+            if (!col.matches("^[A-Za-z]$"))
+                throw new IllegalArgumentException("Input must be a single letter representing a column. Found: " + col);
+            char letter = col.charAt(0);
+            int colInt = Character.getNumericValue(letter) - Character.getNumericValue('A');
+            if (colInt < 0 || colInt > columnSize - 1) {
+                throw new IllegalArgumentException("The specified column is invalid. Inserted: " + col + "\nPlease make sure the column exists.");
             }
         }
     }
@@ -424,54 +422,49 @@ public class SpreadSheetImpl implements Serializable {
             rowMap.computeIfAbsent(rowKey, k -> new HashSet<>()).add(cell);
         }
         return rowMap;
-
     }
 
     private int compareValues(Double value1, Double value2) {
         if (value2 == null && value1 == null) {
             return 0;
         } else if (value2 == null) {
-            return 1;
-        } else if (value1 == null) {
             return -1;
+        } else if (value1 == null) {
+            return 1;
         }
         return Double.compare(value1, value2);
     }
 
-
-    public void filter(String[] params, List<String> filterBy) {
+    public void filter(String[] params, Map<String, List<String>> filterBy) {
         params[0] = cleanId(params[0]);
         params[1] = cleanId(params[1]);
         checkRangeParams(params[0], params[1]);
+        checkColList(new ArrayList<>(filterBy.keySet()));
         Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
 
-        List<Set<CellImpl>> sortedCells = rowMap.values().stream()
-                .sorted(Comparator.comparing(set -> set.stream()
-                        .noneMatch(cell -> filterBy.contains(cell.getEffectiveValue().getValue().toString()))))
-                .toList();
+        for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowMap.entrySet()) {
+            Set<CellImpl> cells = rowEntry.getValue();
+            boolean rowMatches = false;
+            for (CellImpl cell : cells) {
+                String column = cell.getCol();
+                String cellValue = cell.getEffectiveValue().getValue().toString();
 
-        long approvedCount = sortedCells.stream()
-                .filter(set -> set.stream()
-                        .anyMatch(cell -> filterBy.contains(cell.getEffectiveValue().getValue().toString())))
-                .count();
+                if (filterBy.containsKey(column)) {
+                    List<String> filterValues = filterBy.get(column);
 
-        Integer startFromRow = rowMap.keySet().stream()
-                .min(Integer::compareTo)
-                .orElse(null);
-
-        int i = 1;
-        for (Set<CellImpl> cells : sortedCells) {
-            if (i++ <= approvedCount) {
-                Integer finalStartFromRow = startFromRow;
-                cells.forEach(cell -> cell.setRow(finalStartFromRow));
-            } else {
-                cells.forEach(cell -> cell.setProhibitedEffectiveValue(new EffectiveValueImpl("", ObjType.EMPTY)));
+                    if (filterValues.contains(cellValue)) {
+                        rowMatches = true;
+                        break;
+                    }
+                }
             }
-            startFromRow++;
+            if (!rowMatches) {
+                for (CellImpl cell : rowEntry.getValue()) {
+                    cell.setProhibitedEffectiveValue(new EffectiveValueImpl("", ObjType.EMPTY));
+                }
+            }
         }
     }
-
-
 
 
     public int getRowSize() {

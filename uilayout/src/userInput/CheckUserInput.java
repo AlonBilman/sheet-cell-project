@@ -8,7 +8,9 @@ import checkfile.STLSheet;
 import engine.impl.EngineImpl;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import static checkfile.CheckForXMLFile.*;
@@ -241,20 +243,37 @@ public class CheckUserInput {
                     break;
 
                 case "13":
-                    System.out.println("range :");
-                    String rangeName4 = scanner.nextLine().trim();
-                    System.out.println("val to filter");
-                    String filterParam = scanner.nextLine().trim();
-                    List<String> list2 = List.of(filterParam.split("\\s+"));
+                    System.out.println("Enter the range:");
+                    String range1 = scanner.nextLine().trim();
+
+                    Map<String, List<String>> filterBy = new HashMap<>();
+
+                    while (true) {
+                        System.out.println("Enter a column name to filter (or press Enter to finish):");
+                        String column = scanner.nextLine().trim();
+                        if (column.isEmpty()) {
+                            break;
+                        }
+
+                        System.out.println("Enter values for column '" + column + "' (separate by spaces):");
+                        String valuesInput = scanner.nextLine().trim();
+                        if (!valuesInput.isEmpty()) {
+                            List<String> values = List.of(valuesInput.split("\\s+"));
+                            filterBy.put(column, values);
+                        }
+                    }
+
                     try {
-                        printSheet(engine.filter(rangeName4, list2));
+                        System.out.println("Filtered result:");
+                        printSheet(engine.filter(range1, filterBy));
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
 
+
                 case PRINT_RANGE:
                     System.out.println("Enter the name of the range you want to print:");
-                    String rangeToPrint = scanner.nextLine().trim();
+                    String rangeToPrint = this.scanner.nextLine().trim();
                     try {
                         RangeDTO range = engine.getRangeDto(rangeToPrint);
                         printRange(range);
