@@ -7,9 +7,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 public class CellDataDTO implements Serializable {
-    private int row;
+    private final int row;
     private final String col;
-    private String id;
+    private final String id;
     private final int lastChangeAt;
     private final Set<String> dependsOn;
     private final Set<String> affectsOn;
@@ -27,22 +27,8 @@ public class CellDataDTO implements Serializable {
         this.effectiveValue = cell.getEffectiveValue();
     }
 
-    public void rebuildId() {
-        char letter = Character.toUpperCase(col.charAt(0));
-        id = letter + String.valueOf(row);
-    }
-
     public String getId() {
         return id;
-    }
-
-    public int getRow() {return row;}
-
-    public String getCol() {return col;}
-
-    public void setRow(int row) {
-        this.row = row;
-        rebuildId();
     }
 
     public int getLastChangeAt() {

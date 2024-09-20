@@ -110,7 +110,7 @@ public class SpreadSheetImpl implements Serializable {
     public EffectiveValue ref(EffectiveValue id, String IdThatCalledMe) {
         String theCellThatRefIsReferringTo = (String) id.getValue();
         CellImpl curr = getCell(theCellThatRefIsReferringTo);
-        // create it ! (used to return an error).we're here after string check so the CellId is valid
+        //create it ! (used to return an error).we're here after string check so the CellId is valid
         if (curr == null) {
             initNullCell(theCellThatRefIsReferringTo, null);
             curr = getCell(theCellThatRefIsReferringTo);
@@ -444,13 +444,12 @@ public class SpreadSheetImpl implements Serializable {
         for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowMap.entrySet()) {
             Set<CellImpl> cells = rowEntry.getValue();
             boolean rowMatches = false;
+
             for (CellImpl cell : cells) {
                 String column = cell.getCol();
                 String cellValue = cell.getEffectiveValue().getValue().toString();
-
                 if (filterBy.containsKey(column)) {
                     Set<String> filterValues = filterBy.get(column);
-
                     if (filterValues.contains(cellValue)) {
                         rowMatches = true;
                         break;

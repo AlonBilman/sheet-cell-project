@@ -285,7 +285,7 @@ public class CellImpl implements Serializable {
             return new Bool(Boolean.valueOf(value));
 
         if (value.isEmpty() || value.matches(".*[^0-9].*") || value.matches("^\\s*$")) {
-            if (value.startsWith("-")) {
+            if (value.startsWith("-")||value.contains(".")) {
                 try {
                     return new Number(Double.valueOf(value));
                 } catch (NumberFormatException ignored) {
