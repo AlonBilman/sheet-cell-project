@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -15,11 +16,15 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+
 
 public class TableFunctionalityController {
 
+    @FXML private VBox tableFuncVBox;
+    private String columnToFilter;
+    private Map<String,Set<String>> selectedValues;
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -28,7 +33,11 @@ public class TableFunctionalityController {
     private AppController appController;
 
     @FXML
-    public Button resetButton;
+    private Button sortButton;
+    @FXML
+    private Button filterButton;
+    @FXML
+    private Button resetButton;
     @FXML
     private Button setColButton;
     @FXML
@@ -45,6 +54,20 @@ public class TableFunctionalityController {
     private Button deleteExistingRangeButton;
     @FXML
     private Button viewExistingRangeButton;
+
+    public void sortButtonListener(ActionEvent actionEvent) {
+    }
+
+
+
+    private String getColPopup() {
+        return null;
+    }
+
+    public void saveSelectedValues(Map<String,Set<String>> selectedValues) {
+        // Process or save the selected values as needed
+        this.selectedValues = selectedValues;
+    }
 
 
     public enum ButtonState {
@@ -88,6 +111,8 @@ public class TableFunctionalityController {
         addNewRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         deleteExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         viewExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
+        filterButton.setDisable(!this.activeButtonsWhenLoadingFile);
+        sortButton.setDisable(!this.activeButtonsWhenLoadingFile);
     }
 
     public void setActiveButtons(ButtonState state, boolean isActive) {
@@ -116,6 +141,11 @@ public class TableFunctionalityController {
         alert.showAndWait();
     }
 
+    public void filterButtonListener(ActionEvent actionEvent) {
+        appController.filterButtonClicked();
+    }
+
+
     private void buildColorPickerPopup(Consumer<Color> colorCallback) {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -137,14 +167,27 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
+    private void changeButtonStyle(Button button, AppController.Style style) {
+        switch (style){
+            case DEFAULT_STYLE:
+                button.getStyleClass().add("button");
+                break;
+            case DARK_MODE:
+                button.getStyleClass().add("button-dark-mode");
+                    break;
+        }
+    }
     private void buildModifySizePopup(String title, String promptText, boolean isColumn) {
         Stage popupStage = new Stage();
         popupStage.setTitle(title);
         TextField inputField = new TextField();
+        inputField.setPromptText("Input new size here");
+        setUnfocused(inputField);
         VBox vbox = createModifySizePopupVBox(inputField, popupStage, promptText, isColumn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(10));
         Scene scene = new Scene(vbox, 320, 150);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.show();
     }
@@ -152,6 +195,7 @@ public class TableFunctionalityController {
     private VBox createModifySizePopupVBox(TextField inputField, Stage popupStage, String promptText, boolean isColumn) {
         Label promptLabel = new Label(promptText);
         Button confirmButton = new Button(isColumn ? "Set Width" : "Set Height");
+        changeButtonStyle(confirmButton, appController.getStyleChosen());
         confirmButton.setOnAction(event -> handleModifySizePopupConfirm(inputField, popupStage));
         return new VBox(20, promptLabel, inputField, confirmButton);
     }
@@ -183,7 +227,6 @@ public class TableFunctionalityController {
     @FXML
     private void alignmentSetListener() {
         buildAlimentPopup();
-        System.out.println("Alignment Set button clicked");
     }
 
     private void buildAlimentPopup() {
@@ -196,10 +239,8 @@ public class TableFunctionalityController {
         RadioButton rightAlign = new RadioButton("Right");
 
         ToggleGroup alignmentGroup = new ToggleGroup();
-        leftAlign.setToggleGroup(alignmentGroup);
         centerAlign.setToggleGroup(alignmentGroup);
         rightAlign.setToggleGroup(alignmentGroup);
-        centerAlign.setSelected(true);
 
         Button confirmButton = getButtonForAlimentPopup(alignmentGroup, popupStage);
 
@@ -208,12 +249,14 @@ public class TableFunctionalityController {
         vbox.setPadding(new Insets(15));
 
         Scene scene = new Scene(vbox, 300, 150);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
 
     private Button getButtonForAlimentPopup(ToggleGroup alignmentGroup, Stage popupStage) {
         Button confirmButton = new Button("Set Alignment");
+        changeButtonStyle(confirmButton, appController.getStyleChosen());
         confirmButton.setOnAction(event -> {
             RadioButton selectedButton = (RadioButton) alignmentGroup.getSelectedToggle();
             if (selectedButton != null) {
@@ -247,6 +290,7 @@ public class TableFunctionalityController {
 
     private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage) {
         Button button = new Button("Confirm");
+        changeButtonStyle(button, appController.getStyleChosen());
         button.setOnAction(event -> {
             String rangeName = rangeNameField.getText();
             if (rangeName.trim().isEmpty())
@@ -273,21 +317,28 @@ public class TableFunctionalityController {
         vbox.setPadding(new Insets(20));
 
         TextField rangeNameField = new TextField();
-        rangeNameField.setPromptText("Name:");
+        rangeNameField.setPromptText("Enter new range name");
         TextField fromCellField = new TextField();
         fromCellField.setPromptText("From: e.g., A1");
         TextField toCellField = new TextField();
         toCellField.setPromptText("To: e.g., A6");
 
+        setUnfocused(rangeNameField,fromCellField,toCellField);
         Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage);
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
 
         Scene scene = new Scene(vbox, 300, 200);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
     }
 
+    private void setUnfocused(Node... nodes) {
+        for (Node node : nodes) {
+            node.setFocusTraversable(false);
+        }
+    }
     private void viewAndDeleteRangePopup(confirmType type) {
         Set<String> rangeNames = appController.getExistingRanges();
         if (rangeNames.isEmpty()) {
@@ -310,6 +361,7 @@ public class TableFunctionalityController {
         ScrollPane scrollPane = new ScrollPane(vbox);
         scrollPane.setFitToWidth(true);
         Scene scene = new Scene(scrollPane, 300, 200);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
@@ -317,6 +369,7 @@ public class TableFunctionalityController {
 
     private Button createViewOrDeleteRangeButton(confirmType type, Stage currStage, ToggleGroup toggleGroup) {
         Button confirmButton = new Button("Confirm");
+        confirmButton.getStyleClass().add("button");
         confirmButton.setOnAction(e -> {
             RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
             if (selectedRadioButton != null) {
@@ -342,6 +395,23 @@ public class TableFunctionalityController {
     @FXML
     private void deleteExistingRangeListener() {
         viewAndDeleteRangePopup(confirmType.DELETE_EXISTING_RANGE);
+    }
+
+public void updateStyleOfVBox(AppController.Style style){
+        tableFuncVBox.getStyleClass().clear();
+        changeVBoxStyle(style);
+}
+    private void changeVBoxStyle(AppController.Style style ) {
+        switch (style) {
+            case DEFAULT_STYLE -> {
+                tableFuncVBox.getStyleClass().add("vbox");
+                break;
+            }
+            case DARK_MODE -> {
+                tableFuncVBox.getStyleClass().add("vbox-dark-mode");
+                break;
+            }
+        }
     }
 
 

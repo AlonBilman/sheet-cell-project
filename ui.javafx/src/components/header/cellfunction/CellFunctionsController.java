@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -19,6 +20,9 @@ import java.net.URL;
 
 public class CellFunctionsController {
 
+
+    @FXML
+    private HBox cellFuncHBox;
 
     private AppController appController;
 
@@ -73,6 +77,33 @@ public class CellFunctionsController {
         newOriginalValText.setText("New Original Value");
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
+    }
+
+    public void updateCellHBoxStyle(AppController.Style style) {
+        cellUpdatedProperty.getStyleClass().clear();
+        cellValueProperty.getStyleClass().clear();
+        cellIdProperty.getStyleClass().clear();
+        cellFuncHBox.getStyleClass().clear(); // Clear existing styles
+        changeHBoxStyle(style); // Apply the new style
+    }
+
+    private void changeHBoxStyle(AppController.Style style) {
+        switch (style) {
+            case DEFAULT_STYLE -> {
+                cellIdProperty.getStyleClass().add("label-style");
+                cellValueProperty.getStyleClass().add("label-style");
+                cellUpdatedProperty.getStyleClass().add("label-style");
+                cellFuncHBox.getStyleClass().add("hbox"); // Apply default style
+                break;
+            }
+            case DARK_MODE -> {
+                cellIdProperty.getStyleClass().add("label-style-dark-mode");
+                cellValueProperty.getStyleClass().add("label-style-dark-mode");
+                cellUpdatedProperty.getStyleClass().add("label-style-dark-mode");
+                cellFuncHBox.getStyleClass().add("hbox-dark-mode"); // Apply dark mode style
+                break;
+            }
+        }
     }
 
     @FXML
