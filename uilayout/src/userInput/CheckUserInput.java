@@ -8,10 +8,7 @@ import checkfile.STLSheet;
 import engine.impl.EngineImpl;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static checkfile.CheckForXMLFile.*;
 
@@ -246,7 +243,7 @@ public class CheckUserInput {
                     System.out.println("Enter the range:");
                     String range1 = scanner.nextLine().trim();
 
-                    Map<String, List<String>> filterBy = new HashMap<>();
+                    Map<String, Set<String>> filterBy = new HashMap<>();
 
                     while (true) {
                         System.out.println("Enter a column name to filter (or press Enter to finish):");
@@ -258,7 +255,7 @@ public class CheckUserInput {
                         System.out.println("Enter values for column '" + column + "' (separate by spaces):");
                         String valuesInput = scanner.nextLine().trim();
                         if (!valuesInput.isEmpty()) {
-                            List<String> values = List.of(valuesInput.split("\\s+"));
+                            Set<String> values = Set.of(valuesInput.split("\\s+"));
                             filterBy.put(column, values);
                         }
                     }

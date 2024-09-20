@@ -400,7 +400,6 @@ public class SpreadSheetImpl implements Serializable {
         //I'm in love with this type of coding...!!
     }
 
-
     private void checkColList(List<String> sortBy) {
         for (String col : sortBy) {
             if (!col.matches("^[A-Za-z]$"))
@@ -435,7 +434,7 @@ public class SpreadSheetImpl implements Serializable {
         return Double.compare(value1, value2);
     }
 
-    public void filter(String[] params, Map<String, List<String>> filterBy) {
+    public void filter(String[] params, Map<String, Set<String>> filterBy) {
         params[0] = cleanId(params[0]);
         params[1] = cleanId(params[1]);
         checkRangeParams(params[0], params[1]);
@@ -450,7 +449,7 @@ public class SpreadSheetImpl implements Serializable {
                 String cellValue = cell.getEffectiveValue().getValue().toString();
 
                 if (filterBy.containsKey(column)) {
-                    List<String> filterValues = filterBy.get(column);
+                    Set<String> filterValues = filterBy.get(column);
 
                     if (filterValues.contains(cellValue)) {
                         rowMatches = true;
@@ -465,7 +464,6 @@ public class SpreadSheetImpl implements Serializable {
             }
         }
     }
-
 
     public int getRowSize() {
         return rowSize;
