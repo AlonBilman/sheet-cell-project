@@ -440,11 +440,11 @@ public class SpreadSheetImpl implements Serializable {
         checkRangeParams(params[0], params[1]);
         checkColList(new ArrayList<>(filterBy.keySet()));
         Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
+        List<Set<CellImpl>> matchingRows = new ArrayList<>(); //in order to preserve the order!
 
         for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowMap.entrySet()) {
             Set<CellImpl> cells = rowEntry.getValue();
             boolean rowMatches = false;
-
             for (CellImpl cell : cells) {
                 String column = cell.getCol();
                 String cellValue = cell.getEffectiveValue().getValue().toString();
@@ -456,13 +456,24 @@ public class SpreadSheetImpl implements Serializable {
                     }
                 }
             }
-            if (!rowMatches) {
-                for (CellImpl cell : rowEntry.getValue()) {
+            if (rowMatches)
+                matchingRows.add(cells);
+            else {
+                for (CellImpl cell : rowEntry.getValue())
                     cell.setProhibitedEffectiveValue(new EffectiveValueImpl("", ObjType.EMPTY));
-                }
             }
         }
-        //now I need to move everything upwards. ehh....
+
+        int startFromRow = rowMap.keySet().stream().min(Integer::compareTo).orElse(0);
+        for (Set<CellImpl> matchingRow : matchingRows) {
+            for (CellImpl cell : matchingRow) {
+                //kind of removing the curr position, just putting there an empty cell. a bit ugly but it works.
+                activeCells.remove(cell.getId());
+                cell.setRow(startFromRow); //moving the cell upwards
+                activeCells.put(cell.getId(), cell);
+            }
+            startFromRow++;
+        }
     }
 
     public int getRowSize() {
