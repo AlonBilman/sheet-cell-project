@@ -27,12 +27,14 @@ public class CellImpl implements Serializable {
     private Set<Range> dependsOnRange;
     private String originalValue;
     private EffectiveValue effectiveValue;
+    private CellColor cellColor;
     private static SpreadSheetImpl currSpreadSheet;
 
     public CellImpl(int row, String col, String newOriginalVal, int versionNumber) {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
+        cellColor = new CellColor(null,null);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
@@ -65,6 +67,7 @@ public class CellImpl implements Serializable {
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
+        cellColor = new CellColor(null,null);
         setOriginalValue(cell.getSTLOriginalValue());
     }
 
@@ -285,7 +288,7 @@ public class CellImpl implements Serializable {
             return new Bool(Boolean.valueOf(value));
 
         if (value.isEmpty() || value.matches(".*[^0-9].*") || value.matches("^\\s*$")) {
-            if (value.startsWith("-")) {
+            if (value.startsWith("-")||value.contains(".")) {
                 try {
                     return new Number(Double.valueOf(value));
                 } catch (NumberFormatException ignored) {
@@ -389,8 +392,16 @@ public class CellImpl implements Serializable {
         this.col = col;
         this.id = generateId(this.col,this.row);
     }
-    //only for filtering algorithm in order to bypass the "Maham" calculation! // need to ask Aviad
-    public void setProhibitedEffectiveValue(EffectiveValue effectiveValue) {
-        this.effectiveValue = effectiveValue;
+
+    public void setTextColor(String textColor) {
+        cellColor.setTextColor(textColor);
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        cellColor.setBackgroundColor(backgroundColor);
+    }
+
+    public CellColor getCellColor() {
+        return cellColor;
     }
 }

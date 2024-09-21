@@ -1,20 +1,22 @@
 package dto;
 
 import sheet.api.EffectiveValue;
+import sheet.impl.CellColor;
 import sheet.impl.CellImpl;
 
 import java.io.Serializable;
 import java.util.Set;
 
 public class CellDataDTO implements Serializable {
-    private int row;
+    private final int row;
     private final String col;
-    private String id;
+    private final String id;
     private final int lastChangeAt;
     private final Set<String> dependsOn;
     private final Set<String> affectsOn;
     private final String originalValue;
     private final EffectiveValue effectiveValue;
+    private final CellColor cellColor;
 
     public CellDataDTO(CellImpl cell) {
         this.row = cell.getRow();
@@ -25,24 +27,12 @@ public class CellDataDTO implements Serializable {
         this.affectsOn = cell.getAffectsOn();
         this.originalValue = cell.getOriginalValue();
         this.effectiveValue = cell.getEffectiveValue();
-    }
+        this.cellColor = new CellColor(cell.getCellColor());
 
-    public void rebuildId() {
-        char letter = Character.toUpperCase(col.charAt(0));
-        id = letter + String.valueOf(row);
     }
 
     public String getId() {
         return id;
-    }
-
-    public int getRow() {return row;}
-
-    public String getCol() {return col;}
-
-    public void setRow(int row) {
-        this.row = row;
-        rebuildId();
     }
 
     public int getLastChangeAt() {
@@ -63,5 +53,9 @@ public class CellDataDTO implements Serializable {
 
     public EffectiveValue getEffectiveValue() {
         return effectiveValue;
+    }
+
+    public CellColor getCellColor() {
+        return cellColor;
     }
 }

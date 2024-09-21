@@ -157,4 +157,12 @@ public class EngineImpl implements Engine, Serializable {
     public exitDTO exitSystem() {
         return new dto.exitDTO();
     }
+
+    public void setTextColor(String id, String selectedColor) {
+        this.spreadSheet.getCellOrCreateIt(id).setTextColor(selectedColor);
+    }
+
+    public void setBackgroundColor(String id, String selectedColor) {
+        this.spreadSheet.getCellOrCreateIt(id).setBackgroundColor(selectedColor);
+    }
 }

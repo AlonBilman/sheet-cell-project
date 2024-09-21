@@ -183,17 +183,21 @@ public class AppController {
 
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
+        engine.setBackgroundColor(id,selectedColor.toString());
         gridSheetController.changeBackgroundColor(id, selectedColor);
     }
 
     public void textColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
+        engine.setTextColor(id,selectedColor.toString());
         gridSheetController.changeTextColor(id, selectedColor);
     }
 
     public void resetStyleClicked() {
         String id = cellFunctionsController.getCellIdFocused();
         gridSheetController.resetToDefault(id);
+        engine.setTextColor(id,null);
+        engine.setBackgroundColor(id,null);
 
     }
 

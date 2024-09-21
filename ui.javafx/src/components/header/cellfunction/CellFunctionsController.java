@@ -157,12 +157,12 @@ public class CellFunctionsController {
         loader.setLocation(versionFXML);
         Parent root = loader.load();
         GridSheetController controller = loader.getController();
-        controller.setMainController(appController);
+        controller.setMainController(this.appController);
         controller.populateTableView(sheet, true);
         controller.disableGridPane();
         Scene scene = new Scene(root, 800, 800);
         stage.setScene(scene);
-        stage.showAndWait();
+        stage.show();
     }
 
     public void getVersionListener() {

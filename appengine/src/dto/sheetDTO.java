@@ -17,7 +17,6 @@ public class sheetDTO implements Serializable {
     private final String sheetName;
     private final int sheetVersionNumber;
 
-    // Constructors, getters, setters
     public sheetDTO(SpreadSheetImpl sheet) {
         this.rowSize = sheet.getRowSize();
         this.colSize = sheet.getColumnSize();
@@ -27,7 +26,6 @@ public class sheetDTO implements Serializable {
         this.activeRanges = convertRanges(sheet);
         this.sheetName = sheet.getSheetName();
         this.sheetVersionNumber = sheet.getSheetVersionNumber();
-
     }
 
     private Map<String, CellDataDTO> convertCells(SpreadSheetImpl sheet) {

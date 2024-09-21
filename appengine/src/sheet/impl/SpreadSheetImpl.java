@@ -110,7 +110,7 @@ public class SpreadSheetImpl implements Serializable {
     public EffectiveValue ref(EffectiveValue id, String IdThatCalledMe) {
         String theCellThatRefIsReferringTo = (String) id.getValue();
         CellImpl curr = getCell(theCellThatRefIsReferringTo);
-        // create it ! (used to return an error).we're here after string check so the CellId is valid
+        //create it ! (used to return an error).we're here after string check so the CellId is valid
         if (curr == null) {
             initNullCell(theCellThatRefIsReferringTo, null);
             curr = getCell(theCellThatRefIsReferringTo);
@@ -354,21 +354,14 @@ public class SpreadSheetImpl implements Serializable {
         sortBy = cleanListOfRow(sortBy);
         Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
         List<Map.Entry<Integer, Set<CellImpl>>> rowEntries = getEntriesSorted(sortBy, rowMap);
-        Integer startFromRow =
-                rowMap.keySet()
-                        .stream()
-                        .min(Integer::compareTo)
-                        .orElse(null);
-
-        if (startFromRow != null) {
-            for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowEntries) {
-                Set<CellImpl> cells = rowEntry.getValue();
-                for (CellImpl cell : cells) {
-                    cell.setRow(startFromRow);
-                    activeCells.put(cell.getId(), cell);
-                }
-                startFromRow++;
+        int startFromRow = rowMap.keySet().stream().min(Integer::compareTo).orElse(0);
+        for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowEntries) {
+            Set<CellImpl> cells = rowEntry.getValue();
+            for (CellImpl cell : cells) {
+                cell.setRow(startFromRow);
+                activeCells.put(cell.getId(), cell);
             }
+            startFromRow++;
         }
     }
 
@@ -440,6 +433,7 @@ public class SpreadSheetImpl implements Serializable {
         checkRangeParams(params[0], params[1]);
         checkColList(new ArrayList<>(filterBy.keySet()));
         Map<Integer, Set<CellImpl>> rowMap = rowMapBuilder(params[0], params[1]);
+        List<Set<CellImpl>> matchingRows = new ArrayList<>(); //in order to preserve the order!
 
         for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowMap.entrySet()) {
             Set<CellImpl> cells = rowEntry.getValue();
@@ -447,21 +441,31 @@ public class SpreadSheetImpl implements Serializable {
             for (CellImpl cell : cells) {
                 String column = cell.getCol();
                 String cellValue = cell.getEffectiveValue().getValue().toString();
-
                 if (filterBy.containsKey(column)) {
                     Set<String> filterValues = filterBy.get(column);
-
                     if (filterValues.contains(cellValue)) {
                         rowMatches = true;
                         break;
                     }
                 }
             }
-            if (!rowMatches) {
-                for (CellImpl cell : rowEntry.getValue()) {
-                    cell.setProhibitedEffectiveValue(new EffectiveValueImpl("", ObjType.EMPTY));
-                }
+            if (rowMatches)
+                matchingRows.add(cells);
+            else {
+                for (CellImpl cell : rowEntry.getValue())
+                    activeCells.remove(cell.getId()); //we dont need it.
             }
+        }
+
+        int startFromRow = rowMap.keySet().stream().min(Integer::compareTo).orElse(0);
+        for (Set<CellImpl> matchingRow : matchingRows) {
+            for (CellImpl cell : matchingRow) {
+                //kind of removing the curr position, just putting there an empty cell. a bit ugly but it works.
+                activeCells.remove(cell.getId());
+                cell.setRow(startFromRow); //moving the cell upwards
+                activeCells.put(cell.getId(), cell);
+            }
+            startFromRow++;
         }
     }
 
