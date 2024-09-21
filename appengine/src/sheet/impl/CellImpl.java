@@ -11,7 +11,6 @@ import expression.impl.function.*;
 import expression.impl.function.AbsFunction;
 import sheet.api.EffectiveValue;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -392,10 +391,6 @@ public class CellImpl implements Serializable {
     public void setCol(String col) {
         this.col = col;
         this.id = generateId(this.col,this.row);
-    }
-    //only for filtering algorithm in order to bypass the "Maham" calculation! // need to ask Aviad
-    public void setProhibitedEffectiveValue(EffectiveValue effectiveValue) {
-        this.effectiveValue = effectiveValue;
     }
 
     public void setTextColor(String textColor) {

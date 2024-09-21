@@ -453,7 +453,7 @@ public class SpreadSheetImpl implements Serializable {
                 matchingRows.add(cells);
             else {
                 for (CellImpl cell : rowEntry.getValue())
-                    cell.setProhibitedEffectiveValue(new EffectiveValueImpl("", ObjType.EMPTY));
+                    activeCells.remove(cell.getId()); //we dont need it.
             }
         }
 
