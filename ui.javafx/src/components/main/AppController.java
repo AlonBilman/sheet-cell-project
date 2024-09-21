@@ -11,6 +11,7 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -24,7 +25,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -274,7 +274,7 @@ public class AppController {
 
 
     // Method to build the popup for column selection
-    public void buildPopUpOfCols(Set<String> colToFilterBy) {
+    public void buildPopUpOfColsToFilter(Set<String> colToFilterBy) {
         int colNum = engine.Display().getColSize();
         // Create a new Stage (popup window)
         Stage popupStage = new Stage();
@@ -433,16 +433,117 @@ public class AppController {
         popupStage.showAndWait();
     }
 
-    public void sortButtonClicked() throws IOException {
-        Set<String> colToFilterBy = new HashSet<>();
-        buildPopUpOfCols(colToFilterBy);
+    public void sortButtonClicked() {
+        List<String> colToFilterBy = new ArrayList<>();
+        buildPopUpOfColsToSort(colToFilterBy);
 
-        buildFilteredPopup(engine.sort(rangeParams,colToFilterBy.stream().toList()),false);
+        try {
+            buildFilteredPopup(engine.sort(rangeParams, colToFilterBy), false);
+        } catch (Exception e) {
+            cellFunctionsController.showInfoAlert(e.getMessage());
+        }
     }
+
+    public void buildPopUpOfColsToSort(List<String> colToFilterBy) {
+        int colNum = engine.Display().getColSize();
+
+        // Create a new Stage (popup window)
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select columns to sort by:");
+
+        // Create a VBox to hold the choice boxes and buttons
+        VBox vbox = new VBox();
+        vbox.setSpacing(20);
+        vbox.setAlignment(Pos.CENTER);
+
+        // TextField to input range
+        TextField rangeGetTextField = new TextField();
+        rangeGetTextField.setPromptText("Enter area to filter like A1..B2:");
+        rangeGetTextField.setMinWidth(250);
+        rangeGetTextField.setFocusTraversable(false);
+        vbox.getChildren().add(rangeGetTextField);
+
+
+        // List to store all ChoiceBoxes
+        List<ChoiceBox<String>> choiceBoxes = new ArrayList<>();
+
+        List<String> allColumns = new ArrayList<>();
+        for (int i = 1; i <= colNum; i++) {
+            allColumns.add(String.valueOf((char) ('A' + (i - 1))));
+        }
+
+        // Method to update available options in all ChoiceBoxes
+        Runnable updateChoiceBoxOptions = () -> {
+            Set<String> selectedColumns = choiceBoxes.stream()
+                    .map(ChoiceBox::getValue)
+                    .filter(Objects::nonNull) // Exclude null values (unselected boxes)
+                    .collect(Collectors.toSet());
+
+            for (ChoiceBox<String> choiceBox : choiceBoxes) {
+                String currentSelection = choiceBox.getValue();
+                choiceBox.getItems().clear(); // Clear existing items
+
+                // Add back all columns except the ones that are already selected
+                choiceBox.getItems().addAll(
+                        allColumns.stream()
+                                .filter(col -> !selectedColumns.contains(col) || col.equals(currentSelection))
+                                .toList()
+                );
+
+                // Preserve the current selection
+                if (currentSelection != null) {
+                    choiceBox.setValue(currentSelection);
+                }
+            }
+        };
+
+        // Method to add a new ChoiceBox
+        Runnable addNewChoiceBox = () -> {
+            Label label = new Label("Enter column to sort by:");
+            vbox.getChildren().add(label);
+            ChoiceBox<String> choiceBox = new ChoiceBox<>();
+            choiceBox.setOnAction(e -> updateChoiceBoxOptions.run());
+            choiceBox.getSelectionModel().select(0); // Select the first item as a placeholder
+            choiceBoxes.add(choiceBox);
+            vbox.getChildren().add(choiceBox); // Add it directly to the VBox
+            updateChoiceBoxOptions.run(); // Update available columns immediately after adding
+        };
+
+        // Button to add more ChoiceBoxes
+        Button addChoiceBoxButton = new Button("Add Another Column");
+        addChoiceBoxButton.setOnAction(e -> addNewChoiceBox.run());
+        vbox.getChildren().add(addChoiceBoxButton);
+
+        // Add a button to confirm the selection
+        Button confirmButton = new Button("Confirm Selection");
+        confirmButton.setOnAction(e -> {
+            colToFilterBy.clear(); // Clear existing selections
+            for (ChoiceBox<String> choiceBox : choiceBoxes) {
+                String selectedCol = choiceBox.getValue();
+                if (selectedCol != null) {
+                    colToFilterBy.add(selectedCol); // Add selected columns to the set
+                }
+            }
+            saveRangeParams(rangeGetTextField.getText());
+            popupStage.close();
+        });
+
+        vbox.getChildren().add(confirmButton);
+
+        // Add the first ChoiceBox
+        addNewChoiceBox.run();
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vbox);
+
+        popupStage.setScene(new Scene(scrollPane, 300, 400));
+        popupStage.showAndWait();
+    }
+
 
     public void filterButtonClicked() {
         Set<String> colToFilterBy = new HashSet<>();
-        buildPopUpOfCols(colToFilterBy);
+        buildPopUpOfColsToFilter(colToFilterBy);
 
         // Get the cell values based on the columns to filter by
         Map<String, Set<String>> cellValues = getValuesFromCols(colToFilterBy, gridSheetController.getGridPane(), engine.Display().getRowSize());
@@ -456,7 +557,7 @@ public class AppController {
             Platform.runLater(() -> {
                 try {
                     buildFilteredPopup(engine.filter(rangeParams, selectedValues),true);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     cellFunctionsController.showInfoAlert(e.getMessage());
                 }
             });
@@ -484,7 +585,7 @@ public class AppController {
 
         Scene scene = new Scene(root, 800, 800);
         stage.setScene(scene);
-        stage.showAndWait();
+        stage.show();
     }
 
 
