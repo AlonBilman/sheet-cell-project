@@ -2,6 +2,7 @@ package sheet.impl;
 
 import checkfile.*;
 import expression.api.ObjType;
+import javafx.scene.control.Cell;
 import sheet.api.EffectiveValue;
 
 import java.io.*;
@@ -276,7 +277,7 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-    private void checkRangeParams(String p1, String p2) {
+    public void checkRangeParams(String p1, String p2) {
         checkCellId(p1);
         checkCellId(p2);
     }
@@ -315,10 +316,18 @@ public class SpreadSheetImpl implements Serializable {
         }
         if (cellsInRange.isEmpty()) {
             throw new RuntimeException("The cells Id you've given did not match the format.\n" +
-                    "In order to create a range please provide first topLeftCellId and bottomRightCellId - in this order");
+                    "In order to create a range or refer to no name range please provide first topLeftCellId(from) and bottomRightCellId(to) - in this order");
         }
         return cellsInRange;
     }
+
+    public Set<CellImpl> getSetOfCellsFromDummyRange(String topLeftCellId,String bottomRightCellId){
+        topLeftCellId = cleanId(topLeftCellId);
+        bottomRightCellId = cleanId(bottomRightCellId);
+        checkRangeParams(topLeftCellId, bottomRightCellId);
+        return getSetOfCellsForRange(topLeftCellId, bottomRightCellId);
+    }
+
 
     public void deleteRange(String name) {
         if (activeRanges.containsKey(name)) {

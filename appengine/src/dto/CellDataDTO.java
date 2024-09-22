@@ -58,4 +58,12 @@ public class CellDataDTO implements Serializable {
     public CellColor getCellColor() {
         return cellColor;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public String getCol() {
+        return col;
+    }
 }

@@ -149,7 +149,7 @@ public class CellFunctionsController {
         popupStage.showAndWait();
     }
 
-    public void showVersion(sheetDTO sheet, int versionNumber) throws IOException {
+    public void showVersion(sheetDTO sheet, String versionNumber) throws IOException {
         Stage stage = new Stage();
         stage.setTitle("Table version number: " + versionNumber);
         FXMLLoader loader = new FXMLLoader();

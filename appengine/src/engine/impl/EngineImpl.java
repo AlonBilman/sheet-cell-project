@@ -3,6 +3,7 @@ package engine.impl;
 import dto.*;
 import checkfile.STLSheet;
 import engine.api.Engine;
+import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.*;
@@ -119,9 +120,7 @@ public class EngineImpl implements Engine, Serializable {
 
     public void addRange(String name, String params) {
         String[] cellIdentifiers = checkRangeParams(params); //may result exception
-        String topLeftCellId = cellIdentifiers[0];
-        String bottomRightCellId = cellIdentifiers[1];
-        spreadSheet.addRange(name, topLeftCellId, bottomRightCellId); //may result exception
+        spreadSheet.addRange(name, cellIdentifiers[0], cellIdentifiers[1]); //may result exception
         //there is no need to revert to the last spreadsheet
     }
 
@@ -164,5 +163,15 @@ public class EngineImpl implements Engine, Serializable {
 
     public void setBackgroundColor(String id, String selectedColor) {
         this.spreadSheet.getCellOrCreateIt(id).setBackgroundColor(selectedColor);
+    }
+
+    public Set<CellDataDTO> getSetOfCellsDtoDummyRange(String params) {
+        String[] cellIdentifiers = checkRangeParams(params);
+        Set<CellImpl> cells = spreadSheet.getSetOfCellsFromDummyRange(cellIdentifiers[0], cellIdentifiers[1]);
+        Set<CellDataDTO> cellsDto = new HashSet<>();
+        for (CellImpl cell : cells) {
+            cellsDto.add(new CellDataDTO(cell));
+        }
+        return cellsDto;
     }
 }

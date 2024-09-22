@@ -1,6 +1,8 @@
 package components.body.table.func;
 
 import components.main.AppController;
+import dto.CellDataDTO;
+import expression.api.ObjType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -11,19 +13,21 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 
 public class TableFunctionalityController {
 
-    @FXML private VBox tableFuncVBox;
+    @FXML
+    private VBox tableFuncVBox;
     private String columnToFilter;
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
@@ -54,7 +58,6 @@ public class TableFunctionalityController {
     private Button deleteExistingRangeButton;
     @FXML
     private Button viewExistingRangeButton;
-
 
 
     public enum ButtonState {
@@ -128,12 +131,123 @@ public class TableFunctionalityController {
         alert.showAndWait();
     }
 
-    public void filterButtonListener(ActionEvent actionEvent) throws IOException {
+    public void buildNoNameRangePopup() {
+        Stage popupStage = new Stage();
+        popupStage.setTitle("First, Provide the range!");
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+        TextField fromCellField = new TextField();
+        fromCellField.setPromptText("From: e.g., A1");
+        TextField toCellField = new TextField();
+        toCellField.setPromptText("To: e.g., A6");
+        setUnfocused(fromCellField, toCellField);
+        Button confirmButton = createNewRangeButton(null, fromCellField, toCellField, popupStage, true);
+        vbox.getChildren().addAll(fromCellField, toCellField, confirmButton);
+        Scene scene = new Scene(vbox, 300, 200);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
+        popupStage.setScene(scene);
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.showAndWait();
+    }
+
+    public void filterColumnPopup(Set<CellDataDTO> cells, String fromCell, String toCell) {
+        Set<String> colToFilterBy = new HashSet<>();
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select columns to filter by:");
+        VBox vbox = new VBox();
+        vbox.setSpacing(20);
+        vbox.setAlignment(Pos.CENTER);
+        List<CheckBox> checkBoxes = new ArrayList<>();
+        for (int i = fromCell.charAt(0); i <= toCell.charAt(0); i++) {
+            CheckBox checkBox = new CheckBox(String.valueOf((char) i).toUpperCase());
+            checkBoxes.add(checkBox);
+            vbox.getChildren().add(checkBox);
+        }
+        Button confirmButton = new Button("Confirm Selection");
+        confirmButton.setOnAction(e -> {
+            for (CheckBox checkBox : checkBoxes) {
+                if (checkBox.isSelected())
+                    colToFilterBy.add(checkBox.getText());
+            }
+            if (colToFilterBy.isEmpty()) {
+                showInfoAlert("No columns selected");
+                popupStage.toFront();
+            }
+            else {
+                Map<String, Set<String>> columnToCellValues = getValuesFromCols(colToFilterBy, cells);
+                confirmButton.setDisable(true);
+                filterValuesPopup(fromCell,toCell,columnToCellValues);
+                popupStage.close();
+            }
+        });
+        vbox.getChildren().add(confirmButton);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vbox);
+        popupStage.setScene(new Scene(scrollPane, 300, 300));
+        popupStage.showAndWait();
+    }
+
+    private void filterValuesPopup(String fromCell, String toCell,Map<String, Set<String>> columnToCellValues) {
+        if (columnToCellValues.isEmpty()) {
+            showInfoAlert("There are no values in these column(s)");
+            return;
+        }
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select Cell Values");
+        HBox hbox = new HBox(30);
+        hbox.setAlignment(Pos.CENTER);
+        Map<String, Set<String>> selectedValues = new HashMap<>();
+        columnToCellValues.forEach((column, cellValues) -> {
+            VBox columnVbox = new VBox(10);
+            columnVbox.setAlignment(Pos.CENTER_LEFT);
+            columnVbox.getChildren().add(new Label("Column: " + column));
+            Set<String> selectedColumnValues = new HashSet<>();
+            selectedValues.put(column, selectedColumnValues);
+            cellValues.stream()
+                    .filter(value -> !value.isEmpty())
+                    .forEach(value -> {
+                        CheckBox checkBox = new CheckBox(value);
+                        checkBox.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                            if (isSelected) {
+                                selectedColumnValues.add(value);
+                            } else {
+                                selectedColumnValues.remove(value);
+                            }
+                        });
+                        columnVbox.getChildren().add(checkBox);
+                    });
+            hbox.getChildren().add(columnVbox);
+        });
+        Button confirmButton = new Button("Confirm Selection");
+        confirmButton.setOnAction(e -> {
+            appController.filterParamsConfirmed(fromCell,toCell, selectedValues);
+            popupStage.close();
+        });
+        VBox mainVbox = new VBox(20, hbox, confirmButton);
+        mainVbox.setAlignment(Pos.CENTER);
+        ScrollPane scrollPane = new ScrollPane(mainVbox);
+        scrollPane.setFitToWidth(true);
+        popupStage.setScene(new Scene(scrollPane, 500, 400));
+        popupStage.showAndWait();
+    }
+
+    private Map<String, Set<String>> getValuesFromCols(Set<String> colToFilterBy, Set<CellDataDTO> cells) {
+        Map<String, Set<String>> columnToCellValues = new HashMap<>();
+        for (CellDataDTO cell : cells) {
+            if (!cell.getEffectiveValue().getObjType().equals(ObjType.EMPTY) && colToFilterBy.contains(cell.getCol())) {
+                columnToCellValues.computeIfAbsent(cell.getCol(), k -> new HashSet<>()).add(cell.getEffectiveValue().getValue().toString());
+            }
+        }
+        return columnToCellValues;
+    }
+
+
+    public void filterButtonListener(ActionEvent actionEvent) {
         appController.filterButtonClicked();
     }
 
-    public void sortButtonListener(ActionEvent actionEvent) throws IOException {
-        appController.sortButtonClicked();
+    public void sortButtonListener(ActionEvent actionEvent) {
+        //appController.sortButtonClicked();
     }
 
     private void buildColorPickerPopup(Consumer<Color> colorCallback) {
@@ -158,15 +272,16 @@ public class TableFunctionalityController {
     }
 
     private void changeButtonStyle(Button button, AppController.Style style) {
-        switch (style){
+        switch (style) {
             case DEFAULT_STYLE:
                 button.getStyleClass().add("button");
                 break;
             case DARK_MODE:
                 button.getStyleClass().add("button-dark-mode");
-                    break;
+                break;
         }
     }
+
     private void buildModifySizePopup(String title, String promptText, boolean isColumn) {
         Stage popupStage = new Stage();
         popupStage.setTitle(title);
@@ -261,16 +376,12 @@ public class TableFunctionalityController {
 
     @FXML
     private void cellTextColorPick() {
-        buildColorPickerPopup((selectedColor) -> {
-            appController.textColorPicked(selectedColor);
-        });
+        buildColorPickerPopup((selectedColor) -> appController.textColorPicked(selectedColor));
     }
 
     @FXML
     private void cellBackgroundColorPick() {
-        buildColorPickerPopup((selectedColor) -> {
-            appController.backgroundColorPicked(selectedColor);
-        });
+        buildColorPickerPopup((selectedColor) -> appController.backgroundColorPicked(selectedColor));
     }
 
     @FXML
@@ -278,22 +389,29 @@ public class TableFunctionalityController {
         appController.resetStyleClicked();
     }
 
-    private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage) {
+    private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage, boolean noName) {
         Button button = new Button("Confirm");
         changeButtonStyle(button, appController.getStyleChosen());
         button.setOnAction(event -> {
-            String rangeName = rangeNameField.getText();
-            if (rangeName.trim().isEmpty())
-                showInfoAlert("Error: Entered range name is empty.");
-            else {
-                String fromCell = fromCellField.getText();
-                String toCell = toCellField.getText();
-                try {
-                    appController.addNewRange(rangeName, fromCell, toCell);
-                    currStage.close();
-                } catch (Exception e) {
-                    showInfoAlert(e.getMessage());
+            try {
+                String fromCell = fromCellField.getText().trim();
+                String toCell = toCellField.getText().trim();
+                if (fromCell.isEmpty() || toCell.isEmpty()) {
+                    showInfoAlert("Error: Both 'From' and 'To' cells must be provided.");
+                    return;
                 }
+                if (noName) {
+                    button.setDisable(true);
+                    appController.noNameRangeSelected(fromCell, toCell);
+                } else {
+                    String rangeName = rangeNameField.getText().trim();
+                    if (rangeName.isEmpty()) {
+                        showInfoAlert("Error: Entered range name is empty.");
+                    } else appController.addNewRange(rangeName, fromCell, toCell);
+                }
+                currStage.close();
+            } catch (Exception e) {
+                showInfoAlert(e.getMessage());
             }
         });
         return button;
@@ -313,8 +431,8 @@ public class TableFunctionalityController {
         TextField toCellField = new TextField();
         toCellField.setPromptText("To: e.g., A6");
 
-        setUnfocused(rangeNameField,fromCellField,toCellField);
-        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage);
+        setUnfocused(rangeNameField, fromCellField, toCellField);
+        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage, false);
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
 
         Scene scene = new Scene(vbox, 300, 200);
@@ -329,6 +447,7 @@ public class TableFunctionalityController {
             node.setFocusTraversable(false);
         }
     }
+
     private void viewAndDeleteRangePopup(confirmType type) {
         Set<String> rangeNames = appController.getExistingRanges();
         if (rangeNames.isEmpty()) {
@@ -387,11 +506,12 @@ public class TableFunctionalityController {
         viewAndDeleteRangePopup(confirmType.DELETE_EXISTING_RANGE);
     }
 
-public void updateStyleOfVBox(AppController.Style style){
+    public void updateStyleOfVBox(AppController.Style style) {
         tableFuncVBox.getStyleClass().clear();
         changeVBoxStyle(style);
-}
-    private void changeVBoxStyle(AppController.Style style ) {
+    }
+
+    private void changeVBoxStyle(AppController.Style style) {
         switch (style) {
             case DEFAULT_STYLE -> {
                 tableFuncVBox.getStyleClass().add("vbox");
