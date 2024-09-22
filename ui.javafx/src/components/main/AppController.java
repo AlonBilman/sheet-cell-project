@@ -10,30 +10,23 @@ import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
+
+
 
     public enum Style {
         DEFAULT_STYLE,
@@ -275,18 +268,25 @@ public class AppController {
 
 //-------------------------------------------------------------------------------------------------------------//
 
-    public void noNameRangeSelected(String fromCell, String toCell) {
+    public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
         try {
+            //has to be done for both filter and sort because if the range contains cells that we did not create we have to create these cells
             Set<CellDataDTO> cells = engine.getSetOfCellsDtoDummyRange(params);
-            tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
+            if(type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
+                tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
+            else tableFunctionalityController.sortColumnPopup(fromCell, toCell);
         } catch (RuntimeException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
     }
 
     public void filterButtonClicked() {
-        tableFunctionalityController.buildNoNameRangePopup();
+        tableFunctionalityController.buildNoNameRangePopup(TableFunctionalityController.ConfirmType.FILTER_RANGE);
+    }
+
+    public void sortButtonClicked() {
+        tableFunctionalityController.buildNoNameRangePopup(TableFunctionalityController.ConfirmType.SORT_RANGE);
     }
 
     public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy) {
@@ -299,113 +299,15 @@ public class AppController {
         }
     }
 
-//    public void sortButtonClicked() {
-//        List<String> colToFilterBy = new ArrayList<>();
-//        buildPopUpOfColsToSort(colToFilterBy);
-//
-//        try {
-//            buildFilteredPopup(engine.sort(rangeParams, colToFilterBy), false);
-//        } catch (Exception e) {
-//            cellFunctionsController.showInfoAlert(e.getMessage());
-//        }
-//    }
-
-//    public void buildPopUpOfColsToSort(List<String> colToFilterBy) {
-//        int colNum = engine.Display().getColSize();
-//
-//        // Create a new Stage (popup window)
-//        Stage popupStage = new Stage();
-//        popupStage.setTitle("Select columns to sort by:");
-//
-//        // Create a VBox to hold the choice boxes and buttons
-//        VBox vbox = new VBox();
-//        vbox.setSpacing(20);
-//        vbox.setAlignment(Pos.CENTER);
-//
-//        // TextField to input range
-//        TextField rangeGetTextField = new TextField();
-//        rangeGetTextField.setPromptText("Enter area to filter like A1..B2:");
-//        rangeGetTextField.setMinWidth(250);
-//        rangeGetTextField.setFocusTraversable(false);
-//        vbox.getChildren().add(rangeGetTextField);
-//
-//
-//        // List to store all ChoiceBoxes
-//        List<ChoiceBox<String>> choiceBoxes = new ArrayList<>();
-//
-//        List<String> allColumns = new ArrayList<>();
-//        for (int i = 1; i <= colNum; i++) {
-//            allColumns.add(String.valueOf((char) ('A' + (i - 1))));
-//        }
-//
-//        // Method to update available options in all ChoiceBoxes
-//        Runnable updateChoiceBoxOptions = () -> {
-//            Set<String> selectedColumns = choiceBoxes.stream()
-//                    .map(ChoiceBox::getValue)
-//                    .filter(Objects::nonNull) // Exclude null values (unselected boxes)
-//                    .collect(Collectors.toSet());
-//
-//            for (ChoiceBox<String> choiceBox : choiceBoxes) {
-//                String currentSelection = choiceBox.getValue();
-//                choiceBox.getItems().clear(); // Clear existing items
-//
-//                // Add back all columns except the ones that are already selected
-//                choiceBox.getItems().addAll(
-//                        allColumns.stream()
-//                                .filter(col -> !selectedColumns.contains(col) || col.equals(currentSelection))
-//                                .toList()
-//                );
-//
-//                // Preserve the current selection
-//                if (currentSelection != null) {
-//                    choiceBox.setValue(currentSelection);
-//                }
-//            }
-//        };
-//
-//        // Method to add a new ChoiceBox
-//        Runnable addNewChoiceBox = () -> {
-//            Label label = new Label("Enter column to sort by:");
-//            vbox.getChildren().add(label);
-//            ChoiceBox<String> choiceBox = new ChoiceBox<>();
-//            choiceBox.setOnAction(e -> updateChoiceBoxOptions.run());
-//            choiceBox.getSelectionModel().select(0); // Select the first item as a placeholder
-//            choiceBoxes.add(choiceBox);
-//            vbox.getChildren().add(choiceBox); // Add it directly to the VBox
-//            updateChoiceBoxOptions.run(); // Update available columns immediately after adding
-//        };
-//
-//        // Button to add more ChoiceBoxes
-//        Button addChoiceBoxButton = new Button("Add Another Column");
-//        addChoiceBoxButton.setOnAction(e -> addNewChoiceBox.run());
-//        vbox.getChildren().add(addChoiceBoxButton);
-//
-//        // Add a button to confirm the selection
-//        Button confirmButton = new Button("Confirm Selection");
-//        confirmButton.setOnAction(e -> {
-//            colToFilterBy.clear(); // Clear existing selections
-//            for (ChoiceBox<String> choiceBox : choiceBoxes) {
-//                String selectedCol = choiceBox.getValue();
-//                if (selectedCol != null) {
-//                    colToFilterBy.add(selectedCol); // Add selected columns to the set
-//                }
-//            }
-//            saveRangeParams(rangeGetTextField.getText());
-//            popupStage.close();
-//        });
-//
-//        vbox.getChildren().add(confirmButton);
-//
-//        // Add the first ChoiceBox
-//        addNewChoiceBox.run();
-//
-//        ScrollPane scrollPane = new ScrollPane();
-//        scrollPane.setContent(vbox);
-//
-//        popupStage.setScene(new Scene(scrollPane, 300, 400));
-//        popupStage.showAndWait();
-//    }
-//
+    public void sortParamsConfirmed(String fromCell, String toCell, List<String> sortBy) {
+        sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(),sortBy);
+        try{
+            cellFunctionsController.showVersion(sortedSheet, "Sorted");
+        }
+        catch (IOException e) {
+            tableFunctionalityController.showInfoAlert(e.getMessage());
+        }
+    }
 
     private Style styleChosen = Style.DEFAULT_STYLE;
 

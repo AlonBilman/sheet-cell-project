@@ -3,6 +3,7 @@ package components.body.table.func;
 import components.main.AppController;
 import dto.CellDataDTO;
 import expression.api.ObjType;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -20,8 +21,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 
 public class TableFunctionalityController {
@@ -67,10 +68,12 @@ public class TableFunctionalityController {
         CLICKING_COLUMN
     }
 
-    private enum confirmType {
+    public enum ConfirmType {
         ADD_NEW_RANGE,
         DELETE_EXISTING_RANGE,
         VIEW_EXISTING_RANGE,
+        SORT_RANGE,
+        FILTER_RANGE,
     }
 
     public void initialize() {
@@ -131,7 +134,7 @@ public class TableFunctionalityController {
         alert.showAndWait();
     }
 
-    public void buildNoNameRangePopup() {
+    public void buildNoNameRangePopup(ConfirmType Type) {
         Stage popupStage = new Stage();
         popupStage.setTitle("First, Provide the range!");
         VBox vbox = new VBox(10);
@@ -141,7 +144,7 @@ public class TableFunctionalityController {
         TextField toCellField = new TextField();
         toCellField.setPromptText("To: e.g., A6");
         setUnfocused(fromCellField, toCellField);
-        Button confirmButton = createNewRangeButton(null, fromCellField, toCellField, popupStage, true);
+        Button confirmButton = createNewRangeButton(null, fromCellField, toCellField, popupStage, true, Type);
         vbox.getChildren().addAll(fromCellField, toCellField, confirmButton);
         Scene scene = new Scene(vbox, 300, 200);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
@@ -172,11 +175,10 @@ public class TableFunctionalityController {
             if (colToFilterBy.isEmpty()) {
                 showInfoAlert("No columns selected");
                 popupStage.toFront();
-            }
-            else {
+            } else {
                 Map<String, Set<String>> columnToCellValues = getValuesFromCols(colToFilterBy, cells);
                 confirmButton.setDisable(true);
-                filterValuesPopup(fromCell,toCell,columnToCellValues);
+                filterValuesPopup(fromCell, toCell, columnToCellValues);
                 popupStage.close();
             }
         });
@@ -187,7 +189,7 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
-    private void filterValuesPopup(String fromCell, String toCell,Map<String, Set<String>> columnToCellValues) {
+    private void filterValuesPopup(String fromCell, String toCell, Map<String, Set<String>> columnToCellValues) {
         if (columnToCellValues.isEmpty()) {
             showInfoAlert("There are no values in these column(s)");
             return;
@@ -220,7 +222,7 @@ public class TableFunctionalityController {
         });
         Button confirmButton = new Button("Confirm Selection");
         confirmButton.setOnAction(e -> {
-            appController.filterParamsConfirmed(fromCell,toCell, selectedValues);
+            appController.filterParamsConfirmed(fromCell, toCell, selectedValues);
             popupStage.close();
         });
         VBox mainVbox = new VBox(20, hbox, confirmButton);
@@ -247,7 +249,89 @@ public class TableFunctionalityController {
     }
 
     public void sortButtonListener(ActionEvent actionEvent) {
-        //appController.sortButtonClicked();
+        appController.sortButtonClicked();
+    }
+
+    public void sortColumnPopup(String fromCell, String toCell) {
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Select columns to sort by:");
+        VBox vbox = new VBox();
+        vbox.setSpacing(20);
+        vbox.setAlignment(Pos.CENTER);
+
+        List<String> sortBy = new ArrayList<>();
+
+        List<ChoiceBox<String>> choiceBoxes = new ArrayList<>();
+
+        List<String> allColumns = new ArrayList<>();
+        for (int i = fromCell.charAt(0); i <= toCell.charAt(0); i++) {
+            allColumns.add(String.valueOf((char)(i)));
+        }
+        // Method to update available options in all ChoiceBoxes
+        Runnable updateChoiceBoxOptions = () -> {
+            Set<String> selectedColumns = choiceBoxes.stream()
+                    .map(ChoiceBox::getValue)
+                    .filter(Objects::nonNull) // Exclude null values (unselected boxes)
+                    .collect(Collectors.toSet());
+
+            for (ChoiceBox<String> choiceBox : choiceBoxes) {
+                String currentSelection = choiceBox.getValue();
+                choiceBox.getItems().clear(); // Clear existing items
+
+                // Add back all columns except the ones that are already selected
+                choiceBox.getItems().addAll(
+                        allColumns.stream()
+                                .filter(col -> !selectedColumns.contains(col) || col.equals(currentSelection))
+                                .toList()
+                );
+
+                // Preserve the current selection
+                if (currentSelection != null) {
+                    choiceBox.setValue(currentSelection);
+                }
+            }
+        };
+
+        // Method to add a new ChoiceBox
+        Runnable addNewChoiceBox = () -> {
+            Label label = new Label("Enter column to sort by:");
+            vbox.getChildren().add(label);
+            ChoiceBox<String> choiceBox = new ChoiceBox<>();
+            choiceBox.setOnAction(e -> updateChoiceBoxOptions.run());
+            choiceBox.getSelectionModel().select(0); // Select the first item as a placeholder
+            choiceBoxes.add(choiceBox);
+            vbox.getChildren().add(choiceBox); // Add it directly to the VBox
+            updateChoiceBoxOptions.run(); // Update available columns immediately after adding
+        };
+
+        // Button to add more ChoiceBoxes
+        Button addChoiceBoxButton = new Button("Add Another Column");
+        addChoiceBoxButton.setOnAction(e -> addNewChoiceBox.run());
+        vbox.getChildren().add(addChoiceBoxButton);
+
+        // Add a button to confirm the selection
+        Button confirmButton = new Button("Confirm Selection");
+        confirmButton.setOnAction(e -> {
+            for (ChoiceBox<String> choiceBox : choiceBoxes) {
+                String selectedCol = choiceBox.getValue();
+                if (selectedCol != null) {
+                    sortBy.add(selectedCol); // Add selected columns to the set
+                }
+            }
+            appController.sortParamsConfirmed(fromCell,toCell,sortBy);
+            popupStage.close();
+        });
+
+        vbox.getChildren().add(confirmButton);
+
+        // Add the first ChoiceBox
+        addNewChoiceBox.run();
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vbox);
+
+        popupStage.setScene(new Scene(scrollPane, 300, 400));
+        popupStage.showAndWait();
     }
 
     private void buildColorPickerPopup(Consumer<Color> colorCallback) {
@@ -389,7 +473,7 @@ public class TableFunctionalityController {
         appController.resetStyleClicked();
     }
 
-    private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage, boolean noName) {
+    private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage, boolean noName, ConfirmType type) {
         Button button = new Button("Confirm");
         changeButtonStyle(button, appController.getStyleChosen());
         button.setOnAction(event -> {
@@ -402,7 +486,7 @@ public class TableFunctionalityController {
                 }
                 if (noName) {
                     button.setDisable(true);
-                    appController.noNameRangeSelected(fromCell, toCell);
+                    appController.noNameRangeSelected(fromCell, toCell, type);
                 } else {
                     String rangeName = rangeNameField.getText().trim();
                     if (rangeName.isEmpty()) {
@@ -432,7 +516,7 @@ public class TableFunctionalityController {
         toCellField.setPromptText("To: e.g., A6");
 
         setUnfocused(rangeNameField, fromCellField, toCellField);
-        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage, false);
+        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage, false,ConfirmType.ADD_NEW_RANGE);
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
 
         Scene scene = new Scene(vbox, 300, 200);
@@ -448,7 +532,7 @@ public class TableFunctionalityController {
         }
     }
 
-    private void viewAndDeleteRangePopup(confirmType type) {
+    private void viewAndDeleteRangePopup(ConfirmType type) {
         Set<String> rangeNames = appController.getExistingRanges();
         if (rangeNames.isEmpty()) {
             showInfoAlert("Error: There are 0 Ranges right now");
@@ -476,16 +560,16 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
-    private Button createViewOrDeleteRangeButton(confirmType type, Stage currStage, ToggleGroup toggleGroup) {
+    private Button createViewOrDeleteRangeButton(ConfirmType type, Stage currStage, ToggleGroup toggleGroup) {
         Button confirmButton = new Button("Confirm");
         confirmButton.getStyleClass().add("button");
         confirmButton.setOnAction(e -> {
             RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
             if (selectedRadioButton != null) {
                 String selectedRangeName = selectedRadioButton.getText();
-                if (type.equals(confirmType.VIEW_EXISTING_RANGE)) {
+                if (type.equals(ConfirmType.VIEW_EXISTING_RANGE)) {
                     appController.showRangeConfirmedClicked(selectedRangeName);
-                } else if (type.equals(confirmType.DELETE_EXISTING_RANGE)) {
+                } else if (type.equals(ConfirmType.DELETE_EXISTING_RANGE)) {
                     appController.deleteRangeConfirmedClicked(selectedRangeName);
                 }
                 currStage.close();
@@ -498,12 +582,12 @@ public class TableFunctionalityController {
 
     @FXML
     private void viewExistingRangeListener() {
-        viewAndDeleteRangePopup(confirmType.VIEW_EXISTING_RANGE);
+        viewAndDeleteRangePopup(ConfirmType.VIEW_EXISTING_RANGE);
     }
 
     @FXML
     private void deleteExistingRangeListener() {
-        viewAndDeleteRangePopup(confirmType.DELETE_EXISTING_RANGE);
+        viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
     }
 
     public void updateStyleOfVBox(AppController.Style style) {
