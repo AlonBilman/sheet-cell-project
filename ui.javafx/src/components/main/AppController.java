@@ -292,7 +292,8 @@ public class AppController {
     public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy) {
         sheetDTO filteredSheet = engine.filter(fromCell.trim() + ".." + toCell.trim(), filterBy);
         try {
-            cellFunctionsController.showVersion(filteredSheet, "Filtered");
+            cellFunctionsController.showVersion(filteredSheet,
+                    "No number | Filtered from "+fromCell +" to "+toCell+" | By : "+filterBy);
         }
         catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
@@ -302,7 +303,8 @@ public class AppController {
     public void sortParamsConfirmed(String fromCell, String toCell, List<String> sortBy) {
         sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(),sortBy);
         try{
-            cellFunctionsController.showVersion(sortedSheet, "Sorted");
+            cellFunctionsController.showVersion(sortedSheet,
+                    "no number | Sorted from "+fromCell +" to "+toCell+" | By : "+ sortBy);
         }
         catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
