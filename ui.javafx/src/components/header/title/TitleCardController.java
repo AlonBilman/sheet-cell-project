@@ -3,7 +3,6 @@ package components.header.title;
 import components.main.AppController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.text.Text;
 
 import java.util.Objects;
 

@@ -1,12 +1,14 @@
 package components.header.loadfile;
 
 import components.main.AppController;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
@@ -16,6 +18,7 @@ import java.util.Objects;
 public class LoadFileController {
 
     @FXML private HBox loadFileHBox;
+
     private AppController appController;
 
     @FXML
@@ -32,6 +35,11 @@ public class LoadFileController {
 
     public void setMainController(AppController mainController) {
         this.appController = mainController;
+    }
+
+    public void initialize() {
+        progressBar.setVisible(false);
+        progressBarPercentage.setVisible(false);
     }
 
     public void showInfoAlert(String problem) {
@@ -69,17 +77,20 @@ public void setTheme( String newTheme) {
         loadFileHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
 
-//need to ask aviad
     public void taskLoadingSimulation(Runnable callback) {
+        progressBar.setVisible(true);
+        progressBarPercentage.setVisible(true);
         Task<Boolean> loadFileTask = new Task<>() {
             @Override
             protected Boolean call() throws Exception {
                 for (int i = 1; i <= 100; i++) {
-                    Thread.sleep(6);
+                    Thread.sleep(8);
                     updateProgress(i, 100);
                     updateMessage(i + "%");
                 }
-                updateMessage("Finished Loading");
+                Thread.sleep(150);
+                progressBar.setVisible(false);
+                progressBarPercentage.setVisible(false);
                 return true;
             }
             @Override

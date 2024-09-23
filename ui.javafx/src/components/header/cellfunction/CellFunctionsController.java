@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,6 +47,9 @@ public class CellFunctionsController {
     @FXML
     private TextField newOriginalValText;
 
+    @FXML
+    private HBox cellFuncHBox;
+
     public void showCell(CellDataDTO cell) {
         currCellShown = cell.getId();
         cellIdProperty.setText(currCellShown);
@@ -66,9 +70,7 @@ public class CellFunctionsController {
     }
 
     public void setTheme(String newTheme) {
-
         cellFuncHBox.getStylesheets().clear();
-
         // Add the new stylesheet
         String newStyle = "/components/header/cellfunction/cellFunctions" + newTheme + ".css";
         cellFuncHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());

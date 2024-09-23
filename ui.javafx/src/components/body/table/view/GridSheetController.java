@@ -29,6 +29,7 @@ public class GridSheetController {
     private Map<String, Background> originalBackgrounds = new HashMap<>();
     private List<Label> focusedOn;
     private Map<String, Label> borderMap;
+    private String currTheme = "Default";
 
     public void initialize() {
         gridPane.getStyleClass().add("grid-pane");

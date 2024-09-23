@@ -322,7 +322,6 @@ public class AppController {
         stage.show();
     }
 
-
     public void setStyleOnParts(String value) {
        if(value.equals("Dark theme"))
         setNewTheme("DarkTheme");
@@ -330,7 +329,7 @@ public class AppController {
            setNewTheme("Default");
     }
 
-    public void setNewTheme(String value){
+    private void setNewTheme(String value){
         tableFunctionalityController.setTheme(value);
         loadFileController.setTheme(value);
         cellFunctionsController.setTheme(value);

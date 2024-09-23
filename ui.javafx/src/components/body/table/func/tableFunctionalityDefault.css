@@ -58,13 +58,13 @@
 }
 
 /* Specific styles for Add Range Set, Delete Range, and View Range buttons */
-#addNewRangeButton, #deleteExistingRangeButton, #viewExistingRangeButton {
+#addNewRangeButton, #deleteExistingRangeButton, #viewExistingRangeButton, #sortButton, #filterButton{
     -fx-background-color: #5a9bd4; /* Light blue color */
     -fx-border-color: #5a9bd4; /* Matching border color */
     -fx-text-fill: #ffffff; /* White text */
 }
 
-#addNewRangeButton:hover, #deleteExistingRangeButton:hover, #viewExistingRangeButton:hover {
+#addNewRangeButton:hover, #deleteExistingRangeButton:hover, #viewExistingRangeButton:hover ,#sortButton:hover, #filterButton:hover{
     -fx-background-color: #3b7bbf; /* Darker blue on hover */
     -fx-border-color: #3b7bbf; /* Matching border color on hover */
     -fx-text-fill: #ffffff; /* White text */
