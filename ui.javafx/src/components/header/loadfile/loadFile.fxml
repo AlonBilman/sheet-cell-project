@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox fx:id="loadFileHBox" prefHeight="43.0" prefWidth="988.0" spacing="15.0" stylesheets="@loadFile.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadfile.LoadFileController">
+<HBox fx:id="loadFileHBox" prefHeight="106.0" prefWidth="988.0" spacing="15.0" stylesheets="@loadFile.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.loadfile.LoadFileController">
    <children>
       <Button id="LoadNewFileButton" fx:id="loadFileButton" accessibleRoleDescription="LoadFileButton" alignment="CENTER" mnemonicParsing="false" onAction="#loadFileListener" prefHeight="23.0" prefWidth="243.0" text="Load New File" underline="true">
          <HBox.margin>
@@ -18,14 +18,20 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Label id="LoadNewFileLabel" fx:id="filePathLabel" maxHeight="-Infinity" prefHeight="43.0" prefWidth="667.0" style="-fx-border-color: blue;" text="Loaded file path will show here">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <padding>
-            <Insets left="5.0" />
-         </padding>
-      </Label>
+      <VBox prefHeight="82.0" prefWidth="714.0">
+         <children>
+            <Label id="LoadNewFileLabel" fx:id="filePathLabel" maxHeight="-Infinity" prefHeight="43.0" prefWidth="709.0" style="-fx-border-color: blue;" text="Loaded file path will show here">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </Label>
+            <ProgressBar fx:id="progressBar" prefHeight="25.0" prefWidth="650.0" progress="0.0" />
+            <Label fx:id="progressBarPercentage" prefHeight="29.0" prefWidth="120.0" text="0%" />
+         </children>
+      </VBox>
    </children>
    <padding>
       <Insets top="10.0" />

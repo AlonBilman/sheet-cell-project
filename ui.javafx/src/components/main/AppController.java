@@ -10,6 +10,7 @@ import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
 import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
-
 
 
     public enum Style {
@@ -116,7 +116,7 @@ public class AppController {
         boardOutOfFocus();
     }
 
-    public void checkAndLoadFile(File file) {
+    private void loadFileLogic(File file) {
         newFile = file;
         loadResult = engine.Load(newFile);
         if (loadResult.isNotValid()) {
@@ -142,6 +142,9 @@ public class AppController {
         }
     }
 
+    public void checkAndLoadFile(File file) {
+        loadFileController.taskLoadingSimulation(() -> loadFileLogic(file));
+    }
 
     public void CellClicked(String id) {
         outOfFocus();
@@ -175,7 +178,6 @@ public class AppController {
                 TableFunctionalityController.ButtonState.CLICKING_CELL, false);
     }
 
-
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
         engine.setBackgroundColor(id, selectedColor.toString());
@@ -193,7 +195,6 @@ public class AppController {
         gridSheetController.resetToDefault(id);
         engine.setTextColor(id, null);
         engine.setBackgroundColor(id, null);
-
     }
 
     public void BoarderClicked(String boarderTextId) {
@@ -265,7 +266,7 @@ public class AppController {
     public void confirmVersionClicked(Integer selectedVersion) {
         try {
             cellFunctionsController.showVersion(
-                    engine.getSheets().get(selectedVersion), "Version Number: "+selectedVersion.toString());
+                    engine.getSheets().get(selectedVersion), "Version Number: " + selectedVersion.toString());
         } catch (Exception e) {
             cellFunctionsController.showInfoAlert(e.getMessage());
         }
@@ -278,7 +279,7 @@ public class AppController {
         try {
             //has to be done for both filter and sort because if the range contains cells that we did not create we have to create these cells
             Set<CellDataDTO> cells = engine.getSetOfCellsDtoDummyRange(params);
-            if(type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
+            if (type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
                 tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
             else tableFunctionalityController.sortColumnPopup(fromCell.toUpperCase(), toCell.toUpperCase());
         } catch (RuntimeException e) {
@@ -298,25 +299,23 @@ public class AppController {
         sheetDTO filteredSheet = engine.filter(fromCell.trim() + ".." + toCell.trim(), filterBy);
         try {
             showSheetPopup(filteredSheet,
-                    "No number | Filtered from "+fromCell +" to "+toCell+" | By : "+filterBy);
-        }
-        catch (IOException e) {
+                    "No number | Filtered from " + fromCell + " to " + toCell + " | By : " + filterBy);
+        } catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
     }
 
     public void sortParamsConfirmed(String fromCell, String toCell, List<String> sortBy) {
-        sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(),sortBy);
-        try{
+        sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(), sortBy);
+        try {
             showSheetPopup(sortedSheet,
-                    "no number | Sorted from "+fromCell +" to "+toCell+" | By : "+ sortBy);
-        }
-        catch (IOException e) {
+                    "no number | Sorted from " + fromCell + " to " + toCell + " | By : " + sortBy);
+        } catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
     }
 
-    public void showSheetPopup(sheetDTO sheet , String title) throws IOException {
+    public void showSheetPopup(sheetDTO sheet, String title) throws IOException {
         Stage stage = new Stage();
         stage.setTitle(title);
         FXMLLoader loader = new FXMLLoader();
@@ -347,7 +346,7 @@ public class AppController {
 
     public void setStyleOnParts() {
         tableFunctionalityController.updateStyleOfVBox(getStyleChosen());
-        loadFileController.updateLoadHBoxStyle(getStyleChosen());
+        //loadFileController.updateLoadHBoxStyle(getStyleChosen());
         cellFunctionsController.updateCellHBoxStyle(getStyleChosen());
         gridSheetController.changeGridPaneStyle(getStyleChosen());
 
