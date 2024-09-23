@@ -106,6 +106,14 @@ public class AppController {
         }
     }
 
+    private void disableComponents(boolean disable) {
+        titleCard.setDisable(disable);
+        cellFunctions.setDisable(disable);
+        tableFunctionality.setDisable(disable);
+        loadFile.setDisable(disable);
+        gridSheet.setDisable(disable);
+    }
+
     public void saveSelectedValues(Map<String, Set<String>> selectedValues) {
         // Process or save the selected values as needed
         this.selectedValues = selectedValues;
@@ -117,6 +125,7 @@ public class AppController {
     }
 
     private void loadFileLogic(File file) {
+        disableComponents(false);
         newFile = file;
         loadResult = engine.Load(newFile);
         if (loadResult.isNotValid()) {
@@ -143,6 +152,7 @@ public class AppController {
     }
 
     public void checkAndLoadFile(File file) {
+        disableComponents(true);
         loadFileController.taskLoadingSimulation(() -> loadFileLogic(file));
     }
 
