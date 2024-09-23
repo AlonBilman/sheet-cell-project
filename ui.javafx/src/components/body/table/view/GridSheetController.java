@@ -128,36 +128,6 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
-    public void changeGridPaneStyle(AppController.Style style) {
-        gridPane.getStyleClass().clear();
-        changeGridStyle(style);
-    }
-
-    private void changeGridStyle(AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                gridPane.getStyleClass().add("grid-pane");
-                break;
-            }
-            case DARK_MODE -> {
-                gridPane.getStyleClass().add("grid-pane-dark-mode");
-                break;
-            }
-        }
-    }
-
-    private void changeLabelStyle(Label label, AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                label.getStyleClass().add("cell-default");
-                break;
-            }
-            case DARK_MODE -> {
-                label.getStyleClass().add("cell-dark-mode");
-                break;
-            }
-        }
-    }
 
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
@@ -171,22 +141,6 @@ public class GridSheetController {
         cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(cellLabel.getText()));
     }
 
-    public void updateAllCellStyles(AppController.Style style) {
-        // Loop through all cells in the labelMap
-        for (Label label : labelMap.values()) {
-            // Reset and update each label's style
-            label.getStyleClass().clear(); // Clear previous styles
-            changeLabelStyle(label, style); // Apply the new style
-        }
-        for (Label label : borderMap.values()) {
-            label.getStyleClass().clear();
-            changeLabelStyle(label, style);
-        }
-    }
-
-    public GridPane getGridPane() {
-        return gridPane;
-    }
 
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);
@@ -283,10 +237,10 @@ public class GridSheetController {
         }
     }
 
-    public void updateAliment(String alignment, String id) {
+    public void updateAliment(String alignment) {
         for (Label label : focusedOn) {
             changeCellCssId(label, "cell-default", "cell-non-default");
-            resetToDefaultAlignment(label, id);
+            resetToDefaultAlignment(label);
             if (alignment.equals("Left")) {
                 label.getStyleClass().add("alignment-left");
             } else if (alignment.equals("Right")) {
@@ -299,19 +253,15 @@ public class GridSheetController {
         Label label = labelMap.get(id);
         removeLabelLayout(label);
         resetToDefaultColors(label, id);
-        resetToDefaultAlignment(label, id);
+        resetToDefaultAlignment(label);
     }
 
-    private void resetToDefaultAlignment(Label label, String id) {
+    private void resetToDefaultAlignment(Label label) {
         label.getStyleClass().removeAll("alignment-left", "alignment-right");
     }
 
     public void disableGridPane() {
         gridPane.setDisable(true);
-    }
-
-    public void enableGridPane() {
-        gridPane.setDisable(false);
     }
 
 }

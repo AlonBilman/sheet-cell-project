@@ -7,10 +7,6 @@
     -fx-background-insets: 0, 0; /* Remove default insets */
 }
 
-.anchor-pane-dark-mode{
-
-}
-
 /* Styling for Text */
 .text {
     -fx-font-size: 17px; /* Font size as specified in FXML */

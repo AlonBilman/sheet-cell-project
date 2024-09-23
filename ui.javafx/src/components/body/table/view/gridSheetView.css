@@ -9,11 +9,6 @@
     -fx-grid-lines-visible: true;
 }
 
-.grid-pane-dark-mode {
-    -fx-background-color: #372A27;
-    -fx-grid-lines-visible: true;
-}
-
 .boarder {
     -fx-border-color: gray;
     -fx-alignment: center;
@@ -24,14 +19,6 @@
     -fx-background-color: white;
     -fx-text-fill: black;
     -fx-border-color: lightgray;
-    -fx-alignment: center;
-    -fx-font-size: 14px;
-}
-
-.cell-dark-mode {
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
     -fx-alignment: center;
     -fx-font-size: 14px;
 }

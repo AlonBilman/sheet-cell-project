@@ -10,7 +10,6 @@ import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,24 +30,11 @@ import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
 
-
-    public enum Style {
-        DEFAULT_STYLE,
-        DARK_MODE
-    }
-
-
-    private Stage stage;
     private EngineImpl engine;
     private File newFile, oldFile;
-    private String userInput;
     private STLSheet stlSheet;
     private sheetDTO sheetDto;
     private LoadDTO loadResult;
-    private CellDataDTO cellData;
-    public boolean isStyleChanged = false;
-    private Map<String, Set<String>> selectedValues = new HashMap<>();
-    private String rangeParams;
 
     //all the components
     @FXML
@@ -112,11 +98,6 @@ public class AppController {
         tableFunctionality.setDisable(disable);
         loadFile.setDisable(disable);
         gridSheet.setDisable(disable);
-    }
-
-    public void saveSelectedValues(Map<String, Set<String>> selectedValues) {
-        // Process or save the selected values as needed
-        this.selectedValues = selectedValues;
     }
 
     private void outOfFocus() {
@@ -229,8 +210,7 @@ public class AppController {
     }
 
     public void setAlignment(String alignment) {
-        String id = cellFunctionsController.getCellIdFocused();
-        gridSheetController.updateAliment(alignment, id);
+        gridSheetController.updateAliment(alignment);
     }
 
     public void addNewRange(String rangeName, String fromCell, String toCell) {
@@ -281,8 +261,7 @@ public class AppController {
             cellFunctionsController.showInfoAlert(e.getMessage());
         }
     }
-
-//-------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------------------------------------------------------------------------//
 
     public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
@@ -340,34 +319,4 @@ public class AppController {
         stage.setScene(scene);
         stage.show();
     }
-
-    private Style styleChosen = Style.DEFAULT_STYLE;
-
-    public void setStyleChosen(String styleName) {
-        switch (styleName) {
-            case "No style":
-                styleChosen = Style.DEFAULT_STYLE;
-                break;
-            case "Dark theme":
-                styleChosen = Style.DARK_MODE;
-                break;
-        }
-    }
-
-    public void setStyleOnParts() {
-        tableFunctionalityController.updateStyleOfVBox(getStyleChosen());
-        //loadFileController.updateLoadHBoxStyle(getStyleChosen());
-        cellFunctionsController.updateCellHBoxStyle(getStyleChosen());
-        gridSheetController.changeGridPaneStyle(getStyleChosen());
-
-    }
-
-    public void updateCells() {
-        gridSheetController.updateAllCellStyles(getStyleChosen());
-    }
-
-    public Style getStyleChosen() {
-        return styleChosen;
-    }
-
 }

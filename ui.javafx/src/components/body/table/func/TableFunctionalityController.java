@@ -3,8 +3,6 @@ package components.body.table.func;
 import components.main.AppController;
 import dto.CellDataDTO;
 import expression.api.ObjType;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,9 +25,6 @@ import java.util.stream.Collectors;
 
 public class TableFunctionalityController {
 
-    @FXML
-    private VBox tableFuncVBox;
-    private String columnToFilter;
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -251,12 +246,11 @@ public class TableFunctionalityController {
         return columnToCellValues;
     }
 
-
-    public void filterButtonListener(ActionEvent actionEvent) {
+    public void filterButtonListener() {
         appController.filterButtonClicked();
     }
 
-    public void sortButtonListener(ActionEvent actionEvent) {
+    public void sortButtonListener() {
         appController.sortButtonClicked();
     }
 
@@ -356,16 +350,6 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
-    private void changeButtonStyle(Button button, AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE:
-                button.getStyleClass().add("button");
-                break;
-            case DARK_MODE:
-                button.getStyleClass().add("button-dark-mode");
-                break;
-        }
-    }
 
     private void buildModifySizePopup(String title, String promptText, boolean isColumn) {
         Stage popupStage = new Stage();
@@ -385,7 +369,6 @@ public class TableFunctionalityController {
     private VBox createModifySizePopupVBox(TextField inputField, Stage popupStage, String promptText, boolean isColumn) {
         Label promptLabel = new Label(promptText);
         Button confirmButton = new Button(isColumn ? "Set Width" : "Set Height");
-        changeButtonStyle(confirmButton, appController.getStyleChosen());
         confirmButton.setOnAction(event -> handleModifySizePopupConfirm(inputField, popupStage));
         return new VBox(20, promptLabel, inputField, confirmButton);
     }
@@ -446,7 +429,6 @@ public class TableFunctionalityController {
 
     private Button getButtonForAlimentPopup(ToggleGroup alignmentGroup, Stage popupStage) {
         Button confirmButton = new Button("Set Alignment");
-        changeButtonStyle(confirmButton, appController.getStyleChosen());
         confirmButton.setOnAction(event -> {
             RadioButton selectedButton = (RadioButton) alignmentGroup.getSelectedToggle();
             if (selectedButton != null) {
@@ -470,13 +452,12 @@ public class TableFunctionalityController {
     }
 
     @FXML
-    public void resetCellStyleListener(ActionEvent actionEvent) {
+    public void resetCellStyleListener() {
         appController.resetStyleClicked();
     }
 
     private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage, boolean noName, ConfirmType type) {
         Button button = new Button("Confirm");
-        changeButtonStyle(button, appController.getStyleChosen());
         button.setOnAction(event -> {
             try {
                 String fromCell = fromCellField.getText().trim();
@@ -590,24 +571,5 @@ public class TableFunctionalityController {
     private void deleteExistingRangeListener() {
         viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
     }
-
-    public void updateStyleOfVBox(AppController.Style style) {
-        tableFuncVBox.getStyleClass().clear();
-        changeVBoxStyle(style);
-    }
-
-    private void changeVBoxStyle(AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                tableFuncVBox.getStyleClass().add("vbox");
-                break;
-            }
-            case DARK_MODE -> {
-                tableFuncVBox.getStyleClass().add("vbox-dark-mode");
-                break;
-            }
-        }
-    }
-
 
 }

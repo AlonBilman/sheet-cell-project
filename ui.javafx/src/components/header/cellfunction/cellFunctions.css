@@ -8,16 +8,6 @@
     -fx-background-insets: 0, 0; /* Remove default insets */
 }
 
-.hbox-dark-mode{
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
-    -fx-padding: 10px; /* Padding around the content */
-    -fx-spacing: 15px; /* Space between children */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-background-insets: 0, 0; /* Remove default insets */
-}
-
 /* Styling for Labels */
 .label-style {
     -fx-background-color: #ffffff; /* Clean white background */
@@ -26,17 +16,6 @@
     -fx-border-radius: 5px; /* Rounded corners to match buttons */
     -fx-padding: 10px; /* Padding inside the label for a spacious look */
     -fx-text-fill: #333333; /* Dark gray text color for readability */
-    -fx-font-size: 14px; /* Larger font size to match buttons */
-    -fx-font-weight: bold; /* Bold text for emphasis */
-}
-
-.label-style-dark-mode {
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match buttons */
-    -fx-padding: 10px; /* Padding inside the label for a spacious look */
     -fx-font-size: 14px; /* Larger font size to match buttons */
     -fx-font-weight: bold; /* Bold text for emphasis */
 }
@@ -81,16 +60,6 @@
 .text-field-style {
     -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #cccccc; /* Light gray border */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match other elements */
-    -fx-padding: 10px; /* Padding inside the text field for consistency */
-    -fx-font-size: 14px; /* Larger font size for better readability */
-}
-
-.text-field-style-dark-mode {
-    -fx-background-color: #372A27;
-    -fx-text-fill: #D75;
-    -fx-border-color: #292C90;
     -fx-border-width: 1px; /* Thin border */
     -fx-border-radius: 5px; /* Rounded corners to match other elements */
     -fx-padding: 10px; /* Padding inside the text field for consistency */
