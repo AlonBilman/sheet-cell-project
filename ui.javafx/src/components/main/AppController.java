@@ -11,6 +11,9 @@ import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -19,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -260,7 +264,8 @@ public class AppController {
 
     public void confirmVersionClicked(Integer selectedVersion) {
         try {
-            cellFunctionsController.showVersion(engine.getSheets().get(selectedVersion), selectedVersion.toString());
+            cellFunctionsController.showVersion(
+                    engine.getSheets().get(selectedVersion), "Version Number: "+selectedVersion.toString());
         } catch (Exception e) {
             cellFunctionsController.showInfoAlert(e.getMessage());
         }
@@ -275,7 +280,7 @@ public class AppController {
             Set<CellDataDTO> cells = engine.getSetOfCellsDtoDummyRange(params);
             if(type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
                 tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
-            else tableFunctionalityController.sortColumnPopup(fromCell, toCell);
+            else tableFunctionalityController.sortColumnPopup(fromCell.toUpperCase(), toCell.toUpperCase());
         } catch (RuntimeException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
@@ -292,7 +297,7 @@ public class AppController {
     public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy) {
         sheetDTO filteredSheet = engine.filter(fromCell.trim() + ".." + toCell.trim(), filterBy);
         try {
-            cellFunctionsController.showVersion(filteredSheet,
+            showSheetPopup(filteredSheet,
                     "No number | Filtered from "+fromCell +" to "+toCell+" | By : "+filterBy);
         }
         catch (IOException e) {
@@ -303,12 +308,28 @@ public class AppController {
     public void sortParamsConfirmed(String fromCell, String toCell, List<String> sortBy) {
         sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(),sortBy);
         try{
-            cellFunctionsController.showVersion(sortedSheet,
+            showSheetPopup(sortedSheet,
                     "no number | Sorted from "+fromCell +" to "+toCell+" | By : "+ sortBy);
         }
         catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
+    }
+
+    public void showSheetPopup(sheetDTO sheet , String title) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle(title);
+        FXMLLoader loader = new FXMLLoader();
+        URL versionFXML = getClass().getResource("/components/body/table/view/gridSheetView.fxml");
+        loader.setLocation(versionFXML);
+        Parent root = loader.load();
+        GridSheetController controller = loader.getController();
+        controller.setMainController(this);
+        controller.populateTableView(sheet, true);
+        controller.disableGridPane();
+        Scene scene = new Scene(root, 800, 800);
+        stage.setScene(scene);
+        stage.show();
     }
 
     private Style styleChosen = Style.DEFAULT_STYLE;

@@ -153,6 +153,14 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
+    private List<String> getAllColumns(String fromCell, String toCell) {
+        List<String> columns = new ArrayList<>();
+        for (int i = fromCell.charAt(0); i <= toCell.charAt(0); i++) {
+            columns.add(String.valueOf((char) i));
+        }
+        return columns;
+    }
+
     public void filterColumnPopup(Set<CellDataDTO> cells, String fromCell, String toCell) {
         Set<String> colToFilterBy = new HashSet<>();
         Stage popupStage = new Stage();
@@ -161,8 +169,8 @@ public class TableFunctionalityController {
         vbox.setSpacing(20);
         vbox.setAlignment(Pos.CENTER);
         List<CheckBox> checkBoxes = new ArrayList<>();
-        for (int i = fromCell.charAt(0); i <= toCell.charAt(0); i++) {
-            CheckBox checkBox = new CheckBox(String.valueOf((char) i).toUpperCase());
+        for (String i : getAllColumns(fromCell.toUpperCase(), toCell.toUpperCase())) {
+            CheckBox checkBox = new CheckBox(i);
             checkBoxes.add(checkBox);
             vbox.getChildren().add(checkBox);
         }
@@ -258,78 +266,71 @@ public class TableFunctionalityController {
         VBox vbox = new VBox();
         vbox.setSpacing(20);
         vbox.setAlignment(Pos.CENTER);
-
+        int[] counter = {1};
+        boolean[] isUpdating = {false};
         List<String> sortBy = new ArrayList<>();
-
         List<ChoiceBox<String>> choiceBoxes = new ArrayList<>();
-
-        List<String> allColumns = new ArrayList<>();
-        for (int i = fromCell.charAt(0); i <= toCell.charAt(0); i++) {
-            allColumns.add(String.valueOf((char)(i)));
-        }
-        // Method to update available options in all ChoiceBoxes
+        List<String> allColumns = getAllColumns(fromCell.toUpperCase(), toCell.toUpperCase());
         Runnable updateChoiceBoxOptions = () -> {
+            isUpdating[0] = true; //set flag to true while updating, using an array to make it work with lambda expression (Intelij offered)
             Set<String> selectedColumns = choiceBoxes.stream()
                     .map(ChoiceBox::getValue)
-                    .filter(Objects::nonNull) // Exclude null values (unselected boxes)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
 
             for (ChoiceBox<String> choiceBox : choiceBoxes) {
                 String currentSelection = choiceBox.getValue();
-                choiceBox.getItems().clear(); // Clear existing items
-
-                // Add back all columns except the ones that are already selected
-                choiceBox.getItems().addAll(
-                        allColumns.stream()
-                                .filter(col -> !selectedColumns.contains(col) || col.equals(currentSelection))
-                                .toList()
+                choiceBox.getItems().clear();
+                //add back all columns except the ones that are already selected
+                choiceBox.getItems().addAll(allColumns.stream()
+                        .filter(col -> !selectedColumns.contains(col) || col.equals(currentSelection))
+                        .toList()
                 );
-
-                // Preserve the current selection
                 if (currentSelection != null) {
                     choiceBox.setValue(currentSelection);
                 }
             }
+            isUpdating[0] = false;
+            //reset flag after updating the choice box,
+            //to stop recursive calls to every choice box on action
         };
-
-        // Method to add a new ChoiceBox
         Runnable addNewChoiceBox = () -> {
-            Label label = new Label("Enter column to sort by:");
+            Label label = new Label("Enter column to sort by (priority " + counter[0]++ + ")");
             vbox.getChildren().add(label);
             ChoiceBox<String> choiceBox = new ChoiceBox<>();
-            choiceBox.setOnAction(e -> updateChoiceBoxOptions.run());
-            choiceBox.getSelectionModel().select(0); // Select the first item as a placeholder
+            choiceBox.setOnAction(e -> {
+                if (!isUpdating[0])
+                    updateChoiceBoxOptions.run();
+            });
             choiceBoxes.add(choiceBox);
-            vbox.getChildren().add(choiceBox); // Add it directly to the VBox
-            updateChoiceBoxOptions.run(); // Update available columns immediately after adding
+            vbox.getChildren().add(choiceBox);
+            updateChoiceBoxOptions.run();
         };
-
-        // Button to add more ChoiceBoxes
         Button addChoiceBoxButton = new Button("Add Another Column");
-        addChoiceBoxButton.setOnAction(e -> addNewChoiceBox.run());
+        addChoiceBoxButton.setOnAction(e -> {
+            if(counter[0]<=allColumns.size())
+                addNewChoiceBox.run();
+            else {
+                addChoiceBoxButton.setText("No more columns...");
+                addChoiceBoxButton.setDisable(true);
+            }
+        });
         vbox.getChildren().add(addChoiceBoxButton);
-
-        // Add a button to confirm the selection
         Button confirmButton = new Button("Confirm Selection");
         confirmButton.setOnAction(e -> {
             for (ChoiceBox<String> choiceBox : choiceBoxes) {
                 String selectedCol = choiceBox.getValue();
                 if (selectedCol != null) {
-                    sortBy.add(selectedCol); // Add selected columns to the set
+                    sortBy.add(selectedCol); //add selected columns to the set
                 }
             }
-            appController.sortParamsConfirmed(fromCell,toCell,sortBy);
+            appController.sortParamsConfirmed(fromCell, toCell, sortBy);
             popupStage.close();
         });
-
         vbox.getChildren().add(confirmButton);
-
-        // Add the first ChoiceBox
         addNewChoiceBox.run();
-
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(vbox);
-
         popupStage.setScene(new Scene(scrollPane, 300, 400));
         popupStage.showAndWait();
     }
@@ -516,7 +517,7 @@ public class TableFunctionalityController {
         toCellField.setPromptText("To: e.g., A6");
 
         setUnfocused(rangeNameField, fromCellField, toCellField);
-        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage, false,ConfirmType.ADD_NEW_RANGE);
+        Button confirmButton = createNewRangeButton(rangeNameField, fromCellField, toCellField, popupStage, false, ConfirmType.ADD_NEW_RANGE);
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
 
         Scene scene = new Scene(vbox, 300, 200);

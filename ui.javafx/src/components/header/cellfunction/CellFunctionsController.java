@@ -1,13 +1,10 @@
 package components.header.cellfunction;
 
-import components.body.table.view.GridSheetController;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -16,7 +13,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class CellFunctionsController {
 
@@ -149,20 +145,8 @@ public class CellFunctionsController {
         popupStage.showAndWait();
     }
 
-    public void showVersion(sheetDTO sheet, String versionNumber) throws IOException {
-        Stage stage = new Stage();
-        stage.setTitle("Table version number: " + versionNumber);
-        FXMLLoader loader = new FXMLLoader();
-        URL versionFXML = getClass().getResource("/components/body/table/view/gridSheetView.fxml");
-        loader.setLocation(versionFXML);
-        Parent root = loader.load();
-        GridSheetController controller = loader.getController();
-        controller.setMainController(this.appController);
-        controller.populateTableView(sheet, true);
-        controller.disableGridPane();
-        Scene scene = new Scene(root, 800, 800);
-        stage.setScene(scene);
-        stage.show();
+    public void showVersion(sheetDTO sheet, String titleText) throws IOException {
+        appController.showSheetPopup(sheet,titleText);
     }
 
     public void getVersionListener() {
