@@ -128,11 +128,9 @@ public class GridSheetController {
         return labelMap.get(labelId);
     }
 
-
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
         cellLabel.getStyleClass().add("cell-default");
-        //changeLabelStyle(cellLabel, appController.getStyleChosen());
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
 
@@ -141,6 +139,13 @@ public class GridSheetController {
         cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(cellLabel.getText()));
     }
 
+    public void setTheme( String newTheme) {
+        this.currTheme = newTheme;
+        scrollPane.getStylesheets().clear();
+        // Add the new stylesheet
+        String newStyle = "/components/body/table/view/gridSheetView" + newTheme + ".css";
+        scrollPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
+    }
 
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);

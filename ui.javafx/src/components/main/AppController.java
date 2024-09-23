@@ -169,6 +169,7 @@ public class AppController {
                 TableFunctionalityController.ButtonState.CLICKING_CELL, false);
     }
 
+
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
         engine.setBackgroundColor(id, selectedColor.toString());
@@ -186,6 +187,7 @@ public class AppController {
         gridSheetController.resetToDefault(id);
         engine.setTextColor(id, null);
         engine.setBackgroundColor(id, null);
+
     }
 
     public void BoarderClicked(String boarderTextId) {
@@ -288,7 +290,7 @@ public class AppController {
         sheetDTO filteredSheet = engine.filter(fromCell.trim() + ".." + toCell.trim(), filterBy);
         try {
             showSheetPopup(filteredSheet,
-                    "No number | Filtered from " + fromCell + " to " + toCell + " | By : " + filterBy);
+                    "Filtered from " + fromCell + " to " + toCell + " | By : " + filterBy);
         } catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
@@ -298,7 +300,7 @@ public class AppController {
         sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(), sortBy);
         try {
             showSheetPopup(sortedSheet,
-                    "no number | Sorted from " + fromCell + " to " + toCell + " | By : " + sortBy);
+                    "Sorted from " + fromCell + " to " + toCell + " | By : " + sortBy);
         } catch (IOException e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
         }
@@ -319,4 +321,20 @@ public class AppController {
         stage.setScene(scene);
         stage.show();
     }
+
+
+    public void setStyleOnParts(String value) {
+       if(value.equals("Dark theme"))
+        setNewTheme("DarkTheme");
+       else if(value.equals("No style"))
+           setNewTheme("Default");
+    }
+
+    public void setNewTheme(String value){
+        tableFunctionalityController.setTheme(value);
+        loadFileController.setTheme(value);
+        cellFunctionsController.setTheme(value);
+        gridSheetController.setTheme(value);
+    }
+
 }

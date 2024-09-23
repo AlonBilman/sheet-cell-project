@@ -1,0 +1,73 @@
+/* General styles for ScrollPane */
+.scroll-pane {
+    -fx-background-color: #e0e0e0; /* Light gray background to blend with a gray theme */
+    -fx-border-color: #b3b3b3; /* Medium gray border for subtle definition */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-background-insets: 0, 0; /* Remove default insets */
+}
+
+/* Styling for VBox containers */
+.vbox {
+    -fx-background-color: #d9d9d9; /* Slightly darker gray background for contrast */
+    -fx-padding: 20px; /* Increased padding for a spacious look */
+    -fx-spacing: 15px; /* Increased spacing between children */
+}
+
+/* Styling for Buttons */
+.button {
+    -fx-background-color: #4a90e2; /* Muted blue for buttons to contrast with gray background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 15px;
+    -fx-border-color: #4a90e2; /* Matching border color */
+    -fx-border-width: 2px;
+    -fx-cursor: hand; /* Pointer cursor on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
+}
+
+.button:hover {
+    -fx-background-color: #357abd; /* Darker blue for hover */
+    -fx-border-color: #357abd; /* Matching border color on hover */
+}
+
+.button:disabled {
+    -fx-background-color: #c0c0c0; /* Light gray for disabled state */
+    -fx-text-fill: #8c8c8c; /* Darker gray text for disabled state */
+    -fx-border-color: #c0c0c0; /* Matching border color */
+}
+
+/* Styling for button underlines */
+.button.underline {
+    -fx-underline: true; /* Underline text for specific buttons */
+}
+
+/* Adjustments for specific button IDs */
+#ColSetButton, #RowSetButton, #alignmentSetButton, #cellTextPick, #cellBackgroundPick, #resetButton,#sortButton, #filterButton {
+    -fx-background-color: #618685; /* Muted grey for contrast */
+    -fx-border-color: #6baed6; /* Matching border color */
+    -fx-text-fill: #ffffff; /* White text */
+}
+
+#ColSetButton:hover, #RowSetButton:hover, #alignmentSetButton:hover, #cellTextPick:hover, #cellBackgroundPick:hover, #resetButton:hover {
+    -fx-background-color: #4180a6; /* Darker blue on hover */
+    -fx-border-color: #4180a6; /* Matching border color on hover */
+}
+
+#addNewRangeButton, #deleteExistingRangeButton, #viewExistingRangeButton {
+    -fx-background-color: #618685; /* Muted grey for button backgrounds */
+    -fx-border-color: #6baed6;
+    -fx-text-fill: #ffffff; /* White text */
+}
+
+#addNewRangeButton:hover, #deleteExistingRangeButton:hover, #viewExistingRangeButton:hover {
+    -fx-background-color: #4180a6;
+    -fx-border-color: #4180a6;
+}
+
+/* Margin settings */
+.vbox > .children > .button {
+    -fx-margin: 10px 0; /* Increased margin for better spacing */
+}
