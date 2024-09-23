@@ -1,6 +1,6 @@
 /* General styling for HBox */
 .hbox {
-    -fx-background-color: #f0f0f0; /* Light gray background for modern look */
+    -fx-background-color: #b2b2b2; /* Light gray background for modern look */
     -fx-padding: 10px; /* Padding around the content */
     -fx-spacing: 15px; /* Space between children */
     -fx-border-color: #e0e0e0; /* Subtle gray border */
@@ -8,19 +8,9 @@
     -fx-background-insets: 0, 0; /* Remove default insets */
 }
 
-.hbox-dark-mode{
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
-    -fx-padding: 10px; /* Padding around the content */
-    -fx-spacing: 15px; /* Space between children */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-background-insets: 0, 0; /* Remove default insets */
-}
-
 /* Styling for Button */
 #LoadNewFileButton {
-    -fx-background-color: #007bff; /* Vibrant blue background */
+    -fx-background-color: #b2b2b2; /* Vibrant blue background */
     -fx-text-fill: #ffffff; /* White text */
     -fx-font-size: 17px; /* Font size as specified in FXML */
     -fx-font-weight: bold; /* Bold text for emphasis */
@@ -35,13 +25,13 @@
 }
 
 #LoadNewFileButton:hover {
-    -fx-background-color: #0056b3; /* Darker blue for hover effect */
+    -fx-background-color: #618685; /* Darker blue for hover effect */
     -fx-border-color: #0056b3; /* Matching border color on hover */
 }
 
 /* Styling for Label */
 .LoadNewFileLabel {
-    -fx-background-color: #ffffff; /* Clean white background */
+    -fx-background-color: #b2b2b2; /* Clean white background */
     -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
     -fx-border-width: 1px; /* Thin border */
     -fx-border-radius: 5px; /* Rounded corners */
@@ -51,13 +41,3 @@
     -fx-font-weight: normal; /* Regular font weight for label */
 }
 
-.LoadNewFileLabel-dark-mode{
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners */
-    -fx-padding: 5px; /* Padding inside the label */
-    -fx-font-size: 15px; /* Font size as specified in FXML */
-    -fx-font-weight: normal; /* Regular font weight for label */
-}

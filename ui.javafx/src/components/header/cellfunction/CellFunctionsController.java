@@ -1,10 +1,13 @@
 package components.header.cellfunction;
 
+import components.body.table.view.GridSheetController;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -13,6 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 
 public class CellFunctionsController {
 
@@ -65,6 +70,15 @@ public class CellFunctionsController {
         outOfFocus();
     }
 
+    public void setTheme(String newTheme) {
+
+        cellFuncHBox.getStylesheets().clear();
+
+        // Add the new stylesheet
+        String newStyle = "/components/header/cellfunction/cellFunctions" + newTheme + ".css";
+        cellFuncHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
+    }
+
     public void outOfFocus() {
         currCellShown = null;
         cellIdProperty.setText("Selected Cell Id");
@@ -73,33 +87,6 @@ public class CellFunctionsController {
         newOriginalValText.setText("New Original Value");
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
-    }
-
-    public void updateCellHBoxStyle(AppController.Style style) {
-        cellUpdatedProperty.getStyleClass().clear();
-        cellValueProperty.getStyleClass().clear();
-        cellIdProperty.getStyleClass().clear();
-        cellFuncHBox.getStyleClass().clear(); // Clear existing styles
-        changeHBoxStyle(style); // Apply the new style
-    }
-
-    private void changeHBoxStyle(AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                cellIdProperty.getStyleClass().add("label-style");
-                cellValueProperty.getStyleClass().add("label-style");
-                cellUpdatedProperty.getStyleClass().add("label-style");
-                cellFuncHBox.getStyleClass().add("hbox"); // Apply default style
-                break;
-            }
-            case DARK_MODE -> {
-                cellIdProperty.getStyleClass().add("label-style-dark-mode");
-                cellValueProperty.getStyleClass().add("label-style-dark-mode");
-                cellUpdatedProperty.getStyleClass().add("label-style-dark-mode");
-                cellFuncHBox.getStyleClass().add("hbox-dark-mode"); // Apply dark mode style
-                break;
-            }
-        }
     }
 
     @FXML
@@ -145,8 +132,20 @@ public class CellFunctionsController {
         popupStage.showAndWait();
     }
 
-    public void showVersion(sheetDTO sheet, String titleText) throws IOException {
-        appController.showSheetPopup(sheet,titleText);
+    public void showVersion(sheetDTO sheet, String versionNumber) throws IOException {
+        Stage stage = new Stage();
+        stage.setTitle("Table version number: " + versionNumber);
+        FXMLLoader loader = new FXMLLoader();
+        URL versionFXML = getClass().getResource("/components/body/table/view/gridSheetView.fxml");
+        loader.setLocation(versionFXML);
+        Parent root = loader.load();
+        GridSheetController controller = loader.getController();
+        controller.setMainController(appController);
+        controller.populateTableView(sheet, true);
+        controller.disableGridPane();
+        Scene scene = new Scene(root, 800, 800);
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 
     public void getVersionListener() {

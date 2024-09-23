@@ -37,9 +37,7 @@ public class TitleCardController {
         styleChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!Objects.equals(oldValue, newValue)) {
                 // Update the style in the AppController
-                appController.setStyleChosen(newValue);
-                appController.updateCells();
-                appController.setStyleOnParts();
+                appController.setStyleOnParts(newValue);
             }
         });
     }

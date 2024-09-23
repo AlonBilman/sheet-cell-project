@@ -1,6 +1,6 @@
 /* General styling for HBox */
 .hbox {
-    -fx-background-color: #f0f0f0; /* Light gray background for modern look */
+    -fx-background-color: #b2b2b2; /* Light gray background for modern look */
     -fx-padding: 10px; /* Padding around the content */
     -fx-spacing: 15px; /* Space between children */
     -fx-border-color: #e0e0e0; /* Subtle gray border */
@@ -8,19 +8,10 @@
     -fx-background-insets: 0, 0; /* Remove default insets */
 }
 
-.hbox-dark-mode{
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
-    -fx-padding: 10px; /* Padding around the content */
-    -fx-spacing: 15px; /* Space between children */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-background-insets: 0, 0; /* Remove default insets */
-}
 
 /* Styling for Labels */
 .label-style {
-    -fx-background-color: #ffffff; /* Clean white background */
+    -fx-background-color: #b2b2b2; /* Clean white background */
     -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
     -fx-border-width: 1px; /* Thin border */
     -fx-border-radius: 5px; /* Rounded corners to match buttons */
@@ -30,20 +21,9 @@
     -fx-font-weight: bold; /* Bold text for emphasis */
 }
 
-.label-style-dark-mode {
-    -fx-background-color: #372A27;
-    -fx-text-fill: #DFDC39;
-    -fx-border-color: #292C90;
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match buttons */
-    -fx-padding: 10px; /* Padding inside the label for a spacious look */
-    -fx-font-size: 14px; /* Larger font size to match buttons */
-    -fx-font-weight: bold; /* Bold text for emphasis */
-}
-
 /* Styling for Update Button */
 .update-button {
-    -fx-background-color: #007bff; /* Vibrant blue background to match theme */
+    -fx-background-color: #b2b2b2; /* Vibrant blue background to match theme */
     -fx-text-fill: #ffffff; /* White text */
     -fx-border-radius: 5px; /* Rounded corners to match labels */
     -fx-font-size: 14px; /* Larger font size for consistency */
@@ -53,13 +33,13 @@
 }
 
 .update-button:hover {
-    -fx-background-color: #0056b3; /* Darker blue for hover effect */
+    -fx-background-color: #618685; /* Darker blue for hover effect */
     -fx-border-color: #0056b3; /* Matching border color on hover */
 }
 
 /* Styling for Version Button */
 .version-button {
-    -fx-background-color: #007bff; /* Vibrant blue background */
+    -fx-background-color: #b2b2b2; /* Vibrant blue background */
     -fx-text-fill: #ffffff; /* White text */
     -fx-border-radius: 5px; /* Rounded corners to match the rest of the elements */
     -fx-font-size: 14px; /* Consistent font size */
@@ -69,7 +49,7 @@
 }
 
 .version-button:hover {
-    -fx-background-color: #0056b3; /* Darker blue on hover */
+    -fx-background-color: #618685; /* Darker blue on hover */
     -fx-border-color: #0056b3; /* Matching border */
 }
 
@@ -87,15 +67,6 @@
     -fx-font-size: 14px; /* Larger font size for better readability */
 }
 
-.text-field-style-dark-mode {
-    -fx-background-color: #372A27;
-    -fx-text-fill: #D75;
-    -fx-border-color: #292C90;
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match other elements */
-    -fx-padding: 10px; /* Padding inside the text field for consistency */
-    -fx-font-size: 14px; /* Larger font size for better readability */
-}
 
 /* Styling for disabled elements */
 .disabled {

@@ -26,7 +26,8 @@ import java.util.stream.Collectors;
 
 
 public class TableFunctionalityController {
-
+    @FXML
+    public ScrollPane scrollPane;
     @FXML
     private VBox tableFuncVBox;
     private String columnToFilter;
@@ -60,6 +61,7 @@ public class TableFunctionalityController {
     @FXML
     private Button viewExistingRangeButton;
 
+    private String cssLoad = "Default";
 
     public enum ButtonState {
         LOADING_FILE,
@@ -92,6 +94,23 @@ public class TableFunctionalityController {
 
     public void setMainController(AppController mainController) {
         this.appController = mainController;
+    }
+
+    // Method to change the theme dynamically
+    public void setTheme(String newTheme) {
+        cssSet(newTheme);
+        // Clear the existing stylesheets
+        scrollPane.getStylesheets().clear();
+
+        // Add the new theme stylesheet
+        scrollPane.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + newTheme + ".css"))
+                        .toExternalForm()
+        );
+    }
+
+    private void cssSet(String newTheme) {
+        this.cssLoad = newTheme;
     }
 
     public void updateButtonStates() {
@@ -147,7 +166,7 @@ public class TableFunctionalityController {
         Button confirmButton = createNewRangeButton(null, fromCellField, toCellField, popupStage, true, Type);
         vbox.getChildren().addAll(fromCellField, toCellField, confirmButton);
         Scene scene = new Scene(vbox, 300, 200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
@@ -356,16 +375,6 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
-    private void changeButtonStyle(Button button, AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE:
-                button.getStyleClass().add("button");
-                break;
-            case DARK_MODE:
-                button.getStyleClass().add("button-dark-mode");
-                break;
-        }
-    }
 
     private void buildModifySizePopup(String title, String promptText, boolean isColumn) {
         Stage popupStage = new Stage();
@@ -377,7 +386,7 @@ public class TableFunctionalityController {
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(10));
         Scene scene = new Scene(vbox, 320, 150);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.show();
     }
@@ -385,7 +394,6 @@ public class TableFunctionalityController {
     private VBox createModifySizePopupVBox(TextField inputField, Stage popupStage, String promptText, boolean isColumn) {
         Label promptLabel = new Label(promptText);
         Button confirmButton = new Button(isColumn ? "Set Width" : "Set Height");
-        changeButtonStyle(confirmButton, appController.getStyleChosen());
         confirmButton.setOnAction(event -> handleModifySizePopupConfirm(inputField, popupStage));
         return new VBox(20, promptLabel, inputField, confirmButton);
     }
@@ -439,14 +447,13 @@ public class TableFunctionalityController {
         vbox.setPadding(new Insets(15));
 
         Scene scene = new Scene(vbox, 300, 150);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
 
     private Button getButtonForAlimentPopup(ToggleGroup alignmentGroup, Stage popupStage) {
         Button confirmButton = new Button("Set Alignment");
-        changeButtonStyle(confirmButton, appController.getStyleChosen());
         confirmButton.setOnAction(event -> {
             RadioButton selectedButton = (RadioButton) alignmentGroup.getSelectedToggle();
             if (selectedButton != null) {
@@ -476,7 +483,6 @@ public class TableFunctionalityController {
 
     private Button createNewRangeButton(TextField rangeNameField, TextField fromCellField, TextField toCellField, Stage currStage, boolean noName, ConfirmType type) {
         Button button = new Button("Confirm");
-        changeButtonStyle(button, appController.getStyleChosen());
         button.setOnAction(event -> {
             try {
                 String fromCell = fromCellField.getText().trim();
@@ -521,7 +527,7 @@ public class TableFunctionalityController {
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
 
         Scene scene = new Scene(vbox, 300, 200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
@@ -555,7 +561,7 @@ public class TableFunctionalityController {
         ScrollPane scrollPane = new ScrollPane(vbox);
         scrollPane.setFitToWidth(true);
         Scene scene = new Scene(scrollPane, 300, 200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
@@ -589,24 +595,6 @@ public class TableFunctionalityController {
     @FXML
     private void deleteExistingRangeListener() {
         viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
-    }
-
-    public void updateStyleOfVBox(AppController.Style style) {
-        tableFuncVBox.getStyleClass().clear();
-        changeVBoxStyle(style);
-    }
-
-    private void changeVBoxStyle(AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                tableFuncVBox.getStyleClass().add("vbox");
-                break;
-            }
-            case DARK_MODE -> {
-                tableFuncVBox.getStyleClass().add("vbox-dark-mode");
-                break;
-            }
-        }
     }
 
 

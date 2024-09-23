@@ -11,10 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Objects;
 
 public class LoadFileController {
 
     @FXML private HBox loadFileHBox;
+
     private AppController appController;
 
     @FXML
@@ -53,24 +55,13 @@ public class LoadFileController {
         appController.checkAndLoadFile(file);
     }
 
-    public void updateLoadHBoxStyle(AppController.Style style) {
-        filePathLabel.getStyleClass().clear();
-        loadFileHBox.getStyleClass().clear(); // Clear existing styles
-        changeHBoxStyle(style); // Apply the new style
+    public void setTheme( String newTheme) {
+        // Remove the current stylesheet (you might want to specify part of the name)
+        loadFileHBox.getStylesheets().clear(); // Adjust the name as needed
+
+        // Add the new stylesheet
+        String newStyle = "/components/header/loadfile/loadFile" + newTheme + ".css";
+        loadFileHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
 
-    private void changeHBoxStyle(AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                filePathLabel.getStyleClass().add("LoadNewFileLabel");
-                loadFileHBox.getStyleClass().add("hbox"); // Apply default style
-                break;
-            }
-            case DARK_MODE -> {
-                loadFileHBox.getStyleClass().add("hbox-dark-mode");
-                filePathLabel.getStyleClass().add("LoadNewFileLabel-dark-mode"); // Apply dark mode style
-                break;
-            }
-        }
-    }
 }

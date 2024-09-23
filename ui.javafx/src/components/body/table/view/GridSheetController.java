@@ -5,6 +5,7 @@ import dto.CellDataDTO;
 import dto.sheetDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -29,6 +30,7 @@ public class GridSheetController {
     private Map<String, Background> originalBackgrounds = new HashMap<>();
     private List<Label> focusedOn;
     private Map<String, Label> borderMap;
+    private String currTheme = "Default";
 
     public void initialize() {
         gridPane.getStyleClass().add("grid-pane");
@@ -77,7 +79,6 @@ public class GridSheetController {
         int maxRow = sheetCopy.getRowHeight();
         int maxCol = sheetCopy.getColWidth();
         Map<String, CellDataDTO> cells = sheetCopy.getActiveCells();
-
         if (isLoad) {
             labelMap.clear();
             originalBackgrounds.clear();
@@ -89,6 +90,7 @@ public class GridSheetController {
             for (int j = 1; j <= col; j++) {
                 String id = String.valueOf((char) ('A' + (j - 1))) + i;
                 Label cellLabel;
+
                 if (isLoad) {
                     cellLabel = new Label();
                     setCellFunctionality(cellLabel, maxRow, maxCol, id);
@@ -97,12 +99,13 @@ public class GridSheetController {
                 } else {
                     cellLabel = getNodeFromGridPane(id);
                 }
-                updateCellLabel(cellLabel, cells.get(id), id, isLoad);
+
+                updateCellLabel(cellLabel, cells.get(id));
             }
         }
     }
 
-    private void updateCellLabel(Label cellLabel, CellDataDTO cellData, String id, boolean isLoad) {
+    private void updateCellLabel(Label cellLabel, CellDataDTO cellData) {
         if (cellData == null) {
             cellLabel.setText("");
         } else {
@@ -112,57 +115,21 @@ public class GridSheetController {
             } else {
                 cellLabel.setText(value.toString());
             }
-            if (isLoad) {
-                String textColor = cellData.getCellColor().getTextColor();
-                String back = cellData.getCellColor().getBackgroundColor();
-                if (textColor != null)
-                    changeTextColor(id, Color.valueOf(textColor));
-                if (back != null)
-                    changeBackgroundColor(id, Color.valueOf(back));
-            }
         }
     }
-
 
     private Label getNodeFromGridPane(String labelId) {
         return labelMap.get(labelId);
     }
 
-    public void changeGridPaneStyle(AppController.Style style) {
-        gridPane.getStyleClass().clear();
-        changeGridStyle(style);
-    }
 
-    private void changeGridStyle(AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                gridPane.getStyleClass().add("grid-pane");
-                break;
-            }
-            case DARK_MODE -> {
-                gridPane.getStyleClass().add("grid-pane-dark-mode");
-                break;
-            }
-        }
-    }
-
-    private void changeLabelStyle(Label label, AppController.Style style) {
-        switch (style) {
-            case DEFAULT_STYLE -> {
-                label.getStyleClass().add("cell-default");
-                break;
-            }
-            case DARK_MODE -> {
-                label.getStyleClass().add("cell-dark-mode");
-                break;
-            }
-        }
+    private void changeLabelStyle(Label label ) {
+        label.getStyleClass().add("cell-default");
     }
 
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
         cellLabel.setPrefSize(maxColWidth, maxRowHeight);
-        cellLabel.getStyleClass().add("cell-default");
-        //changeLabelStyle(cellLabel, appController.getStyleChosen());
+        changeLabelStyle(cellLabel);
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }
 
@@ -171,21 +138,17 @@ public class GridSheetController {
         cellLabel.setOnMouseClicked(event -> appController.BoarderClicked(cellLabel.getText()));
     }
 
-    public void updateAllCellStyles(AppController.Style style) {
-        // Loop through all cells in the labelMap
-        for (Label label : labelMap.values()) {
-            // Reset and update each label's style
-            label.getStyleClass().clear(); // Clear previous styles
-            changeLabelStyle(label, style); // Apply the new style
-        }
-        for (Label label : borderMap.values()) {
-            label.getStyleClass().clear();
-            changeLabelStyle(label, style);
-        }
-    }
 
     public GridPane getGridPane() {
         return gridPane;
+    }
+
+    public void setTheme( String newTheme) {
+        this.currTheme = newTheme;
+        scrollPane.getStylesheets().clear();
+        // Add the new stylesheet
+        String newStyle = "/components/body/table/view/gridSheetView" + newTheme + ".css";
+        scrollPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
 
     public void colorizeImportantCells(sheetDTO curr, String id) {

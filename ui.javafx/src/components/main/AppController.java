@@ -31,13 +31,6 @@ import static checkfile.CheckForXMLFile.loadXMLFile;
 public class AppController {
 
 
-
-    public enum Style {
-        DEFAULT_STYLE,
-        DARK_MODE
-    }
-
-
     private Stage stage;
     private EngineImpl engine;
     private File newFile, oldFile;
@@ -265,7 +258,7 @@ public class AppController {
     public void confirmVersionClicked(Integer selectedVersion) {
         try {
             cellFunctionsController.showVersion(
-                    engine.getSheets().get(selectedVersion), "Version Number: "+selectedVersion.toString());
+                    engine.getSheets().get(selectedVersion), "Version Number: " + selectedVersion.toString());
         } catch (Exception e) {
             cellFunctionsController.showInfoAlert(e.getMessage());
         }
@@ -332,33 +325,19 @@ public class AppController {
         stage.show();
     }
 
-    private Style styleChosen = Style.DEFAULT_STYLE;
 
-    public void setStyleChosen(String styleName) {
-        switch (styleName) {
-            case "No style":
-                styleChosen = Style.DEFAULT_STYLE;
-                break;
-            case "Dark theme":
-                styleChosen = Style.DARK_MODE;
-                break;
-        }
+    public void setStyleOnParts(String value) {
+       if(value.equals("Dark theme"))
+        setNewTheme("DarkTheme");
+       else if(value.equals("No style"))
+           setNewTheme("Default");
     }
 
-    public void setStyleOnParts() {
-        tableFunctionalityController.updateStyleOfVBox(getStyleChosen());
-        loadFileController.updateLoadHBoxStyle(getStyleChosen());
-        cellFunctionsController.updateCellHBoxStyle(getStyleChosen());
-        gridSheetController.changeGridPaneStyle(getStyleChosen());
-
-    }
-
-    public void updateCells() {
-        gridSheetController.updateAllCellStyles(getStyleChosen());
-    }
-
-    public Style getStyleChosen() {
-        return styleChosen;
+    public void setNewTheme(String value){
+        tableFunctionalityController.setTheme(value);
+        loadFileController.setTheme(value);
+        cellFunctionsController.setTheme(value);
+        gridSheetController.setTheme(value);
     }
 
 }
