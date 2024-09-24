@@ -1,64 +1,60 @@
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-
 }
 
 .grid-pane {
-    -fx-background-color: #b2b2b2;
+    -fx-background-color: #f5f5f5; /* Light gray background */
     -fx-grid-lines-visible: true;
 }
 
 .boarder {
-    -fx-border-color: gray;
+    -fx-border-color: #808080; /* Medium gray border */
     -fx-alignment: center;
     -fx-font-size: 14px;
 }
 
 .cell-default {
-    -fx-background-color: #b2b2b2;
-    -fx-text-fill: black;
-    -fx-border-color: lightgray;
+    -fx-background-color: #e6e6e6; /* Light gray background */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-border-color: #b3b3b3; /* Light gray border */
     -fx-alignment: center;
     -fx-font-size: 14px;
 }
 
 .cell-non-default {
-    -fx-border-color: lightgray;
+    -fx-border-color: #b3b3b3; /* Light gray border */
     -fx-font-size: 14px;
     -fx-alignment: center;
 }
 
-
 .cell-default.cell-selected, .cell-non-default.cell-selected {
-    -fx-border-color: blue;
+    -fx-border-color: #4d4d4d; /* Darker gray for selected border */
     -fx-border-width: 2px;
     -fx-font-size: 16px;
 }
 
 .cell-default:hover, .cell-non-default:hover, .boarder:hover {
-    -fx-border-color: blue;
+    -fx-border-color: #4d4d4d; /* Darker gray on hover */
     -fx-border-width: 2px;
 }
 
 .cell-default:pressed, .cell-non-default:pressed, .boarder:pressed {
-    -fx-border-color: red;
+    -fx-border-color: #808080; /* Medium gray when pressed */
     -fx-border-width: 3px;
 }
 
 .cell-dependsOn {
-    -fx-background-color: lightsalmon;
+    -fx-background-color: #cccccc; /* Light gray for dependency cells */
 }
 
 .cell-affectsOn {
-    -fx-background-color: lightgreen;
+    -fx-background-color: #bfbfbf; /* Slightly darker gray for affected cells */
 }
-
 
 .focused-on {
-    -fx-background-color: lightblue;
+    -fx-background-color: #a6a6a6; /* Grayish blue for focused cells */
 }
-
 
 .cell-non-default.alignment-left {
     -fx-alignment: center-left;

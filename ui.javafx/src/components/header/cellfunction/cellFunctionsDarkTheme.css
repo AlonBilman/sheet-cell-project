@@ -1,74 +1,81 @@
 /* General styling for HBox */
 .hbox {
-    -fx-background-color: #b2b2b2; /* Light gray background for modern look */
-    -fx-padding: 10px; /* Padding around the content */
-    -fx-spacing: 15px; /* Space between children */
-    -fx-border-color: #e0e0e0; /* Subtle gray border */
-    -fx-border-width: 1px; /* Thin border */
+    -fx-background-color: #e0e0e0; /* Light gray background */
+    -fx-padding: 15px; /* Spacious padding */
+    -fx-spacing: 20px; /* Space between children */
+    -fx-border-color: #b3b3b3; /* Subtle gray border */
+    -fx-border-width: 1.5px; /* Slightly thicker border */
     -fx-background-insets: 0, 0; /* Remove default insets */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
 }
 
-
-/* Styling for Labels */
+/* Modernized styling for Labels */
 .label-style {
-    -fx-background-color: #b2b2b2; /* Clean white background */
-    -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match buttons */
-    -fx-padding: 10px; /* Padding inside the label for a spacious look */
-    -fx-text-fill: #333333; /* Dark gray text color for readability */
-    -fx-font-size: 14px; /* Larger font size to match buttons */
-    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-background-color: #f2f2f2; /* Soft light gray background */
+    -fx-border-color: #666666; /* Medium gray border */
+    -fx-border-width: 2px; /* Slightly thicker border */
+    -fx-padding: 12px; /* Spacious padding inside the label */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-font-size: 15px; /* Larger font size */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow effect */
 }
 
-/* Styling for Update Button */
-.update-button {
-    -fx-background-color: #b2b2b2; /* Vibrant blue background to match theme */
+.label-style:hover {
+    -fx-border-color: #4d4d4d; /* Darker gray on hover */
+}
+
+#exitDynamicChange, #dynamicChangeButton {
+    -fx-background-color: linear-gradient(to bottom, #999999, #666666); /* Gradient gray background */
     -fx-text-fill: #ffffff; /* White text */
-    -fx-border-radius: 5px; /* Rounded corners to match labels */
-    -fx-font-size: 14px; /* Larger font size for consistency */
-    -fx-padding: 10px 15px; /* Padding inside the button */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
-    -fx-cursor: hand; /* Pointer cursor on hover */
-}
-
-.update-button:hover {
-    -fx-background-color: #618685; /* Darker blue for hover effect */
-    -fx-border-color: #0056b3; /* Matching border color on hover */
-}
-
-/* Styling for Version Button */
-.version-button {
-    -fx-background-color: #b2b2b2; /* Vibrant blue background */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-border-radius: 5px; /* Rounded corners to match the rest of the elements */
-    -fx-font-size: 14px; /* Consistent font size */
-    -fx-padding: 10px 15px; /* Padding for spacious look */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Shadow effect */
+    -fx-font-size: 13px; /* Font size for consistency */
+    -fx-border-color: #666666; /* Darker gray border */
+    -fx-border-width: 1px; /* Border thickness */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow effect */
     -fx-cursor: hand; /* Pointer cursor */
 }
 
-.version-button:hover {
-    -fx-background-color: #618685; /* Darker blue on hover */
-    -fx-border-color: #0056b3; /* Matching border */
+#exitDynamicChange:disabled, #dynamicChangeButton:disabled {
+    -fx-opacity: 0.2; /* Reduced opacity for disabled state */
+}
+
+/* Styling for Update Button */
+.update-button, .version-button {
+    -fx-background-color: linear-gradient(to bottom, #999999, #666666); /* Gradient gray background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 15px; /* Font size for consistency */
+    -fx-padding: 12px 18px; /* Padding for better proportions */
+    -fx-border-color: #666666; /* Darker gray border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+.update-button:hover, .version-button:hover, #exitDynamicChange:hover, #dynamicChangeButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #808080, #4d4d4d); /* Darker gray hover effect */
+    -fx-border-color: #4d4d4d; /* Matching border on hover */
 }
 
 .version-button:disabled {
-    -fx-opacity: 0.6; /* Disabled state styling */
+    -fx-opacity: 0.4; /* Reduced opacity for disabled buttons */
 }
 
-/* Styling for TextField */
+/* Modernized styling for TextField */
 .text-field-style {
-    -fx-background-color: #ffffff; /* Clean white background */
-    -fx-border-color: #cccccc; /* Light gray border */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match other elements */
-    -fx-padding: 10px; /* Padding inside the text field for consistency */
-    -fx-font-size: 14px; /* Larger font size for better readability */
+    -fx-background-color: #f2f2f2; /* Light gray background */
+    -fx-border-color: #b3b3b3; /* Light gray border */
+    -fx-border-width: 1.5px; /* Slightly thicker border */
+    -fx-padding: 12px; /* Consistent padding */
+    -fx-font-size: 15px; /* Larger font size */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
 }
 
+.text-field-style:focused {
+    -fx-border-color: #666666; /* Medium gray border on focus */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Enhanced shadow on focus */
+}
 
-/* Styling for disabled elements */
+/* Disabled styling */
 .disabled {
-    -fx-opacity: 0.6; /* Slightly transparent for disabled elements */
+    -fx-opacity: 0.6; /* Reduced opacity for disabled elements */
 }

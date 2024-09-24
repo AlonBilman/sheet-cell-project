@@ -1,43 +1,46 @@
-/* General styling for HBox */
+/* Modernized styling for HBox */
 .hbox {
-    -fx-background-color: #b2b2b2; /* Light gray background for modern look */
-    -fx-padding: 10px; /* Padding around the content */
-    -fx-spacing: 15px; /* Space between children */
-    -fx-border-color: #e0e0e0; /* Subtle gray border */
-    -fx-border-width: 1px; /* Thin border */
+    -fx-background-color: #e0e0e0; /* Light gray background */
+    -fx-padding: 15px; /* Spacious padding */
+    -fx-spacing: 20px; /* Space between children */
+    -fx-border-color: #b3b3b3; /* Subtle gray border */
+    -fx-border-width: 1.5px; /* Slightly thicker border */
+    -fx-border-radius: 10px; /* Rounded corners */
     -fx-background-insets: 0, 0; /* Remove default insets */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
 }
 
-/* Styling for Button */
+/* Modernized styling for LoadNewFileButton */
 #LoadNewFileButton {
-    -fx-background-color: #b2b2b2; /* Vibrant blue background */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 17px; /* Font size as specified in FXML */
-    -fx-font-weight: bold; /* Bold text for emphasis */
-    -fx-border-radius: 5px; /* Rounded corners */
-    -fx-background-radius: 5px; /* Rounded background corners */
-    -fx-padding: 10px 15px; /* Padding inside the button */
-    -fx-border-color: #007bff; /* Matching border color */
-    -fx-border-width: 2px; /* Slightly thicker border for better visibility */
-    -fx-cursor: hand; /* Pointer cursor on hover */
-    -fx-underline: true; /* Underline text */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
+    -fx-background-color: linear-gradient(to bottom, #999999, #666666); /* Gradient gray background */
+    -fx-text-fill: #ffffff; /* White text for contrast */
+    -fx-font-size: 17px; /* Emphasized font size */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-border-radius: 6px; /* Rounded corners */
+    -fx-background-radius: 6px; /* Consistent rounded background */
+    -fx-padding: 12px 18px; /* Balanced padding */
+    -fx-border-color: #666666; /* Border color matches darker gradient */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-cursor: hand; /* Pointer cursor */
+    -fx-underline: true; /* Underlined text */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Enhanced shadow effect */
 }
 
 #LoadNewFileButton:hover {
-    -fx-background-color: #618685; /* Darker blue for hover effect */
-    -fx-border-color: #0056b3; /* Matching border color on hover */
+    -fx-background-color: linear-gradient(to bottom, #808080, #4d4d4d); /* Darker gray hover effect */
+    -fx-border-color: #4d4d4d; /* Matching border on hover */
 }
 
-/* Styling for Label */
+/* Modernized styling for LoadNewFileLabel */
 .LoadNewFileLabel {
-    -fx-background-color: #b2b2b2; /* Clean white background */
-    -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners */
-    -fx-padding: 5px; /* Padding inside the label */
-    -fx-text-fill: #333333; /* Dark gray text color for readability */
-    -fx-font-size: 15px; /* Font size as specified in FXML */
-    -fx-font-weight: normal; /* Regular font weight for label */
+    -fx-background-color: #f2f2f2; /* Light gray background */
+    -fx-border-color: #666666; /* Medium gray border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-border-radius: 6px; /* Rounded corners */
+    -fx-padding: 10px; /* Spacious padding inside the label */
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-font-size: 15px; /* Consistent font size */
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Subtle shadow effect for depth */
 }
 
