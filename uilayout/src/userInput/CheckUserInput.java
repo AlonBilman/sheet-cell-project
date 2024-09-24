@@ -140,7 +140,7 @@ public class CheckUserInput {
                     System.out.println("Enter new cell value:");
                     String newValue = scanner.nextLine();
                     try {
-                        sheetDto = engine.updateCell(cellToUpdate, newValue);
+                        sheetDto = engine.updateCell(cellToUpdate, newValue,false);
                         System.out.println("Cell updated.");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());

@@ -2,7 +2,6 @@ package sheet.impl;
 
 import checkfile.*;
 import expression.api.ObjType;
-import javafx.scene.control.Cell;
 import sheet.api.EffectiveValue;
 
 import java.io.*;
@@ -72,8 +71,9 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-    public void changeCell(String id, String newOriginalVal) {
-        sheetBeforeChange = deepCopy();
+    public void changeCell(String id, String newOriginalVal,boolean editVersion) {
+        if(editVersion) //for dynamic change! please don't delete
+            sheetBeforeChange = deepCopy();
         CellImpl.setSpreadSheet(this);
         checkCellId(id);
         CellImpl cell = getCell(id);
@@ -82,7 +82,8 @@ public class SpreadSheetImpl implements Serializable {
             cell = getCell(id);
         }
         cell.setOriginalValue(newOriginalVal);
-        updateVersionNumber();
+        if(editVersion) //for dynamic change! please don't delete
+            updateVersionNumber();
     }
 
     public void addCell(int row, String col, String newOriginalVal) {

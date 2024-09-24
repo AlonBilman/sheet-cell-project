@@ -15,6 +15,7 @@ public class EngineImpl implements Engine, Serializable {
     private static final int MAX_COLS = 20;
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
+    private String revertOriginalVal = null;
 
     public EngineImpl() {
         this.spreadSheet = null;
@@ -52,17 +53,32 @@ public class EngineImpl implements Engine, Serializable {
     }
 
     @Override
-    public sheetDTO updateCell(String cellId, String value) {
+    public sheetDTO updateCell(String cellId, String value, boolean dynamically) {
         if (value != null && value.matches(".*\\S.*"))
             value = value.trim();
         try {
-            this.spreadSheet.changeCell(cellId, value);
-            sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
+            this.spreadSheet.changeCell(cellId, value,!dynamically);
+            if (!dynamically)
+                sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
         } catch (Exception e) {
             this.spreadSheet = this.spreadSheet.getSheetBeforeChange(); //1 snapshot back
             throw e;
         }
         return new sheetDTO(this.spreadSheet);
+    }
+
+    public sheetDTO setOriginalValDynamically(String cellId, String newOriginalVal) {
+        return updateCell(cellId, newOriginalVal, true);
+    }
+
+    public sheetDTO finishedDynamicallyChangeFeature(String cellId) {
+        sheetDTO revertSheet = updateCell(cellId, this.revertOriginalVal, true);
+        this.revertOriginalVal=null;
+        return revertSheet;
+    }
+
+    public void saveCellValue(String cellId) {
+        this.revertOriginalVal=spreadSheet.getCell(cellId).getOriginalValue();
     }
 
     public void savePositionToFile(String folderPath, String fileName) throws IOException {
@@ -78,7 +94,7 @@ public class EngineImpl implements Engine, Serializable {
 
     public sheetDTO sort(String params, List<String> sortBy) {
         String[] cellIdentifiers = checkRangeParams(params);
-        if(sortBy.isEmpty())
+        if (sortBy.isEmpty())
             throw new RuntimeException("You did not specify what rows should we sort for\nPlease provide this information and run the sorting function again.");
         SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
         spreadSheetCopy.sort(cellIdentifiers, sortBy);
@@ -174,4 +190,6 @@ public class EngineImpl implements Engine, Serializable {
         }
         return cellsDto;
     }
+
+
 }

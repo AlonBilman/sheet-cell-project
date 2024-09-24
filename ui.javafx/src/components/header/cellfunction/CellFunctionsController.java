@@ -192,8 +192,14 @@ public class CellFunctionsController {
     }
 
     public void dynamicScrollListener() {
-        //listener or bind
+        dynamicScroll.valueProperty().addListener((observable, oldValue, newValue) -> {
+            Integer scrollValue = newValue.intValue();
+            String cellId = currCellShown;
+            String newOriginalVal = String.valueOf(scrollValue);
+            appController.updateCellDynamically(cellId, newOriginalVal);
+        });
     }
+
 
     public void setDynamicFuncDisable(boolean disable) {
         updateCellButton.setDisable(disable);

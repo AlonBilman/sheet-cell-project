@@ -16,7 +16,7 @@ public interface Engine {
 
     CellDataDTO showCell(String id);
 
-    sheetDTO updateCell(String cellId, String value);
+    sheetDTO updateCell(String cellId, String value,boolean dynamically);
 
     exitDTO exitSystem();
 

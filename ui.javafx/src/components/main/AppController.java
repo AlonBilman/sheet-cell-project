@@ -156,7 +156,7 @@ public class AppController {
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         try {
-            engine.updateCell(cellToUpdate, newOriginalValue);
+            engine.updateCell(cellToUpdate, newOriginalValue,false);
             outOfFocus();
             gridSheetController.populateTableView(engine.Display(), false);
         } catch (Exception e) {
@@ -344,10 +344,18 @@ public class AppController {
         cellFunctions.setDisable(false);
         gridSheet.opacityProperty().setValue(1);
         cellFunctionsController.setDynamicFuncDisable(true);
+        engine.saveCellValue(cellFunctionsController.getCellIdFocused());
+    }
+
+    public void updateCellDynamically(String cellId, String newOriginalValue) {
+        sheetDTO dynamicDto = engine.setOriginalValDynamically(cellId,newOriginalValue);
+        gridSheetController.populateTableView(dynamicDto, false);
     }
 
     public void exitDynamicChangeClicked() {
         disableComponents(false);
         cellFunctionsController.setDynamicFuncDisable(false);
+        sheetDTO oldDto = engine.finishedDynamicallyChangeFeature(cellFunctionsController.getCellIdFocused());
+        gridSheetController.populateTableView(oldDto, false);
     }
 }
