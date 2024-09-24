@@ -156,7 +156,7 @@ public class AppController {
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         try {
-            engine.updateCell(cellToUpdate, newOriginalValue,false);
+            engine.updateCell(cellToUpdate, newOriginalValue, false);
             outOfFocus();
             gridSheetController.populateTableView(engine.Display(), false);
         } catch (Exception e) {
@@ -348,7 +348,7 @@ public class AppController {
     }
 
     public void updateCellDynamically(String cellId, String newOriginalValue) {
-        sheetDTO dynamicDto = engine.setOriginalValDynamically(cellId,newOriginalValue);
+        sheetDTO dynamicDto = engine.setOriginalValDynamically(cellId, newOriginalValue);
         gridSheetController.populateTableView(dynamicDto, false);
     }
 
@@ -357,5 +357,7 @@ public class AppController {
         cellFunctionsController.setDynamicFuncDisable(false);
         sheetDTO oldDto = engine.finishedDynamicallyChangeFeature(cellFunctionsController.getCellIdFocused());
         gridSheetController.populateTableView(oldDto, false);
+        cellFunctionsController.showCell(
+                oldDto.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
     }
 }

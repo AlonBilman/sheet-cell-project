@@ -19,7 +19,7 @@
                   <StackPane prefHeight="30.0" prefWidth="150.0">
                      <children>
                         <Button fx:id="exitDynamicChange" disable="true" mnemonicParsing="false" onAction="#exitDynamicChangeListener" prefHeight="25.0" prefWidth="152.0" text="Exit Dinamic Change" visible="false" />
-                      <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="25.0" prefWidth="159.0" text="Dinamic Change Test" />
+                      <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="25.0" prefWidth="159.0" text="Dynamic Change " textAlignment="CENTER" />
                      </children>
                   </StackPane>
                   <Slider fx:id="dynamicScroll" disable="true" max="1000.0" min="-1000.0" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" value="50.0" visible="false" />

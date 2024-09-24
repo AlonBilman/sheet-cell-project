@@ -178,6 +178,7 @@ public class CellFunctionsController {
     public void exitDynamicChangeListener() {
         showNumericButtons(false);
         //because the user will be still on the numeric cell.
+        dynamicScroll.setValue(1);
         appController.exitDynamicChangeClicked();//enable all components
         showNumericButtons(true);
     }
@@ -196,6 +197,7 @@ public class CellFunctionsController {
             Integer scrollValue = newValue.intValue();
             String cellId = currCellShown;
             String newOriginalVal = String.valueOf(scrollValue);
+            cellValueProperty.setText(newOriginalVal);
             appController.updateCellDynamically(cellId, newOriginalVal);
         });
     }
