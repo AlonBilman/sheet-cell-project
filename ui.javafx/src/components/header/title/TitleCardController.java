@@ -14,7 +14,7 @@ public class TitleCardController {
     @FXML
     private ChoiceBox<String> animationsChoiceBox;
 
-    private final String[] styles = {"Default theme", "Dark theme"};
+    private final String[] styles = {"Default theme", "Theme 1", "Theme 2"};
     private final String[] animations = {"No animations", "Animation 1", "Animation 2", "Animation 3", "Animation 4"};
 
     private AppController appController;

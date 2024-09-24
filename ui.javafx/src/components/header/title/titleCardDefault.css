@@ -25,7 +25,7 @@
 }
 
 /* Modernized styling for ChoiceBoxes */
-.choice-box {
+#animationsChoiceBox, #styleChoiceBox {
     -fx-background-color: #ffffff; /* Clean white background for a modern feel */
     -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
     -fx-border-width: 2px; /* Slightly thicker border for better visibility */
@@ -35,7 +35,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Subtle shadow for a polished look */
 }
 
-.choice-box:hover {
+#animationsChoiceBox:hover,#styleChoiceBox:hover  {
     -fx-border-color: #0056b3; /* Darker blue border on hover */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.4, 0, 2); /* Slightly stronger shadow on hover */
 }

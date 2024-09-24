@@ -32,9 +32,9 @@
 }
 
 /* Modernized styling for LoadNewFileLabel */
-.LoadNewFileLabel {
-    -fx-background-color: #f2f2f2; /* Light gray background */
-    -fx-border-color: #666666; /* Medium gray border */
+#LoadNewFileLabel {
+    -fx-background-color: #808080; /* Light gray background */
+    -fx-border-color: #4d4d4d; /* Medium gray border */
     -fx-border-width: 2px; /* Thicker border */
     -fx-border-radius: 6px; /* Rounded corners */
     -fx-padding: 10px; /* Spacious padding inside the label */
