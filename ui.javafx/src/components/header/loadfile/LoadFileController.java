@@ -69,10 +69,7 @@ public class LoadFileController {
     }
 
 public void setTheme( String newTheme) {
-        // Remove the current stylesheet (you might want to specify part of the name)
-        loadFileHBox.getStylesheets().clear(); // Adjust the name as needed
-
-        // Add the new stylesheet
+        loadFileHBox.getStylesheets().clear();
         String newStyle = "/components/header/loadfile/loadFile" + newTheme + ".css";
         loadFileHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }

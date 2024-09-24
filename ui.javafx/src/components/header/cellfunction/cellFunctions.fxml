@@ -4,21 +4,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox fx:id="cellFuncHBox" prefHeight="98.0" prefWidth="820.0" spacing="15.0" stylesheets="@cellFunctionsDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
+<HBox fx:id="cellFuncHBox" prefHeight="123.0" prefWidth="988.0" spacing="15.0" stylesheets="@cellFunctionsDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
    <children>
-      <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="136.0" prefHeight="56.0" prefWidth="136.0" styleClass="label-style" text="Selected Cell ID" textAlignment="CENTER">
+      <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="149.0" prefHeight="56.0" prefWidth="149.0" styleClass="label-style" text="Selected Cell ID" textAlignment="CENTER">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>
       </Label>
-      <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="56.0" maxWidth="305.0" prefHeight="56.0" prefWidth="294.0" styleClass="label-style" text="Original Cell Value" />
+      <VBox prefHeight="98.0" prefWidth="393.0">
+         <children>
+            <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="56.0" maxWidth="403.0" prefHeight="56.0" prefWidth="403.0" styleClass="label-style" text="Original Cell Value" />
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+              <items>
+                  <StackPane prefHeight="30.0" prefWidth="150.0">
+                     <children>
+                        <Button fx:id="exitDynamicChange" disable="true" mnemonicParsing="false" onAction="#exitDynamicChangeListener" prefHeight="25.0" prefWidth="152.0" text="Exit Dinamic Change" visible="false" />
+                      <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="25.0" prefWidth="159.0" text="Dinamic Change Test" />
+                     </children>
+                  </StackPane>
+                  <Slider fx:id="dynamicScroll" disable="true" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" value="50.0" visible="false" />
+              </items>
+            </ToolBar>
+         </children>
+      </VBox>
       <VBox prefHeight="51.0" prefWidth="151.0">
          <children>
             <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="214.0" styleClass="update-button" text="Update Cell" underline="true" />
             <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="25.0" prefWidth="162.0" styleClass="text-field-style" text="new original val" />
          </children>
       </VBox>
-      <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="58.0" maxWidth="137.0" prefHeight="58.0" prefWidth="84.0" styleClass="label-style" text="version" />
+      <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="58.0" maxWidth="137.0" prefHeight="58.0" prefWidth="88.0" styleClass="label-style" text="version" />
       <Button id="VersionPickerButton" fx:id="versionPickerButton" disable="true" onAction="#getVersionListener" prefHeight="50.0" prefWidth="129.0" styleClass="version-button" text="Versions:">
          <HBox.margin>
             <Insets right="7.0" top="3.0" />

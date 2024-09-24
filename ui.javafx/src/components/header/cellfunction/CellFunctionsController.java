@@ -21,6 +21,13 @@ import java.util.Objects;
 
 public class CellFunctionsController {
 
+    @FXML
+    public Button exitDynamicChange;
+    @FXML
+    public Button dynamicChangeButton;
+    @FXML
+    public Slider dynamicScroll;
+    @FXML
     private AppController appController;
 
     public void setMainController(AppController mainController) {
@@ -71,7 +78,6 @@ public class CellFunctionsController {
 
     public void setTheme(String newTheme) {
         cellFuncHBox.getStylesheets().clear();
-        // Add the new stylesheet
         String newStyle = "/components/header/cellfunction/cellFunctions" + newTheme + ".css";
         cellFuncHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
@@ -84,6 +90,7 @@ public class CellFunctionsController {
         newOriginalValText.setText("New Original Value");
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
+        showNumericButtons(false);
     }
 
     @FXML
@@ -151,5 +158,47 @@ public class CellFunctionsController {
 
     public void wakeVersionButton() {
         versionPickerButton.setDisable(false);
+    }
+
+    public void showNumericButtons(boolean bool) {
+        if (bool) {
+            dynamicChangeButton.setVisible(true);
+            dynamicChangeButton.setDisable(false);
+            dynamicScroll.setVisible(true);
+            dynamicScroll.setDisable(true);
+        } else {
+            dynamicChangeButton.setDisable(true);
+            exitDynamicChange.setDisable(true);
+            dynamicScroll.setDisable(true);
+            dynamicScroll.setVisible(false);
+            exitDynamicChange.setVisible(false);
+        }
+    }
+
+    public void exitDynamicChangeListener() {
+        showNumericButtons(false);
+        //because the user will be still on the numeric cell.
+        appController.exitDynamicChangeClicked();//enable all components
+        showNumericButtons(true);
+    }
+
+    public void dynamicChangeButtonListener() {
+        dynamicScroll.setDisable(false);
+        dynamicChangeButton.setDisable(true);
+        dynamicChangeButton.setVisible(false);
+        exitDynamicChange.setVisible(true);
+        exitDynamicChange.setDisable(false);
+        appController.dynamicChangeButtonClicked(); //disable all components
+    }
+
+    public void dynamicScrollListener() {
+        //listener or bind
+    }
+
+    public void setDynamicFuncDisable(boolean disable) {
+        updateCellButton.setDisable(disable);
+        versionPickerButton.setDisable(disable);
+        newOriginalValText.setDisable(disable);
+        cellUpdatedProperty.setDisable(disable);
     }
 }

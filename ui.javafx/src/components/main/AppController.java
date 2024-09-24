@@ -10,6 +10,7 @@ import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
 import engine.impl.EngineImpl;
+import expression.api.ObjType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -144,6 +145,8 @@ public class AppController {
         tableFunctionalityController.setActiveButtons(
                 TableFunctionalityController.ButtonState.CLICKING_CELL, true);
         gridSheetController.colorizeImportantCells(engine.Display(), id);
+        if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC))
+            cellFunctionsController.showNumericButtons(true);
     }
 
     public void loadClicked() {
@@ -323,17 +326,28 @@ public class AppController {
     }
 
     public void setStyleOnParts(String value) {
-       if(value.equals("Dark theme"))
-        setNewTheme("DarkTheme");
-       else if(value.equals("No style"))
-           setNewTheme("Default");
+        if (value.equals("Dark theme"))
+            setNewTheme("DarkTheme");
+        else if (value.equals("No style"))
+            setNewTheme("Default");
     }
 
-    private void setNewTheme(String value){
+    private void setNewTheme(String value) {
         tableFunctionalityController.setTheme(value);
         loadFileController.setTheme(value);
         cellFunctionsController.setTheme(value);
         gridSheetController.setTheme(value);
     }
 
+    public void dynamicChangeButtonClicked() {
+        disableComponents(true);
+        cellFunctions.setDisable(false);
+        gridSheet.opacityProperty().setValue(1);
+        cellFunctionsController.setDynamicFuncDisable(true);
+    }
+
+    public void exitDynamicChangeClicked() {
+        disableComponents(false);
+        cellFunctionsController.setDynamicFuncDisable(false);
+    }
 }

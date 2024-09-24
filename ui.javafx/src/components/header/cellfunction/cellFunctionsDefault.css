@@ -25,8 +25,22 @@
     -fx-border-color: #0056b3; /* Slightly darker blue on hover for interactivity */
 }
 
-/* Styling for Update Button */
-.update-button , .version-button{
+#exitDynamicChange ,#dynamicChangeButton {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient background for a modern, sleek look */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 13px; /* Larger font size for consistency */
+    -fx-border-color: #0056b3; /* Darker blue border to match hover state */
+    -fx-border-width: 1px; /* Thicker border for definition */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow for depth */
+    -fx-cursor: hand; /* Pointer cursor on hover */
+}
+
+#exitDynamicChange:disabled ,#exitDynamicChange:disabled{
+    -fx-opacity: 0.2;
+}
+
+    /* Styling for Update Button */
+.update-button , .version-button {
     -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient background for a modern, sleek look */
     -fx-text-fill: #ffffff; /* White text */
     -fx-font-size: 15px; /* Larger font size for consistency */
@@ -37,7 +51,7 @@
     -fx-cursor: hand; /* Pointer cursor on hover */
 }
 
-.update-button:hover,.version-button:hover {
+.update-button:hover,.version-button:hover ,#exitDynamicChange:hover ,#dynamicChangeButton:hover {
     -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker blue hover effect */
     -fx-border-color: #004b8c; /* Matching border color on hover */
 }

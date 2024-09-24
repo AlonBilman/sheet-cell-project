@@ -24,18 +24,14 @@ public class TitleCardController {
     }
 
     public void initialize() {
-        // Populate ChoiceBoxes
         styleChoiceBox.getItems().addAll(styles);
         animationsChoiceBox.getItems().addAll(animations);
 
-        // Default selection
         styleChoiceBox.getSelectionModel().select(0);
         animationsChoiceBox.getSelectionModel().select(0);
 
-        // Attach listener for when the selected item changes in the styleChoiceBox
         styleChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!Objects.equals(oldValue, newValue)) {
-                // Update the style in the AppController
                 appController.setStyleOnParts(newValue);
             }
         });
