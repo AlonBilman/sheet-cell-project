@@ -1,72 +1,67 @@
 /* General styling for HBox */
 .hbox {
-    -fx-background-color: #f0f0f0; /* Light gray background for modern look */
-    -fx-padding: 10px; /* Padding around the content */
-    -fx-spacing: 15px; /* Space between children */
-    -fx-border-color: #e0e0e0; /* Subtle gray border */
-    -fx-border-width: 1px; /* Thin border */
+    -fx-background-color: #f7f7f7; /* Light gray with slight tint for a more modern feel */
+    -fx-padding: 15px; /* Increased padding for more spacious layout */
+    -fx-spacing: 20px; /* Increased space between children for a cleaner look */
+    -fx-border-color: #d0d0d0; /* Subtle gray border */
+    -fx-border-width: 1.5px; /* Slightly thicker border for modernity */
     -fx-background-insets: 0, 0; /* Remove default insets */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
 }
 
-/* Styling for Labels */
+/* Modernized styling for Labels */
 .label-style {
     -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match buttons */
-    -fx-padding: 10px; /* Padding inside the label for a spacious look */
-    -fx-text-fill: #333333; /* Dark gray text color for readability */
-    -fx-font-size: 14px; /* Larger font size to match buttons */
+    -fx-border-width: 2px; /* Slightly thicker border for modern design */
+    -fx-padding: 12px; /* Spacious padding inside the label */
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-font-size: 15px; /* Larger font size for better readability */
     -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow effect for a floating look */
+}
+
+.label-style:hover {
+    -fx-border-color: #0056b3; /* Slightly darker blue on hover for interactivity */
 }
 
 /* Styling for Update Button */
-.update-button {
-    -fx-background-color: #007bff; /* Vibrant blue background to match theme */
+.update-button , .version-button{
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient background for a modern, sleek look */
     -fx-text-fill: #ffffff; /* White text */
-    -fx-border-radius: 5px; /* Rounded corners to match labels */
-    -fx-font-size: 14px; /* Larger font size for consistency */
-    -fx-padding: 10px 15px; /* Padding inside the button */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Enhanced shadow effect */
+    -fx-font-size: 15px; /* Larger font size for consistency */
+    -fx-padding: 12px 18px; /* Increased padding for better proportions */
+    -fx-border-color: #0056b3; /* Darker blue border to match hover state */
+    -fx-border-width: 2px; /* Thicker border for definition */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow for depth */
     -fx-cursor: hand; /* Pointer cursor on hover */
 }
 
-.update-button:hover {
-    -fx-background-color: #0056b3; /* Darker blue for hover effect */
-    -fx-border-color: #0056b3; /* Matching border color on hover */
-}
-
-/* Styling for Version Button */
-.version-button {
-    -fx-background-color: #007bff; /* Vibrant blue background */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-border-radius: 5px; /* Rounded corners to match the rest of the elements */
-    -fx-font-size: 14px; /* Consistent font size */
-    -fx-padding: 10px 15px; /* Padding for spacious look */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2); /* Shadow effect */
-    -fx-cursor: hand; /* Pointer cursor */
-}
-
-.version-button:hover {
-    -fx-background-color: #0056b3; /* Darker blue on hover */
-    -fx-border-color: #0056b3; /* Matching border */
+.update-button:hover,.version-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker blue hover effect */
+    -fx-border-color: #004b8c; /* Matching border color on hover */
 }
 
 .version-button:disabled {
-    -fx-opacity: 0.6; /* Disabled state styling */
+    -fx-opacity: 0.4; /* Slight opacity for disabled elements */
 }
 
-/* Styling for TextField */
+/* Modernized styling for TextField */
 .text-field-style {
     -fx-background-color: #ffffff; /* Clean white background */
     -fx-border-color: #cccccc; /* Light gray border */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-border-radius: 5px; /* Rounded corners to match other elements */
-    -fx-padding: 10px; /* Padding inside the text field for consistency */
-    -fx-font-size: 14px; /* Larger font size for better readability */
+    -fx-border-width: 1.5px; /* Slightly thicker border for clarity */
+    -fx-padding: 12px; /* Consistent padding */
+    -fx-font-size: 15px; /* Larger font size for better readability */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow effect */
 }
 
-/* Styling for disabled elements */
+.text-field-style:focused {
+    -fx-border-color: #007bff; /* Blue border when focused */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Enhanced shadow when focused */
+}
+
+/* Disabled styling */
 .disabled {
-    -fx-opacity: 0.6; /* Slightly transparent for disabled elements */
+    -fx-opacity: 0.6; /* Slight opacity for disabled elements */
 }
