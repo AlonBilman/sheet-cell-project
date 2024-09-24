@@ -11,7 +11,7 @@
             <Insets left="5.0" />
          </HBox.margin>
       </Label>
-      <VBox prefHeight="98.0" prefWidth="393.0">
+      <VBox prefHeight="98.0" prefWidth="408.0">
          <children>
             <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="56.0" maxWidth="403.0" prefHeight="56.0" prefWidth="403.0" styleClass="label-style" text="Original Cell Value" />
             <ToolBar prefHeight="40.0" prefWidth="200.0">
@@ -27,7 +27,7 @@
             </ToolBar>
          </children>
       </VBox>
-      <VBox prefHeight="51.0" prefWidth="151.0">
+      <VBox prefHeight="98.0" prefWidth="185.0">
          <children>
             <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="214.0" styleClass="update-button" text="Update Cell" underline="true" />
             <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="25.0" prefWidth="162.0" styleClass="text-field-style" text="new original val" />

@@ -81,7 +81,7 @@ public class SpreadSheetImpl implements Serializable {
             initNullCell(id, newOriginalVal);
             cell = getCell(id);
         }
-        cell.setOriginalValue(newOriginalVal);
+        cell.setOriginalValue(newOriginalVal,editVersion);
         if(editVersion) //for dynamic change! please don't delete
             updateVersionNumber();
     }

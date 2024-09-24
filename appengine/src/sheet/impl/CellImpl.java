@@ -38,7 +38,7 @@ public class CellImpl implements Serializable {
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
-        setOriginalValue(newOriginalVal);
+        setOriginalValue(newOriginalVal,true);
         if (newOriginalVal == null)
             lastChangeAt = 1;
         else lastChangeAt = ++versionNumber;
@@ -68,7 +68,7 @@ public class CellImpl implements Serializable {
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
         cellColor = new CellColor(null,null);
-        setOriginalValue(cell.getSTLOriginalValue());
+        setOriginalValue(cell.getSTLOriginalValue(),true);
     }
 
     public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
@@ -320,11 +320,12 @@ public class CellImpl implements Serializable {
         affectsOn.remove(id);
     }
 
-    public void setOriginalValue(String originalValue) {
+    public void setOriginalValue(String originalValue,boolean editVersion) {
         this.originalValue = originalValue;
         removeDependsOn();
         calculateEffectiveValue();
-        updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
+        if(editVersion)
+            updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
     }
 
     private void detectCircularDependency(Set<String> visitedCells) {
