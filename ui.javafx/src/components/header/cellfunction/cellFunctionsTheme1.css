@@ -11,8 +11,8 @@
 
 /* Modernized styling for Labels */
 .label-style {
-    -fx-background-color: #f2f2f2; /* Soft light gray background */
-    -fx-border-color: #666666; /* Medium gray border */
+    -fx-background-color: #808080; /* Light gray background */
+    -fx-border-color: #4d4d4d;/* Medium gray border */
     -fx-border-width: 2px; /* Slightly thicker border */
     -fx-padding: 12px; /* Spacious padding inside the label */
     -fx-text-fill: #333333; /* Dark gray text */

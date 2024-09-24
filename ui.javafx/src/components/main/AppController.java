@@ -326,9 +326,11 @@ public class AppController {
     }
 
     public void setStyleOnParts(String value) {
-        if (value.equals("Dark theme"))
-            setNewTheme("DarkTheme");
-        else if (value.equals("No style"))
+        if (value.equals("Theme 1"))
+            setNewTheme("Theme1");
+        else if(value.equals("Theme 2"))
+            setNewTheme("Theme2");
+        else
             setNewTheme("Default");
     }
 
