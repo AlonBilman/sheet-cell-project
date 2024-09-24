@@ -16,6 +16,13 @@
     -fx-underline: true; /* Underline text for emphasis */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0.5, 0, 2); /* Subtle shadow for text depth */
 }
+/* Modernized and impressive styling for the "Sheet Cell" text */
+#sheetCellText {
+    -fx-font-size: 28px; /* Font size for a modern, sleek appearance */
+    -fx-font-family: 'Segoe UI', sans-serif; /* Modern, clean font */
+    -fx-font-weight: bold; /* Bold to make it stand out */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 12, 0.5, 0, 6); /* Soft shadow to give the text depth */
+}
 
 /* Modernized styling for ChoiceBoxes */
 .choice-box {

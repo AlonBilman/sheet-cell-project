@@ -14,9 +14,9 @@
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button id="ColSetButton" fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="40.0" prefWidth="150.0" text="Set Column Width" underline="true"/>
-                        <Button id="RowSetButton" fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="40.0" prefWidth="150.0" text="Set Row Height" underline="true"/>
-                        <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="40.0" prefWidth="150.0" text="Alignment Set" underline="true"/>
+                        <Button id="ColSetButton" fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Column Width" underline="true"/>
+                        <Button id="RowSetButton" fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Row Height" underline="true"/>
+                        <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="40.0" prefWidth="200.0" text="Alignment Set" underline="true"/>
                      </children>
                   </VBox>
                </content>
@@ -27,9 +27,9 @@
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" prefHeight="40.0" prefWidth="150.0" text="Cell background color"/>
-                        <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="40.0" prefWidth="150.0" text="Cell text color" underline="true"/>
-                        <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#resetCellStyleListener" prefHeight="40.0" prefWidth="150.0" text="Reset Style" textAlignment="CENTER" underline="true"/>
+                        <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell background color"/>
+                        <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell text color" underline="true"/>
+                        <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#resetCellStyleListener" prefHeight="40.0" prefWidth="200.0" text="Reset Style" textAlignment="CENTER" underline="true"/>
                      </children>
                   </VBox>
                </content>
@@ -40,8 +40,8 @@
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="filterButton" disable="true" mnemonicParsing="false" onAction="#filterButtonListener" prefHeight="40.0" prefWidth="150.0" text="Filter"/>
-                        <Button fx:id="sortButton" disable="true" mnemonicParsing="false" onAction="#sortButtonListener" prefHeight="40.0" prefWidth="150.0" text="Sort"/>
+                        <Button fx:id="filterButton" disable="true" mnemonicParsing="false" onAction="#filterButtonListener" prefHeight="40.0" prefWidth="200.0" text="Filter"/>
+                        <Button fx:id="sortButton" disable="true" mnemonicParsing="false" onAction="#sortButtonListener" prefHeight="40.0" prefWidth="200.0" text="Sort"/>
                      </children>
                   </VBox>
                </content>
@@ -52,9 +52,9 @@
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#addNewRangeListener" prefHeight="40.0" prefWidth="150.0" text="Add Range Set"/>
-                        <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#deleteExistingRangeListener" prefHeight="40.0" prefWidth="150.0" text="Delete Range"/>
-                        <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#viewExistingRangeListener" prefHeight="40.0" prefWidth="150.0" text="View Range"/>
+                        <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#addNewRangeListener" prefHeight="40.0" prefWidth="200.0" text="Add Range Set"/>
+                        <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#deleteExistingRangeListener" prefHeight="40.0" prefWidth="200.0" text="Delete Range"/>
+                        <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#viewExistingRangeListener" prefHeight="40.0" prefWidth="200.0" text="View Range"/>
                      </children>
                   </VBox>
                </content>

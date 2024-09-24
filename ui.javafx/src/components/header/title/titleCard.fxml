@@ -6,12 +6,15 @@
 
 <AnchorPane prefHeight="43.0" prefWidth="988.0" stylesheets="@titleCardDefault.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
    <children>
-      <Text layoutX="428.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sheet Cell" textAlignment="CENTER" underline="true" wrappingWidth="133.0">
+      <!-- "Sheet Cell" text with specific fx:id -->
+      <Text fx:id="sheetCellText" layoutX="428.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sheet Cell" textAlignment="CENTER" underline="true" wrappingWidth="133.0">
          <font>
             <Font size="25.0" />
          </font>
       </Text>
+      <!-- ChoiceBox for animations -->
       <ChoiceBox fx:id="animationsChoiceBox" layoutX="784.0" layoutY="5.0" prefHeight="50.0" prefWidth="190.0" />
+      <!-- ChoiceBox for style -->
       <ChoiceBox fx:id="styleChoiceBox" layoutX="6.0" layoutY="4.0" prefHeight="50.0" prefWidth="190.0" />
    </children>
 </AnchorPane>
