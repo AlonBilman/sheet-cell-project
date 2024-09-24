@@ -1,0 +1,69 @@
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+
+}
+
+.grid-pane {
+    -fx-background-color: #ff9900;
+    -fx-grid-lines-visible: true;
+}
+
+.boarder {
+    -fx-border-color: gray;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
+}
+
+.cell-default {
+    -fx-background-color: #ff9900;
+    -fx-text-fill: black;
+    -fx-border-color: lightgray;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
+}
+
+.cell-non-default {
+    -fx-border-color: lightgray;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+}
+
+
+.cell-default.cell-selected, .cell-non-default.cell-selected {
+    -fx-border-color: blue;
+    -fx-border-width: 2px;
+    -fx-font-size: 16px;
+}
+
+.cell-default:hover, .cell-non-default:hover, .boarder:hover {
+    -fx-border-color: blue;
+    -fx-border-width: 2px;
+}
+
+.cell-default:pressed, .cell-non-default:pressed, .boarder:pressed {
+    -fx-border-color: red;
+    -fx-border-width: 3px;
+}
+
+.cell-dependsOn {
+    -fx-background-color: lightsalmon;
+}
+
+.cell-affectsOn {
+    -fx-background-color: lightgreen;
+}
+
+
+.focused-on {
+    -fx-background-color: lightyellow;
+}
+
+
+.cell-non-default.alignment-left {
+    -fx-alignment: center-left;
+}
+
+.cell-non-default.alignment-right {
+    -fx-alignment: center-right;
+}

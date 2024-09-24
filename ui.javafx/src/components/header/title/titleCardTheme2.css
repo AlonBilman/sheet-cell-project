@@ -1,0 +1,32 @@
+/* General styling for AnchorPane */
+.anchor-pane {
+    -fx-background-color: #ffe5b4; /* Light gray background */
+    -fx-padding: 10px; /* Padding around the content */
+    -fx-border-color: #ffcc99; /* Subtle gray border */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-background-insets: 0, 0; /* Remove default insets */
+}
+
+/* Styling for Text */
+.text {
+    -fx-font-size: 17px; /* Font size as specified in FXML */
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-underline: true; /* Underline text */
+}
+
+/* Styling for ChoiceBoxes */
+#animationsChoiceBox, #styleChoiceBox {
+    -fx-background-color: #ffe5b4;
+    -fx-border-color: #ff9900;
+    -fx-border-width: 1px; /* Thin border */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-padding: 5px; /* Padding inside the ChoiceBox */
+    -fx-font-size: 12px; /* Font size for readability */
+    -fx-text-fill: #333333; /* Dark gray text */
+}
+
+#animationsChoiceBox:hover,#styleChoiceBox:hover {
+    -fx-border-color: #cc7a00;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.4, 0, 2); /* Slightly stronger shadow on hover */
+}
