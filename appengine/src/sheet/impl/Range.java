@@ -29,14 +29,6 @@ public class Range implements Serializable {
         return set;
     }
 
-    public String getTopLeftCellId() {
-        return topLeftCellId;
-    }
-
-    public String getBottomRightCellId() {
-        return bottomRightCellId;
-    }
-
     public void addAffectsOnCells(CellImpl cell) {
         affectsOnCells.add(cell);
     }

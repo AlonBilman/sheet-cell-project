@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -166,7 +166,7 @@ public class TableFunctionalityController {
         Button confirmButton = createNewRangeButton(null, fromCellField, toCellField, popupStage, true, Type);
         vbox.getChildren().addAll(fromCellField, toCellField, confirmButton);
         Scene scene = new Scene(vbox, 300, 200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + cssLoad + ".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
@@ -183,21 +183,26 @@ public class TableFunctionalityController {
     public void filterColumnPopup(Set<CellDataDTO> cells, String fromCell, String toCell) {
         Set<String> colToFilterBy = new HashSet<>();
         Stage popupStage = new Stage();
-        popupStage.setTitle("Select columns to filter by:");
+        popupStage.setTitle("Select Columns to Filter By:");
         VBox vbox = new VBox();
-        vbox.setSpacing(20);
+        vbox.setSpacing(10);
         vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(20));
+        Label instructionLabel = new Label("Please select columns:");
+        vbox.getChildren().add(instructionLabel);
+
         List<CheckBox> checkBoxes = new ArrayList<>();
-        for (String i : getAllColumns(fromCell.toUpperCase(), toCell.toUpperCase())) {
-            CheckBox checkBox = new CheckBox(i);
+        for (String column : getAllColumns(fromCell.toUpperCase(), toCell.toUpperCase())) {
+            CheckBox checkBox = new CheckBox(column);
             checkBoxes.add(checkBox);
             vbox.getChildren().add(checkBox);
         }
         Button confirmButton = new Button("Confirm Selection");
         confirmButton.setOnAction(e -> {
             for (CheckBox checkBox : checkBoxes) {
-                if (checkBox.isSelected())
+                if (checkBox.isSelected()) {
                     colToFilterBy.add(checkBox.getText());
+                }
             }
             if (colToFilterBy.isEmpty()) {
                 showInfoAlert("No columns selected");
@@ -209,9 +214,12 @@ public class TableFunctionalityController {
                 popupStage.close();
             }
         });
+
         vbox.getChildren().add(confirmButton);
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(vbox);
+        ScrollPane scrollPane = new ScrollPane(vbox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         popupStage.setScene(new Scene(scrollPane, 300, 300));
         popupStage.showAndWait();
     }
@@ -223,12 +231,17 @@ public class TableFunctionalityController {
         }
         Stage popupStage = new Stage();
         popupStage.setTitle("Select Cell Values");
-        HBox hbox = new HBox(30);
-        hbox.setAlignment(Pos.CENTER);
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(30);
+        gridPane.setVgap(10);
         Map<String, Set<String>> selectedValues = new HashMap<>();
-        columnToCellValues.forEach((column, cellValues) -> {
+        int columnIndex = 0;
+        for (Map.Entry<String, Set<String>> entry : columnToCellValues.entrySet()) {
+            String column = entry.getKey();
+            Set<String> cellValues = entry.getValue();
             VBox columnVbox = new VBox(10);
-            columnVbox.setAlignment(Pos.CENTER_LEFT);
+            columnVbox.setAlignment(Pos.TOP_LEFT);
             columnVbox.getChildren().add(new Label("Column: " + column));
             Set<String> selectedColumnValues = new HashSet<>();
             selectedValues.put(column, selectedColumnValues);
@@ -245,14 +258,14 @@ public class TableFunctionalityController {
                         });
                         columnVbox.getChildren().add(checkBox);
                     });
-            hbox.getChildren().add(columnVbox);
-        });
+            gridPane.add(columnVbox, columnIndex++, 0);
+        }
         Button confirmButton = new Button("Confirm Selection");
         confirmButton.setOnAction(e -> {
             appController.filterParamsConfirmed(fromCell, toCell, selectedValues);
             popupStage.close();
         });
-        VBox mainVbox = new VBox(20, hbox, confirmButton);
+        VBox mainVbox = new VBox(20, gridPane, confirmButton);
         mainVbox.setAlignment(Pos.CENTER);
         ScrollPane scrollPane = new ScrollPane(mainVbox);
         scrollPane.setFitToWidth(true);
@@ -281,16 +294,20 @@ public class TableFunctionalityController {
     public void sortColumnPopup(String fromCell, String toCell) {
         Stage popupStage = new Stage();
         popupStage.setTitle("Select columns to sort by:");
-        VBox vbox = new VBox();
-        vbox.setSpacing(20);
+
+        VBox vbox = new VBox(20);
         vbox.setAlignment(Pos.CENTER);
+        VBox choiceBoxContainer = new VBox(10);
+        choiceBoxContainer.setAlignment(Pos.CENTER);
+
         int[] counter = {1};
         boolean[] isUpdating = {false};
         List<String> sortBy = new ArrayList<>();
         List<ChoiceBox<String>> choiceBoxes = new ArrayList<>();
         List<String> allColumns = getAllColumns(fromCell.toUpperCase(), toCell.toUpperCase());
+
         Runnable updateChoiceBoxOptions = () -> {
-            isUpdating[0] = true; //set flag to true while updating, using an array to make it work with lambda expression (Intelij offered)
+            isUpdating[0] = true;
             Set<String> selectedColumns = choiceBoxes.stream()
                     .map(ChoiceBox::getValue)
                     .filter(Objects::nonNull)
@@ -299,56 +316,54 @@ public class TableFunctionalityController {
             for (ChoiceBox<String> choiceBox : choiceBoxes) {
                 String currentSelection = choiceBox.getValue();
                 choiceBox.getItems().clear();
-                //add back all columns except the ones that are already selected
                 choiceBox.getItems().addAll(allColumns.stream()
                         .filter(col -> !selectedColumns.contains(col) || col.equals(currentSelection))
-                        .toList()
-                );
+                        .toList());
                 if (currentSelection != null) {
                     choiceBox.setValue(currentSelection);
                 }
             }
             isUpdating[0] = false;
-            //reset flag after updating the choice box,
-            //to stop recursive calls to every choice box on action
         };
+
         Runnable addNewChoiceBox = () -> {
             Label label = new Label("Enter column to sort by (priority " + counter[0]++ + ")");
-            vbox.getChildren().add(label);
+            choiceBoxContainer.getChildren().add(label);
             ChoiceBox<String> choiceBox = new ChoiceBox<>();
             choiceBox.setOnAction(e -> {
-                if (!isUpdating[0])
-                    updateChoiceBoxOptions.run();
+                if (!isUpdating[0]) updateChoiceBoxOptions.run();
             });
             choiceBoxes.add(choiceBox);
-            vbox.getChildren().add(choiceBox);
+            choiceBoxContainer.getChildren().add(choiceBox);
             updateChoiceBoxOptions.run();
         };
+
         Button addChoiceBoxButton = new Button("Add Another Column");
         addChoiceBoxButton.setOnAction(e -> {
-            if(counter[0]<=allColumns.size())
-                addNewChoiceBox.run();
+            if (counter[0] <= allColumns.size()) addNewChoiceBox.run();
             else {
                 addChoiceBoxButton.setText("No more columns...");
                 addChoiceBoxButton.setDisable(true);
             }
         });
-        vbox.getChildren().add(addChoiceBoxButton);
+        choiceBoxContainer.getChildren().add(addChoiceBoxButton);
+
         Button confirmButton = new Button("Confirm Selection");
         confirmButton.setOnAction(e -> {
             for (ChoiceBox<String> choiceBox : choiceBoxes) {
                 String selectedCol = choiceBox.getValue();
-                if (selectedCol != null) {
-                    sortBy.add(selectedCol); //add selected columns to the set
-                }
+                if (selectedCol != null) sortBy.add(selectedCol);
             }
             appController.sortParamsConfirmed(fromCell, toCell, sortBy);
             popupStage.close();
         });
-        vbox.getChildren().add(confirmButton);
+
+        vbox.getChildren().addAll(choiceBoxContainer, confirmButton);
         addNewChoiceBox.run();
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(vbox);
+
+        ScrollPane scrollPane = new ScrollPane(vbox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
         popupStage.setScene(new Scene(scrollPane, 300, 400));
         popupStage.showAndWait();
     }
@@ -385,7 +400,7 @@ public class TableFunctionalityController {
         vbox.setAlignment(Pos.CENTER);
         vbox.setPadding(new Insets(10));
         Scene scene = new Scene(vbox, 320, 150);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + cssLoad + ".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.show();
     }
@@ -446,7 +461,7 @@ public class TableFunctionalityController {
         vbox.setPadding(new Insets(15));
 
         Scene scene = new Scene(vbox, 300, 150);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + cssLoad + ".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
@@ -526,7 +541,7 @@ public class TableFunctionalityController {
         vbox.getChildren().addAll(rangeNameField, fromCellField, toCellField, confirmButton);
 
         Scene scene = new Scene(vbox, 300, 200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + cssLoad + ".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
@@ -560,7 +575,7 @@ public class TableFunctionalityController {
         ScrollPane scrollPane = new ScrollPane(vbox);
         scrollPane.setFitToWidth(true);
         Scene scene = new Scene(scrollPane, 300, 200);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality"+cssLoad+".css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + cssLoad + ".css")).toExternalForm());
         popupStage.setScene(scene);
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.showAndWait();
