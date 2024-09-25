@@ -341,6 +341,7 @@ public class AppController {
         loadFileController.setTheme(value);
         cellFunctionsController.setTheme(value);
         gridSheetController.setTheme(value);
+        titleCardController.setTheme(value);
     }
 
     public void dynamicChangeButtonClicked() {

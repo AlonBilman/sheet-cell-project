@@ -3,10 +3,14 @@ package components.header.title;
 import components.main.AppController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.AnchorPane;
 
 import java.util.Objects;
 
 public class TitleCardController {
+
+    @FXML
+    private AnchorPane anchorPane;
 
     @FXML
     private ChoiceBox<String> styleChoiceBox;
@@ -37,6 +41,13 @@ public class TitleCardController {
         });
     }
 
+    public void setTheme(String value) {
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/components/header/title/titleCard" + value + ".css"))
+                        .toExternalForm()
+        );
+    }
 }
 
 
