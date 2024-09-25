@@ -3,8 +3,6 @@ package components.body.table.func;
 import components.main.AppController;
 import dto.CellDataDTO;
 import expression.api.ObjType;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,11 +24,7 @@ import java.util.stream.Collectors;
 
 
 public class TableFunctionalityController {
-    @FXML
-    public ScrollPane scrollPane;
-    @FXML
-    private VBox tableFuncVBox;
-    private String columnToFilter;
+
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -38,6 +32,10 @@ public class TableFunctionalityController {
 
     private AppController appController;
 
+    @FXML
+    public ScrollPane scrollPane;
+    @FXML
+    public Button createChartButton;
     @FXML
     private Button sortButton;
     @FXML
@@ -62,6 +60,7 @@ public class TableFunctionalityController {
     private Button viewExistingRangeButton;
 
     private String cssLoad = "Default";
+
 
     public enum ButtonState {
         LOADING_FILE,
@@ -119,6 +118,7 @@ public class TableFunctionalityController {
         alignmentSetButton.setDisable(!(this.activeButtonsWhenClickingColumn || this.activeButtonsWhenClickingRow));
         cellTextPick.setDisable(!this.activeButtonsWhenClickingCell);
         cellBackgroundPick.setDisable(!this.activeButtonsWhenClickingCell);
+        createChartButton.setDisable(!this.activeButtonsWhenLoadingFile);
         resetButton.setDisable(!this.activeButtonsWhenClickingCell);
         addNewRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
         deleteExistingRangeButton.setDisable(!this.activeButtonsWhenLoadingFile);
@@ -172,7 +172,7 @@ public class TableFunctionalityController {
         popupStage.showAndWait();
     }
 
-    private List<String> getAllColumns(String fromCell, String toCell) {
+    public List<String> getAllColumns(String fromCell, String toCell) {
         List<String> columns = new ArrayList<>();
         for (int i = fromCell.charAt(0); i <= toCell.charAt(0); i++) {
             columns.add(String.valueOf((char) i));
@@ -596,4 +596,7 @@ public class TableFunctionalityController {
         viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
     }
 
+    public void createChartButtonListener() {
+        appController.chartButtonClicked();
+    }
 }

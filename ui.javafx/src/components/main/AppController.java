@@ -36,6 +36,7 @@ public class AppController {
     private STLSheet stlSheet;
     private sheetDTO sheetDto;
     private LoadDTO loadResult;
+    private ChartMaker chartMaker;
 
     //all the components
     @FXML
@@ -90,6 +91,7 @@ public class AppController {
             titleCardController.setMainController(this);
             gridSheetController.setMainController(this);
             engine = new EngineImpl();
+            chartMaker = new ChartMaker(this);
         }
     }
 
@@ -328,7 +330,7 @@ public class AppController {
     public void setStyleOnParts(String value) {
         if (value.equals("Theme 1"))
             setNewTheme("Theme1");
-        else if(value.equals("Theme 2"))
+        else if (value.equals("Theme 2"))
             setNewTheme("Theme2");
         else
             setNewTheme("Default");
@@ -361,5 +363,37 @@ public class AppController {
         gridSheetController.populateTableView(oldDto, false);
         cellFunctionsController.showCell(
                 oldDto.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
+    }
+
+    public void chartButtonClicked() {
+        chartMaker.createChartDialogPopup(engine.Display().getColSize());
+    }
+
+    //chars
+    public List<String> getColValuesForChart(String chartType, String column, boolean isX) {
+        column = column.trim();
+        List<String> values = new ArrayList<>();
+        sheetDTO sheet = engine.Display();
+        int rowSize = sheet.getRowSize();
+        Map<String, CellDataDTO> activeCells = sheet.getActiveCells();
+        for (int row = 1; row <= rowSize; row++) {
+            String cellId = column + row;
+            CellDataDTO cellData = activeCells.get(cellId);
+            if (cellData != null) {
+                String value = cellData.getEffectiveValue().getValue().toString();
+                ObjType cellType = cellData.getEffectiveValue().getObjType();
+
+                if (chartType.equals("Line Chart")) {
+                    if (cellType == ObjType.NUMERIC) {
+                        values.add(value);
+                    }
+                } else if (chartType.equals("Bar Chart")) {
+                    if (isX || cellType == ObjType.NUMERIC) {
+                        values.add(value);
+                    }
+                }
+            }
+        }
+        return values;
     }
 }

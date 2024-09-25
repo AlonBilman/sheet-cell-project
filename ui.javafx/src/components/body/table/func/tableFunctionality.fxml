@@ -3,7 +3,6 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="401.0" prefWidth="225.0" stylesheets="@tableFunctionalityDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.body.table.func.TableFunctionalityController">
    <content>
@@ -14,8 +13,8 @@
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button id="ColSetButton" fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Column Width" underline="true"/>
-                        <Button id="RowSetButton" fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Row Height" underline="true"/>
+                        <Button fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Column Width" underline="true"/>
+                        <Button fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Row Height" underline="true"/>
                         <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="40.0" prefWidth="200.0" text="Alignment Set" underline="true"/>
                      </children>
                   </VBox>
@@ -27,21 +26,22 @@
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell background color"/>
-                        <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell text color" underline="true"/>
+                        <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell Background Color"/>
+                        <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell Text Color" underline="true"/>
                         <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#resetCellStyleListener" prefHeight="40.0" prefWidth="200.0" text="Reset Style" textAlignment="CENTER" underline="true"/>
                      </children>
                   </VBox>
                </content>
             </TitledPane>
 
-            <!-- Sort and Filter controls in a collapsible pane -->
-            <TitledPane text="Sort and Filter" expanded="false">
+            <!-- Sort, Filter, and Chart controls in a collapsible pane -->
+            <TitledPane text="Sort, Filter, and Chart" expanded="false">
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
                         <Button fx:id="filterButton" disable="true" mnemonicParsing="false" onAction="#filterButtonListener" prefHeight="40.0" prefWidth="200.0" text="Filter"/>
                         <Button fx:id="sortButton" disable="true" mnemonicParsing="false" onAction="#sortButtonListener" prefHeight="40.0" prefWidth="200.0" text="Sort"/>
+                        <Button fx:id="createChartButton" disable="true" mnemonicParsing="false" onAction="#createChartButtonListener" prefHeight="40.0" prefWidth="200.0" text="Create Chart"/>
                      </children>
                   </VBox>
                </content>
