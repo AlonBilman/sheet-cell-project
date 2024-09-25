@@ -5,7 +5,6 @@
     -fx-spacing: 20px; /* Space between children */
     -fx-border-color: #b3b3b3; /* Subtle gray border */
     -fx-border-width: 1.5px; /* Slightly thicker border */
-    -fx-border-radius: 10px; /* Rounded corners */
     -fx-background-insets: 0, 0; /* Remove default insets */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
 }
@@ -16,7 +15,6 @@
     -fx-text-fill: #ffffff; /* White text for contrast */
     -fx-font-size: 17px; /* Emphasized font size */
     -fx-font-weight: bold; /* Bold text */
-    -fx-border-radius: 6px; /* Rounded corners */
     -fx-background-radius: 6px; /* Consistent rounded background */
     -fx-padding: 12px 18px; /* Balanced padding */
     -fx-border-color: #666666; /* Border color matches darker gradient */
@@ -36,7 +34,6 @@
     -fx-background-color: #808080; /* Light gray background */
     -fx-border-color: #4d4d4d; /* Medium gray border */
     -fx-border-width: 2px; /* Thicker border */
-    -fx-border-radius: 6px; /* Rounded corners */
     -fx-padding: 10px; /* Spacious padding inside the label */
     -fx-text-fill: #333333; /* Dark gray text for readability */
     -fx-font-size: 15px; /* Consistent font size */

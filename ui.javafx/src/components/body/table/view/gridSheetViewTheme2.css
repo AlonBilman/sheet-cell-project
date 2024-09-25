@@ -1,64 +1,60 @@
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
-
 }
 
 .grid-pane {
-    -fx-background-color: #ff9900;
+    -fx-background-color: #fff9db; /* Light yellow background */
     -fx-grid-lines-visible: true;
 }
 
 .boarder {
-    -fx-border-color: gray;
+    -fx-border-color: #cc9900; /* Medium yellow border */
     -fx-alignment: center;
     -fx-font-size: 14px;
 }
 
 .cell-default {
-    -fx-background-color: #ff9900;
-    -fx-text-fill: black;
-    -fx-border-color: lightgray;
+    -fx-background-color: #ffeb99; /* Light yellow background */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-border-color: #ffd966; /* Light yellow border */
     -fx-alignment: center;
     -fx-font-size: 14px;
 }
 
 .cell-non-default {
-    -fx-border-color: lightgray;
+    -fx-border-color: #ffd966; /* Light yellow border */
     -fx-font-size: 14px;
     -fx-alignment: center;
 }
 
-
 .cell-default.cell-selected, .cell-non-default.cell-selected {
-    -fx-border-color: blue;
+    -fx-border-color: #cc9900; /* Darker yellow for selected border */
     -fx-border-width: 2px;
     -fx-font-size: 16px;
 }
 
 .cell-default:hover, .cell-non-default:hover, .boarder:hover {
-    -fx-border-color: blue;
+    -fx-border-color: #cc9900; /* Darker yellow on hover */
     -fx-border-width: 2px;
 }
 
 .cell-default:pressed, .cell-non-default:pressed, .boarder:pressed {
-    -fx-border-color: red;
+    -fx-border-color: #cc9900; /* Medium yellow when pressed */
     -fx-border-width: 3px;
 }
 
 .cell-dependsOn {
-    -fx-background-color: lightsalmon;
+    -fx-background-color: #ffe680; /* Light yellow for dependency cells */
 }
 
 .cell-affectsOn {
-    -fx-background-color: lightgreen;
+    -fx-background-color: #ffcc66; /* Slightly darker yellow for affected cells */
 }
-
 
 .focused-on {
-    -fx-background-color: lightyellow;
+    -fx-background-color: #ffbf00; /* Bright yellow for focused cells */
 }
-
 
 .cell-non-default.alignment-left {
     -fx-alignment: center-left;

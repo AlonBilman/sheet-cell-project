@@ -1,28 +1,28 @@
 /* General styles for ScrollPane */
 .scroll-pane {
-    -fx-background-color: #d9d9d9; /* Light gray background */
-    -fx-border-color: #b3b3b3; /* Subtle gray border */
+    -fx-background-color: #fff9db; /* Light yellow background */
+    -fx-border-color: #ffd966; /* Subtle yellow border */
     -fx-border-width: 1px; /* Thin border */
     -fx-background-insets: 0, 0; /* Remove default insets */
 }
 
 /* Styling for VBox containers */
 .vbox {
-    -fx-background-color: #f5f5f5; /* Soft off-white background */
+    -fx-background-color: #fff4cc; /* Soft off-yellow background */
     -fx-padding: 20px; /* Spacious padding */
     -fx-spacing: 15px; /* Increased spacing between children */
 }
 
 /* Modernized Styling for TitledPane headers */
 .titled-pane > .title {
-    -fx-background-color: linear-gradient(to bottom, #ff9900, #cc7a00); /* Gradient from light to darker gray */
-    -fx-text-fill: #ffffff; /* Clean white text */
+    -fx-background-color: linear-gradient(to bottom, #ffcc80, #e6ac00); /* Gradient from light to darker yellow */
+    -fx-text-fill: #333333; /* Dark gray text */
     -fx-font-size: 15px; /* Slightly larger font for a modern look */
     -fx-font-weight: bold; /* Bold text for emphasis */
     -fx-border-radius: 8px; /* Rounded corners */
     -fx-background-radius: 8px; /* Matching background radius */
     -fx-padding: 12px 20px; /* Spacious padding */
-    -fx-border-color: #666666; /* Border matching the darker part of the gradient */
+    -fx-border-color: #e6ac00; /* Border matching the darker part of the gradient */
     -fx-border-width: 2px; /* Thick border for better definition */
     -fx-cursor: hand; /* Pointer cursor on hover */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow */
@@ -30,8 +30,8 @@
 }
 
 .titled-pane > .title:hover {
-    -fx-background-color: linear-gradient(to bottom, #ff9900, #cc7a00); /* Darker gray on hover */
-    -fx-border-color: #4d4d4d; /* Border matching hover color */
+    -fx-background-color: linear-gradient(to bottom, #e6ac00, #cc9900); /* Darker yellow on hover */
+    -fx-border-color: #cc9900; /* Border matching hover color */
 }
 
 .titled-pane:disabled > .title {
@@ -40,22 +40,22 @@
 
 /* Modernized styling for buttons within the TitledPane */
 .button {
-    -fx-background-color: linear-gradient(to bottom, #ff9900, #cc7a00); /* Gradient gray background */
-    -fx-text-fill: #ffffff; /* White text */
+    -fx-background-color: linear-gradient(to bottom, #ffd966, #cc9900); /* Gradient yellow background */
+    -fx-text-fill: #333333; /* Dark gray text */
     -fx-font-size: 14px; /* Larger font size */
     -fx-font-weight: bold; /* Bold text */
     -fx-border-radius: 6px; /* Rounded corners */
     -fx-background-radius: 6px; /* Matching border */
     -fx-padding: 10px 18px; /* Spacious padding */
-    -fx-border-color: #666666; /* Darker gray border */
+    -fx-border-color: #cc9900; /* Darker yellow border */
     -fx-border-width: 2px; /* Thick border */
     -fx-cursor: hand; /* Pointer cursor */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2); /* Soft shadow */
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #cc7a00, #b35900); /* Darker gray on hover */
-    -fx-border-color: #b35900; /* Border matching hover color */
+    -fx-background-color: linear-gradient(to bottom, #e6ac00, #b38f00); /* Darker yellow on hover */
+    -fx-border-color: #b38f00; /* Border matching hover color */
 }
 
 /* Disabled button state */

@@ -1,9 +1,9 @@
 /* General styling for HBox */
 .hbox {
-    -fx-background-color: #e0e0e0; /* Light gray background */
+    -fx-background-color: #fff9db; /* Light yellow background */
     -fx-padding: 15px; /* Spacious padding */
     -fx-spacing: 20px; /* Space between children */
-    -fx-border-color: #b3b3b3; /* Subtle gray border */
+    -fx-border-color: #ffd966; /* Subtle yellow border */
     -fx-border-width: 1.5px; /* Slightly thicker border */
     -fx-background-insets: 0, 0; /* Remove default insets */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
@@ -11,8 +11,8 @@
 
 /* Modernized styling for Labels */
 .label-style {
-    -fx-background-color: #ffe5b4; /* Clean white background */
-    -fx-border-color: #cc7a00;
+    -fx-background-color: #ffe680; /* Light yellow background */
+    -fx-border-color: #cc9900; /* Medium yellow border */
     -fx-border-width: 2px; /* Slightly thicker border */
     -fx-padding: 12px; /* Spacious padding inside the label */
     -fx-text-fill: #333333; /* Dark gray text */
@@ -22,14 +22,14 @@
 }
 
 .label-style:hover {
-    -fx-border-color: #b35900; /* Darker gray on hover */
+    -fx-border-color: #cc9900; /* Darker yellow on hover */
 }
 
 #exitDynamicChange, #dynamicChangeButton {
-    -fx-background-color: linear-gradient(to bottom, #ff9900, #cc7a00); /* Gradient gray background */
+    -fx-background-color: linear-gradient(to bottom, #ffd966, #e6b800); /* Gradient yellow background */
     -fx-text-fill: #ffffff; /* White text */
     -fx-font-size: 13px; /* Font size for consistency */
-    -fx-border-color: #b35900; /* Darker gray border */
+    -fx-border-color: #e6b800; /* Darker yellow border */
     -fx-border-width: 1px; /* Border thickness */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow effect */
     -fx-cursor: hand; /* Pointer cursor */
@@ -41,19 +41,19 @@
 
 /* Styling for Update Button */
 .update-button, .version-button {
-    -fx-background-color: linear-gradient(to bottom, #ff9900, #cc7a00); /* Gradient gray background */
+    -fx-background-color: linear-gradient(to bottom, #ffd966, #e6b800); /* Gradient yellow background */
     -fx-text-fill: #ffffff; /* White text */
     -fx-font-size: 15px; /* Font size for consistency */
     -fx-padding: 12px 18px; /* Padding for better proportions */
-    -fx-border-color: #b35900; /* Darker gray border */
+    -fx-border-color: #e6b800; /* Darker yellow border */
     -fx-border-width: 2px; /* Thicker border */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow */
     -fx-cursor: hand; /* Pointer cursor */
 }
 
 .update-button:hover, .version-button:hover, #exitDynamicChange:hover, #dynamicChangeButton:hover {
-    -fx-background-color: linear-gradient(to bottom, #cc7a00, #b35900); /* Darker gray hover effect */
-    -fx-border-color: #b35900; /* Matching border on hover */
+    -fx-background-color: linear-gradient(to bottom, #ffcc00, #cc9900); /* Darker yellow hover effect */
+    -fx-border-color: #cc9900; /* Matching border on hover */
 }
 
 .version-button:disabled {
@@ -62,8 +62,8 @@
 
 /* Modernized styling for TextField */
 .text-field-style {
-    -fx-background-color: #f2f2f2; /* Light gray background */
-    -fx-border-color: #b3b3b3; /* Light gray border */
+    -fx-background-color: #fff4cc; /* Light yellow background */
+    -fx-border-color: #ffd966; /* Light yellow border */
     -fx-border-width: 1.5px; /* Slightly thicker border */
     -fx-padding: 12px; /* Consistent padding */
     -fx-font-size: 15px; /* Larger font size */
@@ -71,7 +71,7 @@
 }
 
 .text-field-style:focused {
-    -fx-border-color: #b35900; /* Medium gray border on focus */
+    -fx-border-color: #e6b800; /* Medium yellow border on focus */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Enhanced shadow on focus */
 }
 

@@ -5,7 +5,6 @@
     -fx-spacing: 20px; /* Increased space between children for a cleaner look */
     -fx-border-color: #d0d0d0; /* Subtle gray border */
     -fx-border-width: 1.5px; /* Slightly thicker border for modernity */
-    -fx-border-radius: 10px; /* Smooth rounded corners for a sleek appearance */
     -fx-background-insets: 0, 0; /* Remove default insets */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
 }
@@ -16,7 +15,6 @@
     -fx-text-fill: #ffffff; /* White text for high contrast */
     -fx-font-size: 17px; /* Larger font for emphasis */
     -fx-font-weight: bold; /* Bold text for prominence */
-    -fx-border-radius: 6px; /* Rounded corners for a modern touch */
     -fx-background-radius: 6px; /* Consistent rounded background */
     -fx-padding: 12px 18px; /* Increased padding for a balanced layout */
     -fx-border-color: #0056b3; /* Border color matches darker gradient */
@@ -35,8 +33,7 @@
 #LoadNewFileLabel {
     -fx-background-color: #ffffff; /* Clean white background for a modern look */
     -fx-border-color: #007bff; /* Vibrant blue border to match the button */
-    -fx-border-width: 1px; /* Slightly thicker border for consistency */
-    -fx-border-radius: 6px; /* More rounded corners for a sleek appearance */
+    -fx-border-width: 2px; /* Slightly thicker border for consistency */
     -fx-padding: 10px; /* Increased padding inside the label for balance */
     -fx-text-fill: #333333; /* Dark gray text for readability */
     -fx-font-size: 15px; /* Consistent font size */
