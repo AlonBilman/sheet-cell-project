@@ -57,7 +57,8 @@ public class GridSheetController {
         for (int i = 1; i <= cols; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf((char) ('A' + (i - 1))));
-            cellLabel.setMinSize(maxCol, 10);
+            cellLabel.setMaxSize(maxCol, 20);
+            cellLabel.setMinSize(maxCol, 20);
             borderMap.put(cellLabel.getText(), cellLabel);
             gridPane.add(cellLabel, i, 0);
             setBoardersFunctionality(cellLabel);
@@ -65,6 +66,7 @@ public class GridSheetController {
         for (int i = 1; i <= rows; i++) {
             Label cellLabel = new Label();
             cellLabel.setText(String.valueOf(i));
+            cellLabel.setMaxSize(20, maxRow);
             cellLabel.setMinSize(20, maxRow);
             borderMap.put(cellLabel.getText(), cellLabel);
             gridPane.add(cellLabel, 0, i);
@@ -130,6 +132,7 @@ public class GridSheetController {
     }
 
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
+        cellLabel.setMaxSize(maxColWidth,maxRowHeight);
         cellLabel.setMinSize(maxColWidth,maxRowHeight);
         cellLabel.getStyleClass().add("cell-default");
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
@@ -207,14 +210,20 @@ public class GridSheetController {
 
     public void updateSize(double size, String id) {
         if (Character.isDigit(id.charAt(0))) {
+            borderMap.get(id).setMaxHeight(size);
             borderMap.get(id).setMinHeight(size);
-            for (Label label : focusedOn)
+            for (Label label : focusedOn){
+                label.setMaxHeight(size);
                 label.setMinHeight(size);
+            }
             return;
         }
+        borderMap.get(id).setMaxWidth(size);
         borderMap.get(id).setMinWidth(size);
-        for (Label label : focusedOn)
+        for (Label label : focusedOn) {
+            label.setMaxWidth(size);
             label.setMinWidth(size);
+        }
     }
 
     public void focusOnRangeCells(Set<String> cellsId) {
