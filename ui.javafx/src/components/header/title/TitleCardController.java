@@ -19,7 +19,7 @@ public class TitleCardController {
     private ChoiceBox<String> animationsChoiceBox;
 
     private final String[] styles = {"Default theme", "Theme 1", "Theme 2"};
-    private final String[] animations = {"No animations", "Animation 1", "Animation 2", "Animation 3", "Animation 4"};
+    private final String[] animations = {"No animations yet"};
 
     private AppController appController;
 

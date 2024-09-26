@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class CellImpl implements Serializable {
     private int row;
@@ -34,11 +35,11 @@ public class CellImpl implements Serializable {
         this.row = row;
         this.col = col;
         this.id = generateId(col, row);
-        cellColor = new CellColor(null,null);
+        cellColor = new CellColor(null, null);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
-        setOriginalValue(newOriginalVal,true);
+        setOriginalValue(newOriginalVal, true);
         if (newOriginalVal == null)
             lastChangeAt = 1;
         else lastChangeAt = ++versionNumber;
@@ -67,8 +68,8 @@ public class CellImpl implements Serializable {
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
-        cellColor = new CellColor(null,null);
-        setOriginalValue(cell.getSTLOriginalValue(),true);
+        cellColor = new CellColor(null, null);
+        setOriginalValue(cell.getSTLOriginalValue(), true);
     }
 
     public static void setSpreadSheet(SpreadSheetImpl spreadSheet) {
@@ -158,6 +159,9 @@ public class CellImpl implements Serializable {
                 case "REF":
                     if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("REF function requires one argument.");
+                    if (arguments.trim().startsWith("{")) {
+                        throw new IllegalArgumentException("REF function does not allow functions! only cell's Id");
+                    }
                     Expression argument = parsedArguments.get(0);
                     Expression res = new CellReferenceFunc(argument, currSpreadSheet, this.id);
                     String referencedId = argument.eval().getValue().toString().toUpperCase().trim();
@@ -170,7 +174,7 @@ public class CellImpl implements Serializable {
                     Expression name1 = parsedArguments.get(0);
                     Range range1 = avgFunctionCheck(name1);
                     Expression avgFunc = new AverageFunction(range1);
-                    if(range1!=null) {
+                    if (range1 != null) {
                         dependsOnRange.add(range1);
                         range1.addAffectsOnCells(this);
                     }
@@ -182,7 +186,7 @@ public class CellImpl implements Serializable {
                     Expression name2 = parsedArguments.get(0);
                     Range range2 = sumFuncCheck(name2);
                     Expression sumFunc = new SumFunction(range2);
-                    if(range2!=null){
+                    if (range2 != null) {
                         dependsOnRange.add(range2);
                         range2.addAffectsOnCells(this);
                     }
@@ -288,7 +292,7 @@ public class CellImpl implements Serializable {
             return new Bool(Boolean.valueOf(value));
 
         if (value.isEmpty() || value.matches(".*[^0-9].*") || value.matches("^\\s*$")) {
-            if (value.startsWith("-")||value.contains(".")) {
+            if (value.startsWith("-") || value.contains(".")) {
                 try {
                     return new Number(Double.valueOf(value));
                 } catch (NumberFormatException ignored) {
@@ -320,12 +324,16 @@ public class CellImpl implements Serializable {
         affectsOn.remove(id);
     }
 
-    public void setOriginalValue(String originalValue,boolean editVersion) {
+    public void setOriginalValue(String originalValue, boolean editVersion) {
         this.originalValue = originalValue;
         removeDependsOn();
         calculateEffectiveValue();
-        if(editVersion)
+        if (editVersion)
             updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
+        if (originalValue != null) {
+            this.originalValue = Pattern.compile("\\{REF,([^}]+)}").matcher(originalValue)
+                    .replaceAll(match -> "{REF," + match.group(1).toUpperCase() + "}");
+        }
     }
 
     private void detectCircularDependency(Set<String> visitedCells) {
@@ -386,12 +394,7 @@ public class CellImpl implements Serializable {
 
     public void setRow(int row) {
         this.row = row;
-        this.id = generateId(this.col,this.row);
-    }
-
-    public void setCol(String col) {
-        this.col = col;
-        this.id = generateId(this.col,this.row);
+        this.id = generateId(this.col, this.row);
     }
 
     public void setTextColor(String textColor) {
