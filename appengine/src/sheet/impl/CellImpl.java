@@ -220,12 +220,17 @@ public class CellImpl implements Serializable {
                 case "IF":
                     if (parsedArguments.size() != 3)
                         throw new IllegalArgumentException("IF function requires three arguments.");
-                    return new ifCondition(parsedArguments.get(0), parsedArguments.get(1), parsedArguments.get(2));
+                    return new IfCondition(parsedArguments.get(0), parsedArguments.get(1), parsedArguments.get(2));
 
                 case "PERCENT":
                     if (parsedArguments.size() != 2)
                         throw new IllegalArgumentException("PERCENT function requires two arguments.");
                     return new PercentFunction(parsedArguments.get(0), parsedArguments.get(1));
+
+                case "EQUAL":
+                    if(parsedArguments.size()!=2)
+                        throw new IllegalArgumentException("EQUAL function requires two arguments.");
+                    return new EqualFunction(parsedArguments.get(0), parsedArguments.get(1));
 
                 default:
                     throw new IllegalArgumentException("Unknown/Unsupported function: " + functionName);

@@ -7,10 +7,10 @@ import expression.impl.simple.expression.TrinaryExpression;
 import sheet.api.EffectiveValue;
 import sheet.impl.EffectiveValueImpl;
 
-public class ifCondition extends TrinaryExpression {
+public class IfCondition extends TrinaryExpression {
     private final String name;
 
-    public ifCondition(Expression condition, Expression _then, Expression _else) {
+    public IfCondition(Expression condition, Expression _then, Expression _else) {
         super(condition, _then, _else);
         name = "IF";
     }

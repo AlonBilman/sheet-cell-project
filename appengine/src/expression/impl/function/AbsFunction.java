@@ -31,7 +31,7 @@ public class AbsFunction extends UnaryExpression {
     protected EffectiveValue evaluate(EffectiveValue o1) {
         if (o1 == null)
             throw new NullPointerException("The parameters cannot be null, you may referred to an uninitiated cell");
-        if (o1.getObjType() == ObjType.STRING)
+        if (o1.getObjType() == ObjType.NUMERIC)
             return new EffectiveValueImpl(abs((double) o1.getValue()), type());
         return new EffectiveValueImpl(ErrorValues.NUMERIC_ERROR.getErrorMessage(), ObjType.UNKNOWN);
     }
