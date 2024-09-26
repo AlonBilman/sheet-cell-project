@@ -389,7 +389,7 @@ public class AppController {
                         values.add(value);
                     }
                 } else if (chartType.equals("Bar Chart")) {
-                    if (isX || cellType == ObjType.NUMERIC) {
+                    if ((isX && cellType != ObjType.EMPTY) || cellType == ObjType.NUMERIC) {
                         values.add(value);
                     }
                 }
