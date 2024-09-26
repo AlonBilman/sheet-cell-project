@@ -4,12 +4,12 @@
 }
 
 .grid-pane {
-    -fx-background-color: #fff9db; /* Light yellow background */
+    -fx-background-color: #ffeb99; /* Light yellow background */
     -fx-grid-lines-visible: true;
 }
 
 .boarder {
-    -fx-border-color: #cc9900; /* Medium yellow border */
+    -fx-border-color: #8B8000; /* Medium yellow border */
     -fx-alignment: center;
     -fx-font-size: 14px;
 }

@@ -4,7 +4,7 @@
 }
 
 .grid-pane {
-    -fx-background-color: #f5f5f5; /* Light gray background */
+    -fx-background-color: #e6e6e6; /* Light gray background */
     -fx-grid-lines-visible: true;
 }
 
