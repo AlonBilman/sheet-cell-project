@@ -3,7 +3,7 @@ package expression.api;
 public enum ErrorValues {
     STRING_ERROR("!UNDEFINED!"),
     NUMERIC_ERROR("NaN"),
-    BOOLEAN_ERROR("BooleanError"),
+    BOOLEAN_ERROR("UNKNOWN"),
     EMPTY("");
 
     private final String errorMessage;

@@ -43,18 +43,18 @@
     -fx-border-color: #808080; /* Medium gray when pressed */
     -fx-border-width: 3px;
 }
-
 .cell-dependsOn {
-    -fx-background-color: #cccccc; /* Light gray for dependency cells */
+    -fx-background-color: lightgray; /* Lighter gray with a subtle tint */
 }
 
 .cell-affectsOn {
-    -fx-background-color: #bfbfbf; /* Slightly darker gray for affected cells */
+    -fx-background-color: #a0a0a0; /* Darker gray with a slight blue tint */
 }
 
 .focused-on {
-    -fx-background-color: #a6a6a6; /* Grayish blue for focused cells */
+    -fx-background-color: gray; /* Even darker grayish blue for strong focus */
 }
+
 
 .cell-non-default.alignment-left {
     -fx-alignment: center-left;

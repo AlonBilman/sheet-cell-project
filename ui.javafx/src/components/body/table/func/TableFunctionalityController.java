@@ -376,7 +376,6 @@ public class TableFunctionalityController {
         colorPicker.setOnAction(e -> {
             try {
                 Color selectedColor = colorPicker.getValue();
-                System.out.println("Selected Color: " + selectedColor);
                 colorCallback.accept(selectedColor);
                 popupStage.close();
             } catch (Exception ex) {/*ignore*/}
@@ -415,11 +414,13 @@ public class TableFunctionalityController {
     private void handleModifySizePopupConfirm(TextField inputField, Stage popupStage) {
         try {
             double newSize = Double.parseDouble(inputField.getText());
-            if (newSize > 0) {
+            if (newSize>=20) {
                 appController.updateSize(newSize);
                 popupStage.close();
             } else {
-                showInfoAlert("Error: Entered 0 or a negative value.");
+                if(newSize<=0)
+                    showInfoAlert("Error: Entered 0 or a negative value.");
+                else showInfoAlert("Error: Minimum size set to 20 for remaining functionality.");
             }
         } catch (NumberFormatException e) {
             showInfoAlert("Error: Entered value is not a number.");
@@ -451,6 +452,7 @@ public class TableFunctionalityController {
         RadioButton rightAlign = new RadioButton("Right");
 
         ToggleGroup alignmentGroup = new ToggleGroup();
+        leftAlign.setToggleGroup(alignmentGroup);
         centerAlign.setToggleGroup(alignmentGroup);
         rightAlign.setToggleGroup(alignmentGroup);
 

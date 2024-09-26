@@ -37,6 +37,6 @@ public class ifCondition extends TrinaryExpression {
                 return new EffectiveValueImpl(result.getValue(), result.getObjType());
             }
         }
-        return new EffectiveValueImpl(ErrorValues.STRING_ERROR, ObjType.UNKNOWN);
+        return new EffectiveValueImpl(ErrorValues.STRING_ERROR.getErrorMessage(), ObjType.UNKNOWN);
     }
 }

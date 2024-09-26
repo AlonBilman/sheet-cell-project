@@ -130,7 +130,7 @@ public class GridSheetController {
     }
 
     private void setCellFunctionality(Label cellLabel, int maxRowHeight, int maxColWidth, String cellId) {
-        cellLabel.setPrefSize(maxColWidth, maxRowHeight);
+        cellLabel.setMinSize(maxColWidth,maxRowHeight);
         cellLabel.getStyleClass().add("cell-default");
         cellLabel.setOnMouseClicked(event -> appController.CellClicked(cellId));
     }

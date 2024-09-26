@@ -45,15 +45,15 @@
 }
 
 .cell-dependsOn {
-    -fx-background-color: #ffe680; /* Light yellow for dependency cells */
+    -fx-background-color: #FCF55F; /* Light yellow for dependency cells */
 }
 
 .cell-affectsOn {
-    -fx-background-color: #ffcc66; /* Slightly darker yellow for affected cells */
+    -fx-background-color: #ffcc00; /* Darker yellow for affected cells */
 }
 
 .focused-on {
-    -fx-background-color: #ffbf00; /* Bright yellow for focused cells */
+    -fx-background-color: #FDDA0D; /* Bright yellow for focused cells */
 }
 
 .cell-non-default.alignment-left {
