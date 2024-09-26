@@ -49,6 +49,13 @@ public class ChartMaker {
             }
         });
 
+        yColumnChoice.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            xColumnChoice.getItems().remove(newVal);
+            if (oldVal != null) {
+                xColumnChoice.getItems().add(oldVal);
+            }
+        });
+
         ToggleGroup chartTypeGroup = new ToggleGroup();
         RadioButton barChartOption = new RadioButton("Bar Chart");
         barChartOption.setToggleGroup(chartTypeGroup);
@@ -223,7 +230,7 @@ public class ChartMaker {
         barChart.getData().add(series);
 
         Stage barChartStage = new Stage();
-        barChartStage.setTitle("Your Bart Chart:");
+        barChartStage.setTitle("Your Bar Chart:");
         StackPane barChartLayout = new StackPane(barChart);
         Scene scene = new Scene(barChartLayout, 800, 600);
         barChartStage.setScene(scene);
