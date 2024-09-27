@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -258,20 +259,31 @@ public class TableFunctionalityController {
                         });
                         columnVbox.getChildren().add(checkBox);
                     });
+
             gridPane.add(columnVbox, columnIndex++, 0);
         }
+        RadioButton orFilter = new RadioButton("OR FILTERING");
+        RadioButton andFilter = new RadioButton("AND FILTERING");
+        ToggleGroup filterGroup = new ToggleGroup();
+        orFilter.setToggleGroup(filterGroup);
+        andFilter.setToggleGroup(filterGroup);
+        orFilter.setSelected(true);
+        HBox filterOptions = new HBox(10, orFilter, andFilter);
+        filterOptions.setAlignment(Pos.CENTER);
         Button confirmButton = new Button("Confirm Selection");
         confirmButton.setOnAction(e -> {
-            appController.filterParamsConfirmed(fromCell, toCell, selectedValues);
+            String selectedFilterType = orFilter.isSelected() ? "OR" : "AND";
+            appController.filterParamsConfirmed(fromCell, toCell, selectedValues, selectedFilterType);
             popupStage.close();
         });
-        VBox mainVbox = new VBox(20, gridPane, confirmButton);
+        VBox mainVbox = new VBox(20, gridPane, filterOptions, confirmButton);
         mainVbox.setAlignment(Pos.CENTER);
         ScrollPane scrollPane = new ScrollPane(mainVbox);
         scrollPane.setFitToWidth(true);
         popupStage.setScene(new Scene(scrollPane, 500, 400));
         popupStage.showAndWait();
     }
+
 
     private Map<String, Set<String>> getValuesFromCols(Set<String> colToFilterBy, Set<CellDataDTO> cells) {
         Map<String, Set<String>> columnToCellValues = new HashMap<>();
@@ -414,11 +426,11 @@ public class TableFunctionalityController {
     private void handleModifySizePopupConfirm(TextField inputField, Stage popupStage) {
         try {
             double newSize = Double.parseDouble(inputField.getText());
-            if (newSize>=20) {
+            if (newSize >= 20) {
                 appController.updateSize(newSize);
                 popupStage.close();
             } else {
-                if(newSize<=0)
+                if (newSize <= 0)
                     showInfoAlert("Error: Entered 0 or a negative value.");
                 else showInfoAlert("Error: Minimum size set to 20 for remaining functionality.");
             }

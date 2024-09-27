@@ -291,8 +291,14 @@ public class AppController {
         tableFunctionalityController.buildNoNameRangePopup(TableFunctionalityController.ConfirmType.SORT_RANGE);
     }
 
-    public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy) {
-        sheetDTO filteredSheet = engine.filter(fromCell.trim() + ".." + toCell.trim(), filterBy);
+    public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy, String selectedFilterType) {
+        sheetDTO filteredSheet;
+        String params = fromCell.trim() + ".." + toCell.trim();
+        if(selectedFilterType.equals("OR"))
+             filteredSheet = engine.filter(params, filterBy,EngineImpl.OperatorValue.OR_OPERATOR);
+        else {
+            filteredSheet = engine.filter(params, filterBy,EngineImpl.OperatorValue.AND_OPERATOR);
+        }
         try {
             showSheetPopup(filteredSheet,
                     "Filtered from " + fromCell + " to " + toCell + " | By : " + filterBy);

@@ -17,6 +17,10 @@ public class EngineImpl implements Engine, Serializable {
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
 
+    public enum OperatorValue {
+        OR_OPERATOR,AND_OPERATOR
+    }
+
     public EngineImpl() {
         this.spreadSheet = null;
     }
@@ -101,12 +105,12 @@ public class EngineImpl implements Engine, Serializable {
         return new sheetDTO(spreadSheetCopy);
     }
 
-    public sheetDTO filter(String params, Map<String, Set<String>> filterBy) {
+    public sheetDTO filter(String params, Map<String, Set<String>> filterBy,OperatorValue operatorValue) {
         String[] cellIdentifiers = checkRangeParams(params);
         if (filterBy.isEmpty())
             throw new RuntimeException("You did not specify what params should we filter for\nPlease provide this information and run the filter function again.");
         SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
-        spreadSheetCopy.filter(cellIdentifiers, filterBy);
+        spreadSheetCopy.filter(cellIdentifiers, filterBy,operatorValue);
         return new sheetDTO(spreadSheetCopy);
     }
 

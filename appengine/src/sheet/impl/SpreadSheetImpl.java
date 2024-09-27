@@ -1,9 +1,11 @@
 package sheet.impl;
 
 import checkfile.*;
+import engine.impl.EngineImpl;
 import expression.api.ObjType;
 import sheet.api.EffectiveValue;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -21,6 +23,7 @@ public class SpreadSheetImpl implements Serializable {
     private int sheetVersionNumber;
     private SpreadSheetImpl sheetBeforeChange = null;
     private Set<String> cellsToCalcAfterLoadFaze = null;
+
 
     public SpreadSheetImpl(STLSheet stlSheet) {
         CellImpl.setSpreadSheet(this);
@@ -71,8 +74,8 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-    public void changeCell(String id, String newOriginalVal,boolean editVersion) {
-        if(editVersion) //for dynamic change! please don't delete
+    public void changeCell(String id, String newOriginalVal, boolean editVersion) {
+        if (editVersion) //for dynamic change! please don't delete
             sheetBeforeChange = deepCopy();
         CellImpl.setSpreadSheet(this);
         checkCellId(id);
@@ -81,8 +84,8 @@ public class SpreadSheetImpl implements Serializable {
             initNullCell(id, newOriginalVal);
             cell = getCell(id);
         }
-        cell.setOriginalValue(newOriginalVal,editVersion);
-        if(editVersion) //for dynamic change! please don't delete
+        cell.setOriginalValue(newOriginalVal, editVersion);
+        if (editVersion) //for dynamic change! please don't delete
             updateVersionNumber();
     }
 
@@ -322,7 +325,7 @@ public class SpreadSheetImpl implements Serializable {
         return cellsInRange;
     }
 
-    public Set<CellImpl> getSetOfCellsFromDummyRange(String topLeftCellId,String bottomRightCellId){
+    public Set<CellImpl> getSetOfCellsFromDummyRange(String topLeftCellId, String bottomRightCellId) {
         topLeftCellId = cleanId(topLeftCellId);
         bottomRightCellId = cleanId(bottomRightCellId);
         checkRangeParams(topLeftCellId, bottomRightCellId);
@@ -437,7 +440,7 @@ public class SpreadSheetImpl implements Serializable {
         return Double.compare(value1, value2);
     }
 
-    public void filter(String[] params, Map<String, Set<String>> filterBy) {
+    public void filter(String[] params, Map<String, Set<String>> filterBy, EngineImpl.OperatorValue operatorValue) {
         params[0] = cleanId(params[0]);
         params[1] = cleanId(params[1]);
         checkRangeParams(params[0], params[1]);
@@ -447,15 +450,22 @@ public class SpreadSheetImpl implements Serializable {
 
         for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowMap.entrySet()) {
             Set<CellImpl> cells = rowEntry.getValue();
-            boolean rowMatches = false;
+            boolean rowMatches = operatorValue == EngineImpl.OperatorValue.AND_OPERATOR;
             for (CellImpl cell : cells) {
                 String column = cell.getCol();
                 String cellValue = cell.getEffectiveValue().getValue().toString();
                 if (filterBy.containsKey(column)) {
                     Set<String> filterValues = filterBy.get(column);
-                    if (filterValues.contains(cellValue)) {
-                        rowMatches = true;
-                        break;
+                    if (operatorValue.equals(EngineImpl.OperatorValue.OR_OPERATOR)) {
+                        if (filterValues.contains(cellValue)) {
+                            rowMatches = true;
+                            break;
+                        }
+                    } else if (operatorValue.equals(EngineImpl.OperatorValue.AND_OPERATOR)) {
+                        if (!filterValues.contains(cellValue) && !filterValues.isEmpty()) {
+                            rowMatches = false;
+                            break;
+                        }
                     }
                 }
             }
