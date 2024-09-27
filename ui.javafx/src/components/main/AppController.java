@@ -34,7 +34,6 @@ public class AppController {
     private EngineImpl engine;
     private File newFile, oldFile;
     private STLSheet stlSheet;
-    private sheetDTO sheetDto;
     private LoadDTO loadResult;
     private ChartMaker chartMaker;
 
@@ -376,31 +375,33 @@ public class AppController {
         chartMaker.createChartDialogPopup(engine.Display().getColSize());
     }
 
-    //chars
-    public List<String> getColValuesForChart(String chartType, String column, boolean isX) {
-        column = column.trim();
-        List<String> values = new ArrayList<>();
-        sheetDTO sheet = engine.Display();
-        int rowSize = sheet.getRowSize();
-        Map<String, CellDataDTO> activeCells = sheet.getActiveCells();
-        for (int row = 1; row <= rowSize; row++) {
-            String cellId = column + row;
-            CellDataDTO cellData = activeCells.get(cellId);
-            if (cellData != null) {
-                String value = cellData.getEffectiveValue().getValue().toString();
-                ObjType cellType = cellData.getEffectiveValue().getObjType();
-
-                if (chartType.equals("Line Chart")) {
-                    if (cellType == ObjType.NUMERIC) {
-                        values.add(value);
-                    }
-                } else if (chartType.equals("Bar Chart")) {
-                    if ((isX && cellType != ObjType.EMPTY) || cellType == ObjType.NUMERIC) {
-                        values.add(value);
-                    }
-                }
+    public void confirmChartClicked(String chartType, String paramsX, String paramsY) {
+        try{
+            Set<CellDataDTO> xCells = engine.getSetOfCellsDtoDummyRange(paramsX);
+            Set<CellDataDTO> yCells = engine.getSetOfCellsDtoDummyRange(paramsY);
+            List<Double> xValues = getNumericValuesSortedByRow(xCells);
+            List<Double> yValues = getNumericValuesSortedByRow(yCells);
+            if(chartType.equals("Bar Chart"))
+                chartMaker.createBarChart(xValues,yValues);
+            else {
+                chartMaker.createLineChart(xValues,yValues);
             }
         }
-        return values;
+        catch (IllegalArgumentException e){
+            chartMaker.showInfoAlert(e.getMessage());
+        }
     }
+    //because I used set in so much code...
+    private List<Double> getNumericValuesSortedByRow(Set<CellDataDTO> cells) {
+        return cells.stream()
+                .filter(cell -> cell.getEffectiveValue().getObjType() == ObjType.NUMERIC)
+                .sorted(Comparator.comparingInt(CellDataDTO::getRow))
+                .map(cell -> (double)cell.getEffectiveValue().getValue())
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
 }

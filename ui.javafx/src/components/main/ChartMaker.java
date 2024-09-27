@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -16,216 +17,137 @@ import javafx.scene.layout.StackPane;
 
 import javafx.scene.chart.CategoryAxis;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChartMaker {
 
-    private AppController appcontroller;
+    private final AppController appcontroller;
 
     public ChartMaker(AppController appcontroller) {
         this.appcontroller = appcontroller;
     }
 
     public void createChartDialogPopup(int columnCount) {
-        ObservableList<String> columnOptions = FXCollections.observableArrayList();
-        for (int i = 1; i <= columnCount; i++) {
-            columnOptions.add("Column " + (char) ('A' + i - 1));
-        }
         Stage popupStage = new Stage();
         popupStage.setTitle("Gr-Settings");
         popupStage.setResizable(false);
         popupStage.initModality(Modality.APPLICATION_MODAL);
-
+        ObservableList<String> columnOptions = FXCollections.observableArrayList();
+        for (int i = 1; i <= columnCount; i++) {
+            columnOptions.add("Column " + (char) ('A' + i - 1));
+        }
         ChoiceBox<String> xColumnChoice = new ChoiceBox<>(columnOptions);
-        xColumnChoice.setMinSize(100,25);
+        xColumnChoice.setMinSize(90, 20);
         ChoiceBox<String> yColumnChoice = new ChoiceBox<>(columnOptions);
-        yColumnChoice.setMinSize(100,25);
+        yColumnChoice.setMinSize(90, 20);
 
+        //disable duplicate selections
         xColumnChoice.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             yColumnChoice.getItems().remove(newVal);
-            if (oldVal != null) {
-                yColumnChoice.getItems().add(oldVal);
-            }
+            if (oldVal != null) yColumnChoice.getItems().add(oldVal);
         });
-
         yColumnChoice.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             xColumnChoice.getItems().remove(newVal);
-            if (oldVal != null) {
-                xColumnChoice.getItems().add(oldVal);
-            }
+            if (oldVal != null) xColumnChoice.getItems().add(oldVal);
         });
+
+        TextField xRangeFromField = createRangeTextField("From");
+        TextField xRangeToField = createRangeTextField("To");
+        TextField yRangeFromField = createRangeTextField("From");
+        TextField yRangeToField = createRangeTextField("To");
 
         ToggleGroup chartTypeGroup = new ToggleGroup();
         RadioButton barChartOption = new RadioButton("Bar Chart");
         barChartOption.setToggleGroup(chartTypeGroup);
-        barChartOption.setSelected(true);
-
+        barChartOption.setSelected(true); // Set Bar Chart as default
         RadioButton lineChartOption = new RadioButton("Line Chart");
         lineChartOption.setToggleGroup(chartTypeGroup);
 
         Button confirmButton = new Button("Confirm");
         confirmButton.setOnAction(e -> {
-            String xColumn = xColumnChoice.getValue();
-            String yColumn = yColumnChoice.getValue();
-
-            if (xColumn == null || yColumn == null) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Invalid Selection");
-                alert.setHeaderText(null);
-                alert.setContentText("Please select both X and Y columns.");
-                alert.showAndWait();
+            if (xColumnChoice.getValue() == null || yColumnChoice.getValue() == null ||
+                    xRangeFromField.getText().isEmpty() || xRangeToField.getText().isEmpty() ||
+                    yRangeFromField.getText().isEmpty() || yRangeToField.getText().isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Please select both X and Y columns and specify valid ranges.").showAndWait();
                 return;
             }
-            String chartType = ((RadioButton) chartTypeGroup.getSelectedToggle()).getText();
-            confirmButton.setDisable(true);
-            chartValuesDialog(chartType, xColumn, yColumn);
+            int xFrom = Integer.parseInt(xRangeFromField.getText());
+            int xTo = Integer.parseInt(xRangeToField.getText());
+            int yFrom = Integer.parseInt(yRangeFromField.getText());
+            int yTo = Integer.parseInt(yRangeToField.getText());
+            if (xFrom > xTo || yFrom > yTo) {
+                new Alert(Alert.AlertType.WARNING, "'From' value cannot be greater than 'To' for both X and Y ranges.").showAndWait();
+                return;
+            }
+            String chartType = barChartOption.isSelected() ? "Bar Chart" : "Line Chart";
+            confirmButtonClicked(xColumnChoice.getValue(), yColumnChoice.getValue(), xFrom, xTo, yFrom, yTo, chartType);
             popupStage.close();
         });
-
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(20));
         layout.getChildren().addAll(
-                new Label("Select X Column:"), xColumnChoice,
-                new Label("Select Y Column:"), yColumnChoice,
-                new Label("Select Chart Type:"), barChartOption, lineChartOption,
+                new Label("Select X Column and Range:"), createSelectionBox(xColumnChoice, xRangeFromField, xRangeToField),
+                new Label("Select Y Column and Range:"), createSelectionBox(yColumnChoice, yRangeFromField, yRangeToField),
+                new Label("Select Chart Type:"), new HBox(10, barChartOption, lineChartOption),
                 confirmButton
         );
-
-        Scene scene = new Scene(layout);
-        popupStage.setScene(scene);
+        popupStage.setScene(new Scene(layout));
         popupStage.showAndWait();
     }
 
-    public void chartValuesDialog(String chartType, String xColumn, String yColumn) {
-        List<String> xColumnValues = appcontroller.getColValuesForChart(chartType, xColumn.substring(6), true);
-        List<String> yColumnValues = appcontroller.getColValuesForChart(chartType, yColumn.substring(6), false);
-
-        List<String> selectedXValues = new ArrayList<>();
-        List<String> selectedYValues = new ArrayList<>();
-
-        Stage popupStage = new Stage();
-        popupStage.setTitle("Select X and Corresponding Y Values");
-
-        Button infoButton = createInfoButton();
-
-        ListView<String> xValuesList = createListView(xColumnValues);
-        ListView<String> yValuesList = createListView(yColumnValues);
-        yValuesList.setDisable(true);
-
-        Label xLabel = new Label("Select X Value:");
-        Label yLabel = new Label("Select Corresponding Y Value:");
-
-        Button confirmButton = new Button("Confirm");
-        confirmButton.setDisable(true);
-
-        xValuesList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            yValuesList.setDisable(false);
-            confirmButton.setDisable(true);
-            yValuesList.getSelectionModel().clearSelection();
-        });
-
-        yValuesList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            confirmButton.setDisable(xValuesList.getSelectionModel().getSelectedItem() == null || newVal == null);
-        });
-
-        confirmButton.setOnAction(e -> handleConfirm(xValuesList, yValuesList, selectedXValues, selectedYValues, confirmButton));
-
-        Button finalizeButton = new Button("Finalize Selection");
-        finalizeButton.setOnAction(e -> {
-            if (chartType.equals("Line Chart")) {
-                createLineChart(selectedXValues, selectedYValues);
-            } else {
-                createBarChart(selectedXValues, selectedYValues);
-            }
-            popupStage.close();
-        });
-        VBox layout = new VBox(10, infoButton, xLabel, xValuesList, yLabel, yValuesList, confirmButton, finalizeButton);
-        layout.setPadding(new Insets(20));
-        popupStage.setScene(new Scene(layout, 400, 400));
-        popupStage.showAndWait();
+    private void confirmButtonClicked(String colX, String colY, int xFrom, int xTo, int yFrom, int yTo, String chartType) {
+        String colXVal = colX.substring(7).trim();
+        String colYVal = colY.substring(7).trim();
+        String paramsX = colXVal + xFrom + ".." + colXVal + xTo;
+        String paramsY = colYVal + yFrom + ".." + colYVal + yTo;
+        appcontroller.confirmChartClicked(chartType, paramsX, paramsY);
     }
 
-    private Button createInfoButton() {
-        Button infoButton = new Button("Press For Info");
-        infoButton.setOnAction(e -> {
-            Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
-            infoAlert.setTitle("Information");
-            infoAlert.setHeaderText(null);
-            infoAlert.setContentText("""
-                    Select the X values and their corresponding Y values.
-                    Once you are finished selecting please press the Confirm button.
-                                       \s
-                    You can add as many values as you can (until there is no more values).
-                                       \s
-                    Press Finalize Selection when you're done and enjoy the chart.""");
-            infoAlert.showAndWait();
-        });
-        return infoButton;
+    //I allow only numbers that does not start with 0. and no negative values (cant put -)
+    private TextField createRangeTextField(String prompt) {
+        TextField textField = new TextField();
+        textField.setPromptText(prompt);
+        textField.setPrefWidth(50);
+        textField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            return (newText.matches("[1-9]\\d*") || newText.isEmpty()) ? change : null;
+        }));
+        return textField;
     }
 
-    private ListView<String> createListView(List<String> values) {
-        ListView<String> listView = new ListView<>(FXCollections.observableArrayList(values));
-        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        return listView;
+    private HBox createSelectionBox(ChoiceBox<String> columnChoice, TextField rangeFrom, TextField rangeTo) {
+        return new HBox(10, columnChoice, new Label("From:"), rangeFrom, new Label("To:"), rangeTo);
     }
 
-    private void handleConfirm(ListView<String> xValuesList, ListView<String> yValuesList,
-                               List<String> selectedXValues, List<String> selectedYValues, Button confirmButton) {
-        String selectedX = xValuesList.getSelectionModel().getSelectedItem();
-        String selectedY = yValuesList.getSelectionModel().getSelectedItem();
-
-        if (selectedX != null && selectedY != null) {
-            selectedXValues.add(selectedX);
-            selectedYValues.add(selectedY);
-
-            xValuesList.getItems().remove(selectedX);
-            yValuesList.getItems().remove(selectedY);
-
-            xValuesList.getSelectionModel().clearSelection();
-            yValuesList.getSelectionModel().clearSelection();
-
-            yValuesList.setDisable(true);
-            confirmButton.setDisable(xValuesList.getItems().isEmpty() || yValuesList.getItems().isEmpty());
-        }
-    }
-
-    public void createLineChart(List<String> xValues, List<String> yValues) {
-        //ok to do, we made sure its only doubles.
-        List<Double> xNumericValues = xValues.stream().map(Double::parseDouble).toList();
-        List<Double> yNumericValues = yValues.stream().map(Double::parseDouble).toList();
-
+    public void createLineChart(List<Double> xValues, List<Double> yValues) {
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
         LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setTitle("Your Line Chart:");
-
+        int size = Math.min(yValues.size(), xValues.size());
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
-        for (int i = 0; i < xNumericValues.size(); i++) {
-            series.getData().add(new XYChart.Data<>(xNumericValues.get(i), yNumericValues.get(i)));
+        for (int i = 0; i < size; i++) {
+            series.getData().add(new XYChart.Data<>(xValues.get(i), yValues.get(i)));
         }
         lineChart.getData().add(series);
 
         Stage lineChartStage = new Stage();
-        lineChartStage.setTitle("Your Bart Chart:");
+        lineChartStage.setTitle("Your Line Chart:");
         StackPane lineChartLayout = new StackPane(lineChart);
         Scene scene = new Scene(lineChartLayout, 800, 600);
         lineChartStage.setScene(scene);
         lineChartStage.show();
     }
 
-    public void createBarChart(List<String> xValues, List<String> yValues) {
-
-        List<Double> yNumericValues = yValues.stream().map(Double::parseDouble).toList();
-
+    public void createBarChart(List<Double> xValues, List<Double> yValues) {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Your Bart Chart:");
-
+        barChart.setTitle("Your Bar Chart:");
+        int size = Math.min(yValues.size(), xValues.size());
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        for (int i = 0; i < yNumericValues.size(); i++) {
-            series.getData().add(new XYChart.Data<>(xValues.get(i), yNumericValues.get(i)));
+        for (int i = 0; i < size; i++) {
+            series.getData().add(new XYChart.Data<>(xValues.get(i).toString(), yValues.get(i)));
         }
         barChart.getData().add(series);
 
@@ -235,5 +157,13 @@ public class ChartMaker {
         Scene scene = new Scene(barChartLayout, 800, 600);
         barChartStage.setScene(scene);
         barChartStage.show();
+    }
+
+    public void showInfoAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
