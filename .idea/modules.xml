@@ -3,10 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/appengine/appengine.iml" filepath="$PROJECT_DIR$/appengine/appengine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/sheet-cell-project.iml" filepath="$PROJECT_DIR$/sheet-cell-project.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.javafx/ui.javafx.iml" filepath="$PROJECT_DIR$/ui.javafx/ui.javafx.iml" />
-      <module fileurl="file://$PROJECT_DIR$/uilayout/uilayout.iml" filepath="$PROJECT_DIR$/uilayout/uilayout.iml" />
     </modules>
   </component>
 </project>
