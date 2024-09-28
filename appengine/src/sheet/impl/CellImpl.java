@@ -78,7 +78,7 @@ public class CellImpl implements Serializable {
 
     public void calculateEffectiveValue() {
         if (originalValue == null || originalValue.isEmpty()) {
-            originalValue = "Empty Cell";
+            this.originalValue = "Empty Cell";
             this.effectiveValue = new EffectiveValueImpl(ErrorValues.EMPTY.getErrorMessage(), ObjType.EMPTY);
         } else {
             Expression expression = parseExpression(originalValue);
@@ -339,7 +339,7 @@ public class CellImpl implements Serializable {
         calculateEffectiveValue();
         if (editVersion)
             updateLastChangeAt(currSpreadSheet.getSheetVersionNumber());
-        if (originalValue != null) {
+        if (originalValue != null && !this.originalValue.equals("Empty Cell")) {
             this.originalValue = Pattern.compile("\\{REF,([^}]+)}").matcher(originalValue)
                     .replaceAll(match -> "{REF," + match.group(1).toUpperCase() + "}");
         }
