@@ -47,6 +47,7 @@ public class LoadFileController {
         alert.setTitle("!ERROR!");
         alert.setHeaderText("Error while loading file");
         alert.setContentText(problem);
+        alert.setResizable(true);
         alert.showAndWait();
     }
 
