@@ -171,6 +171,8 @@ public class CellImpl implements Serializable {
                 case "AVERAGE":
                     if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("AVERAGE function requires one argument.");
+                    if (arguments.trim().startsWith("{"))
+                        throw new IllegalArgumentException("AVERAGE function does not allow functions! only Ranges");
                     Expression name1 = parsedArguments.get(0);
                     Range range1 = avgFunctionCheck(name1);
                     Expression avgFunc = new AverageFunction(range1);
@@ -183,6 +185,8 @@ public class CellImpl implements Serializable {
                 case "SUM":
                     if (parsedArguments.size() != 1)
                         throw new IllegalArgumentException("SUM function requires one argument.");
+                    if (arguments.trim().startsWith("{"))
+                        throw new IllegalArgumentException("SUM function does not allow functions! only Ranges");
                     Expression name2 = parsedArguments.get(0);
                     Range range2 = sumFuncCheck(name2);
                     Expression sumFunc = new SumFunction(range2);
