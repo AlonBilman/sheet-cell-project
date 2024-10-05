@@ -1,5 +1,5 @@
 /* General styling for HBox */
-.hbox {
+.box {
     -fx-background-color: #f7f7f7;
     -fx-padding: 15px;
     -fx-spacing: 20px;
@@ -100,6 +100,13 @@
 /* Disabled styling for buttons */
 #sliderConfirm:disabled, #dynamicCancel:disabled {
     -fx-opacity: 0.2;
+}
+
+.inputDialog{
+    -fx-background-color: white;
+    -fx-padding: 10;
+    -fx-border-color: black;
+    -fx-border-width: 1;
 }
 
 /* Disabled styling for general elements */

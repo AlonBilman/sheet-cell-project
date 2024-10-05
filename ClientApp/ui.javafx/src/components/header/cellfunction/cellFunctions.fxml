@@ -24,7 +24,7 @@
                         <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="30.0" prefWidth="219.0" text="Dynamic Change" textAlignment="CENTER" />
 
                         <!-- New Dialog Inside the Same StackPane -->
-                        <VBox fx:id="inputDialog" alignment="CENTER" spacing="10.0" style="-fx-background-color: lightgray; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;" visible="false">
+                        <VBox fx:id="inputDialog" alignment="CENTER" styleClass="inputDialog" spacing="10.0" visible="false">
                            <children>
                               <!-- HBox for TextFields -->
                               <HBox prefWidth="300.0" spacing="15.0"> <!-- Increased width for HBox -->
