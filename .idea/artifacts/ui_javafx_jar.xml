@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/ui_javafx_jar</output-path>
     <root id="archive" name="ui.javafx.jar">
       <element id="module-output" name="ui.javafx" />
-      <element id="module-output" name="appengine" />
+      <element id="module-output" name="sheetLogicEngine" />
       <element id="extracted-dir" path="$PROJECT_DIR$/JAVAFX/openjfx-22.0.2_windows-x64_bin-sdk/javafx-sdk-22.0.2/lib/javafx-swt.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/JAVAFX/openjfx-22.0.2_windows-x64_bin-sdk/javafx-sdk-22.0.2/lib/javafx.web.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/JAVAFX/openjfx-22.0.2_windows-x64_bin-sdk/javafx-sdk-22.0.2/lib/javafx.base.jar" path-in-jar="/" />
