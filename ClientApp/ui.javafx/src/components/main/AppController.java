@@ -6,6 +6,7 @@ import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
+import components.login.LoginController;
 import dto.CellDataDTO;
 import dto.LoadDTO;
 import dto.sheetDTO;
@@ -399,9 +400,6 @@ public class AppController {
                 .map(cell -> (double)cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
     }
-
-
-
 
 
 }

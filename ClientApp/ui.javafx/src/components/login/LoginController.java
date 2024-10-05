@@ -22,11 +22,19 @@ public class LoginController {
     @FXML
     private ProgressIndicator spinner;
 
+    // Listener for successful login
+    private Runnable loginListener;
+
     // Ensures the TextField is focused when the window opens
     @FXML
     public void initialize() {
         usernameField.requestFocus();
         usernameField.setOnKeyPressed(this::handleKeyPress); // Set key event handler
+    }
+
+    // Method to set the login listener
+    public void setLoginListener(Runnable listener) {
+        this.loginListener = listener;
     }
 
     // Handle Enter key press to trigger login
@@ -47,7 +55,7 @@ public class LoginController {
             @Override
             protected Void call() throws Exception {
                 // Simulate processing time (3 seconds)
-                Thread.sleep(3000);
+                Thread.sleep(3000); // Replace this with actual login validation logic
                 return null;
             }
 
@@ -56,6 +64,11 @@ public class LoginController {
                 // Re-enable the button and hide the spinner after processing
                 loginButton.setDisable(false);
                 spinner.setVisible(false);
+
+                // Notify listener on successful login
+                if (loginListener != null) {
+                    loginListener.run(); // Notify the Main class to show the main app
+                }
             }
         };
 

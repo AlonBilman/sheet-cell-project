@@ -4,6 +4,7 @@ import components.body.table.view.GridSheetController;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -28,8 +29,30 @@ public class CellFunctionsController {
     @FXML
     public Slider dynamicScroll;
     @FXML
+    public TextField fromTextField;
+    @FXML
+    public TextField toTextField;
+    @FXML
+    public TextField jumpTextField;
+    @FXML
+    public Button sliderConfirm;
+    @FXML
+    public Button dynamicCancel;
+    @FXML
     private AppController appController;
+    @FXML
+    private VBox inputDialog;
 
+    @FXML
+    private void showDialog() {
+        inputDialog.setVisible(true);  // Show the dialog
+    }
+
+    @FXML
+    private void hideDialog() {
+        inputDialog.setVisible(false);  // Hide the dialog
+    }
+    
     public void setMainController(AppController mainController) {
         this.appController = mainController;
     }
@@ -187,9 +210,10 @@ public class CellFunctionsController {
         dynamicScroll.setDisable(false);
         dynamicChangeButton.setDisable(true);
         dynamicChangeButton.setVisible(false);
-        exitDynamicChange.setVisible(true);
-        exitDynamicChange.setDisable(false);
-        appController.dynamicChangeButtonClicked(); //disable all components
+        showDialog();
+        //exitDynamicChange.setVisible(true);
+        //exitDynamicChange.setDisable(false);
+       // appController.dynamicChangeButtonClicked(); //disable all components
     }
 
     public void dynamicScrollListener() {
@@ -208,5 +232,12 @@ public class CellFunctionsController {
         versionPickerButton.setDisable(disable);
         newOriginalValText.setDisable(disable);
         cellUpdatedProperty.setDisable(disable);
+    }
+
+    public void submitInputAction(ActionEvent actionEvent) {
+        //something
+    }
+
+    public void cancelInputAction(ActionEvent actionEvent) {
     }
 }

@@ -1,81 +1,108 @@
 /* General styling for HBox */
 .hbox {
-    -fx-background-color: #f7f7f7; /* Light gray with slight tint for a more modern feel */
-    -fx-padding: 15px; /* Increased padding for more spacious layout */
-    -fx-spacing: 20px; /* Increased space between children for a cleaner look */
-    -fx-border-color: #d0d0d0; /* Subtle gray border */
-    -fx-border-width: 1.5px; /* Slightly thicker border for modernity */
-    -fx-background-insets: 0, 0; /* Remove default insets */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow effect */
+    -fx-background-color: #f7f7f7;
+    -fx-padding: 15px;
+    -fx-spacing: 20px;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1.5px;
+    -fx-background-insets: 0, 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3);
 }
 
 /* Modernized styling for Labels */
 .label-style {
-    -fx-background-color: #ffffff; /* Clean white background */
-    -fx-border-color: #007bff; /* Vibrant blue border to match buttons */
-    -fx-border-width: 2px; /* Slightly thicker border for modern design */
-    -fx-padding: 12px; /* Spacious padding inside the label */
-    -fx-text-fill: #333333; /* Dark gray text for readability */
-    -fx-font-size: 15px; /* Larger font size for better readability */
-    -fx-font-weight: bold; /* Bold text for emphasis */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow effect for a floating look */
+    -fx-background-color: #ffffff;
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-padding: 12px;
+    -fx-text-fill: #333333;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
 }
 
 .label-style:hover {
-    -fx-border-color: #0056b3; /* Slightly darker blue on hover for interactivity */
+    -fx-border-color: #0056b3;
 }
 
-#exitDynamicChange ,#dynamicChangeButton {
-    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient background for a modern, sleek look */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 13px; /* Larger font size for consistency */
-    -fx-border-color: #0056b3; /* Darker blue border to match hover state */
-    -fx-border-width: 1px; /* Thicker border for definition */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow for depth */
-    -fx-cursor: hand; /* Pointer cursor on hover */
+/* Dynamic Change and Exit Buttons */
+#exitDynamicChange, #dynamicChangeButton {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-border-color: #0056b3;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
+    -fx-cursor: hand;
 }
 
-#exitDynamicChange:disabled ,#exitDynamicChange:disabled{
+#exitDynamicChange:disabled, #dynamicChangeButton:disabled {
     -fx-opacity: 0.2;
 }
 
-    /* Styling for Update Button */
-.update-button , .version-button {
-    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient background for a modern, sleek look */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 15px; /* Larger font size for consistency */
-    -fx-padding: 12px 18px; /* Increased padding for better proportions */
-    -fx-border-color: #0056b3; /* Darker blue border to match hover state */
-    -fx-border-width: 2px; /* Thicker border for definition */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow for depth */
-    -fx-cursor: hand; /* Pointer cursor on hover */
+#exitDynamicChange:hover, #dynamicChangeButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c);
+    -fx-border-color: #004b8c;
 }
 
-.update-button:hover,.version-button:hover ,#exitDynamicChange:hover ,#dynamicChangeButton:hover {
-    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker blue hover effect */
-    -fx-border-color: #004b8c; /* Matching border color on hover */
+/* Update and Version Buttons */
+.update-button, .version-button {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 15px;
+    -fx-padding: 12px 18px;
+    -fx-border-color: #0056b3;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
+    -fx-cursor: hand;
+}
+
+.update-button:hover, .version-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c);
+    -fx-border-color: #004b8c;
 }
 
 .version-button:disabled {
-    -fx-opacity: 0.4; /* Slight opacity for disabled elements */
+    -fx-opacity: 0.4;
 }
 
-/* Modernized styling for TextField */
-.text-field-style {
-    -fx-background-color: #ffffff; /* Clean white background */
-    -fx-border-color: #cccccc; /* Light gray border */
-    -fx-border-width: 1.5px; /* Slightly thicker border for clarity */
-    -fx-padding: 12px; /* Consistent padding */
-    -fx-font-size: 15px; /* Larger font size for better readability */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow effect */
+/* Modernized styling for TextFields */
+.text-field-style, #fromTextField, #toTextField, #jumpTextField {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1.5px;
+    -fx-padding: 2px;
+    -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
 }
 
-.text-field-style:focused {
-    -fx-border-color: #007bff; /* Blue border when focused */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Enhanced shadow when focused */
+.text-field-style:focused, #fromTextField:focused, #toTextField:focused, #jumpTextField:focused {
+    -fx-border-color: #007bff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
 }
 
-/* Disabled styling */
+/* Submit and Cancel Buttons (inside dialog) */
+#sliderConfirm, #dynamicCancel {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-border-color: #0056b3;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
+    -fx-cursor: hand;
+}
+
+#sliderConfirm:hover, #dynamicCancel:hover {
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c);
+    -fx-border-color: #004b8c;
+}
+
+/* Disabled styling for buttons */
+#sliderConfirm:disabled, #dynamicCancel:disabled {
+    -fx-opacity: 0.2;
+}
+
+/* Disabled styling for general elements */
 .disabled {
-    -fx-opacity: 0.6; /* Slight opacity for disabled elements */
+    -fx-opacity: 0.6;
 }

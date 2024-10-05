@@ -15,22 +15,46 @@
          <children>
             <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="56.0" maxWidth="457.0" prefHeight="56.0" prefWidth="457.0" styleClass="label-style" text="Original Cell Value" />
             <ToolBar prefHeight="40.0" prefWidth="454.0">
-              <items>
-                  <StackPane prefHeight="30.0" prefWidth="150.0">
+               <items>
+                  <!-- Existing StackPane -->
+                  <StackPane prefHeight="30.0" prefWidth="200.0"> <!-- Increased StackPane width -->
                      <children>
-                        <Button fx:id="exitDynamicChange" disable="true" mnemonicParsing="false" onAction="#exitDynamicChangeListener" prefHeight="25.0" prefWidth="152.0" text="Exit Dinamic Change" visible="false" />
-                      <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="25.0" prefWidth="159.0" text="Dynamic Change " textAlignment="CENTER" />
+                        <!-- Existing Buttons -->
+                        <Button fx:id="exitDynamicChange" disable="true" mnemonicParsing="false" onAction="#exitDynamicChangeListener" prefHeight="30.0" prefWidth="210.0" text="Exit Dinamic Change" visible="false" />
+                        <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="30.0" prefWidth="219.0" text="Dynamic Change" textAlignment="CENTER" />
+
+                        <!-- New Dialog Inside the Same StackPane -->
+                        <VBox fx:id="inputDialog" alignment="CENTER" spacing="10.0" style="-fx-background-color: lightgray; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;" visible="false">
+                           <children>
+                              <!-- HBox for TextFields -->
+                              <HBox prefWidth="300.0" spacing="15.0"> <!-- Increased width for HBox -->
+                                 <children>
+                                    <TextField fx:id="fromTextField" prefWidth="80.0" promptText="From" /> <!-- Wider TextField -->
+                                    <TextField fx:id="toTextField" prefWidth="80.0" promptText="To" /> <!-- Wider TextField -->
+                                    <TextField fx:id="jumpTextField" prefWidth="80.0" promptText="Jump" /> <!-- Wider TextField -->
+                                 </children>
+                              </HBox>
+                              <!-- HBox for Submit and Cancel Buttons -->
+                              <HBox alignment="CENTER" spacing="15.0"> <!-- Wider spacing -->
+                                 <children>
+                                    <Button fx:id="sliderConfirm" onAction="#submitInputAction" text="Confirm" />
+                                    <Button fx:id="dynamicCancel" onAction="#cancelInputAction" text="Cancel" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
                      </children>
                   </StackPane>
+
                   <Slider fx:id="dynamicScroll" disable="true" max="1000.0" min="-1000.0" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" value="50.0" visible="false" />
-              </items>
+               </items>
             </ToolBar>
          </children>
       </VBox>
       <VBox prefHeight="98.0" prefWidth="185.0">
          <children>
             <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="214.0" styleClass="update-button" text="Update Cell" underline="true" />
-            <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="25.0" prefWidth="162.0" styleClass="text-field-style" text="new original val" />
+            <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="83.0" prefWidth="185.0" styleClass="text-field-style" text="new original val" />
          </children>
       </VBox>
       <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="58.0" maxWidth="137.0" prefHeight="58.0" prefWidth="114.0" styleClass="label-style" text="Cell Version" />
