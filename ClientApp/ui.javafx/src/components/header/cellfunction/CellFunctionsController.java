@@ -4,7 +4,6 @@ import components.body.table.view.GridSheetController;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -13,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -39,19 +39,11 @@ public class CellFunctionsController {
     @FXML
     public Button dynamicCancel;
     @FXML
+    public Label errorLabelText;
+    @FXML
     private AppController appController;
     @FXML
     private VBox inputDialog;
-
-    @FXML
-    private void showDialog() {
-        inputDialog.setVisible(true);  // Show the dialog
-    }
-
-    @FXML
-    private void hideDialog() {
-        inputDialog.setVisible(false);  // Hide the dialog
-    }
     
     public void setMainController(AppController mainController) {
         this.appController = mainController;
@@ -185,20 +177,21 @@ public class CellFunctionsController {
 
     public void showNumericButtons(boolean bool) {
         if (bool) {
-            dynamicChangeButton.setVisible(true);
-            dynamicChangeButton.setDisable(false);
-            dynamicScroll.setVisible(true);
-            dynamicScroll.setDisable(true);
+            dynamicButtonToggle(false,true);
+            dynamicSliderToggle(true,true);
         } else {
-            dynamicChangeButton.setDisable(true);
-            exitDynamicChange.setDisable(true);
-            dynamicScroll.setDisable(true);
-            dynamicScroll.setVisible(false);
-            exitDynamicChange.setVisible(false);
+            dynamicInputDialogToggle(true,false);
+            dynamicButtonToggle(true,true);
+            dynamicExitButtonToggle(true,false);
+            dynamicSliderToggle(true,true);
         }
     }
 
     public void exitDynamicChangeListener() {
+        exitDynamicChange();
+    }
+
+    public void exitDynamicChange() {
         showNumericButtons(false);
         //because the user will be still on the numeric cell.
         dynamicScroll.setValue(1);
@@ -206,19 +199,43 @@ public class CellFunctionsController {
         showNumericButtons(true);
     }
 
+    private void dynamicSliderToggle(boolean disable, boolean visible) {
+        dynamicScroll.setVisible(visible);
+        dynamicScroll.setDisable(disable);
+    }
+
+    private void dynamicExitButtonToggle(boolean disable, boolean visible) {
+        exitDynamicChange.setDisable(disable);
+        exitDynamicChange.setVisible(visible);
+    }
+
+    private void dynamicButtonToggle(boolean disable, boolean visible) {
+        dynamicChangeButton.setDisable(disable);
+        dynamicChangeButton.setVisible(visible);
+    }
+
+    private void dynamicInputDialogToggle(boolean disable, boolean visible) {
+        inputDialog.setDisable(disable);
+        inputDialog.setVisible(visible);
+    }
+
     public void dynamicChangeButtonListener() {
-        dynamicScroll.setDisable(false);
-        dynamicChangeButton.setDisable(true);
-        dynamicChangeButton.setVisible(false);
-        showDialog();
-        //exitDynamicChange.setVisible(true);
-        //exitDynamicChange.setDisable(false);
-       // appController.dynamicChangeButtonClicked(); //disable all components
+        dynamicButtonToggle(true,false);
+        dynamicInputDialogToggle(false,true);
+        appController.dynamicChangeButtonClicked(); //disable all components
+    }
+
+    private void updateSlider(double fromValue, double toValue,double jumpValue) {
+        dynamicScroll.setMin(fromValue);
+        dynamicScroll.setMax(toValue);
+        dynamicScroll.setBlockIncrement(jumpValue);
+        dynamicScroll.setMajorTickUnit(jumpValue);
+        dynamicScroll.setSnapToTicks(true); // Enable snapping to ticks
     }
 
     public void dynamicScrollListener() {
         dynamicScroll.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Integer scrollValue = newValue.intValue();
+            Double scrollValue = newValue.doubleValue();
             String cellId = currCellShown;
             String newOriginalVal = String.valueOf(scrollValue);
             cellValueProperty.setText(newOriginalVal);
@@ -226,18 +243,52 @@ public class CellFunctionsController {
         });
     }
 
-
     public void setDynamicFuncDisable(boolean disable) {
         updateCellButton.setDisable(disable);
         versionPickerButton.setDisable(disable);
         newOriginalValText.setDisable(disable);
         cellUpdatedProperty.setDisable(disable);
     }
+    public void sliderConfirmButtonListener() {
+        try {
+            double fromValue = Double.parseDouble(fromTextField.getText());
+            double toValue = Double.parseDouble(toTextField.getText());
+            double jumpValue = Double.parseDouble(jumpTextField.getText());
+            if (fromValue >= toValue || jumpValue <= 0) {
+                errorLabelText.setTextFill(Paint.valueOf("red"));
+                errorLabelText.setText("ERROR! Ensure 'From' < 'To' and 'Jump' > 0.");
+                clearDynamicChangeTextBoxes();
+                return;
+            }
+            updateSlider(fromValue, toValue, jumpValue);
 
-    public void submitInputAction(ActionEvent actionEvent) {
-        //something
+            dynamicScroll.valueProperty().addListener((observable, oldValue, newValue) -> {
+                double jumpedValue = Math.round((newValue.doubleValue() - fromValue) / jumpValue) * jumpValue + fromValue;
+                dynamicScroll.setValue(jumpedValue);
+                // Update displayed value and notify the AppController
+                cellValueProperty.setText(String.valueOf(jumpedValue));
+                appController.updateCellDynamically(currCellShown, String.valueOf(jumpedValue));
+            });
+
+            dynamicInputDialogToggle(true, false);
+            clearDynamicChangeTextBoxes();
+            dynamicSliderToggle(false, true);
+            dynamicExitButtonToggle(false, true);
+
+        } catch (NumberFormatException e) {
+            errorLabelText.setTextFill(Paint.valueOf("red"));
+            errorLabelText.setText("Please enter valid numeric values.");
+            clearDynamicChangeTextBoxes();
+        }
     }
 
-    public void cancelInputAction(ActionEvent actionEvent) {
+    private void clearDynamicChangeTextBoxes() {
+        fromTextField.clear();
+        toTextField.clear();
+        jumpTextField.clear();
+    }
+
+    public void dynamicCancelButtonListener() {
+        appController.dynamicCancelClicked();
     }
 }

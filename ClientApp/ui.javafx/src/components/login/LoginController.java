@@ -55,7 +55,7 @@ public class LoginController {
             @Override
             protected Void call() throws Exception {
                 // Simulate processing time (3 seconds)
-                Thread.sleep(3000); // Replace this with actual login validation logic
+                Thread.sleep(1000); // Replace this with actual login validation logic
                 return null;
             }
 

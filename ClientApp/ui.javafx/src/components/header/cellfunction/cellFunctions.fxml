@@ -4,28 +4,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox fx:id="cellFuncHBox" prefHeight="123.0" prefWidth="1110.0" spacing="15.0" stylesheets="@cellFunctionsDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
+<HBox fx:id="cellFuncHBox" prefHeight="152.0" prefWidth="1110.0" spacing="15.0" stylesheets="@cellFunctionsDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
    <children>
       <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="162.0" prefHeight="56.0" prefWidth="162.0" styleClass="label-style" text="Selected Cell ID" textAlignment="CENTER">
          <HBox.margin>
             <Insets left="5.0" />
          </HBox.margin>
       </Label>
-      <VBox prefHeight="98.0" prefWidth="450.0">
+      <VBox prefHeight="102.0" prefWidth="505.0">
          <children>
-            <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="56.0" maxWidth="457.0" prefHeight="56.0" prefWidth="457.0" styleClass="label-style" text="Original Cell Value" />
-            <ToolBar prefHeight="40.0" prefWidth="454.0">
+            <Label id="OriginalCellValueLabel" fx:id="cellValueProperty" maxHeight="61.0" maxWidth="534.0" prefHeight="57.0" prefWidth="504.0" styleClass="label-style" text="Original Cell Value" />
+            <ToolBar prefHeight="51.0" prefWidth="450.0">
                <items>
                   <!-- Existing StackPane -->
-                  <StackPane prefHeight="30.0" prefWidth="200.0"> <!-- Increased StackPane width -->
+                  <StackPane prefHeight="0.0" prefWidth="270.0"> <!-- Increased StackPane width -->
                      <children>
                         <!-- Existing Buttons -->
                         <Button fx:id="exitDynamicChange" disable="true" mnemonicParsing="false" onAction="#exitDynamicChangeListener" prefHeight="30.0" prefWidth="210.0" text="Exit Dinamic Change" visible="false" />
-                        <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="30.0" prefWidth="219.0" text="Dynamic Change" textAlignment="CENTER" />
 
                         <!-- New Dialog Inside the Same StackPane -->
-                        <VBox fx:id="inputDialog" alignment="CENTER" styleClass="inputDialog" spacing="10.0" visible="false">
+                        <VBox fx:id="inputDialog" alignment="CENTER" prefHeight="319.0" prefWidth="270.0" spacing="10.0" styleClass="inputDialog" visible="false">
                            <children>
+                              <Label fx:id="errorLabelText" prefHeight="32.0" prefWidth="248.0" textAlignment="CENTER" VBox.vgrow="NEVER" />
                               <!-- HBox for TextFields -->
                               <HBox prefWidth="300.0" spacing="15.0"> <!-- Increased width for HBox -->
                                  <children>
@@ -37,28 +37,29 @@
                               <!-- HBox for Submit and Cancel Buttons -->
                               <HBox alignment="CENTER" spacing="15.0"> <!-- Wider spacing -->
                                  <children>
-                                    <Button fx:id="sliderConfirm" onAction="#submitInputAction" text="Confirm" />
-                                    <Button fx:id="dynamicCancel" onAction="#cancelInputAction" text="Cancel" />
+                                    <Button fx:id="sliderConfirm" onAction="#sliderConfirmButtonListener" text="Confirm" />
+                                    <Button fx:id="dynamicCancel" onAction="#dynamicCancelButtonListener" text="Cancel" />
                                  </children>
                               </HBox>
                            </children>
                         </VBox>
+                        <Button fx:id="dynamicChangeButton" disable="true" mnemonicParsing="false" onAction="#dynamicChangeButtonListener" prefHeight="30.0" prefWidth="211.0" text="Dynamic Change" textAlignment="CENTER" />
                      </children>
                   </StackPane>
 
-                  <Slider fx:id="dynamicScroll" disable="true" max="1000.0" min="-1000.0" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" value="50.0" visible="false" />
+                  <Slider fx:id="dynamicScroll" blockIncrement="0.0" disable="true" max="1000.0" min="-1000.0" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" showTickLabels="true" showTickMarks="true" visible="false" />
                </items>
             </ToolBar>
          </children>
       </VBox>
-      <VBox prefHeight="98.0" prefWidth="185.0">
+      <VBox prefHeight="102.0" prefWidth="134.0">
          <children>
-            <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="25.0" prefWidth="214.0" styleClass="update-button" text="Update Cell" underline="true" />
-            <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="83.0" prefWidth="185.0" styleClass="text-field-style" text="new original val" />
+            <Button id="UpdateNewCellValueButton" fx:id="updateCellButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#updateCellActionListener" prefHeight="56.0" prefWidth="133.0" styleClass="update-button" text="Update Cell" underline="true" />
+            <TextField fx:id="newOriginalValText" alignment="CENTER" disable="true" prefHeight="52.0" prefWidth="133.0" styleClass="text-field-style" text="new original val" />
          </children>
       </VBox>
       <Label id="LastUpdatedVersionLabel" fx:id="cellUpdatedProperty" maxHeight="58.0" maxWidth="137.0" prefHeight="58.0" prefWidth="114.0" styleClass="label-style" text="Cell Version" />
-      <Button id="VersionPickerButton" fx:id="versionPickerButton" disable="true" onAction="#getVersionListener" prefHeight="50.0" prefWidth="129.0" styleClass="version-button" text="Versions:">
+      <Button id="VersionPickerButton" fx:id="versionPickerButton" disable="true" onAction="#getVersionListener" prefHeight="53.0" prefWidth="127.0" styleClass="version-button" text="Versions:">
          <HBox.margin>
             <Insets right="7.0" top="3.0" />
          </HBox.margin>

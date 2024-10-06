@@ -363,6 +363,10 @@ public class AppController {
         gridSheetController.populateTableView(dynamicDto, false);
     }
 
+    public void dynamicCancelClicked() {
+        cellFunctionsController.exitDynamicChange();
+    }
+
     public void exitDynamicChangeClicked() {
         disableComponents(false);
         cellFunctionsController.setDynamicFuncDisable(false);
