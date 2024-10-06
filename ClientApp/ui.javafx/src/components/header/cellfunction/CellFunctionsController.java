@@ -4,6 +4,7 @@ import components.body.table.view.GridSheetController;
 import components.main.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -41,36 +42,31 @@ public class CellFunctionsController {
     @FXML
     public Label errorLabelText;
     @FXML
-    private AppController appController;
-    @FXML
     private VBox inputDialog;
-    
-    public void setMainController(AppController mainController) {
-        this.appController = mainController;
-    }
+    @FXML
+    private Label cellIdProperty;
+    @FXML
+    private Label cellValueProperty;
+    @FXML
+    private Button updateCellButton;
+    @FXML
+    private Label cellUpdatedProperty;
+    @FXML
+    private Button versionPickerButton;
+    @FXML
+    private TextField newOriginalValText;
+    @FXML
+    private HBox cellFuncHBox;
+
+    private AppController appController;
 
     private String currCellShown;
 
-    @FXML
-    private Label cellIdProperty;
+    private ChangeListener<Number> currentScrollListener;
 
-    @FXML
-    private Label cellValueProperty;
-
-    @FXML
-    private Button updateCellButton;
-
-    @FXML
-    private Label cellUpdatedProperty;
-
-    @FXML
-    private Button versionPickerButton;
-
-    @FXML
-    private TextField newOriginalValText;
-
-    @FXML
-    private HBox cellFuncHBox;
+    public void setMainController(AppController mainController) {
+        this.appController = mainController;
+    }
 
     public void showCell(CellDataDTO cell) {
         currCellShown = cell.getId();
@@ -177,13 +173,13 @@ public class CellFunctionsController {
 
     public void showNumericButtons(boolean bool) {
         if (bool) {
-            dynamicButtonToggle(false,true);
-            dynamicSliderToggle(true,true);
+            dynamicButtonToggle(false, true);
+            dynamicSliderToggle(true, true);
         } else {
-            dynamicInputDialogToggle(true,false);
-            dynamicButtonToggle(true,true);
-            dynamicExitButtonToggle(true,false);
-            dynamicSliderToggle(true,true);
+            dynamicInputDialogToggle(true, false);
+            dynamicButtonToggle(true, true);
+            dynamicExitButtonToggle(true, false);
+            dynamicSliderToggle(true, true);
         }
     }
 
@@ -194,7 +190,7 @@ public class CellFunctionsController {
     public void exitDynamicChange() {
         showNumericButtons(false);
         //because the user will be still on the numeric cell.
-        dynamicScroll.setValue(1);
+        dynamicScroll.autosize();
         appController.exitDynamicChangeClicked();//enable all components
         showNumericButtons(true);
     }
@@ -220,17 +216,16 @@ public class CellFunctionsController {
     }
 
     public void dynamicChangeButtonListener() {
-        dynamicButtonToggle(true,false);
-        dynamicInputDialogToggle(false,true);
+        dynamicButtonToggle(true, false);
+        dynamicInputDialogToggle(false, true);
         appController.dynamicChangeButtonClicked(); //disable all components
     }
 
-    private void updateSlider(double fromValue, double toValue,double jumpValue) {
+    private void updateSlider(double fromValue, double toValue, double jumpValue) {
         dynamicScroll.setMin(fromValue);
         dynamicScroll.setMax(toValue);
         dynamicScroll.setBlockIncrement(jumpValue);
         dynamicScroll.setMajorTickUnit(jumpValue);
-        dynamicScroll.setSnapToTicks(true); // Enable snapping to ticks
     }
 
     public void dynamicScrollListener() {
@@ -249,29 +244,51 @@ public class CellFunctionsController {
         newOriginalValText.setDisable(disable);
         cellUpdatedProperty.setDisable(disable);
     }
+
+    private boolean checkInputDialogValues(double fromValue, double toValue, double jumpValue) {
+        if (fromValue >= toValue || jumpValue <= 0) {
+            errorLabelText.setTextFill(Paint.valueOf("red"));
+            errorLabelText.setText("ERROR! Ensure 'From' < 'To' and 'Jump' > 0.");
+            clearDynamicChangeTextBoxes();
+            return false;
+        }
+        if(jumpValue>toValue-fromValue) {
+            errorLabelText.setTextFill(Paint.valueOf("red"));
+            errorLabelText.setText("ERROR! Ensure 'jump' < ('To' - 'from').");
+            return false;
+        }
+        return true;
+    }
+
     public void sliderConfirmButtonListener() {
         try {
             double fromValue = Double.parseDouble(fromTextField.getText());
             double toValue = Double.parseDouble(toTextField.getText());
             double jumpValue = Double.parseDouble(jumpTextField.getText());
-            if (fromValue >= toValue || jumpValue <= 0) {
-                errorLabelText.setTextFill(Paint.valueOf("red"));
-                errorLabelText.setText("ERROR! Ensure 'From' < 'To' and 'Jump' > 0.");
+
+            if(!checkInputDialogValues(fromValue, toValue, jumpValue)) {
                 clearDynamicChangeTextBoxes();
                 return;
             }
+
+            if (currentScrollListener != null)
+                dynamicScroll.valueProperty().removeListener(currentScrollListener);
+
+            errorLabelText.setText("");
             updateSlider(fromValue, toValue, jumpValue);
 
-            dynamicScroll.valueProperty().addListener((observable, oldValue, newValue) -> {
+            currentScrollListener = (observable, oldValue, newValue) -> {
                 double jumpedValue = Math.round((newValue.doubleValue() - fromValue) / jumpValue) * jumpValue + fromValue;
                 dynamicScroll.setValue(jumpedValue);
                 // Update displayed value and notify the AppController
                 cellValueProperty.setText(String.valueOf(jumpedValue));
                 appController.updateCellDynamically(currCellShown, String.valueOf(jumpedValue));
-            });
+            };
 
-            dynamicInputDialogToggle(true, false);
+            dynamicScroll.valueProperty().addListener(currentScrollListener);
+
             clearDynamicChangeTextBoxes();
+            dynamicInputDialogToggle(true, false);
             dynamicSliderToggle(false, true);
             dynamicExitButtonToggle(false, true);
 

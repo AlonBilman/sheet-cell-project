@@ -47,7 +47,7 @@
                      </children>
                   </StackPane>
 
-                  <Slider fx:id="dynamicScroll" blockIncrement="0.0" disable="true" max="1000.0" min="-1000.0" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" showTickLabels="true" showTickMarks="true" visible="false" />
+                  <Slider fx:id="dynamicScroll" blockIncrement="0.0" disable="true" max="1000.0" min="-1000.0" onDragDetected="#dynamicScrollListener" prefHeight="14.0" prefWidth="203.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
                </items>
             </ToolBar>
          </children>
