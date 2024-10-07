@@ -198,16 +198,16 @@ public class EngineImpl implements Engine, Serializable {
         return cellsDto;
     }
 
-    public void addUser(String user) {
-        synchronized (activeUsers) {
-            activeUsers.add(user);
-        }
+    public synchronized void addUser(String user) {
+        activeUsers.add(user);
     }
 
-    public void removeUser(String user) {
-        synchronized (activeUsers) {
-            activeUsers.remove(user);
-        }
+    public synchronized void removeUser(String user) {
+        activeUsers.remove(user);
+    }
+
+    public synchronized boolean isUserExists(String username) {
+        return activeUsers.contains(username);
     }
 
 }
