@@ -5,24 +5,26 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
+import static constants.constants.ENGINE;
+import static constants.constants.ENGINE_SERVLET;
 
-@WebServlet(name = "EngineServlet", urlPatterns = {"/"}, loadOnStartup = 1)  // Eager initialization
+@WebServlet(name = ENGINE_SERVLET, loadOnStartup = 1)  // Eager initialization
 public class EngineServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Initialize the engine
-        EngineImpl engine = new EngineImpl();
+    public void init() throws ServletException {
+        try {
+            // Initialize the engine
+            EngineImpl engine = new EngineImpl();
 
-        // Store the engine instance in the ServletContext
-        ServletContext context = getServletContext();
-        context.setAttribute("engine", engine);
+            // Store the engine instance in the ServletContext
+            ServletContext context = getServletContext();
+            context.setAttribute(ENGINE, engine);
 
-        // Use the engine for processing...
-        response.getWriter().println("Engine instance retrieved successfully.");
+        } catch (Exception e) {
+            // Handle any exceptions during initialization
+            throw new ServletException("Failed to initialize Engine", e);
+        }
     }
 }

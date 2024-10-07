@@ -16,13 +16,16 @@ public class EngineImpl implements Engine, Serializable {
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
+    private final Set<String> activeUsers = new HashSet<>();
+
 
     public enum OperatorValue {
-        OR_OPERATOR,AND_OPERATOR
+        OR_OPERATOR, AND_OPERATOR
     }
 
     public EngineImpl() {
         this.spreadSheet = null;
+
     }
 
     public void initSheet(STLSheet stlSheet) {
@@ -61,7 +64,7 @@ public class EngineImpl implements Engine, Serializable {
         if (value != null && value.matches(".*\\S.*"))
             value = value.trim();
         try {
-            this.spreadSheet.changeCell(cellId, value,!dynamically);
+            this.spreadSheet.changeCell(cellId, value, !dynamically);
             if (!dynamically)
                 sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
         } catch (Exception e) {
@@ -77,12 +80,12 @@ public class EngineImpl implements Engine, Serializable {
 
     public sheetDTO finishedDynamicallyChangeFeature(String cellId) {
         sheetDTO revertSheet = updateCell(cellId, this.revertOriginalVal, true);
-        this.revertOriginalVal=null;
+        this.revertOriginalVal = null;
         return revertSheet;
     }
 
     public void saveCellValue(String cellId) {
-        this.revertOriginalVal=spreadSheet.getCell(cellId).getOriginalValue();
+        this.revertOriginalVal = spreadSheet.getCell(cellId).getOriginalValue();
     }
 
     public void savePositionToFile(String folderPath, String fileName) throws IOException {
@@ -105,12 +108,12 @@ public class EngineImpl implements Engine, Serializable {
         return new sheetDTO(spreadSheetCopy);
     }
 
-    public sheetDTO filter(String params, Map<String, Set<String>> filterBy,OperatorValue operatorValue) {
+    public sheetDTO filter(String params, Map<String, Set<String>> filterBy, OperatorValue operatorValue) {
         String[] cellIdentifiers = checkRangeParams(params);
         if (filterBy.isEmpty())
             throw new RuntimeException("You did not specify what params should we filter for\nPlease provide this information and run the filter function again.");
         SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
-        spreadSheetCopy.filter(cellIdentifiers, filterBy,operatorValue);
+        spreadSheetCopy.filter(cellIdentifiers, filterBy, operatorValue);
         return new sheetDTO(spreadSheetCopy);
     }
 
@@ -195,5 +198,16 @@ public class EngineImpl implements Engine, Serializable {
         return cellsDto;
     }
 
+    public void addUser(String user) {
+        synchronized (activeUsers) {
+            activeUsers.add(user);
+        }
+    }
+
+    public void removeUser(String user) {
+        synchronized (activeUsers) {
+            activeUsers.remove(user);
+        }
+    }
 
 }

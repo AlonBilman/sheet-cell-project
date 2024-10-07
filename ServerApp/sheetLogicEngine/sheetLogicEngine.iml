@@ -10,19 +10,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../jaxb-ri/mod" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../jaxb-ri/mod" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../jaxb-ri/mod" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../jaxb-ri/mod" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-jxc.jar!/" />
           <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-xjc.jar!/" />
           <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-core.jar!/" />
@@ -44,6 +31,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.1.26" level="application_server_libraries" />
+    <orderEntry type="library" scope="PROVIDED" name="tomcatServer" level="application_server_libraries" />
+    <orderEntry type="library" name="Gson" level="project" />
   </component>
 </module>
