@@ -10,6 +10,6 @@
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="module" module-name="sheetLogicEngine" />
     <orderEntry type="library" name="Gson" level="project" />
-    <orderEntry type="library" name="okHttp" level="project" />
+    <orderEntry type="library" name="Okhttp" level="project" />
   </component>
 </module>

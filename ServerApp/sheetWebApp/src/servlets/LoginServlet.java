@@ -11,15 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static constants.constants.ENGINE;
-
 @WebServlet(name = constants.LOGIN_SERVLET, urlPatterns = {constants.LOGIN})
 public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
-        Gson gson = new Gson();
+       // Gson gson = new Gson();
         StringBuilder sb = new StringBuilder();
         String line;
 
@@ -33,6 +31,7 @@ public class LoginServlet extends HttpServlet {
         String jsonData = sb.toString();
         try {
             // Deserialize the JSON request body to a string (username)
+            Gson gson = new Gson();
             String username = gson.fromJson(jsonData, String.class);
 
             if (username == null || username.trim().isEmpty()) {
@@ -44,7 +43,7 @@ public class LoginServlet extends HttpServlet {
 
             synchronized (this) {
                 // Get the engine from the ServletContext
-                EngineImpl engine = (EngineImpl) getServletContext().getAttribute(ENGINE);
+                EngineImpl engine = (EngineImpl) getServletContext().getAttribute(constants.ENGINE);
 
                 if (engine == null) {
                     // If engine is not initialized, return an error
@@ -68,7 +67,7 @@ public class LoginServlet extends HttpServlet {
         } catch (Exception e) {
             // Handle invalid JSON format
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(gson.toJson("Invalid JSON format"));
+           // resp.getWriter().write(gson.toJson("Invalid JSON format"));
         }
     }
 }

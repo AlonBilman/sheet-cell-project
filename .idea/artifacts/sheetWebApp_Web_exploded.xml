@@ -2,12 +2,16 @@
   <artifact type="exploded-war" name="sheetWebApp:Web exploded">
     <output-path>$PROJECT_DIR$/out/artifacts/sheetWebApp_Web_exploded</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="sheetWebApp/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="sheetWebApp" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Gson" />
+          <element id="artifact" artifact-name="appengine:jar" />
+        </element>
       </element>
+      <element id="javaee-facet-resources" facet="sheetWebApp/web/Web" />
     </root>
   </artifact>
 </component>

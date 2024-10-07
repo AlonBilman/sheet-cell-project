@@ -31,7 +31,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="tomcatServer" level="application_server_libraries" />
     <orderEntry type="library" name="Gson" level="project" />
   </component>
 </module>
