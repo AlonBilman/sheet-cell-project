@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="tomcatServer" level="application_server_libraries" />
+    <orderEntry type="module" module-name="sheetLogicEngine" />
+    <orderEntry type="library" name="Tomcat 10.1.26" level="application_server_libraries" />
   </component>
 </module>

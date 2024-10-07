@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="module" module-name="sheetLogicEngine" />
+    <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.1.26" level="application_server_libraries" />
   </component>
 </module>

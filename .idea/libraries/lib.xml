@@ -2,9 +2,11 @@
   <library name="lib">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/JAVAFX/openjfx-22.0.2_windows-x64_bin-sdk/javafx-sdk-22.0.2/lib" />
+      <root url="file://$PROJECT_DIR$/../http" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../http" recursive="false" />
     <jarDirectory url="file://$PROJECT_DIR$/JAVAFX/openjfx-22.0.2_windows-x64_bin-sdk/javafx-sdk-22.0.2/lib" recursive="false" />
   </library>
 </component>
