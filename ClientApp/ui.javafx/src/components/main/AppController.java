@@ -7,9 +7,8 @@ import components.header.cellfunction.CellFunctionsController;
 import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
 import dto.CellDataDTO;
-import dto.LoadDTO;
 import dto.sheetDTO;
-import engine.impl.EngineImpl;
+import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,14 +26,12 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static checkfile.CheckForXMLFile.loadXMLFile;
 
 public class AppController {
 
-    private EngineImpl engine;
+    private SheetManagerImpl engine;
     private File newFile, oldFile;
     private STLSheet stlSheet;
-    private LoadDTO loadResult;
     private ChartMaker chartMaker;
 
     //all the components
@@ -89,7 +86,7 @@ public class AppController {
             loadFileController.setMainController(this);
             titleCardController.setMainController(this);
             gridSheetController.setMainController(this);
-            engine = new EngineImpl();
+            engine = new SheetManagerImpl();
             chartMaker = new ChartMaker(this);
         }
     }
@@ -108,30 +105,31 @@ public class AppController {
     }
 
     private void loadFileLogic(File file) {
-        disableComponents(false);
-        newFile = file;
-        loadResult = engine.Load(newFile);
-        if (loadResult.isNotValid()) {
-            if (!engine.containSheet()) {
-                loadFileController.showInfoAlert("Invalid file. Ensure it exists and it is an XML file.");
-            } else if (oldFile != null) {
-                loadFileController.showInfoAlert("Invalid file. The previous file is retained.");
-                loadResult = engine.Load(oldFile);
-            }
-        } else {
-            oldFile = newFile;
-        }
-        stlSheet = loadXMLFile(loadResult.getLoadedFile());
-        try {
-            engine.initSheet(stlSheet);
-            gridSheetController.populateTableView(engine.Display(), true);
-            loadFileController.editFilePath(file.getAbsolutePath());
-            tableFunctionalityController.setActiveButtons
-                    (TableFunctionalityController.ButtonState.LOADING_FILE, true);
-            cellFunctionsController.wakeVersionButton();
-        } catch (Exception e) {
-            loadFileController.showInfoAlert(e.getMessage());
-        }
+//        disableComponents(false);
+//        newFile = file;
+//        loadResult = engine.Load(newFile);
+//        if (loadResult.isNotValid()) {
+//            if (!engine.containSheet()) {
+//                loadFileController.showInfoAlert("Invalid file. Ensure it exists and it is an XML file.");
+//            } else if (oldFile != null) {
+//                loadFileController.showInfoAlert("Invalid file. The previous file is retained.");
+//                loadResult = engine.Load(oldFile);
+//            }
+//        } else {
+//            oldFile = newFile;
+//        }
+//        stlSheet = loadXMLFile(loadResult.getLoadedFile());
+//        try {
+//            engine.initSheet(stlSheet);
+//            gridSheetController.populateTableView(engine.Display(), true);
+//            loadFileController.editFilePath(file.getAbsolutePath());
+//            tableFunctionalityController.setActiveButtons
+//                    (TableFunctionalityController.ButtonState.LOADING_FILE, true);
+//            cellFunctionsController.wakeVersionButton();
+//        } catch (Exception e) {
+//            loadFileController.showInfoAlert(e.getMessage());
+//        }
+//    }
     }
 
     public void checkAndLoadFile(File file) {
@@ -294,9 +292,9 @@ public class AppController {
         sheetDTO filteredSheet;
         String params = fromCell.trim() + ".." + toCell.trim();
         if(selectedFilterType.equals("OR"))
-             filteredSheet = engine.filter(params, filterBy,EngineImpl.OperatorValue.OR_OPERATOR);
+             filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.OR_OPERATOR);
         else {
-            filteredSheet = engine.filter(params, filterBy,EngineImpl.OperatorValue.AND_OPERATOR);
+            filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.AND_OPERATOR);
         }
         try {
             showSheetPopup(filteredSheet,

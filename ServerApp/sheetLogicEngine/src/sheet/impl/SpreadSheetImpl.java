@@ -1,11 +1,10 @@
 package sheet.impl;
 
 import checkfile.*;
-import engine.impl.EngineImpl;
+import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
 import sheet.api.EffectiveValue;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -440,7 +439,7 @@ public class SpreadSheetImpl implements Serializable {
         return Double.compare(value1, value2);
     }
 
-    public void filter(String[] params, Map<String, Set<String>> filterBy, EngineImpl.OperatorValue operatorValue) {
+    public void filter(String[] params, Map<String, Set<String>> filterBy, SheetManagerImpl.OperatorValue operatorValue) {
         params[0] = cleanId(params[0]);
         params[1] = cleanId(params[1]);
         checkRangeParams(params[0], params[1]);
@@ -450,18 +449,18 @@ public class SpreadSheetImpl implements Serializable {
 
         for (Map.Entry<Integer, Set<CellImpl>> rowEntry : rowMap.entrySet()) {
             Set<CellImpl> cells = rowEntry.getValue();
-            boolean rowMatches = operatorValue == EngineImpl.OperatorValue.AND_OPERATOR;
+            boolean rowMatches = operatorValue == SheetManagerImpl.OperatorValue.AND_OPERATOR;
             for (CellImpl cell : cells) {
                 String column = cell.getCol();
                 String cellValue = cell.getEffectiveValue().getValue().toString();
                 if (filterBy.containsKey(column)) {
                     Set<String> filterValues = filterBy.get(column);
-                    if (operatorValue.equals(EngineImpl.OperatorValue.OR_OPERATOR)) {
+                    if (operatorValue.equals(SheetManagerImpl.OperatorValue.OR_OPERATOR)) {
                         if (filterValues.contains(cellValue)) {
                             rowMatches = true;
                             break;
                         }
-                    } else if (operatorValue.equals(EngineImpl.OperatorValue.AND_OPERATOR)) {
+                    } else if (operatorValue.equals(SheetManagerImpl.OperatorValue.AND_OPERATOR)) {
                         if (!filterValues.contains(cellValue) && !filterValues.isEmpty()) {
                             rowMatches = false;
                             break;

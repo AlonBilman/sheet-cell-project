@@ -2,7 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import constants.*;
-import engine.impl.EngineImpl;
+import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
 
             synchronized (this) {
 
-                EngineImpl engine = (EngineImpl) getServletContext().getAttribute(constants.ENGINE);
+                Engine engine = (Engine) getServletContext().getAttribute(constants.ENGINE);
 
                 if (engine == null) {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);//500
@@ -54,6 +54,7 @@ public class LoginServlet extends HttpServlet {
                 } else {
                     engine.addUser(username);
                     response.setStatus(HttpServletResponse.SC_CREATED); //201
+                    request.getSession(true).setAttribute(constants.USERNAME, username);
                 }
             }
 

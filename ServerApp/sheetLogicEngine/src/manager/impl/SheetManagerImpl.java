@@ -1,29 +1,44 @@
-package engine.impl;
+package manager.impl;
 
+import checkfile.XMLValidator;
 import dto.*;
 import checkfile.STLSheet;
-import engine.api.Engine;
+import manager.api.SheetManager;
 import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
 
 import java.io.*;
 import java.util.*;
 
-public class EngineImpl implements Engine, Serializable {
+import static checkfile.CheckForXMLFile.readXMLFile;
+
+public class SheetManagerImpl implements SheetManager, Serializable {
     private static final int MAX_ROWS = 50;
     private static final int MIN_ROWS_AND_COLS = 1;
     private static final int MAX_COLS = 20;
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
-    private final Set<String> activeUsers = new HashSet<>();
 
+    public void Load(InputStream inputStream) {
+        //need to ask aviad.
+//        if(!XMLValidator.isValidXML(inputStream)) {
+//            throw new IllegalArgumentException("XML is not valid");
+//        }
+        try {
+            STLSheet newSheet = readXMLFile(inputStream);
+            initSheet(newSheet);
+        }
+        catch(Exception e) {
+            throw new IllegalArgumentException("XML is not valid");
+        }
+    }
 
     public enum OperatorValue {
         OR_OPERATOR, AND_OPERATOR
     }
 
-    public EngineImpl() {
+    public SheetManagerImpl() {
         this.spreadSheet = null;
 
     }
@@ -45,6 +60,7 @@ public class EngineImpl implements Engine, Serializable {
             throw new IllegalArgumentException("XML file inserted less than " + MIN_ROWS_AND_COLS + " columns");
         }
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
+        System.out.println("init sheet ------- 100%");
         sheets.clear();
         sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
     }
@@ -118,13 +134,13 @@ public class EngineImpl implements Engine, Serializable {
     }
 
 
-    public static EngineImpl resumePositionToEngine(String filePath, String fileName) throws IOException, ClassNotFoundException {
+    public static SheetManagerImpl resumePositionToEngine(String filePath, String fileName) throws IOException, ClassNotFoundException {
         File file = new File(filePath + "\\" + fileName.trim() + ".ser");
         if (!file.exists()) {
             throw new FileNotFoundException("File not found: " + filePath);
         }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (EngineImpl) ois.readObject();
+            return (SheetManagerImpl) ois.readObject();
         }
     }
 
@@ -158,11 +174,6 @@ public class EngineImpl implements Engine, Serializable {
 
     //-------------------------------------------------------------------------------------
 
-    @Override
-    public LoadDTO Load(File newFile) {
-        return new LoadDTO(newFile);
-    }
-
     public boolean containSheet() {
         return this.spreadSheet != null;
     }
@@ -175,10 +186,6 @@ public class EngineImpl implements Engine, Serializable {
         return sheets.get(version);
     }
 
-    @Override
-    public exitDTO exitSystem() {
-        return new dto.exitDTO();
-    }
 
     public void setTextColor(String id, String selectedColor) {
         this.spreadSheet.getCellOrCreateIt(id).setTextColor(selectedColor);
@@ -196,18 +203,6 @@ public class EngineImpl implements Engine, Serializable {
             cellsDto.add(new CellDataDTO(cell));
         }
         return cellsDto;
-    }
-
-    public synchronized void addUser(String user) {
-        activeUsers.add(user);
-    }
-
-    public synchronized void removeUser(String user) {
-        activeUsers.remove(user);
-    }
-
-    public synchronized boolean isUserExists(String username) {
-        return activeUsers.contains(username);
     }
 
 }

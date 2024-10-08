@@ -4,36 +4,20 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 
-import java.io.File;
+import java.io.InputStream;
 
 
 public class CheckForXMLFile {
-    protected static boolean isXMLFile(String fileName) {
-        File file = new File(fileName);
-        return file.getName().toLowerCase().endsWith(".xml");
+
+    protected static boolean isXMLFile(InputStream fileContent) {
+        return XMLValidator.isValidXML(fileContent);
     }
 
-    protected static boolean doesFileExist(File fileToCheck) {
-        return fileToCheck.exists();
-    }
-
-    public static File getXMLFile(String filePath) {
-        File file = new File(filePath);
-        if (doesFileExist(file) && isXMLFile(filePath)) {
-            return file;
-        }
-        return null;
-    }
-
-    public static STLSheet loadXMLFile(File file) {
-        return readXMLFile(file.getAbsolutePath());
-    }
-
-    public static STLSheet readXMLFile(String filePath) {
+    public static STLSheet readXMLFile(InputStream fileContent) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance("checkfile");
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return (STLSheet) unmarshaller.unmarshal(new File(filePath));
+            return (STLSheet) unmarshaller.unmarshal(fileContent);
         } catch (JAXBException e) {
             return null;
 
