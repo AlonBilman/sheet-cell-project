@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
+import static http.HttpClientUtil.shutdown;
+
 public class Main extends Application {
 
     private Stage primaryStage;
@@ -31,9 +33,15 @@ public class Main extends Application {
         Parent root = loader.load();
 
         // Set up the login scene
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 500, 350);
         primaryStage.setTitle("Sheet Cell - Login");
         primaryStage.setScene(scene);
+
+        // Set close request handler for the primary stage
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Consume the event to prevent default closing behavior
+            confirmExit(); // Call the exit confirmation method
+        });
 
         // Show the login stage
         primaryStage.show();
@@ -41,6 +49,11 @@ public class Main extends Application {
         // Logic to handle successful login
         LoginController loginController = loader.getController();
         loginController.setLoginListener(this::showMainApp); // Pass the method reference
+    }
+
+    private void confirmExit() {
+        primaryStage.close();
+        shutdown();
     }
 
     // Method to show the main application

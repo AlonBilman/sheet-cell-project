@@ -15,26 +15,26 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/json");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
         Gson gson = new Gson();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         String line;
 
-        try (BufferedReader reader = req.getReader()) {
+        try (BufferedReader reader = request.getReader()) {
             while ((line = reader.readLine()) != null) {
-                sb.append(line);
+                stringBuilder.append(line);
             }
         }
 
-        String jsonData = sb.toString();
+        String jsonData = stringBuilder.toString();
         try {
             //get the name
             String username = gson.fromJson(jsonData, String.class);
 
             if (username == null || username.trim().isEmpty()) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);//400
-                resp.getWriter().write(gson.toJson("Invalid username format"));
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//400
+                response.getWriter().write(gson.toJson("Invalid username format"));
                 return;
             }
 
@@ -43,23 +43,23 @@ public class LoginServlet extends HttpServlet {
                 EngineImpl engine = (EngineImpl) getServletContext().getAttribute(constants.ENGINE);
 
                 if (engine == null) {
-                    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);//500
-                    resp.getWriter().write(gson.toJson("Server engine not initialized"));
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);//500
+                    response.getWriter().write(gson.toJson("Server engine not initialized"));
                     return;
                 }
 
                 if (engine.isUserExists(username)) {
-                    resp.setStatus(HttpServletResponse.SC_CONFLICT); //409
-                    resp.getWriter().write(gson.toJson("A user with this name already exists"));
+                    response.setStatus(HttpServletResponse.SC_CONFLICT); //409
+                    response.getWriter().write(gson.toJson("A user with this name already exists"));
                 } else {
                     engine.addUser(username);
-                    resp.setStatus(HttpServletResponse.SC_CREATED); //201
+                    response.setStatus(HttpServletResponse.SC_CREATED); //201
                 }
             }
 
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(gson.toJson("Invalid JSON format"));
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(gson.toJson("Invalid JSON format"));
         }
     }
 }

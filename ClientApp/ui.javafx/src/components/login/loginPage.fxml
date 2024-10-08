@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.login.LoginController"
-            stylesheets="@loginStyle.css" prefWidth="400" prefHeight="300">
+<AnchorPane prefHeight="343.0" prefWidth="501.0" stylesheets="@loginStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.login.LoginController">
 
     <!-- Title -->
-    <Text fx:id="titleText" text="Sheet Cell" layoutX="110" layoutY="60" styleClass="title-text" />
+    <Text fx:id="titleText" layoutX="50.0" layoutY="80.0" styleClass="title-text" text="Sheet Cell" wrappingWidth="400.0">
+        <font>
+            <Font size="80.0" />
+        </font>
+    </Text>
 
     <!-- Username Field with Dummy Text -->
-    <TextField fx:id="usernameField" text="Please enter your name" layoutX="100" layoutY="110"
-               prefWidth="200" styleClass="input-field" />
+    <TextField fx:id="usernameField" focusTraversable="false" layoutX="144.0" layoutY="135.0" prefWidth="200" promptText="Please enter your name" styleClass="input-field" />
 
     <!-- Login Button -->
-    <Button fx:id="loginButton" text="Login" layoutX="150" layoutY="170" prefWidth="100"
-            onAction="#onLoginButtonClick" styleClass="login-button"/>
+    <Button fx:id="loginButton" layoutX="169.0" layoutY="260.0" onAction="#onLoginButtonClick" prefWidth="150" styleClass="login-button" text="Login" />
 
     <!-- Circular Spinner (Initially Hidden) -->
-    <ProgressIndicator fx:id="spinner" layoutX="175" layoutY="215" visible="false" />
+    <ProgressIndicator fx:id="spinner" layoutX="218.0" layoutY="253.0" prefHeight="80.0" prefWidth="106.0" visible="false" />
+
+    <!-- Error Label -->
+    <Label fx:id="errorLabel" layoutX="64.0" layoutY="191.0" prefHeight="62.0" prefWidth="400.0" styleClass="errorLabel" visible="false" />
 
 </AnchorPane>

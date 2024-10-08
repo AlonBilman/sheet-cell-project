@@ -11,5 +11,6 @@
     <orderEntry type="module" module-name="sheetLogicEngine" />
     <orderEntry type="library" name="Gson" level="project" />
     <orderEntry type="library" name="Okhttp" level="project" />
+    <orderEntry type="library" name="tomcatServer" level="application_server_libraries" />
   </component>
 </module>
