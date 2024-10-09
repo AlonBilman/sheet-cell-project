@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 public class CheckForXMLFile {
 
-    protected static boolean isXMLFile(InputStream fileContent) {
+    public static boolean isXMLFile(InputStream fileContent) {
         return XMLValidator.isValidXML(fileContent);
     }
 

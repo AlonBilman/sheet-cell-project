@@ -1,6 +1,5 @@
 package manager.impl;
 
-import checkfile.XMLValidator;
 import dto.*;
 import checkfile.STLSheet;
 import manager.api.SheetManager;
@@ -10,6 +9,7 @@ import sheet.impl.SpreadSheetImpl;
 import java.io.*;
 import java.util.*;
 
+import static checkfile.CheckForXMLFile.isXMLFile;
 import static checkfile.CheckForXMLFile.readXMLFile;
 
 public class SheetManagerImpl implements SheetManager, Serializable {
@@ -20,20 +20,6 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
 
-    public void Load(InputStream inputStream) {
-        //need to ask aviad.
-//        if(!XMLValidator.isValidXML(inputStream)) {
-//            throw new IllegalArgumentException("XML is not valid");
-//        }
-        try {
-            STLSheet newSheet = readXMLFile(inputStream);
-            initSheet(newSheet);
-        }
-        catch(Exception e) {
-            throw new IllegalArgumentException("XML is not valid");
-        }
-    }
-
     public enum OperatorValue {
         OR_OPERATOR, AND_OPERATOR
     }
@@ -41,6 +27,23 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     public SheetManagerImpl() {
         this.spreadSheet = null;
 
+    }
+
+    public void Load(InputStream inputStream) {
+        try {
+            //take the data
+            byte[] inputStreamBytes = inputStream.readAllBytes();
+            //check if its xml
+            if (!isXMLFile(new ByteArrayInputStream(inputStreamBytes))) {
+                throw new IllegalArgumentException("XML is not valid");
+            }
+            //try to init
+            STLSheet newSheet = readXMLFile(new ByteArrayInputStream(inputStreamBytes));
+            initSheet(newSheet);
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("XML is not valid: " + e.getMessage());
+        }
     }
 
     public void initSheet(STLSheet stlSheet) {

@@ -32,9 +32,11 @@ public class LoadFileServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(ENGINE);
                 SheetManagerImpl sheetManager = new SheetManagerImpl();
                 InputStream fileInputStream = request.getInputStream();
-                sheetManager.Load(fileInputStream);
+                sheetManager.Load(fileInputStream); //if we couldn't load => dont add the sheetManager (catch)
+
                 engine.addSheetManager(username, sheetManager);
                 response.setStatus(HttpServletResponse.SC_OK);
+
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write(gson.toJson(e.getMessage()));

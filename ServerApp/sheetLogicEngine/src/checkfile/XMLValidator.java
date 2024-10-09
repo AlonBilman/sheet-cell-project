@@ -15,30 +15,26 @@ public class XMLValidator {
 
     public static boolean isValidXML(InputStream inputStream) {
         if (!inputStream.markSupported()) {
+            // Wrap in a BufferedInputStream if mark/reset is not supported
             inputStream = new BufferedInputStream(inputStream);
         }
 
         try {
-            //mark in order to return the stream to its initiate state
-            inputStream.mark(Integer.MAX_VALUE);
+            // Mark the stream at the current position
+            inputStream.mark(Integer.MAX_VALUE); // Large enough to handle the entire stream
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-
             Document document = builder.parse(inputStream);
-            boolean isValid = document.getDocumentElement() != null;
 
-            //return the stream to its initiate state
+            // Reset the stream back to the marked position
             inputStream.reset();
-            return isValid;
+
+            return document.getDocumentElement() != null;
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            try {
-                inputStream.reset();
-            } catch (IOException ignore) {
-                return false;
-            }
             return false;
         }
     }
+
 }
