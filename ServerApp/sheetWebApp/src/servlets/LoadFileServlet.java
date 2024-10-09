@@ -11,7 +11,7 @@ import utils.SessionUtils;
 
 import java.io.*;
 
-import static constants.constants.*;
+import static constants.Constants.*;
 
 
 @WebServlet(name = LOADFILE_SERVLET, urlPatterns = {LOADFILE})
@@ -32,7 +32,7 @@ public class LoadFileServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(ENGINE);
                 SheetManagerImpl sheetManager = new SheetManagerImpl();
                 InputStream fileInputStream = request.getInputStream();
-                sheetManager.Load(fileInputStream); //if we couldn't load => dont add the sheetManager (catch)
+                sheetManager.Load(fileInputStream); //if we couldn't load => don't add the sheetManager (catch)
 
                 engine.addSheetManager(username, sheetManager);
                 response.setStatus(HttpServletResponse.SC_OK);

@@ -68,6 +68,10 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
     }
 
+    public String getSheetName() {
+        return this.spreadSheet.getSheetName();
+    }
+
     @Override
     public sheetDTO Display() {
         return new sheetDTO(this.spreadSheet);

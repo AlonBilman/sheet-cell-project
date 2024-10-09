@@ -7,11 +7,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.ServletUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet(name = constants.LOGIN_SERVLET, urlPatterns = {constants.LOGIN})
+@WebServlet(name = Constants.LOGIN_SERVLET, urlPatterns = {Constants.LOGIN})
 public class LoginServlet extends HttpServlet {
 
     @Override
@@ -40,13 +41,10 @@ public class LoginServlet extends HttpServlet {
 
             synchronized (this) {
 
-                Engine engine = (Engine) getServletContext().getAttribute(constants.ENGINE);
+                Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
 
-                if (engine == null) {
-                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);//500
-                    response.getWriter().write(gson.toJson("Server engine not initialized"));
-                    return;
-                }
+               if(!ServletUtils.isValidEngine(engine, response))
+                   return;
 
                 if (engine.isUserExists(username)) {
                     response.setStatus(HttpServletResponse.SC_CONFLICT); //409
@@ -54,7 +52,7 @@ public class LoginServlet extends HttpServlet {
                 } else {
                     engine.addUser(username);
                     response.setStatus(HttpServletResponse.SC_CREATED); //201
-                    request.getSession(true).setAttribute(constants.USERNAME, username);
+                    request.getSession(true).setAttribute(Constants.USERNAME, username);
                 }
             }
 

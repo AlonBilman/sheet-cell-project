@@ -6,7 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
-import static constants.constants.*;
+import static constants.Constants.*;
 
 @WebServlet(name = ENGINE_SERVLET, urlPatterns = {START_UP}, loadOnStartup = 1)  // Eager initialization
 public class EngineServlet extends HttpServlet {
