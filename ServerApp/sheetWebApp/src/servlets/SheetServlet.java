@@ -23,8 +23,8 @@ public class SheetServlet extends HttpServlet {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 
-       if(!ServletUtils.isUserNameExists(response,username))
-           return;
+        if (!ServletUtils.isUserNameExists(response, username))
+            return;
 
         Gson gson = new Gson();
         String sheetId = request.getParameter(SHEET_ID);
@@ -37,9 +37,9 @@ public class SheetServlet extends HttpServlet {
         try {
             synchronized (this) {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-                if(!ServletUtils.isValidEngine(engine, response))
+                if (!ServletUtils.isValidEngine(engine, response))
                     return;
-                sheetDTO sheetdto = engine.getSheet(sheetId,username);
+                sheetDTO sheetdto = engine.getSheet(sheetId, username);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(gson.toJson(sheetdto));
             }

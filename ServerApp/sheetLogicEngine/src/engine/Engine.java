@@ -26,7 +26,10 @@ public class Engine {
     }
 
     public synchronized void removeUser(String user) {
+        if (!isUserExists(user))
+            throw new IllegalArgumentException("There is no such user");
         activeUsers.remove(user);
+        userMap.remove(user);
     }
 
     public synchronized boolean isUserExists(String username) {

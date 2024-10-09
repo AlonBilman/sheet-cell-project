@@ -43,8 +43,8 @@ public class LoginServlet extends HttpServlet {
 
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
 
-               if(!ServletUtils.isValidEngine(engine, response))
-                   return;
+                if (!ServletUtils.isValidEngine(engine, response))
+                    return;
 
                 if (engine.isUserExists(username)) {
                     response.setStatus(HttpServletResponse.SC_CONFLICT); //409

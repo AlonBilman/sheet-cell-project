@@ -13,4 +13,6 @@ public class Constants {
     public static final String LOADFILE = "/load-file";
     public static final String LOADFILE_SERVLET = "LoadFileServlet";
     public static final String SHEET_ID = "id";
+    public static final String LOGOUT_SERVLET = "LogoutServlet";
+    public static final String LOGOUT = "/logout";
 }
