@@ -1,7 +1,7 @@
 package engine;
 
+import dto.CellDataDTO;
 import dto.sheetDTO;
-import manager.api.SheetManager;
 import manager.impl.SheetManagerImpl;
 
 import java.util.HashMap;
@@ -45,16 +45,26 @@ public class Engine {
         sheetNames.add(sheetManager.getSheetName());
     }
 
-    public synchronized sheetDTO getSheet(String sheetId, String userName) {
+    public synchronized SheetManagerImpl getSheetManager(String userName, String sheetId) {
         Set<SheetManagerImpl> managers = userMap.get(userName);
         if (managers == null)
             throw new IllegalArgumentException("User " + userName + " does not exist");
 
         for (SheetManagerImpl manager : managers) {
             if (manager.getSheetName().equals(sheetId)) {
-                return manager.Display();
+                return manager;
             }
         }
         throw new IllegalArgumentException("Sheet " + sheetId + " does not exist for user " + userName);
+    }
+
+    public synchronized sheetDTO getSheetDTO(String sheetId, String userName) {
+        SheetManagerImpl manager = getSheetManager(userName, sheetId);
+        return manager.Display();
+    }
+
+    public synchronized CellDataDTO getCellDTO(String userName, String sheetId, String cellId) {
+        SheetManagerImpl manager = getSheetManager(userName, sheetId);
+        return manager.showCell(cellId);
     }
 }

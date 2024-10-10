@@ -7,8 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
 import static constants.Constants.*;
-
-@WebServlet(name = ENGINE_SERVLET, urlPatterns = {START_UP}, loadOnStartup = 1)  // Eager initialization
+//urlPatterns is mandatory for some reason
+@WebServlet(name = ENGINE_SERVLET, urlPatterns = {START_UP}, loadOnStartup = 1)  //eager initialization
 public class EngineServlet extends HttpServlet {
 
     @Override
@@ -18,7 +18,7 @@ public class EngineServlet extends HttpServlet {
             ServletContext context = getServletContext();
             context.setAttribute(ENGINE, engine);
         } catch (Exception e) {
-            throw new ServletException("Failed to initialize SheetManager", e);
+            throw new ServletException("Failed to initialize Engine", e);
         }
     }
 }

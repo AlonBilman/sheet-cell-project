@@ -7,7 +7,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -17,19 +16,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import okhttp3.*;
-import okio.BufferedSink;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.io.IOException;
 
-import static constants.constants.BASE_DIRECTORY;
+import static constants.Constants.BASE_DIRECTORY;
 
-import static constants.constants.LOGIN;
-import static http.HttpClientUtil.shutdown;
+import static constants.Constants.LOGIN;
 
 public class LoginController {
     @FXML
@@ -45,32 +39,28 @@ public class LoginController {
 
     private final StringProperty errorMessageProperty = new SimpleStringProperty();
 
-    // Listener for successful login
     private Runnable loginListener;
 
-    // Ensures the TextField is focused when the window opens
     @FXML
     public void initialize() {
         errorLabel.setTextFill(Paint.valueOf("red"));
         errorLabel.textProperty().bind(errorMessageProperty);
         errorLabel.setTextAlignment(TextAlignment.CENTER);
         usernameField.requestFocus();
-        usernameField.setOnKeyPressed(this::handleKeyPress); // Set key event handler
+        usernameField.setOnKeyPressed(this::handleKeyPress);
+        HttpClientUtil.setCookieManagerLoggingFacility(message -> System.out.println("[Login] " + message));
+
     }
 
-    // Method to set the login listener
     public void setLoginListener(Runnable listener) {
         this.loginListener = listener;
     }
 
-    // Handle Enter key press to trigger login
     private void handleKeyPress(KeyEvent event) {
         if (event.getCode().toString().equals("ENTER")) {
             onLoginButtonClick(); // Call login method when Enter is pressed
         }
     }
-
-
 
     @FXML
     private void onLoginButtonClick() {
@@ -81,7 +71,7 @@ public class LoginController {
         String jsonUserName = gson.toJson(usernameField.getText().trim());
         RequestBody body = RequestBody.create(jsonUserName, MediaType.get("application/json; charset=utf-8"));
 
-        HttpClientUtil.runAsyncWithBody(finalUrl, body, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -101,30 +91,25 @@ public class LoginController {
                             loginButton.setVisible(false);
                             errorMessageProperty.set("");
                             spinner.setVisible(true);
-
-                            // Create a Task to simulate a background process (e.g., logging in)
+                            //loading simulation (sort of)
                             Task<Void> task = new Task<Void>() {
                                 @Override
                                 protected Void call() throws Exception {
-                                    // Simulate processing time (3 seconds)
-                                    Thread.sleep(1000); // Replace this with actual login validation logic
+                                    Thread.sleep(1000);
                                     return null;
                                 }
 
                                 @Override
                                 protected void succeeded() {
-                                    // Re-enable the button and hide the spinner after processing
                                     loginButton.setDisable(false);
                                     spinner.setVisible(false);
 
-                                    // Notify listener on successful login
                                     if (loginListener != null) {
-                                        loginListener.run(); // Notify the Main class to show the main app
+                                        loginListener.run(); //notify the main class to show the main app
                                     }
                                 }
                             };
 
-                            // Start the task in a new thread
                             new Thread(task).start();
                         });
                     } else {
@@ -138,7 +123,7 @@ public class LoginController {
                     }
                 } finally {
                     if (response.body() != null) {
-                        response.body().close(); // Ensure the response body is closed after use
+                        response.body().close(); //close response body after use
                     }
                 }
             }

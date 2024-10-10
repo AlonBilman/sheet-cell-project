@@ -32,6 +32,7 @@ public class LoadFileServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(ENGINE);
                 SheetManagerImpl sheetManager = new SheetManagerImpl();
                 InputStream fileInputStream = request.getInputStream();
+                //get parts.
                 sheetManager.Load(fileInputStream); //if we couldn't load => don't add the sheetManager (catch)
 
                 engine.addSheetManager(username, sheetManager);
@@ -43,8 +44,6 @@ public class LoadFileServlet extends HttpServlet {
             }
         }
     }
-
-
 }
 
 

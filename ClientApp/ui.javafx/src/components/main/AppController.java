@@ -1,6 +1,5 @@
 package components.main;
 
-import checkfile.STLSheet;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
@@ -8,6 +7,7 @@ import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
+import http.HttpClientUtil;
 import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
 import javafx.fxml.FXML;
@@ -19,20 +19,23 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static constants.Constants.BASE_DIRECTORY;
+import static constants.Constants.LOADFILE;
 
 public class AppController {
 
-    private SheetManagerImpl engine;
-    private File newFile, oldFile;
-    private STLSheet stlSheet;
     private ChartMaker chartMaker;
+    private SheetManagerImpl engine;
 
     //all the components
     @FXML
@@ -86,8 +89,8 @@ public class AppController {
             loadFileController.setMainController(this);
             titleCardController.setMainController(this);
             gridSheetController.setMainController(this);
-            engine = new SheetManagerImpl();
             chartMaker = new ChartMaker(this);
+            engine = new SheetManagerImpl();
         }
     }
 
@@ -104,9 +107,44 @@ public class AppController {
         boardOutOfFocus();
     }
 
-    private void loadFileLogic(File file) {
-//        disableComponents(false);
-//        newFile = file;
+    private void loadFileLogic(File file) throws IOException {
+        disableComponents(false);
+        String xmlContent = new String(Files.readAllBytes(file.toPath()));
+
+        RequestBody body = RequestBody.create(xmlContent, MediaType.parse("text/xml"));
+
+        String finalURL = BASE_DIRECTORY+LOADFILE;
+        HttpClientUtil.runAsyncPost(finalURL, body, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("okokokokokokokokokokokokokokok");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                System.out.println("o1koko1ok1k1oko1ko11ko11ko1kokok1okokok");
+                System.out.println(response.code());
+            }
+        });
+
+
+
+
+        //data = file.data
+        //send http request to the server with data.
+        //post + body as InputStream
+        // wait for response
+        //if 200 = > continue
+        //else => showInfoAlert
+
+
+
+
+
+
+
+
+
 //        loadResult = engine.Load(newFile);
 //        if (loadResult.isNotValid()) {
 //            if (!engine.containSheet()) {
@@ -134,7 +172,13 @@ public class AppController {
 
     public void checkAndLoadFile(File file) {
         disableComponents(true);
-        loadFileController.taskLoadingSimulation(() -> loadFileLogic(file));
+        loadFileController.taskLoadingSimulation(() -> {
+            try {
+                loadFileLogic(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void CellClicked(String id) {
@@ -401,6 +445,5 @@ public class AppController {
                 .map(cell -> (double)cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
     }
-
 
 }

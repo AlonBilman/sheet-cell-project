@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
 
 import java.net.URL;
 
@@ -14,13 +15,14 @@ import static http.HttpClientUtil.shutdown;
 public class Main extends Application {
 
     private Stage primaryStage;
-
+   // private OkHttpClient client;
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+      //  client = new OkHttpClient();
         this.primaryStage = primaryStage;
         showLoginPage();
     }
@@ -48,7 +50,7 @@ public class Main extends Application {
 
         // Logic to handle successful login
         LoginController loginController = loader.getController();
-        loginController.setLoginListener(this::showMainApp); // Pass the method reference
+        loginController.setLoginListener(this::showMainApp);
     }
 
     private void confirmExit() {

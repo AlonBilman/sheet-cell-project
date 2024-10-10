@@ -39,7 +39,7 @@ public class SheetServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
-                sheetDTO sheetdto = engine.getSheet(sheetId, username);
+                sheetDTO sheetdto = engine.getSheetDTO(sheetId, username);
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(gson.toJson(sheetdto));
             }
