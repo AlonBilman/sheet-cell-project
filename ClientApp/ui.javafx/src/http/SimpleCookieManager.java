@@ -52,7 +52,7 @@ public class SimpleCookieManager implements CookieJar {
 
     public void clearAllCookies() {
         synchronized (this) {
-            logData.accept(CACHE_MANAGER_PREFIX + "Removing all cookies");
+            System.out.println("        "+CACHE_MANAGER_PREFIX+"Removing all cookies");
             cookies.clear();
         }
     }

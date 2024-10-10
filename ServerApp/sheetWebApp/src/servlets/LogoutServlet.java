@@ -18,7 +18,7 @@ import java.io.IOException;
 public class LogoutServlet extends HttpServlet {
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
         Gson gson = new Gson();

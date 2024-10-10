@@ -1,7 +1,10 @@
 package http;
 
+import constants.Constants;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 public class HttpClientUtil {
@@ -30,7 +33,22 @@ public class HttpClientUtil {
     }
 
     public static void shutdown() {
-        System.out.println("Shutting down HTTP CLIENT");
+        System.out.println("[SHUTDOWN]  Shutting down HTTP CLIENT");
+        String finalURL = Constants.BASE_DIRECTORY+Constants.LOGOUT;
+        runAsyncGet(finalURL, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                //Ignore - this happens when a client open the login page and close it immediately
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                System.out.println("[LOGOUT]    Disconnecting from Server : Server returns : " + response.code());
+                if(response.body() != null) {
+                    System.out.println(response.body().string());
+                }
+            }
+        });
         HTTP_CLIENT.dispatcher().executorService().shutdown();
         HTTP_CLIENT.connectionPool().evictAll();
         simpleCookieManager.clearAllCookies();

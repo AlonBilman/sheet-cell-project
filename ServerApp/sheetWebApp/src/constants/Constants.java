@@ -9,6 +9,7 @@ public class Constants {
     public static final String START_UP = "";
     public static final String LOGIN = "/login";
     public static final String DISPLAY = "/display";
+    public static final String MODIFY = "/modify";
     public static final String SHEET_DTO = "/sheet-dto";
     public static final String LOADFILE = "/load-file";
     public static final String LOADFILE_SERVLET = "LoadFileServlet";
