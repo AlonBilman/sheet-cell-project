@@ -1,5 +1,6 @@
 package components.main;
 
+import com.google.gson.Gson;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
@@ -8,6 +9,7 @@ import components.header.title.TitleCardController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import http.HttpClientUtil;
+import javafx.application.Platform;
 import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
 import javafx.fxml.FXML;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static constants.Constants.BASE_DIRECTORY;
 import static constants.Constants.LOADFILE;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 public class AppController {
 
@@ -60,6 +63,7 @@ public class AppController {
     private LoadFileController loadFileController;
     @FXML
     private TitleCardController titleCardController;
+    private Gson gson;
 
     public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
         this.tableFunctionalityController = tableFunctionalityController;
@@ -91,6 +95,7 @@ public class AppController {
             gridSheetController.setMainController(this);
             chartMaker = new ChartMaker(this);
             engine = new SheetManagerImpl();
+            gson = new Gson();
         }
     }
 
@@ -109,26 +114,41 @@ public class AppController {
 
     private void loadFileLogic(File file) throws IOException {
         disableComponents(false);
-        String xmlContent = new String(Files.readAllBytes(file.toPath()));
 
-        RequestBody body = RequestBody.create(xmlContent, MediaType.parse("text/xml"));
+        // Validate the file
+        if (!file.exists() || !file.isFile()) {
+            throw new IOException("File does not exist or is not a valid file.");
+        }
 
-        String finalURL = BASE_DIRECTORY+LOADFILE;
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM) // Set the multipart type
+                .addFormDataPart("file", file.getName(), RequestBody.create(file, MediaType.parse("text/xml")))
+                .build();
+
+        String finalURL = BASE_DIRECTORY + LOADFILE;
+
         HttpClientUtil.runAsyncPost(finalURL, body, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("okokokokokokokokokokokokokokok");
+                e.printStackTrace(); // Print the stack trace for better debugging
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                System.out.println("o1koko1ok1k1oko1ko11ko11ko1kokok1okokok");
-                System.out.println(response.code());
+                if (response.code()==SC_OK) {
+                    System.out.println("File uploaded successfully.");
+
+                } else {
+
+                    // Use Platform.runLater to ensure the UI updates happen on the JavaFX Application Thread
+                    Platform.runLater(() -> {
+                        loadFileController.showInfoAlert("Invalid file." );
+                    });
+
+                    System.out.println(response.code());
+                }
             }
         });
-
-
-
 
         //data = file.data
         //send http request to the server with data.
@@ -136,13 +156,6 @@ public class AppController {
         // wait for response
         //if 200 = > continue
         //else => showInfoAlert
-
-
-
-
-
-
-
 
 
 //        loadResult = engine.Load(newFile);
@@ -335,8 +348,8 @@ public class AppController {
     public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy, String selectedFilterType) {
         sheetDTO filteredSheet;
         String params = fromCell.trim() + ".." + toCell.trim();
-        if(selectedFilterType.equals("OR"))
-             filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.OR_OPERATOR);
+        if (selectedFilterType.equals("OR"))
+            filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.OR_OPERATOR);
         else {
             filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.AND_OPERATOR);
         }
@@ -422,27 +435,27 @@ public class AppController {
     }
 
     public void confirmChartClicked(String chartType, String paramsX, String paramsY) {
-        try{
+        try {
             Set<CellDataDTO> xCells = engine.getSetOfCellsDtoDummyRange(paramsX);
             Set<CellDataDTO> yCells = engine.getSetOfCellsDtoDummyRange(paramsY);
             List<Double> xValues = getNumericValuesSortedByRow(xCells);
             List<Double> yValues = getNumericValuesSortedByRow(yCells);
-            if(chartType.equals("Bar Chart"))
-                chartMaker.createBarChart(xValues,yValues);
+            if (chartType.equals("Bar Chart"))
+                chartMaker.createBarChart(xValues, yValues);
             else {
-                chartMaker.createLineChart(xValues,yValues);
+                chartMaker.createLineChart(xValues, yValues);
             }
-        }
-        catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             chartMaker.showInfoAlert(e.getMessage());
         }
     }
+
     //because I used set in so much code...
     private List<Double> getNumericValuesSortedByRow(Set<CellDataDTO> cells) {
         return cells.stream()
                 .filter(cell -> cell.getEffectiveValue().getObjType() == ObjType.NUMERIC)
                 .sorted(Comparator.comparingInt(CellDataDTO::getRow))
-                .map(cell -> (double)cell.getEffectiveValue().getValue())
+                .map(cell -> (double) cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
     }
 
