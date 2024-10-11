@@ -142,11 +142,13 @@ public class AppController {
                         @Override
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             sheetDTO sheet = new Gson().fromJson(response.body().string(), sheetDTO.class);
-                            gridSheetController.populateTableView(sheet, true);
-                            loadFileController.editFilePath(file.getAbsolutePath());
-                            tableFunctionalityController.setActiveButtons
-                                    (TableFunctionalityController.ButtonState.LOADING_FILE, true);
-                            cellFunctionsController.wakeVersionButton();
+                            Platform.runLater(() -> {
+                                gridSheetController.populateTableView(sheet, true);
+                                loadFileController.editFilePath(file.getAbsolutePath());
+                                tableFunctionalityController.setActiveButtons
+                                        (TableFunctionalityController.ButtonState.LOADING_FILE, true);
+                                cellFunctionsController.wakeVersionButton();
+                            });
                         }
 
                         @Override

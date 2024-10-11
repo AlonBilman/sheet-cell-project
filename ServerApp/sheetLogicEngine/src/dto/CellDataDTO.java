@@ -3,6 +3,7 @@ package dto;
 import sheet.api.EffectiveValue;
 import sheet.impl.CellColor;
 import sheet.impl.CellImpl;
+import sheet.impl.EffectiveValueImpl;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -15,7 +16,7 @@ public class CellDataDTO implements Serializable {
     private final Set<String> dependsOn;
     private final Set<String> affectsOn;
     private final String originalValue;
-    private final EffectiveValue effectiveValue;
+    private final EffectiveValueImpl effectiveValue;
     private final CellColor cellColor;
 
     public CellDataDTO(CellImpl cell) {
@@ -26,9 +27,8 @@ public class CellDataDTO implements Serializable {
         this.dependsOn = cell.getDependsOn();
         this.affectsOn = cell.getAffectsOn();
         this.originalValue = cell.getOriginalValue();
-        this.effectiveValue = cell.getEffectiveValue();
+        this.effectiveValue = (EffectiveValueImpl) cell.getEffectiveValue();
         this.cellColor = new CellColor(cell.getCellColor());
-
     }
 
     public String getId() {
