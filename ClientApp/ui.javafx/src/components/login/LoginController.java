@@ -86,12 +86,12 @@ public class LoginController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
                     int statusCode = response.code();
-                    if (statusCode == HttpServletResponse.SC_CREATED) {
+                    if (statusCode == HttpServletResponse.SC_OK) {
                         Platform.runLater(() -> {
                             loginButton.setVisible(false);
                             errorMessageProperty.set("");
                             spinner.setVisible(true);
-                            //loading simulation (sort of)
+                            // Loading simulation (sort of)
                             Task<Void> task = new Task<Void>() {
                                 @Override
                                 protected Void call() throws Exception {
@@ -105,7 +105,7 @@ public class LoginController {
                                     spinner.setVisible(false);
 
                                     if (loginListener != null) {
-                                        loginListener.run(); //notify the main class to show the main app
+                                        loginListener.run(); // Notify the main class to show the main app
                                     }
                                 }
                             };
@@ -113,17 +113,17 @@ public class LoginController {
                             new Thread(task).start();
                         });
                     } else {
-                        String responseBody = response.body() != null ? response.body().string() : "No response body";
-                        String errorMessage = gson.fromJson(responseBody, String.class);
-                        Platform.runLater(() -> {
-                                    errorMessageProperty.set("Something went wrong: \n" + errorMessage);
-                                    errorLabel.setVisible(true);
-                                }
-                        );
+                        HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                        if(errorResponse != null) {
+                            Platform.runLater(() -> {
+                                errorMessageProperty.set("Something went wrong: \n" + errorResponse.getError());
+                                errorLabel.setVisible(true);
+                            });
+                        }
                     }
                 } finally {
                     if (response.body() != null) {
-                        response.body().close(); //close response body after use
+                        response.body().close(); // Close response body after use
                     }
                 }
             }

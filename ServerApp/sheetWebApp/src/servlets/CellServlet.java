@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.ResponseUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -31,8 +32,8 @@ public class CellServlet extends HttpServlet {
         String cellId = request.getParameter(Constants.CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson("One or more parameters are missing (IDs)"));
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            return;
         }
 
         try {
@@ -40,15 +41,13 @@ public class CellServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
-                CellDataDTO cellDataDTO = engine.getCellDTO(username,sheetId,cellId);
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(gson.toJson(cellDataDTO));
+
+                CellDataDTO cellDataDTO = engine.getCellDTO(username, sheetId, cellId);
+                ResponseUtils.writeSuccessResponse(response, cellDataDTO);
             }
 
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson(e.getMessage()));
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 }
-

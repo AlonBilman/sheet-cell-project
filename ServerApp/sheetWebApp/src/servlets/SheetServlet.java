@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import dto.sheetDTO;
 import engine.Engine;
@@ -8,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.ResponseUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -26,12 +26,11 @@ public class SheetServlet extends HttpServlet {
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        Gson gson = new Gson();
         String sheetId = request.getParameter(SHEET_ID);
 
         if (sheetId == null || sheetId.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson("No Sheet ID provided"));
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "No Sheet ID provided");
+            return;
         }
 
         try {
@@ -40,13 +39,11 @@ public class SheetServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
                 sheetDTO sheetdto = engine.getSheetDTO(sheetId, username);
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write(gson.toJson(sheetdto));
+                ResponseUtils.writeSuccessResponse(response, sheetdto);
             }
 
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson(e.getMessage()));
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 }

@@ -10,11 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import manager.impl.SheetManagerImpl;
+import utils.ResponseUtils;
+import utils.ServletUtils;
 import utils.SessionUtils;
 
-import java.io.*;
-import java.util.Collection;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static constants.Constants.*;
 
@@ -22,22 +23,19 @@ import static constants.Constants.*;
 @WebServlet(name = LOADFILE_SERVLET, urlPatterns = {LOADFILE})
 public class LoadFileServlet extends HttpServlet {
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
-        Gson gson = new Gson();
 
-        if (username == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        if (!ServletUtils.isUserNameExists(response, username))
             return;
-        }
 
-        Part part = null;
+        Part part;
         try {
             part = request.getPart("file");
         } catch (ServletException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson(e.getMessage()));
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Failed to retrieve the file part");
             return;
         }
 
@@ -46,21 +44,12 @@ public class LoadFileServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(ENGINE);
                 SheetManagerImpl sheetManager = new SheetManagerImpl();
                 InputStream fileInputStream = part.getInputStream();
-                sheetManager.Load(fileInputStream); //if we couldn't load => don't add the sheetManager (catch)
-
+                sheetManager.Load(fileInputStream);
                 engine.addSheetManager(username, sheetManager);
-                response.setStatus(HttpServletResponse.SC_OK);
-
+                ResponseUtils.writeSuccessResponse(response, null);
             } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(gson.toJson(e.getMessage()));
+                ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             }
         }
     }
-
-    private String readFromInputStream(InputStream inputStream) {
-        return new Scanner(inputStream).useDelimiter("\\Z").next();
-    }
 }
-
-

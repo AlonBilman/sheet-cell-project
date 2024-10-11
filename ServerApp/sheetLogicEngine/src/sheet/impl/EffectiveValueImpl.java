@@ -7,6 +7,8 @@ public class EffectiveValueImpl implements EffectiveValue {
     private Object value;
     private ObjType type;
 
+    public EffectiveValueImpl(){}
+
     public EffectiveValueImpl(Object value, ObjType type) {
         this.value = value;
         this.type = type;

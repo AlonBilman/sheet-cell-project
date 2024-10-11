@@ -10,9 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 import utils.SessionUtils;
+import utils.ResponseUtils; // Importing ResponseUtils
 
 import java.io.IOException;
-
 
 @WebServlet(name = Constants.LOGOUT_SERVLET, urlPatterns = {Constants.LOGOUT})
 public class LogoutServlet extends HttpServlet {
@@ -21,20 +21,23 @@ public class LogoutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
-        Gson gson = new Gson();
+
         synchronized (this) {
-            if (!ServletUtils.isUserNameExists(response, username))
+            if (!ServletUtils.isUserNameExists(response, username)) {
                 return;
+            }
 
             Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-            if (!ServletUtils.isValidEngine(engine, response))
+
+            if (!ServletUtils.isValidEngine(engine, response)) {
                 return;
+            }
+
             try {
                 engine.removeUser(username);
-                response.setStatus(HttpServletResponse.SC_OK);
+                ResponseUtils.writeSuccessResponse(response, null);
             } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(gson.toJson(e.getMessage()));
+                ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             }
         }
     }

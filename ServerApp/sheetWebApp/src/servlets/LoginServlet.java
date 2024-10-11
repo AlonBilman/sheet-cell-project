@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.ResponseUtils;
 import utils.ServletUtils;
 
 import java.io.BufferedReader;
@@ -30,35 +31,31 @@ public class LoginServlet extends HttpServlet {
 
         String jsonData = stringBuilder.toString();
         try {
-            //get the name
             String username = gson.fromJson(jsonData, String.class);
 
             if (username == null || username.trim().isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//400
-                response.getWriter().write(gson.toJson("Invalid username format"));
+                ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid username format");
                 return;
             }
 
             synchronized (this) {
-
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
 
-                if (!ServletUtils.isValidEngine(engine, response))
+                if (!ServletUtils.isValidEngine(engine, response)) {
                     return;
+                }
 
                 if (engine.isUserExists(username)) {
-                    response.setStatus(HttpServletResponse.SC_CONFLICT); //409
-                    response.getWriter().write(gson.toJson("A user with this name already exists"));
+                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_CONFLICT, "A user with this name already exists");
                 } else {
                     engine.addUser(username);
-                    response.setStatus(HttpServletResponse.SC_CREATED); //201
+                    ResponseUtils.writeSuccessResponse(response, null);
                     request.getSession(true).setAttribute(Constants.USERNAME, username);
                 }
             }
 
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson("Invalid JSON format"));
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
         }
     }
 }

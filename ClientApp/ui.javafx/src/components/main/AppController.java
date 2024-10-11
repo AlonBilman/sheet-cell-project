@@ -6,8 +6,10 @@ import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
+import constants.Constants;
 import dto.CellDataDTO;
 import dto.sheetDTO;
+import http.Caller;
 import http.HttpClientUtil;
 import javafx.application.Platform;
 import manager.impl.SheetManagerImpl;
@@ -27,18 +29,17 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static constants.Constants.BASE_DIRECTORY;
-import static constants.Constants.LOADFILE;
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static constants.Constants.*;
+//import static constants.Constants.SHEET_ID;
 
 public class AppController {
 
     private ChartMaker chartMaker;
-    private SheetManagerImpl engine;
+    private Caller caller;
+    private SheetManagerImpl engine = new SheetManagerImpl();
 
     //all the components
     @FXML
@@ -63,7 +64,6 @@ public class AppController {
     private LoadFileController loadFileController;
     @FXML
     private TitleCardController titleCardController;
-    private Gson gson;
 
     public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
         this.tableFunctionalityController = tableFunctionalityController;
@@ -94,8 +94,7 @@ public class AppController {
             titleCardController.setMainController(this);
             gridSheetController.setMainController(this);
             chartMaker = new ChartMaker(this);
-            engine = new SheetManagerImpl();
-            gson = new Gson();
+            caller = new Caller();
         }
     }
 
@@ -114,17 +113,15 @@ public class AppController {
 
     private void loadFileLogic(File file) throws IOException {
         disableComponents(false);
-
-        // Validate the file
+        //validate the file
         if (!file.exists() || !file.isFile()) {
             throw new IOException("File does not exist or is not a valid file.");
         }
 
         RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM) // Set the multipart type
+                .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(), RequestBody.create(file, MediaType.parse("text/xml")))
                 .build();
-
         String finalURL = BASE_DIRECTORY + LOADFILE;
 
         HttpClientUtil.runAsyncPost(finalURL, body, new Callback() {
@@ -135,20 +132,53 @@ public class AppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.code()==SC_OK) {
+                if (response.isSuccessful()) {
                     System.out.println("File uploaded successfully.");
+                    String finalURL = BASE_DIRECTORY + DISPLAY + SHEET_DTO;
+                    Map<String, String> quaryMap = new HashMap<>();
+                    quaryMap.put("sheetId", "beginner");
+                    HttpClientUtil.runAsyncGet(finalURL, quaryMap, new Callback() {
 
-                } else {
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            sheetDTO sheet = new Gson().fromJson(response.body().string(), sheetDTO.class);
+                            gridSheetController.populateTableView(sheet, true);
+                            loadFileController.editFilePath(file.getAbsolutePath());
+                            tableFunctionalityController.setActiveButtons
+                                    (TableFunctionalityController.ButtonState.LOADING_FILE, true);
+                            cellFunctionsController.wakeVersionButton();
+                        }
 
-                    // Use Platform.runLater to ensure the UI updates happen on the JavaFX Application Thread
-                    Platform.runLater(() -> {
-                        loadFileController.showInfoAlert("Invalid file." );
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                        }
                     });
 
-                    System.out.println(response.code());
+
+                } else {
+                    HttpClientUtil.ErrorResponse errorMessage = null;
+                    try {
+                        errorMessage = HttpClientUtil.handleErrorResponse(response);
+                        if (errorMessage == null) {
+                            throw new RuntimeException();
+                        }
+
+                    } catch (IOException e) {
+                        Platform.runLater(() -> {
+                            loadFileController.showInfoAlert("Unknown message from Server.");
+                        });
+                        return;
+                    }
+                    String alertMessage = "Invalid file: " + errorMessage.getError();
+                    Platform.runLater(() -> {
+                        loadFileController.showInfoAlert(alertMessage);
+                    });
                 }
             }
+
         });
+
 
         //data = file.data
         //send http request to the server with data.
@@ -158,18 +188,6 @@ public class AppController {
         //else => showInfoAlert
 
 
-//        loadResult = engine.Load(newFile);
-//        if (loadResult.isNotValid()) {
-//            if (!engine.containSheet()) {
-//                loadFileController.showInfoAlert("Invalid file. Ensure it exists and it is an XML file.");
-//            } else if (oldFile != null) {
-//                loadFileController.showInfoAlert("Invalid file. The previous file is retained.");
-//                loadResult = engine.Load(oldFile);
-//            }
-//        } else {
-//            oldFile = newFile;
-//        }
-//        stlSheet = loadXMLFile(loadResult.getLoadedFile());
 //        try {
 //            engine.initSheet(stlSheet);
 //            gridSheetController.populateTableView(engine.Display(), true);
@@ -180,6 +198,7 @@ public class AppController {
 //        } catch (Exception e) {
 //            loadFileController.showInfoAlert(e.getMessage());
 //        }
+//
 //    }
     }
 
@@ -345,7 +364,8 @@ public class AppController {
         tableFunctionalityController.buildNoNameRangePopup(TableFunctionalityController.ConfirmType.SORT_RANGE);
     }
 
-    public void filterParamsConfirmed(String fromCell, String toCell, Map<String, Set<String>> filterBy, String selectedFilterType) {
+    public void filterParamsConfirmed(String fromCell, String
+            toCell, Map<String, Set<String>> filterBy, String selectedFilterType) {
         sheetDTO filteredSheet;
         String params = fromCell.trim() + ".." + toCell.trim();
         if (selectedFilterType.equals("OR"))

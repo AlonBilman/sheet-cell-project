@@ -7,7 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
 import static constants.Constants.*;
-//urlPatterns is mandatory for some reason
+
+//urlPatterns is mandatory for some reason - need to ask aviad.
 @WebServlet(name = ENGINE_SERVLET, urlPatterns = {START_UP}, loadOnStartup = 1)  //eager initialization
 public class EngineServlet extends HttpServlet {
 
