@@ -9,6 +9,7 @@ import constants.Constants;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import http.CallerService;
+import http.HttpClientUtil;
 import javafx.application.Platform;
 import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
@@ -21,6 +22,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.io.File;
@@ -30,6 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static constants.Constants.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 
 public class AppController {
@@ -114,26 +120,65 @@ public class AppController {
 
     private void loadFileLogic(File file) {
         disableComponents(false);
-
         try {
-            String sheetName = httpCallerService.uploadFile(file);
-            quary.clear();
-            quary.put(Constants.SHEET_ID, sheetName);
-            sheetDTO sheet = httpCallerService.fetchSheet(quary);
-            Platform.runLater(() -> {
-                gridSheetController.populateTableView(sheet, true);
-                loadFileController.editFilePath(file.getAbsolutePath());
-                tableFunctionalityController.setActiveButtons
-                        (TableFunctionalityController.ButtonState.LOADING_FILE, true);
-                cellFunctionsController.wakeVersionButton();
-                currSheet = sheetName;
+            httpCallerService.uploadFileAsync(file, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Platform.runLater(() -> {
+                        loadFileController.showInfoAlert("File upload failed." + e.getMessage());
+                    });
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (!response.isSuccessful()) {
+                        Platform.runLater(() -> {
+                            loadFileController.showInfoAlert("File upload failed.");
+                        });
+                        return;
+                    }
+
+                    String sheetName = HttpClientUtil.handleStringResponse(response);
+                    quary.clear();
+                    quary.put(Constants.SHEET_ID, sheetName);
+
+                    httpCallerService.fetchSheetAsync(quary, new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            Platform.runLater(() -> {
+                                loadFileController.showInfoAlert("Failed to fetch sheet data." + e.getMessage());
+                            });
+                        }
+
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (response.isSuccessful()) {
+                                sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                                Platform.runLater(() -> {
+                                    gridSheetController.populateTableView(sheet, true);
+                                    loadFileController.editFilePath(file.getAbsolutePath());
+                                    tableFunctionalityController.setActiveButtons(
+                                            TableFunctionalityController.ButtonState.LOADING_FILE, true);
+                                    cellFunctionsController.wakeVersionButton();
+                                    currSheet = sheetName;
+                                });
+                            } else {
+                                Platform.runLater(() -> {
+                                    loadFileController.showInfoAlert("Failed to load sheet data.");
+                                });
+                            }
+                            response.close();
+                        }
+                    });
+                }
             });
-        } catch (Exception e) {
+        } catch (IOException e) {
             Platform.runLater(() -> {
                 loadFileController.showInfoAlert(e.getMessage());
             });
         }
     }
+
 
     public void checkAndLoadFile(File file) {
         disableComponents(true);
@@ -146,24 +191,59 @@ public class AppController {
         outOfFocus();
         quary.clear();
         quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
-        try {
-            CellDataDTO cell = httpCallerService.fetchCell(quary);
-            quary.remove(CELL_ID);
-            sheetDTO sheet = httpCallerService.fetchSheet(quary);
-            Platform.runLater(() -> {
-                cellFunctionsController.showCell(cell);
-                tableFunctionalityController.setActiveButtons(
-                        TableFunctionalityController.ButtonState.CLICKING_CELL, true);
-                gridSheetController.colorizeImportantCells(sheet, id);
-                if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC))
-                    cellFunctionsController.showNumericButtons(true);
-            });
+        httpCallerService.fetchCellAsync(quary, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert("Failed to fetch cell data.");
+                });
+            }
 
-        } catch (IOException e) {
-            cellFunctionsController.showInfoAlert(e.getMessage());
-        }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Platform.runLater(() -> {
+                        cellFunctionsController.showInfoAlert("Error fetching cell data.");
+                    });
+                    return;
+                }
 
+                CellDataDTO cell = GSON.fromJson(response.body().string(), CellDataDTO.class);
+                quary.remove(CELL_ID);
+
+                httpCallerService.fetchSheetAsync(quary, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Platform.runLater(() -> {
+                            cellFunctionsController.showInfoAlert("Failed to fetch sheet data.");
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                            Platform.runLater(() -> {
+                                cellFunctionsController.showCell(cell);
+                                tableFunctionalityController.setActiveButtons(
+                                        TableFunctionalityController.ButtonState.CLICKING_CELL, true);
+                                gridSheetController.colorizeImportantCells(sheet, id);
+                                if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC)) {
+                                    cellFunctionsController.showNumericButtons(true);
+                                }
+                            });
+                        } else {
+                            Platform.runLater(() -> {
+                                cellFunctionsController.showInfoAlert("Error loading sheet data.");
+                            });
+                        }
+                        response.close();
+                    }
+                });
+            }
+        });
     }
+
 
     public void loadClicked() {
         cellFunctionsController.outOfFocus();
@@ -171,22 +251,58 @@ public class AppController {
     }
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
-        try {
-            quary.clear();
-            quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellToUpdate));
-            httpCallerService.changeCell(quary, newOriginalValue);
-            quary.remove(CELL_ID);
-            sheetDTO sheet = httpCallerService.fetchSheet(quary);
-            Platform.runLater(() -> {
-                outOfFocus();
-                gridSheetController.populateTableView(sheet, false);
-            });
-        } catch (Exception e) {
-            Platform.runLater(() -> {
-                cellFunctionsController.showInfoAlert(e.getMessage());
-            });
-        }
-        //can fail. thrown back to the caller
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellToUpdate));
+        httpCallerService.changeCellAsync(quary, newOriginalValue, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                    Platform.runLater(() -> {
+                        if (errorResponse != null)
+                            cellFunctionsController.showInfoAlert(errorResponse.getError());
+                        else {
+                            cellFunctionsController.showInfoAlert("Error loading data.");
+                        }
+                    });
+                }
+                quary.remove(CELL_ID);
+                httpCallerService.fetchSheetAsync(quary, new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Platform.runLater(() -> {
+                            cellFunctionsController.showInfoAlert(e.getMessage());
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                            Platform.runLater(() -> {
+                                if (errorResponse != null)
+                                    cellFunctionsController.showInfoAlert(errorResponse.getError());
+                                else {
+                                    cellFunctionsController.showInfoAlert("Error loading sheet.");
+                                }
+                            });
+                        }
+                        sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                        Platform.runLater(() -> {
+                            outOfFocus();
+                            gridSheetController.populateTableView(sheet, false);
+                        });
+                    }
+                });
+            }
+        });
     }
 
     public void cellOutOfFocus() {
@@ -198,22 +314,84 @@ public class AppController {
 
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
-        engine.setBackgroundColor(id, selectedColor.toString());
-        gridSheetController.changeBackgroundColor(id, selectedColor);
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
+        String color;
+        if(selectedColor!=null)
+            color = selectedColor.toString();
+        else {
+            color = null;
+        }
+        httpCallerService.changeColorAsync(quary, CELL_BACKGROUND_COLOR, color, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                });
+            }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(!response.isSuccessful()) {
+                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                    if(errorResponse != null)
+                        cellFunctionsController.showInfoAlert(errorResponse.getError());
+                    else
+                        cellFunctionsController.showInfoAlert("Error updating color.");
+                }
+                Platform.runLater(() -> {
+                    if(color!=null)
+                        gridSheetController.changeBackgroundColor(id, selectedColor);
+                });
+            }
+        });
+
     }
 
     public void textColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
-        engine.setTextColor(id, selectedColor.toString());
-        gridSheetController.changeTextColor(id, selectedColor);
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
+        String color;
+        if(selectedColor!=null)
+            color = selectedColor.toString();
+        else {
+            color = null;
+        }
+        try {
+            httpCallerService.changeColorAsync(quary, CELL_TEXT_COLOR, color, new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Platform.runLater(() -> {
+                        cellFunctionsController.showInfoAlert(e.getMessage());
+                    });
+                }
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if (!response.isSuccessful()) {
+                        HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                        if (errorResponse != null)
+                            cellFunctionsController.showInfoAlert(errorResponse.getError());
+                        else
+                            cellFunctionsController.showInfoAlert("Error updating color.");
+                    }
+                    Platform.runLater(() -> {
+                        if(color!=null)
+                            gridSheetController.changeTextColor(id, selectedColor);
+                    });
+                }
+            });
+        } catch (Exception e) {
+            cellFunctionsController.showInfoAlert(e.getMessage());
+        }
     }
 
     public void resetStyleClicked() {
-        String id = cellFunctionsController.getCellIdFocused();
-        gridSheetController.resetToDefault(id);
-        engine.setTextColor(id, null);
-        engine.setBackgroundColor(id, null);
-
+        textColorPicked(null);
+        backgroundColorPicked(null);
+        Platform.runLater(()->{
+            String id = cellFunctionsController.getCellIdFocused();
+            gridSheetController.resetToDefault(id);
+        });
     }
 
     public void BoarderClicked(String boarderTextId) {
@@ -250,7 +428,7 @@ public class AppController {
     public Set<String> getExistingRanges() throws IOException {
         quary.clear();
         quary.put(SHEET_ID, currSheet);
-        sheetDTO sheet = httpCallerService.fetchSheet(quary);
+        sheetDTO sheet = engine.Display();
         Set<String> rangeNames = sheet.getActiveRanges().keySet(); //get the names
         return rangeNames.stream()
                 .sorted() //sort the names
@@ -272,10 +450,9 @@ public class AppController {
         quary.clear();
         quary.put(SHEET_ID, currSheet);
         sheetDTO sheet;
-        try{
-            sheet = httpCallerService.fetchSheet(quary);
-        }
-        catch(Exception e){
+        try {
+            sheet = engine.Display();
+        } catch (Exception e) {
             tableFunctionalityController.showInfoAlert(e.getMessage());
             return;
         }

@@ -4,50 +4,51 @@ import com.google.gson.Gson;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import static constants.Constants.*;
-import static constants.Constants.SHEET_DTO;
 
 public class CallerService {
 
     private static final Gson GSON = new Gson();
 
-    public String uploadFile(File file) throws IOException {
+    public void uploadFileAsync(File file, Callback callback) throws IOException {
         if (file == null || !file.exists() || !file.isFile()) {
             throw new IOException("File does not exist or is not a valid file.");
         }
         String url = BASE_DIRECTORY + LOADFILE;
 
-        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM).addFormDataPart("file", file.getName(), RequestBody.create(file, MediaType.parse("text/xml"))).build();
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", file.getName(),
+                        RequestBody.create(file, MediaType.parse("text/xml")))
+                .build();
 
-        //using try closes the response automatically
-        try (Response response = HttpClientUtil.runSyncPost(url, body)) {
-            if (!response.isSuccessful()) {
-                HttpClientUtil.ErrorResponse error = HttpClientUtil.handleErrorResponse(response);
-                if (error != null) throw new IOException(error.getError());
-                throw new IOException("Failed to upload file.");
-            }
-            String sheetName = HttpClientUtil.handleStringResponse(response);
-            if (sheetName != null) {
-                return sheetName;
-            }
-            throw new IOException("Failed to upload file");
-        }
+        HttpClientUtil.runAsyncPost(url, body, callback);
     }
 
-    private <T> T fetchData(String endpoint, Map<String, String> queryParams, Class<T> responseType) throws IOException {
+    private <T> void fetchDataAsync(String endpoint, Map<String, String> queryParams, Class<T> responseType, Callback callback) {
         String url = BASE_DIRECTORY + DISPLAY + endpoint;
-        Response response = HttpClientUtil.runSyncGet(url, queryParams);
-        handleErrorResponse(response); //if there is an error.
+        HttpClientUtil.runAsyncGet(url, queryParams, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                callback.onFailure(call, e);
+            }
 
-        assert response.body() != null;
-        T data = GSON.fromJson(response.body().string(), responseType);
-        response.close();
-        return data;
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (response) {
+                    handleErrorResponse(response);
+                    callback.onResponse(call, response);
+                } catch (IOException e) {
+                    callback.onFailure(call, e);
+                }
+            }
+        });
     }
 
     private void handleErrorResponse(Response response) throws IOException {
@@ -60,24 +61,21 @@ public class CallerService {
         }
     }
 
-    public sheetDTO fetchSheet(Map<String, String> queryParams) throws IOException {
-        return fetchData(SHEET_DTO, queryParams, sheetDTO.class);
+    public void fetchSheetAsync(Map<String, String> queryParams, Callback callback) {
+        fetchDataAsync(SHEET_DTO, queryParams, sheetDTO.class, callback);
     }
 
-    public CellDataDTO fetchCell(Map<String, String> queryParams) throws IOException {
-        return fetchData(CELL_DTO, queryParams, CellDataDTO.class);
+    public void fetchCellAsync(Map<String, String> queryParams, Callback callback) {
+        fetchDataAsync(CELL_DTO, queryParams, CellDataDTO.class, callback);
     }
 
-    public void changeCell(Map<String, String> queryParams, String newOriginalValue) throws IOException {
+    public void changeColorAsync(Map<String, String> queryParams, String endPoint, String color, Callback callback) {
+        String url = BASE_DIRECTORY + MODIFY + endPoint;
+        HttpClientUtil.runAsyncPut(url, queryParams, color, callback);
+    }
+
+    public void changeCellAsync(Map<String, String> queryParams, String newOriginalValue, Callback callback) {
         String url = BASE_DIRECTORY + MODIFY + CELL;
-        try (Response response = HttpClientUtil.runSyncPut(url, queryParams, newOriginalValue)) {
-            if (!response.isSuccessful()) {
-                HttpClientUtil.ErrorResponse error = HttpClientUtil.handleErrorResponse(response);
-                if (error != null) {
-                    throw new IOException(error.getError());
-                }
-                throw new IOException("Failed to change cell.");
-            }
-        }
+        HttpClientUtil.runAsyncPut(url, queryParams, newOriginalValue, callback);
     }
 }

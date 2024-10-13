@@ -3,10 +3,12 @@ package servlets;
 
 import com.google.gson.Gson;
 import constants.Constants;
+import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -37,11 +39,18 @@ public class CellColorServlet extends HttpServlet {
             return;
         }
         synchronized (this) {
-            if(request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
+            Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
+            if (!ServletUtils.isValidEngine(engine, response))
+                return;
 
+            SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+            String color = GSON.fromJson(request.getReader(), String.class);
+
+            if(request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
+                sheetManager.setTextColor(cellId, color);
             }
             else {
-
+                sheetManager.setBackgroundColor(cellId, color);
             }
         }
 

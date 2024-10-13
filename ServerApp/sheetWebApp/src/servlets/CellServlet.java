@@ -65,7 +65,7 @@ public class CellServlet extends HttpServlet {
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        String sheetId = request.getParameter(SHEET_ID);
+        String sheetId = request.getParameter(Constants.SHEET_ID);
         String cellId = request.getParameter(Constants.CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {

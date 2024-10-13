@@ -15,7 +15,7 @@ public class HttpClientUtil {
 
     private final static OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().cookieJar(SIMPLE_COOKIE_MANAGER).followRedirects(false).build();
 
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
         SIMPLE_COOKIE_MANAGER.setLogData(logConsumer);
@@ -23,6 +23,22 @@ public class HttpClientUtil {
 
     public static void runAsyncPost(String finalUrl, RequestBody body, Callback callback) {
         Request request = new Request.Builder().url(finalUrl).post(body).build();
+        Call call = HTTP_CLIENT.newCall(request);
+        call.enqueue(callback);
+    }
+
+    public static void runAsyncPut(String baseUrl, Map<String, String> queryParams, String bodyAsString, Callback callback) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
+
+        if (queryParams != null) {
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        String finalUrl = urlBuilder.build().toString();
+        RequestBody body = RequestBody.create(GSON.toJson(bodyAsString), MediaType.parse("application/json"));
+
+        Request request = new Request.Builder().url(finalUrl).put(body).build();
         Call call = HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
     }
@@ -40,43 +56,6 @@ public class HttpClientUtil {
         Request request = new Request.Builder().url(finalUrl).build();
         Call call = HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
-    }
-
-    public static Response runSyncGet(String baseUrl, Map<String, String> queryParams) throws IOException {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
-
-        if (queryParams != null) {
-            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
-                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
-            }
-        }
-        String finalUrl = urlBuilder.build().toString();
-
-        Request request = new Request.Builder().url(finalUrl).build();
-        return HTTP_CLIENT.newCall(request).execute();
-    }
-
-
-    public static Response runSyncPut(String baseUrl, Map<String, String> queryParams, String bodyAsString) throws IOException {
-        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
-
-        if (queryParams != null) {
-            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
-                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
-            }
-        }
-        String finalUrl = urlBuilder.build().toString();
-        RequestBody body = RequestBody.create(GSON.toJson(bodyAsString), MediaType.parse("application/json"));
-
-        Request request = new Request.Builder().url(finalUrl).put(body).build();
-
-        return HTTP_CLIENT.newCall(request).execute();
-    }
-
-    public static Response runSyncPost(String finalUrl, RequestBody body) throws IOException {
-        Request request = new Request.Builder().url(finalUrl).post(body).build();
-
-        return HTTP_CLIENT.newCall(request).execute();
     }
 
     public static void shutdown() {
