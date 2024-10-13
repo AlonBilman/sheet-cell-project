@@ -29,7 +29,7 @@ public class SheetManagerImpl implements SheetManager, Serializable {
 
     }
 
-    public void Load(InputStream inputStream) {
+    public String Load(InputStream inputStream) {
         try {
             //take the data
             byte[] inputStreamBytes = inputStream.readAllBytes();
@@ -39,7 +39,9 @@ public class SheetManagerImpl implements SheetManager, Serializable {
             }
             //try to init
             STLSheet newSheet = readXMLFile(new ByteArrayInputStream(inputStreamBytes));
-            initSheet(newSheet);
+            initSheet(newSheet); //if init, newSheet != null.
+            assert newSheet != null;
+            return newSheet.getName();
 
         } catch (Exception e) {
             throw new IllegalArgumentException("XML is not valid: " + e.getMessage());

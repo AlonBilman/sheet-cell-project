@@ -44,9 +44,9 @@ public class LoadFileServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(ENGINE);
                 SheetManagerImpl sheetManager = new SheetManagerImpl();
                 InputStream fileInputStream = part.getInputStream();
-                sheetManager.Load(fileInputStream);
+                String sheetName = sheetManager.Load(fileInputStream);
                 engine.addSheetManager(username, sheetManager);
-                ResponseUtils.writeSuccessResponse(response, null);
+                ResponseUtils.writeSuccessResponse(response, sheetName);
             } catch (Exception e) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             }

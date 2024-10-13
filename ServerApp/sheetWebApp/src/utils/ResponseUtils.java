@@ -24,12 +24,17 @@ public class ResponseUtils {
     }
 
     private static class ErrorResponse {
-        private String error;
-        private int status;
+        private final String error;
+        private final int status;
 
         public ErrorResponse(String error, int status) {
             this.error = error;
             this.status = status;
+        }
+
+        public ErrorResponse() {
+            this.error = null;
+            this.status = 0;
         }
 
         public String getError() {

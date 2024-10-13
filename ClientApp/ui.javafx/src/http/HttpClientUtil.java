@@ -11,18 +11,14 @@ import java.util.function.Consumer;
 
 public class HttpClientUtil {
 
-    private final static SimpleCookieManager simpleCookieManager = new SimpleCookieManager();
+    private final static SimpleCookieManager SIMPLE_COOKIE_MANAGER = new SimpleCookieManager();
 
-    private final static OkHttpClient HTTP_CLIENT =
-            new OkHttpClient.Builder()
-                    .cookieJar(simpleCookieManager)
-                    .followRedirects(false)
-                    .build();
+    private final static OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder().cookieJar(SIMPLE_COOKIE_MANAGER).followRedirects(false).build();
 
     private static final Gson GSON = new Gson();
 
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
-        simpleCookieManager.setLogData(logConsumer);
+        SIMPLE_COOKIE_MANAGER.setLogData(logConsumer);
     }
 
     public static void runAsyncPost(String finalUrl, RequestBody body, Callback callback) {
@@ -32,24 +28,56 @@ public class HttpClientUtil {
     }
 
     public static void runAsyncGet(String baseUrl, Map<String, String> queryParams, Callback callback) {
-        // Construct the full URL with query parameters
         HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
 
-        // Add each query parameter to the URL
         if (queryParams != null) {
             for (Map.Entry<String, String> entry : queryParams.entrySet()) {
                 urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
             }
         }
-
         String finalUrl = urlBuilder.build().toString();
 
-        // Create the request with the final URL
         Request request = new Request.Builder().url(finalUrl).build();
         Call call = HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
     }
 
+    public static Response runSyncGet(String baseUrl, Map<String, String> queryParams) throws IOException {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
+
+        if (queryParams != null) {
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        String finalUrl = urlBuilder.build().toString();
+
+        Request request = new Request.Builder().url(finalUrl).build();
+        return HTTP_CLIENT.newCall(request).execute();
+    }
+
+
+    public static Response runSyncPut(String baseUrl, Map<String, String> queryParams, String bodyAsString) throws IOException {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
+
+        if (queryParams != null) {
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        String finalUrl = urlBuilder.build().toString();
+        RequestBody body = RequestBody.create(GSON.toJson(bodyAsString), MediaType.parse("application/json"));
+
+        Request request = new Request.Builder().url(finalUrl).put(body).build();
+
+        return HTTP_CLIENT.newCall(request).execute();
+    }
+
+    public static Response runSyncPost(String finalUrl, RequestBody body) throws IOException {
+        Request request = new Request.Builder().url(finalUrl).post(body).build();
+
+        return HTTP_CLIENT.newCall(request).execute();
+    }
 
     public static void shutdown() {
         System.out.println("[SHUTDOWN]  Shutting down HTTP CLIENT");
@@ -57,7 +85,7 @@ public class HttpClientUtil {
         runAsyncGet(finalURL, null, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                // Ignore - this happens when a client opens the login page and closes it immediately
+                //ignore
             }
 
             @Override
@@ -67,13 +95,21 @@ public class HttpClientUtil {
         });
         HTTP_CLIENT.dispatcher().executorService().shutdown();
         HTTP_CLIENT.connectionPool().evictAll();
-        simpleCookieManager.clearAllCookies();
+        SIMPLE_COOKIE_MANAGER.clearAllCookies();
     }
 
     public static ErrorResponse handleErrorResponse(Response response) throws IOException {
         if (response.body() != null) {
             String responseBody = response.body().string();
             return GSON.fromJson(responseBody, ErrorResponse.class);
+        }
+        return null;
+    }
+
+    public static String handleStringResponse(Response response) throws IOException {
+        if (response.body() != null) {
+            String responseBody = response.body().string();
+            return GSON.fromJson(responseBody, String.class);
         }
         return null;
     }

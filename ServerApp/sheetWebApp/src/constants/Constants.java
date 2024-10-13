@@ -6,6 +6,7 @@ public class Constants {
     public static final String ENGINE_SERVLET = "EngineServlet";
     public static final String LOGIN_SERVLET = "LoginServlet";
     public static final String SHEET_SERVLET = "SheetServlet";
+    public static final String COLOR_SERVLET = "ColorServlet";
     public static final String START_UP = "";
     public static final String LOGIN = "/login";
     public static final String DISPLAY = "/display";
@@ -17,6 +18,10 @@ public class Constants {
     public static final String LOGOUT_SERVLET = "LogoutServlet";
     public static final String LOGOUT = "/logout";
     public static final String CELL_ID = "cellId";
-    public static final String CELL_DTO = "cell-dto";
+    public static final String CELL_DTO = "/cell-dto";
     public static final String CELL_SERVLET = "CellServlet";
+    public static final String CELL_TEXT_COLOR = "/cell-text-color";
+    public static final String CELL_BACKGROUND_COLOR = "/cell-background-color";
+    public static final String CELL = "/cell";
+
 }

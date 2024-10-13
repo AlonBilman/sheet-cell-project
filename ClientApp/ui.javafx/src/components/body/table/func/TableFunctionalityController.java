@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -567,7 +568,7 @@ public class TableFunctionalityController {
         }
     }
 
-    private void viewAndDeleteRangePopup(ConfirmType type) {
+    private void viewAndDeleteRangePopup(ConfirmType type) throws IOException {
         Set<String> rangeNames = appController.getExistingRanges();
         if (rangeNames.isEmpty()) {
             showInfoAlert("Error: There are 0 Ranges right now");
@@ -617,12 +618,22 @@ public class TableFunctionalityController {
 
     @FXML
     private void viewExistingRangeListener() {
-        viewAndDeleteRangePopup(ConfirmType.VIEW_EXISTING_RANGE);
+        try {
+            viewAndDeleteRangePopup(ConfirmType.VIEW_EXISTING_RANGE);
+        }
+        catch (Exception e) {
+            showInfoAlert(e.getMessage());
+        }
     }
 
     @FXML
     private void deleteExistingRangeListener() {
-        viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
+        try{
+            viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
+        }
+        catch (Exception e) {
+            showInfoAlert(e.getMessage());
+        }
     }
 
     public void createChartButtonListener() {

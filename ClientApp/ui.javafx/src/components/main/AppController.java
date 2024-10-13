@@ -1,6 +1,5 @@
 package components.main;
 
-import com.google.gson.Gson;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
@@ -9,8 +8,7 @@ import components.header.title.TitleCardController;
 import constants.Constants;
 import dto.CellDataDTO;
 import dto.sheetDTO;
-import http.Caller;
-import http.HttpClientUtil;
+import http.CallerService;
 import javafx.application.Platform;
 import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
@@ -23,8 +21,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import okhttp3.*;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -33,13 +30,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static constants.Constants.*;
-//import static constants.Constants.SHEET_ID;
+
 
 public class AppController {
 
     private ChartMaker chartMaker;
-    private Caller caller;
     private SheetManagerImpl engine = new SheetManagerImpl();
+    private CallerService httpCallerService;
+    private Map<String, String> quary;
+    private String currSheet;
 
     //all the components
     @FXML
@@ -94,7 +93,9 @@ public class AppController {
             titleCardController.setMainController(this);
             gridSheetController.setMainController(this);
             chartMaker = new ChartMaker(this);
-            caller = new Caller();
+            httpCallerService = new CallerService();
+            quary = new HashMap<>();
+
         }
     }
 
@@ -111,119 +112,57 @@ public class AppController {
         boardOutOfFocus();
     }
 
-    private void loadFileLogic(File file) throws IOException {
+    private void loadFileLogic(File file) {
         disableComponents(false);
-        //validate the file
-        if (!file.exists() || !file.isFile()) {
-            throw new IOException("File does not exist or is not a valid file.");
+
+        try {
+            String sheetName = httpCallerService.uploadFile(file);
+            quary.clear();
+            quary.put(Constants.SHEET_ID, sheetName);
+            sheetDTO sheet = httpCallerService.fetchSheet(quary);
+            Platform.runLater(() -> {
+                gridSheetController.populateTableView(sheet, true);
+                loadFileController.editFilePath(file.getAbsolutePath());
+                tableFunctionalityController.setActiveButtons
+                        (TableFunctionalityController.ButtonState.LOADING_FILE, true);
+                cellFunctionsController.wakeVersionButton();
+                currSheet = sheetName;
+            });
+        } catch (Exception e) {
+            Platform.runLater(() -> {
+                loadFileController.showInfoAlert(e.getMessage());
+            });
         }
-
-        RequestBody body = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", file.getName(), RequestBody.create(file, MediaType.parse("text/xml")))
-                .build();
-        String finalURL = BASE_DIRECTORY + LOADFILE;
-
-        HttpClientUtil.runAsyncPost(finalURL, body, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace(); // Print the stack trace for better debugging
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    System.out.println("File uploaded successfully.");
-                    String finalURL = BASE_DIRECTORY + DISPLAY + SHEET_DTO;
-                    Map<String, String> quaryMap = new HashMap<>();
-                    quaryMap.put("sheetId", "beginner");
-                    HttpClientUtil.runAsyncGet(finalURL, quaryMap, new Callback() {
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            sheetDTO sheet = new Gson().fromJson(response.body().string(), sheetDTO.class);
-                            Platform.runLater(() -> {
-                                gridSheetController.populateTableView(sheet, true);
-                                loadFileController.editFilePath(file.getAbsolutePath());
-                                tableFunctionalityController.setActiveButtons
-                                        (TableFunctionalityController.ButtonState.LOADING_FILE, true);
-                                cellFunctionsController.wakeVersionButton();
-                            });
-                        }
-
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-                        }
-                    });
-
-
-                } else {
-                    HttpClientUtil.ErrorResponse errorMessage = null;
-                    try {
-                        errorMessage = HttpClientUtil.handleErrorResponse(response);
-                        if (errorMessage == null) {
-                            throw new RuntimeException();
-                        }
-
-                    } catch (IOException e) {
-                        Platform.runLater(() -> {
-                            loadFileController.showInfoAlert("Unknown message from Server.");
-                        });
-                        return;
-                    }
-                    String alertMessage = "Invalid file: " + errorMessage.getError();
-                    Platform.runLater(() -> {
-                        loadFileController.showInfoAlert(alertMessage);
-                    });
-                }
-            }
-
-        });
-
-
-        //data = file.data
-        //send http request to the server with data.
-        //post + body as InputStream
-        // wait for response
-        //if 200 = > continue
-        //else => showInfoAlert
-
-
-//        try {
-//            engine.initSheet(stlSheet);
-//            gridSheetController.populateTableView(engine.Display(), true);
-//            loadFileController.editFilePath(file.getAbsolutePath());
-//            tableFunctionalityController.setActiveButtons
-//                    (TableFunctionalityController.ButtonState.LOADING_FILE, true);
-//            cellFunctionsController.wakeVersionButton();
-//        } catch (Exception e) {
-//            loadFileController.showInfoAlert(e.getMessage());
-//        }
-//
-//    }
     }
 
     public void checkAndLoadFile(File file) {
         disableComponents(true);
         loadFileController.taskLoadingSimulation(() -> {
-            try {
-                loadFileLogic(file);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            loadFileLogic(file);
         });
     }
 
     public void CellClicked(String id) {
         outOfFocus();
-        CellDataDTO cell = engine.showCell(id);
-        cellFunctionsController.showCell(cell);
-        tableFunctionalityController.setActiveButtons(
-                TableFunctionalityController.ButtonState.CLICKING_CELL, true);
-        gridSheetController.colorizeImportantCells(engine.Display(), id);
-        if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC))
-            cellFunctionsController.showNumericButtons(true);
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
+        try {
+            CellDataDTO cell = httpCallerService.fetchCell(quary);
+            quary.remove(CELL_ID);
+            sheetDTO sheet = httpCallerService.fetchSheet(quary);
+            Platform.runLater(() -> {
+                cellFunctionsController.showCell(cell);
+                tableFunctionalityController.setActiveButtons(
+                        TableFunctionalityController.ButtonState.CLICKING_CELL, true);
+                gridSheetController.colorizeImportantCells(sheet, id);
+                if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC))
+                    cellFunctionsController.showNumericButtons(true);
+            });
+
+        } catch (IOException e) {
+            cellFunctionsController.showInfoAlert(e.getMessage());
+        }
+
     }
 
     public void loadClicked() {
@@ -233,11 +172,19 @@ public class AppController {
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         try {
-            engine.updateCell(cellToUpdate, newOriginalValue, false);
-            outOfFocus();
-            gridSheetController.populateTableView(engine.Display(), false);
+            quary.clear();
+            quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellToUpdate));
+            httpCallerService.changeCell(quary, newOriginalValue);
+            quary.remove(CELL_ID);
+            sheetDTO sheet = httpCallerService.fetchSheet(quary);
+            Platform.runLater(() -> {
+                outOfFocus();
+                gridSheetController.populateTableView(sheet, false);
+            });
         } catch (Exception e) {
-            cellFunctionsController.showInfoAlert(e.getMessage());
+            Platform.runLater(() -> {
+                cellFunctionsController.showInfoAlert(e.getMessage());
+            });
         }
         //can fail. thrown back to the caller
     }
@@ -248,7 +195,6 @@ public class AppController {
         tableFunctionalityController.setActiveButtons(
                 TableFunctionalityController.ButtonState.CLICKING_CELL, false);
     }
-
 
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
@@ -301,8 +247,11 @@ public class AppController {
         engine.addRange(rangeName, params);
     }
 
-    public Set<String> getExistingRanges() {
-        Set<String> rangeNames = engine.Display().getActiveRanges().keySet(); //get the names
+    public Set<String> getExistingRanges() throws IOException {
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        sheetDTO sheet = httpCallerService.fetchSheet(quary);
+        Set<String> rangeNames = sheet.getActiveRanges().keySet(); //get the names
         return rangeNames.stream()
                 .sorted() //sort the names
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -320,9 +269,18 @@ public class AppController {
     public void showRangeConfirmedClicked(String selectedRangeName) {
         outOfFocus();
         Set<String> labelNamesToFocus = new HashSet<>();
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        sheetDTO sheet;
+        try{
+            sheet = httpCallerService.fetchSheet(quary);
+        }
+        catch(Exception e){
+            tableFunctionalityController.showInfoAlert(e.getMessage());
+            return;
+        }
         Set<CellDataDTO> focusCells =
-                engine.Display()
-                        .getActiveRanges()
+                sheet.getActiveRanges()
                         .get(selectedRangeName)
                         .getCells();
         for (CellDataDTO focusCell : focusCells) {
@@ -343,7 +301,6 @@ public class AppController {
             cellFunctionsController.showInfoAlert(e.getMessage());
         }
     }
-    //-------------------------------------------------------------------------------------------------------------//
 
     public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
