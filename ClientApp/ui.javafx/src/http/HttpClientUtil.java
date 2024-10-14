@@ -6,7 +6,7 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class HttpClientUtil {
@@ -133,8 +133,8 @@ public class HttpClientUtil {
     }
 
     public static class RangeBody {
-        private String name;
-        private String toAndFrom;
+        private final String name;
+        private final String toAndFrom;
 
         public RangeBody(){
             name = "";
@@ -150,6 +150,58 @@ public class HttpClientUtil {
         }
         public String getToAndFrom() {
             return toAndFrom;
+        }
+    }
+
+    public static class SortObj {
+        private final String params;
+        private final List<String> sortBy;
+
+        public SortObj() {
+            this.params = "";
+            this.sortBy = new ArrayList<>();
+        }
+
+        public SortObj(String params, List<String> sortBy) {
+            this.params = params;
+            this.sortBy = sortBy;
+        }
+
+        public String getParams() {
+            return params;
+        }
+        public List<String> getSortBy() {
+            return sortBy;
+        }
+    }
+
+    public static class FilterObj {
+        private final String params;
+        private final Map<String, Set<String>> filterBy;
+        private final String operator;
+
+        public FilterObj() {
+            this.params = "";
+            this.filterBy = new HashMap<>();
+            this.operator = "";
+        }
+
+        public FilterObj(String params, Map<String, Set<String>> filterBy, String operator) {
+            this.params = params;
+            this.filterBy = filterBy;
+            this.operator = operator;
+        }
+
+        public String getParams() {
+            return this.params;
+        }
+
+        public String getOperator() {
+            return this.operator;
+        }
+
+        public Map<String, Set<String>> getFilterBy() {
+            return this.filterBy;
         }
     }
 }

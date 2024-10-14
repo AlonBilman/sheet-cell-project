@@ -584,15 +584,36 @@ public class AppController {
 
     public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
-        try {
-            //has to be done for both filter and sort because if the range contains cells that we did not create we have to create these cells
-            Set<CellDataDTO> cells = engine.getSetOfCellsDtoDummyRange(params);
-            if (type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
-                tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
-            else tableFunctionalityController.sortColumnPopup(fromCell.toUpperCase(), toCell.toUpperCase());
-        } catch (RuntimeException e) {
-            tableFunctionalityController.showInfoAlert(e.getMessage());
-        }
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody("", params);
+        httpCallerService.getNoNameRange(quary, rangeBody, new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    List<CellDataDTO> cellList = GSON.fromJson(response.body().string(), new TypeToken<List<CellDataDTO>>() {
+                    }.getType());
+                    Set<CellDataDTO> cells = new HashSet<>(cellList);
+                    Platform.runLater(() -> {
+                        if (type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
+                            tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
+                        else tableFunctionalityController.sortColumnPopup(fromCell.toUpperCase(), toCell.toUpperCase());
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
     }
 
     public void filterButtonClicked() {
@@ -605,29 +626,74 @@ public class AppController {
 
     public void filterParamsConfirmed(String fromCell, String
             toCell, Map<String, Set<String>> filterBy, String selectedFilterType) {
-        sheetDTO filteredSheet;
-        String params = fromCell.trim() + ".." + toCell.trim();
-        if (selectedFilterType.equals("OR"))
-            filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.OR_OPERATOR);
-        else {
-            filteredSheet = engine.filter(params, filterBy, SheetManagerImpl.OperatorValue.AND_OPERATOR);
-        }
-        try {
-            showSheetPopup(filteredSheet,
-                    "Filtered from " + fromCell + " to " + toCell + " | By : " + filterBy);
-        } catch (IOException e) {
-            tableFunctionalityController.showInfoAlert(e.getMessage());
-        }
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        HttpClientUtil.FilterObj filterObj = new HttpClientUtil.FilterObj(fromCell.trim() + ".." + toCell.trim(), filterBy, selectedFilterType);
+        httpCallerService.filterSheet(quary, filterObj, new Callback() {
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO filteredSheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        try {
+                            showSheetPopup(filteredSheet,
+                                    "Filtered from " + fromCell + " to " + toCell + " | By : " + filterBy);
+                        } catch (IOException e) {
+                            tableFunctionalityController.showInfoAlert(e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
     }
 
     public void sortParamsConfirmed(String fromCell, String toCell, List<String> sortBy) {
-        sheetDTO sortedSheet = engine.sort(fromCell.trim() + ".." + toCell.trim(), sortBy);
-        try {
-            showSheetPopup(sortedSheet,
-                    "Sorted from " + fromCell + " to " + toCell + " | By : " + sortBy);
-        } catch (IOException e) {
-            tableFunctionalityController.showInfoAlert(e.getMessage());
-        }
+        HttpClientUtil.SortObj sortObj = new HttpClientUtil.SortObj(fromCell.trim() + ".." + toCell.trim(), sortBy);
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        httpCallerService.sortSheet(quary, sortObj, new Callback() {
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO sortedSheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        try {
+                            showSheetPopup(sortedSheet,
+                                    "Sorted from " + fromCell + " to " + toCell + " | By : " + sortBy);
+                        } catch (IOException e) {
+                            tableFunctionalityController.showInfoAlert(e.getMessage());
+                        }
+                    });
+                } catch (RuntimeException e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
+
     }
 
     public void showSheetPopup(sheetDTO sheet, String title) throws IOException {
@@ -690,7 +756,32 @@ public class AppController {
     }
 
     public void chartButtonClicked() {
-        chartMaker.createChartDialogPopup(engine.Display().getColSize());
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(quary, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        chartMaker.createChartDialogPopup(sheet.getColSize());
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+        });
     }
 
     public void confirmChartClicked(String chartType, String paramsX, String paramsY) {

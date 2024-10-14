@@ -96,4 +96,22 @@ public class CallerService {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
         HttpClientUtil.runAsyncDelete(url,queryParams,body,callback);
     }
+
+    public void sortSheet(Map<String, String> queryParams, HttpClientUtil.SortObj sortObj, Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY + SORT;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(sortObj));
+        HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
+    }
+
+    public void filterSheet(Map<String, String> queryParams, HttpClientUtil.FilterObj filterObj, Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY + FILTER;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(filterObj));
+        HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
+    }
+
+    public void getNoNameRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range, Callback callback){
+        String url = BASE_DIRECTORY + NO_NAME_RANGE;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
+        HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
+    }
 }

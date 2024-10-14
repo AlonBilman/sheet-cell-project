@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.*;
 
 public class ResponseUtils {
 
@@ -60,11 +61,66 @@ public class ResponseUtils {
             this.toAndFrom = "";
         }
 
-        public String  getName() {
+        public String getName() {
             return name;
         }
+
         public String getToAndFrom() {
             return toAndFrom;
         }
     }
+
+    public static class SortObj {
+        private final String params;
+        private final List<String> sortBy;
+
+        public SortObj() {
+            this.params = "";
+            this.sortBy = new ArrayList<>();
+        }
+
+        public SortObj(String params, List<String> sortBy) {
+            this.params = params;
+            this.sortBy = sortBy;
+        }
+
+        public String getParams() {
+            return params;
+        }
+
+        public List<String> getSortBy() {
+            return sortBy;
+        }
+    }
+
+    public static class FilterObj {
+        private final String params;
+        private final Map<String, Set<String>> filterBy;
+        private final String operator;
+
+        public FilterObj() {
+            this.params = "";
+            this.filterBy = new HashMap<>();
+            this.operator = "";
+        }
+
+        public FilterObj(String params, Map<String, Set<String>> filterBy, String operator) {
+            this.params = params;
+            this.filterBy = filterBy;
+            this.operator = operator;
+        }
+
+        public String getParams() {
+            return this.params;
+        }
+
+        public String getOperator() {
+            return this.operator;
+        }
+
+        public Map<String, Set<String>> getFilterBy() {
+            return this.filterBy;
+        }
+    }
+
 }

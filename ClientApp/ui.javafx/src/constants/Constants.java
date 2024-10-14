@@ -19,4 +19,7 @@ public class Constants {
     public static final String CELL_BACKGROUND_COLOR = "/cell-background-color";
     public static final String ALL_VERSIONS = "/all-versions";
     public static final String RANGE = "/range";
+    public static final String SORT = "/sort";
+    public static final String FILTER = "/filter";
+    public static final String NO_NAME_RANGE = "/no-name-range";
 }
