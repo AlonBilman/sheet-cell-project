@@ -1,5 +1,6 @@
 package components.main;
 
+import com.google.gson.reflect.TypeToken;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -132,8 +134,12 @@ public class AppController {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (!response.isSuccessful()) {
+                        HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
                         Platform.runLater(() -> {
-                            loadFileController.showInfoAlert("File upload failed.");
+                            if (errorResponse != null)
+                                loadFileController.showInfoAlert(errorResponse.getError());
+                            else
+                                loadFileController.showInfoAlert("Error updating color.");
                         });
                         return;
                     }
@@ -163,8 +169,12 @@ public class AppController {
                                     currSheet = sheetName;
                                 });
                             } else {
+                                HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
                                 Platform.runLater(() -> {
-                                    loadFileController.showInfoAlert("Failed to load sheet data.");
+                                    if (errorResponse != null)
+                                        loadFileController.showInfoAlert(errorResponse.getError());
+                                    else
+                                        loadFileController.showInfoAlert("Error updating color.");
                                 });
                             }
                             response.close();
@@ -317,7 +327,7 @@ public class AppController {
         quary.clear();
         quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
         String color;
-        if(selectedColor!=null)
+        if (selectedColor != null)
             color = selectedColor.toString();
         else {
             color = null;
@@ -329,17 +339,18 @@ public class AppController {
                     cellFunctionsController.showInfoAlert(e.getMessage());
                 });
             }
+
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(!response.isSuccessful()) {
+                if (!response.isSuccessful()) {
                     HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                    if(errorResponse != null)
+                    if (errorResponse != null)
                         cellFunctionsController.showInfoAlert(errorResponse.getError());
                     else
                         cellFunctionsController.showInfoAlert("Error updating color.");
                 }
                 Platform.runLater(() -> {
-                    if(color!=null)
+                    if (color != null)
                         gridSheetController.changeBackgroundColor(id, selectedColor);
                 });
             }
@@ -352,7 +363,7 @@ public class AppController {
         quary.clear();
         quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
         String color;
-        if(selectedColor!=null)
+        if (selectedColor != null)
             color = selectedColor.toString();
         else {
             color = null;
@@ -365,6 +376,7 @@ public class AppController {
                         cellFunctionsController.showInfoAlert(e.getMessage());
                     });
                 }
+
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     if (!response.isSuccessful()) {
@@ -375,7 +387,7 @@ public class AppController {
                             cellFunctionsController.showInfoAlert("Error updating color.");
                     }
                     Platform.runLater(() -> {
-                        if(color!=null)
+                        if (color != null)
                             gridSheetController.changeTextColor(id, selectedColor);
                     });
                 }
@@ -388,7 +400,7 @@ public class AppController {
     public void resetStyleClicked() {
         textColorPicked(null);
         backgroundColorPicked(null);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             String id = cellFunctionsController.getCellIdFocused();
             gridSheetController.resetToDefault(id);
         });
@@ -467,17 +479,70 @@ public class AppController {
     }
 
     public void getVersionClicked() {
-        cellFunctionsController.buildVersionPopup(engine.Display().getSheetVersionNumber());
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(quary, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                    Platform.runLater(() -> {
+                        if (errorResponse != null)
+                            cellFunctionsController.showInfoAlert(errorResponse.getError());
+                        else {
+                            cellFunctionsController.showInfoAlert("Error loading sheet.");
+                        }
+                    });
+                }
+                sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                Platform.runLater(() -> {
+                    cellFunctionsController.buildVersionPopup(sheet.getSheetVersionNumber());
+                });
+            }
+        });
+
     }
 
     public void confirmVersionClicked(Integer selectedVersion) {
-        try {
-            cellFunctionsController.showVersion(
-                    engine.getSheets().get(selectedVersion), "Version Number: " + selectedVersion.toString());
-        } catch (Exception e) {
-            cellFunctionsController.showInfoAlert(e.getMessage());
-        }
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetsAsync(quary, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                    if (errorResponse != null) {
+                        cellFunctionsController.showInfoAlert(errorResponse.getError());
+                    } else {
+                        cellFunctionsController.showInfoAlert("Error loading sheets.");
+                    }
+                } else {
+                    Type mapType = new TypeToken<Map<Integer, sheetDTO>>() {}.getType();
+                    Map<Integer, sheetDTO> sheets = GSON.fromJson(response.body().string(), mapType);
+                    Platform.runLater(() -> {
+                        try {
+                            cellFunctionsController.showVersion(sheets.get(selectedVersion), "Version Number: " + selectedVersion.toString());
+                        } catch (Exception e) {
+                            cellFunctionsController.showInfoAlert(e.getMessage());
+                        }
+                    });
+                }
+            }
+        });
     }
+
 
     public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
@@ -614,5 +679,4 @@ public class AppController {
                 .map(cell -> (double) cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
     }
-
 }

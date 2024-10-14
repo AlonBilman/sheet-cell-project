@@ -17,4 +17,5 @@ public class Constants {
     public final static String MODIFY = "/modify";
     public static final String CELL_TEXT_COLOR = "/cell-text-color";
     public static final String CELL_BACKGROUND_COLOR = "/cell-background-color";
+    public static final String ALL_VERSIONS = "/all-versions";
 }

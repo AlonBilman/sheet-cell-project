@@ -61,6 +61,10 @@ public class CallerService {
         }
     }
 
+    public void fetchSheetsAsync(Map<String, String> queryParams, Callback callback){
+        fetchDataAsync(ALL_VERSIONS, queryParams, Map.class, callback);
+    }
+
     public void fetchSheetAsync(Map<String, String> queryParams, Callback callback) {
         fetchDataAsync(SHEET_DTO, queryParams, sheetDTO.class, callback);
     }
