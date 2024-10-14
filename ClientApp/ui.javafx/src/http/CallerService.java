@@ -114,4 +114,20 @@ public class CallerService {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
         HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
     }
+
+    public void startDynamicChange(Map<String, String> queryParams, String body, Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY + DYNAMIC_CHANGE;
+        RequestBody jsonBody = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(body));
+        HttpClientUtil.runAsyncPut(url,queryParams,jsonBody,callback);
+    }
+
+    public void stopDynamicChange(Map<String, String> queryParams, Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY + DYNAMIC_CHANGE;
+        HttpClientUtil.runAsyncDelete(url,queryParams,null,callback);
+    }
+
+    public void saveCellValueForDynamicChange(Map<String, String> queryParams,Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY + DYNAMIC_CHANGE;
+        HttpClientUtil.runAsyncGet(url,queryParams,callback);
+    }
 }

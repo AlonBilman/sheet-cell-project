@@ -730,16 +730,67 @@ public class AppController {
     }
 
     public void dynamicChangeButtonClicked() {
-        disableComponents(true);
-        cellFunctions.setDisable(false);
-        gridSheet.opacityProperty().setValue(1);
-        cellFunctionsController.setDynamicFuncDisable(true);
-        engine.saveCellValue(cellFunctionsController.getCellIdFocused());
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellFunctionsController.getCellIdFocused()));
+        httpCallerService.saveCellValueForDynamicChange(quary, new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try{
+                    httpCallerService.handleErrorResponse(response);
+                    Platform.runLater(()->{
+                        disableComponents(true);
+                        cellFunctions.setDisable(false);
+                        gridSheet.opacityProperty().setValue(1);
+                        cellFunctionsController.setDynamicFuncDisable(true);
+                    });
+                }
+                catch (Exception e){
+                    Platform.runLater(() -> {
+                        cellFunctionsController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                   cellFunctionsController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
+
     }
 
     public void updateCellDynamically(String cellId, String newOriginalValue) {
-        sheetDTO dynamicDto = engine.setOriginalValDynamically(cellId, newOriginalValue);
-        gridSheetController.populateTableView(dynamicDto, false);
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellId));
+
+        httpCallerService.startDynamicChange(quary,newOriginalValue, new Callback() {
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO dynamicDto = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        gridSheetController.populateTableView(dynamicDto, false);
+                    });
+                }
+                catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
+
     }
 
     public void dynamicCancelClicked() {
@@ -749,10 +800,36 @@ public class AppController {
     public void exitDynamicChangeClicked() {
         disableComponents(false);
         cellFunctionsController.setDynamicFuncDisable(false);
-        sheetDTO oldDto = engine.finishedDynamicallyChangeFeature(cellFunctionsController.getCellIdFocused());
-        gridSheetController.populateTableView(oldDto, false);
-        cellFunctionsController.showCell(
-                oldDto.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
+        quary.clear();
+        quary.putAll(Map.of(SHEET_ID, currSheet,CELL_ID,cellFunctionsController.getCellIdFocused()));
+        httpCallerService.stopDynamicChange(quary, new Callback() {
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try{
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO oldDto = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        gridSheetController.populateTableView(oldDto, false);
+                        cellFunctionsController.showCell(
+                                oldDto.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
+                    });
+                }
+                catch (Exception e) {
+                    Platform.runLater(() -> {
+                        cellFunctionsController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
+
     }
 
     public void chartButtonClicked() {
