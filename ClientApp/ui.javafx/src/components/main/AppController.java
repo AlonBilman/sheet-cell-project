@@ -37,7 +37,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static constants.Constants.*;
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 
 public class AppController {
@@ -189,7 +188,6 @@ public class AppController {
         }
     }
 
-
     public void checkAndLoadFile(File file) {
         disableComponents(true);
         loadFileController.taskLoadingSimulation(() -> {
@@ -253,7 +251,6 @@ public class AppController {
             }
         });
     }
-
 
     public void loadClicked() {
         cellFunctionsController.outOfFocus();
@@ -434,26 +431,55 @@ public class AppController {
     public void addNewRange(String rangeName, String fromCell, String toCell) {
         outOfFocus();
         String params = fromCell.trim() + ".." + toCell.trim();
-        engine.addRange(rangeName, params);
-    }
-
-    public Set<String> getExistingRanges() throws IOException {
+        HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody(rangeName, params);
         quary.clear();
         quary.put(SHEET_ID, currSheet);
-        sheetDTO sheet = engine.Display();
-        Set<String> rangeNames = sheet.getActiveRanges().keySet(); //get the names
-        return rangeNames.stream()
-                .sorted() //sort the names
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        httpCallerService.addRange(quary, rangeBody, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+        });
     }
 
     public void deleteRangeConfirmedClicked(String rangeToDelete) {
         outOfFocus();
-        try {
-            engine.deleteRange(rangeToDelete);
-        } catch (Exception e) {
-            tableFunctionalityController.showInfoAlert(e.getMessage());
-        }
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        HttpClientUtil.RangeBody range = new HttpClientUtil.RangeBody(rangeToDelete, "");
+
+        httpCallerService.deleteRange(quary, range, new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
+            }
+        });
     }
 
     public void showRangeConfirmedClicked(String selectedRangeName) {
@@ -461,21 +487,33 @@ public class AppController {
         Set<String> labelNamesToFocus = new HashSet<>();
         quary.clear();
         quary.put(SHEET_ID, currSheet);
-        sheetDTO sheet;
-        try {
-            sheet = engine.Display();
-        } catch (Exception e) {
-            tableFunctionalityController.showInfoAlert(e.getMessage());
-            return;
-        }
-        Set<CellDataDTO> focusCells =
-                sheet.getActiveRanges()
-                        .get(selectedRangeName)
-                        .getCells();
-        for (CellDataDTO focusCell : focusCells) {
-            labelNamesToFocus.add(focusCell.getId());
-        }
-        gridSheetController.focusOnRangeCells(labelNamesToFocus);
+        httpCallerService.fetchSheetAsync(quary, new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        Set<CellDataDTO> focusCells = sheet.getActiveRanges()
+                                .get(selectedRangeName)
+                                .getCells();
+                        for (CellDataDTO focusCell : focusCells) {
+                            labelNamesToFocus.add(focusCell.getId());
+                        }
+                        gridSheetController.focusOnRangeCells(labelNamesToFocus);
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                tableFunctionalityController.showInfoAlert(e.getMessage());
+            }
+        });
     }
 
     public void getVersionClicked() {
@@ -529,7 +567,8 @@ public class AppController {
                         cellFunctionsController.showInfoAlert("Error loading sheets.");
                     }
                 } else {
-                    Type mapType = new TypeToken<Map<Integer, sheetDTO>>() {}.getType();
+                    Type mapType = new TypeToken<Map<Integer, sheetDTO>>() {
+                    }.getType();
                     Map<Integer, sheetDTO> sheets = GSON.fromJson(response.body().string(), mapType);
                     Platform.runLater(() -> {
                         try {
@@ -542,7 +581,6 @@ public class AppController {
             }
         });
     }
-
 
     public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
@@ -679,4 +717,56 @@ public class AppController {
                 .map(cell -> (double) cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
     }
+
+    public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) throws IOException {
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(quary, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                tableFunctionalityController.showInfoAlert(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Set<String> rangeNames = sheet.getActiveRanges().keySet(); // get the names
+                    rangeNames = rangeNames.stream()
+                            .sorted() // sort the names
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
+                    Set<String> finalRangeNames = rangeNames;
+                    Platform.runLater(() -> {
+                        if (type.equals(TableFunctionalityController.ConfirmType.VIEW_EXISTING_RANGE)) {
+                            try {
+                                tableFunctionalityController.viewAndDeleteRangePopup(
+                                        TableFunctionalityController.ConfirmType.VIEW_EXISTING_RANGE, finalRangeNames);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            try {
+                                tableFunctionalityController.viewAndDeleteRangePopup(
+                                        TableFunctionalityController.ConfirmType.DELETE_EXISTING_RANGE, finalRangeNames);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                } else {
+                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                    Platform.runLater(() -> {
+                        if (errorResponse != null) {
+                            tableFunctionalityController.showInfoAlert(errorResponse.getError());
+                        } else {
+                            tableFunctionalityController.showInfoAlert("Error loading sheet.");
+                        }
+                    });
+                }
+            }
+        });
+    }
 }
+
+
+

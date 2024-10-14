@@ -26,4 +26,5 @@ public class Constants {
     public static final String RANGE_SERVLET = "RangeServlet";
     public static final String RANGE = "/range";
     public static final String ALL_VERSIONS = "/all-versions";
+    public static final String DINAMICLY = "/dynamically";
 }

@@ -71,7 +71,7 @@ public class LoginController {
         String jsonUserName = gson.toJson(usernameField.getText().trim());
         RequestBody body = RequestBody.create(jsonUserName, MediaType.get("application/json; charset=utf-8"));
 
-        HttpClientUtil.runAsyncPost(finalUrl, body, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl,null ,body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

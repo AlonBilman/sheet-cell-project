@@ -28,7 +28,7 @@ public class CallerService {
                         RequestBody.create(file, MediaType.parse("text/xml")))
                 .build();
 
-        HttpClientUtil.runAsyncPost(url, body, callback);
+        HttpClientUtil.runAsyncPost(url,null, body, callback);
     }
 
     private <T> void fetchDataAsync(String endpoint, Map<String, String> queryParams, Class<T> responseType, Callback callback) {
@@ -51,7 +51,7 @@ public class CallerService {
         });
     }
 
-    private void handleErrorResponse(Response response) throws IOException {
+    public void handleErrorResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
             HttpClientUtil.ErrorResponse error = HttpClientUtil.handleErrorResponse(response);
             if (error != null) {
@@ -75,11 +75,25 @@ public class CallerService {
 
     public void changeColorAsync(Map<String, String> queryParams, String endPoint, String color, Callback callback) {
         String url = BASE_DIRECTORY + MODIFY + endPoint;
-        HttpClientUtil.runAsyncPut(url, queryParams, color, callback);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(color));
+        HttpClientUtil.runAsyncPut(url, queryParams, body, callback);
     }
 
     public void changeCellAsync(Map<String, String> queryParams, String newOriginalValue, Callback callback) {
         String url = BASE_DIRECTORY + MODIFY + CELL;
-        HttpClientUtil.runAsyncPut(url, queryParams, newOriginalValue, callback);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(newOriginalValue));
+        HttpClientUtil.runAsyncPut(url, queryParams, body, callback);
+    }
+
+    public void addRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range, Callback callback) {
+        String url = BASE_DIRECTORY + RANGE;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
+        HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
+
+    }
+    public void deleteRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range,Callback callback) {
+        String url = BASE_DIRECTORY + RANGE;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
+        HttpClientUtil.runAsyncDelete(url,queryParams,body,callback);
     }
 }

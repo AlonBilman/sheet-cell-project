@@ -568,8 +568,7 @@ public class TableFunctionalityController {
         }
     }
 
-    private void viewAndDeleteRangePopup(ConfirmType type) throws IOException {
-        Set<String> rangeNames = appController.getExistingRanges();
+    public void viewAndDeleteRangePopup(ConfirmType type, Set<String> rangeNames) throws IOException {
         if (rangeNames.isEmpty()) {
             showInfoAlert("Error: There are 0 Ranges right now");
             return;
@@ -619,7 +618,7 @@ public class TableFunctionalityController {
     @FXML
     private void viewExistingRangeListener() {
         try {
-            viewAndDeleteRangePopup(ConfirmType.VIEW_EXISTING_RANGE);
+            appController.deleteOrViewExistingRangeClicked(ConfirmType.VIEW_EXISTING_RANGE);
         }
         catch (Exception e) {
             showInfoAlert(e.getMessage());
@@ -629,7 +628,7 @@ public class TableFunctionalityController {
     @FXML
     private void deleteExistingRangeListener() {
         try{
-            viewAndDeleteRangePopup(ConfirmType.DELETE_EXISTING_RANGE);
+            appController.deleteOrViewExistingRangeClicked(ConfirmType.DELETE_EXISTING_RANGE);
         }
         catch (Exception e) {
             showInfoAlert(e.getMessage());

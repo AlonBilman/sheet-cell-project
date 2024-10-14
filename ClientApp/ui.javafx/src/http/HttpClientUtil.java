@@ -21,13 +21,38 @@ public class HttpClientUtil {
         SIMPLE_COOKIE_MANAGER.setLogData(logConsumer);
     }
 
-    public static void runAsyncPost(String finalUrl, RequestBody body, Callback callback) {
+    public static void runAsyncPost(String url, Map<String, String> queryParams, RequestBody body, Callback callback) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+
+        if (queryParams != null) {
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        String finalUrl = urlBuilder.build().toString();
+
         Request request = new Request.Builder().url(finalUrl).post(body).build();
         Call call = HTTP_CLIENT.newCall(request);
         call.enqueue(callback);
     }
 
-    public static void runAsyncPut(String baseUrl, Map<String, String> queryParams, String bodyAsString, Callback callback) {
+    public static void runAsyncDelete(String url, Map<String, String> queryParams, RequestBody body, Callback callback) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+
+        if (queryParams != null) {
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        String finalUrl = urlBuilder.build().toString();
+
+        Request request = new Request.Builder().url(finalUrl).delete(body).build();
+        Call call = HTTP_CLIENT.newCall(request);
+        call.enqueue(callback);
+    }
+
+
+    public static void runAsyncPut(String baseUrl, Map<String, String> queryParams, RequestBody body, Callback callback) {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl).newBuilder();
 
         if (queryParams != null) {
@@ -36,7 +61,6 @@ public class HttpClientUtil {
             }
         }
         String finalUrl = urlBuilder.build().toString();
-        RequestBody body = RequestBody.create(GSON.toJson(bodyAsString), MediaType.parse("application/json"));
 
         Request request = new Request.Builder().url(finalUrl).put(body).build();
         Call call = HTTP_CLIENT.newCall(request);
@@ -93,6 +117,8 @@ public class HttpClientUtil {
         return null;
     }
 
+
+
     public static class ErrorResponse {
         private String error;
         private int status;
@@ -103,6 +129,27 @@ public class HttpClientUtil {
 
         public int getStatus() {
             return status;
+        }
+    }
+
+    public static class RangeBody {
+        private String name;
+        private String toAndFrom;
+
+        public RangeBody(){
+            name = "";
+            toAndFrom = "";
+        }
+        public RangeBody(String name, String toAndFrom){
+            this.name = name;
+            this.toAndFrom = toAndFrom;
+        }
+
+        public String  getName() {
+            return name;
+        }
+        public String getToAndFrom() {
+            return toAndFrom;
         }
     }
 }

@@ -19,7 +19,8 @@ import static constants.Constants.SHEET_ID;
 
 @WebServlet(name = Constants.CELL_SERVLET, urlPatterns = {
         Constants.DISPLAY + Constants.CELL_DTO,
-        Constants.MODIFY + Constants.CELL
+        Constants.MODIFY + Constants.CELL,
+        Constants.DINAMICLY + Constants.CELL
 })
 
 public class CellServlet extends HttpServlet {
