@@ -587,7 +587,7 @@ public class AppController {
         quary.clear();
         quary.put(SHEET_ID, currSheet);
         HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody("", params);
-        httpCallerService.getNoNameRange(quary, rangeBody, new Callback() {
+        httpCallerService.getNoNameRange(quary, rangeBody,null, NO_NAME_RANGE, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
@@ -862,19 +862,40 @@ public class AppController {
     }
 
     public void confirmChartClicked(String chartType, String paramsX, String paramsY) {
-        try {
-            Set<CellDataDTO> xCells = engine.getSetOfCellsDtoDummyRange(paramsX);
-            Set<CellDataDTO> yCells = engine.getSetOfCellsDtoDummyRange(paramsY);
-            List<Double> xValues = getNumericValuesSortedByRow(xCells);
-            List<Double> yValues = getNumericValuesSortedByRow(yCells);
-            if (chartType.equals("Bar Chart"))
-                chartMaker.createBarChart(xValues, yValues);
-            else {
-                chartMaker.createLineChart(xValues, yValues);
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        HttpClientUtil.Ranges ranges = new HttpClientUtil.Ranges(paramsX,paramsY);
+        httpCallerService.getNoNameRange(quary, null, ranges, NO_NAME_RANGES, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                   tableFunctionalityController.showInfoAlert(e.getMessage());
+                });
             }
-        } catch (IllegalArgumentException e) {
-            chartMaker.showInfoAlert(e.getMessage());
-        }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (response) {
+                    httpCallerService.handleErrorResponse(response);
+                    Type rangesType = new TypeToken<HttpClientUtil.Ranges>() {
+                    }.getType();
+                    HttpClientUtil.Ranges newRanges = HttpClientUtil.GSON.fromJson(response.body().string(), rangesType);
+                    Platform.runLater(() -> {
+                        List<Double> xValues = getNumericValuesSortedByRow(newRanges.getXRange());
+                        List<Double> yValues = getNumericValuesSortedByRow(newRanges.getYRange());
+                        if (chartType.equals("Bar Chart"))
+                            chartMaker.createBarChart(xValues, yValues);
+                        else {
+                            chartMaker.createLineChart(xValues, yValues);
+                        }
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        tableFunctionalityController.showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+        });
     }
 
     //because I used set in so much code...

@@ -23,4 +23,5 @@ public class Constants {
     public static final String FILTER = "/filter";
     public static final String NO_NAME_RANGE = "/no-name-range";
     public static final String DYNAMIC_CHANGE = "/dynamic-change";
+    public static final String NO_NAME_RANGES = "/no-name-ranges";
 }

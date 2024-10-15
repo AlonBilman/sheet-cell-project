@@ -2,6 +2,7 @@ package http;
 
 import constants.Constants;
 import com.google.gson.Gson;
+import dto.CellDataDTO;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -118,7 +119,6 @@ public class HttpClientUtil {
     }
 
 
-
     public static class ErrorResponse {
         private String error;
         private int status;
@@ -136,18 +136,20 @@ public class HttpClientUtil {
         private final String name;
         private final String toAndFrom;
 
-        public RangeBody(){
+        public RangeBody() {
             name = "";
             toAndFrom = "";
         }
-        public RangeBody(String name, String toAndFrom){
+
+        public RangeBody(String name, String toAndFrom) {
             this.name = name;
             this.toAndFrom = toAndFrom;
         }
 
-        public String  getName() {
+        public String getName() {
             return name;
         }
+
         public String getToAndFrom() {
             return toAndFrom;
         }
@@ -170,6 +172,7 @@ public class HttpClientUtil {
         public String getParams() {
             return params;
         }
+
         public List<String> getSortBy() {
             return sortBy;
         }
@@ -204,4 +207,50 @@ public class HttpClientUtil {
             return this.filterBy;
         }
     }
+
+    public static class Ranges {
+        private final String xParams;
+        private final String yParams;
+        private final Set<CellDataDTO> XRange;
+        private final Set<CellDataDTO> YRange;
+
+        public Ranges(Set<CellDataDTO> XRange, Set<CellDataDTO> YRange) {
+            this.XRange = XRange;
+            this.YRange = YRange;
+            xParams = "";
+            yParams = "";
+        }
+
+        public Ranges(String xParams, String yParams) {
+            this.xParams = xParams;
+            this.yParams = yParams;
+            this.XRange = new HashSet<>();
+            this.YRange = new HashSet<>();
+        }
+
+        public Ranges() {
+            this.XRange = new HashSet<>();
+            this.YRange = new HashSet<>();
+            xParams = "";
+            yParams = "";
+        }
+
+        public String getXParams() {
+            return xParams;
+        }
+
+        public String getYParams() {
+            return yParams;
+        }
+
+        public Set<CellDataDTO> getXRange() {
+            return XRange;
+        }
+
+        public Set<CellDataDTO> getYRange() {
+            return YRange;
+        }
+
+    }
+
 }

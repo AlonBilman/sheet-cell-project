@@ -15,7 +15,11 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 import java.util.Set;
-@WebServlet(name = Constants.NO_NAME_RANGE_SERVLET, urlPatterns = {Constants.NO_NAME_RANGE})
+
+import static constants.Constants.NO_NAME_RANGE;
+import static constants.Constants.NO_NAME_RANGES;
+
+@WebServlet(name = Constants.NO_NAME_RANGE_SERVLET, urlPatterns = {NO_NAME_RANGE, Constants.NO_NAME_RANGES})
 public class NoNameRangeServlet extends HttpServlet {
 
     Gson GSON = new Gson();
@@ -40,16 +44,31 @@ public class NoNameRangeServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response)) {
                     return;
                 }
-
-                ResponseUtils.RangeBody rangeBody = GSON.fromJson(request.getReader(), ResponseUtils.RangeBody.class);
-
-                if (rangeBody == null || rangeBody.getToAndFrom() == null) {
-                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid range data");
-                    return;
-                }
                 SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
-                Set<CellDataDTO> range =  sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
-                ResponseUtils.writeSuccessResponse(response, range);
+                if(request.getServletPath().contains(NO_NAME_RANGES)){
+                    ResponseUtils.Ranges ranges = GSON.fromJson(request.getReader(), ResponseUtils.Ranges.class);
+
+                    if (ranges == null) {
+                        ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid range data");
+                        return;
+                    }
+                    Set<CellDataDTO> xRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getXParams());
+                    Set<CellDataDTO> yRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getYParams());
+                    ranges.setXRange(xRange);
+                    ranges.setYRange(yRange);
+                    ResponseUtils.writeSuccessResponse(response, ranges);
+                }
+                else {
+                    ResponseUtils.RangeBody rangeBody = GSON.fromJson(request.getReader(), ResponseUtils.RangeBody.class);
+
+                    if (rangeBody == null || rangeBody.getToAndFrom() == null) {
+                        ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid range data");
+                        return;
+                    }
+
+                    Set<CellDataDTO> range =  sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
+                    ResponseUtils.writeSuccessResponse(response, range);
+                }
             }
 
         } catch (Exception e) {

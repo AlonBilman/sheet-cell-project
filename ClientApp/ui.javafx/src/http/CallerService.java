@@ -109,9 +109,15 @@ public class CallerService {
         HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
     }
 
-    public void getNoNameRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range, Callback callback){
-        String url = BASE_DIRECTORY + NO_NAME_RANGE;
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
+    public void getNoNameRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range,HttpClientUtil.Ranges ranges, String endPoint,Callback callback){
+        String url = BASE_DIRECTORY + endPoint;
+        RequestBody body;
+        if(endPoint.equals(NO_NAME_RANGE)){
+             body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(range));
+        }
+        else {
+             body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(ranges));
+        }
         HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
     }
 
