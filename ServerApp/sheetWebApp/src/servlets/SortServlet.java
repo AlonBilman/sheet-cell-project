@@ -2,7 +2,6 @@ package servlets;
 
 import com.google.gson.Gson;
 import constants.Constants;
-import dto.CellDataDTO;
 import dto.sheetDTO;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,8 +44,8 @@ public class SortServlet extends HttpServlet {
                     return;
 
                 ResponseUtils.SortObj sort = GSON.fromJson(request.getReader(), ResponseUtils.SortObj.class);
-                SheetManagerImpl sheetManager = engine.getSheetManager(username,sheetId);
-                sheetDTO sheet = sheetManager.sort(sort.getParams(),sort.getSortBy());
+                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                sheetDTO sheet = sheetManager.sort(sort.getParams(), sort.getSortBy());
                 ResponseUtils.writeSuccessResponse(response, sheet);
             }
 

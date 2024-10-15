@@ -2,8 +2,6 @@ package servlets;
 
 import com.google.gson.Gson;
 import constants.Constants;
-import dto.CellDataDTO;
-import dto.RangeDTO;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,14 +13,11 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @WebServlet(name = Constants.RANGE_SERVLET, urlPatterns = {Constants.RANGE})
 public class RangeServlet extends HttpServlet {
 
     Gson GSON = new Gson();
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

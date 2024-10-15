@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.ServletException;
@@ -10,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 import utils.SessionUtils;
-import utils.ResponseUtils; // Importing ResponseUtils
+import utils.ResponseUtils;
 
 import java.io.IOException;
 

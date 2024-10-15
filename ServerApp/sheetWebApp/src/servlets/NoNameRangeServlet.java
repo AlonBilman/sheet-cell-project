@@ -45,7 +45,7 @@ public class NoNameRangeServlet extends HttpServlet {
                     return;
                 }
                 SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
-                if(request.getServletPath().contains(NO_NAME_RANGES)){
+                if (request.getServletPath().contains(NO_NAME_RANGES)) {
                     ResponseUtils.Ranges ranges = GSON.fromJson(request.getReader(), ResponseUtils.Ranges.class);
 
                     if (ranges == null) {
@@ -57,8 +57,7 @@ public class NoNameRangeServlet extends HttpServlet {
                     ranges.setXRange(xRange);
                     ranges.setYRange(yRange);
                     ResponseUtils.writeSuccessResponse(response, ranges);
-                }
-                else {
+                } else {
                     ResponseUtils.RangeBody rangeBody = GSON.fromJson(request.getReader(), ResponseUtils.RangeBody.class);
 
                     if (rangeBody == null || rangeBody.getToAndFrom() == null) {
@@ -66,7 +65,7 @@ public class NoNameRangeServlet extends HttpServlet {
                         return;
                     }
 
-                    Set<CellDataDTO> range =  sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
+                    Set<CellDataDTO> range = sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
                     ResponseUtils.writeSuccessResponse(response, range);
                 }
             }

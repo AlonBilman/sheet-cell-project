@@ -43,11 +43,12 @@ public class FilterServlet extends HttpServlet {
                     return;
 
                 ResponseUtils.FilterObj filterObj = GSON.fromJson(request.getReader(), ResponseUtils.FilterObj.class);
-                SheetManagerImpl sheetManager = engine.getSheetManager(username,sheetId);
+                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
                 sheetDTO sheet;
-                if(filterObj.getOperator().equals("OR"))
-                     sheet = sheetManager.filter(filterObj.getParams(),filterObj.getFilterBy(), SheetManagerImpl.OperatorValue.OR_OPERATOR);
-                else sheet = sheetManager.filter(filterObj.getParams(),filterObj.getFilterBy(),SheetManagerImpl.OperatorValue.AND_OPERATOR);
+                if (filterObj.getOperator().equals("OR"))
+                    sheet = sheetManager.filter(filterObj.getParams(), filterObj.getFilterBy(), SheetManagerImpl.OperatorValue.OR_OPERATOR);
+                else
+                    sheet = sheetManager.filter(filterObj.getParams(), filterObj.getFilterBy(), SheetManagerImpl.OperatorValue.AND_OPERATOR);
                 ResponseUtils.writeSuccessResponse(response, sheet);
             }
 
