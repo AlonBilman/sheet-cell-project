@@ -33,7 +33,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button fx:id="LoadSheetButton" layoutX="6.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="149.0" text="Load Sheet File" />
+            <Button fx:id="LoadSheetButton" layoutX="6.0" layoutY="7.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="149.0" text="Load Sheet File" onAction="#LoadFileListener"/>
             <Button fx:id="ViewSheetButton" layoutX="482.0" layoutY="81.0" mnemonicParsing="false" onAction="#ViewSheetListener" text="View sheet" />
             <Button fx:id="RequestPermissionButton" layoutX="458.0" layoutY="135.0" mnemonicParsing="false" onAction="#RequestPermissionListener" text="Request Permission" />
             <Button fx:id="AcceptPermissionButton" layoutX="455.0" layoutY="248.0" mnemonicParsing="false" onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="127.0" text="Accept permission" />

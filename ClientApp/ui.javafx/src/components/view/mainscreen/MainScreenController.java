@@ -79,14 +79,11 @@ public class MainScreenController {
 
     public void ViewSheetListener(ActionEvent actionEvent) {
             if(SheetName != null) {
-            //  sendSheetNameToServer(SheetName);
-                //
                 //ask the server for this sheet
                 // if we got it. continue to the 3rd screen
                 // else -> show an error.
         } else {
             System.err.println("No sheet selected.");
-
         }
     }
 
@@ -120,4 +117,7 @@ public class MainScreenController {
         SheetPermissionTable.refresh();
     }
 
+    public void LoadFileListener(ActionEvent actionEvent) {
+
+    }
 }
