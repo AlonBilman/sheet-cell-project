@@ -1,6 +1,6 @@
 package components.header.loadfile;
 
-import components.main.AppController;
+import components.view.sheetscreen.AppController;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;

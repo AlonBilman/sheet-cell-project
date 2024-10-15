@@ -1,6 +1,6 @@
 package components.header.title;
 
-import components.main.AppController;
+import components.view.sheetscreen.AppController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.AnchorPane;

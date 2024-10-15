@@ -1,4 +1,4 @@
-package components.main;
+package components.view.sheetscreen;
 
 import components.login.LoginController;
 import javafx.application.Application;
@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import okhttp3.OkHttpClient;
 
 import java.net.URL;
 
@@ -30,7 +29,7 @@ public class Main extends Application {
     // Method to show the login page
     private void showLoginPage() throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        URL loginFXML = getClass().getResource("../login/loginPage.fxml"); // Update the path accordingly
+        URL loginFXML = getClass().getResource("../../login/loginPage.fxml"); // Update the path accordingly
         loader.setLocation(loginFXML);
         Parent root = loader.load();
 

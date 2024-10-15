@@ -1,6 +1,6 @@
 package components.body.table.view;
 
-import components.main.AppController;
+import components.view.sheetscreen.AppController;
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import javafx.fxml.FXML;

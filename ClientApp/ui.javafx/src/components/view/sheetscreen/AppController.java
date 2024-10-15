@@ -1,4 +1,4 @@
-package components.main;
+package components.view.sheetscreen;
 
 import com.google.gson.reflect.TypeToken;
 import components.body.table.func.TableFunctionalityController;
@@ -179,7 +179,7 @@ public class AppController {
             });
         }
     }
-    
+
     public void checkAndLoadFile(File file) {
         disableComponents(true);
         loadFileController.taskLoadingSimulation(() -> {
@@ -946,6 +946,3 @@ public class AppController {
         });
     }
 }
-
-
-

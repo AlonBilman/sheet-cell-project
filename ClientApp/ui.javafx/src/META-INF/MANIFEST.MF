@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: components.main.Main
+Main-Class: components.view.sheetscreen.Main
 Class-Path: jaxb/* appengine.jar ui.javafx.jar
 
