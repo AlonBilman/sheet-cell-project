@@ -10,6 +10,7 @@ import manager.impl.SheetManagerImpl;
 import utils.AppUser;
 import utils.ResponseUtils;
 import utils.ServletUtils;
+import utils.SessionUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ import java.util.Set;
 public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-       // String username = SessionUtils.getUsername(request);
+        String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 
-//        if (!ServletUtils.isUserNameExists(response, username))
-//            return;
+        if (!ServletUtils.isUserNameExists(response, username))
+            return;
 
         try {
             synchronized (this) {

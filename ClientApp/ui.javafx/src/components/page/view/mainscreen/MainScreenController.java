@@ -2,6 +2,7 @@ package components.page.view.mainscreen;
 
 import components.page.view.sheetscreen.AppController;
 import http.CallerService;
+import http.HttpClientUtil;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -215,6 +216,16 @@ public class MainScreenController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+        stage.setOnCloseRequest((event)-> {
+            event.consume();
+            disconnect();
+        });
+    }
+
+    private void disconnect() {
+        stopListRefresher();
+        HttpClientUtil.shutdown();
+        stage.close();
     }
 
     public void openAppScreen() {

@@ -4,10 +4,9 @@ import com.google.gson.reflect.TypeToken;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
-import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
 import components.page.view.mainscreen.MainScreenController;
-import constants.Constants;
+
 import dto.CellDataDTO;
 import dto.sheetDTO;
 import http.CallerService;
@@ -70,8 +69,6 @@ public class AppController {
     @FXML
     private CellFunctionsController cellFunctionsController;
     @FXML
-    private LoadFileController loadFileController;
-    @FXML
     private TitleCardController titleCardController;
 
     public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
@@ -86,9 +83,6 @@ public class AppController {
         this.cellFunctionsController = cellFunctionsController;
     }
 
-    public void setLoadFileController(LoadFileController loadFileController) {
-        this.loadFileController = loadFileController;
-    }
 
     public void setTitleCardController(TitleCardController titleCardController) {
         this.titleCardController = titleCardController;
@@ -100,10 +94,9 @@ public class AppController {
 
     public void initialize() {
         if (tableFunctionalityController != null && gridSheetController != null &&
-                cellFunctionsController != null && loadFileController != null && titleCardController != null) {
+                cellFunctionsController != null  && titleCardController != null) {
             tableFunctionalityController.setMainController(this);
             cellFunctionsController.setMainController(this);
-            loadFileController.setMainController(this);
             titleCardController.setMainController(this);
             gridSheetController.setMainController(this);
             chartMaker = new ChartMaker(this);
@@ -126,73 +119,6 @@ public class AppController {
         boardOutOfFocus();
     }
 
-    private void loadFileLogic(File file) {
-        disableComponents(false);
-        try {
-            httpCallerService.uploadFileAsync(file, new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> {
-                        loadFileController.showInfoAlert("File upload failed." + e.getMessage());
-                    });
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    try {
-                        httpCallerService.handleErrorResponse(response);
-                        String sheetName = HttpClientUtil.handleStringResponse(response);
-                        quary.clear();
-                        quary.put(Constants.SHEET_ID, sheetName);
-                        httpCallerService.fetchSheetAsync(quary, new Callback() {
-                            @Override
-                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                Platform.runLater(() -> {
-                                    loadFileController.showInfoAlert("Failed to fetch sheet data." + e.getMessage());
-                                });
-                            }
-
-                            @Override
-                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                try {
-                                    httpCallerService.handleErrorResponse(response);
-                                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
-                                    Platform.runLater(() -> {
-                                        gridSheetController.populateTableView(sheet, true);
-                                        loadFileController.editFilePath(file.getAbsolutePath());
-                                        tableFunctionalityController.setActiveButtons(
-                                                TableFunctionalityController.ButtonState.LOADING_FILE, true);
-                                        cellFunctionsController.wakeVersionButton();
-                                        currSheet = sheetName;
-                                    });
-                                } catch (Exception e) {
-                                    Platform.runLater(() -> {
-                                        loadFileController.showInfoAlert(e.getMessage());
-                                    });
-                                }
-                                response.close();
-                            }
-                        });
-                    } catch (Exception e) {
-                        Platform.runLater(() -> {
-                            loadFileController.showInfoAlert(e.getMessage());
-                        });
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Platform.runLater(() -> {
-                loadFileController.showInfoAlert(e.getMessage());
-            });
-        }
-    }
-
-    public void checkAndLoadFile(File file) {
-        disableComponents(true);
-        loadFileController.taskLoadingSimulation(() -> {
-            loadFileLogic(file);
-        });
-    }
 
     public void CellClicked(String id) {
         outOfFocus();
@@ -722,7 +648,6 @@ public class AppController {
 
     private void setNewTheme(String value) {
         tableFunctionalityController.setTheme(value);
-        loadFileController.setTheme(value);
         cellFunctionsController.setTheme(value);
         gridSheetController.setTheme(value);
         titleCardController.setTheme(value);
@@ -957,14 +882,13 @@ public class AppController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../mainscreen/mainScreen.fxml")); // Update the path accordingly
             Parent root = loader.load();
-
             Scene scene = new Scene(root, 1120, 800);
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - Main Screen");
 
             MainScreenController controller = loader.getController();
             controller.setStage(stage);
-            controller.startListRefresher();
+
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

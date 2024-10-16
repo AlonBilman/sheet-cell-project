@@ -24,6 +24,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume();
+            confirmExit();
+        });
         showLoginPage();
     }
 
@@ -36,13 +40,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, 500, 350);
         primaryStage.setTitle("Sheet Cell - Login");
         primaryStage.setScene(scene);
-
-        primaryStage.setOnCloseRequest(event -> {
-            event.consume();
-            confirmExit();
-        });
         primaryStage.show();
-
         LoginController loginController = loader.getController();
         loginController.setLoginListener(this::showMainApp);
     }
@@ -65,12 +63,6 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.setTitle("Sheet Cell - Main Screen");
             primaryStage.centerOnScreen();
-
-            primaryStage.setOnCloseRequest(event -> {
-                event.consume();
-                confirmExit();
-            });
-
             mainScreenController = loader.getController();
             mainScreenController.setStage(primaryStage);
             primaryStage.show();
