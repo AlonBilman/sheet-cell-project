@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
-import java.util.function.Consumer;
 
 import static constants.Constants.REFRESH_RATE;
 
@@ -146,18 +145,6 @@ public class MainScreenController {
         //remove it from the table?
     }
 
-    public void addSheetToTableView(String username, String name, String sheetSize) {
-        ObservableList<AppUser> currentData = SheetTable.getItems();
-        currentData.add(new AppUser(username, name, sheetSize));
-        SheetTable.refresh();
-    }
-
-    public void addPermissionToTable(String username, String permission, String isApproved) {
-        ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
-        currentData.add(new PermissionData(username, permission, isApproved));
-        SheetPermissionTable.refresh();
-    }
-
     public void LoadFileListener(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file - Allowed only .xml files");
@@ -211,8 +198,20 @@ public class MainScreenController {
                 autoUpdate,
                 this::updateUsersList);
         timer = new Timer();
-        timer.schedule(usersRefresher, REFRESH_RATE, REFRESH_RATE);
+        timer.schedule(usersRefresher, 0, REFRESH_RATE);
     }
+
+    public void stopListRefresher() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (usersRefresher != null) {
+            usersRefresher.cancel();
+            usersRefresher = null;
+        }
+    }
+
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -220,21 +219,20 @@ public class MainScreenController {
 
     public void openAppScreen() {
         try {
+            stopListRefresher();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../sheetscreen/app.fxml")); // Update the path accordingly
             Parent root = loader.load();
 
-            // Create a new scene and set it to the current stage
             Scene scene = new Scene(root, 1120, 800);
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - App Screen");
 
-            // Pass the stage to the app controller for navigation back
             AppController appController = loader.getController();
             appController.setStage(stage);
 
             stage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+            showInfoAlert(e.getMessage());
         }
     }
 }

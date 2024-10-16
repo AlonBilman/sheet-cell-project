@@ -962,10 +962,9 @@ public class AppController {
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - Main Screen");
 
-            // Pass the stage back to the main screen controller if needed
             MainScreenController controller = loader.getController();
             controller.setStage(stage);
-
+            controller.startListRefresher();
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

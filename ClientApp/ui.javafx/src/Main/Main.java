@@ -15,6 +15,7 @@ import static http.HttpClientUtil.shutdown;
 public class Main extends Application {
 
     private Stage primaryStage;
+    private MainScreenController mainScreenController; // Reference to the MainScreenController
 
     public static void main(String[] args) {
         launch(args);
@@ -47,6 +48,9 @@ public class Main extends Application {
     }
 
     private void confirmExit() {
+        if (mainScreenController != null) {
+            mainScreenController.stopListRefresher();
+        }
         primaryStage.close();
         shutdown();
     }
@@ -61,12 +65,18 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.setTitle("Sheet Cell - Main Screen");
             primaryStage.centerOnScreen();
-            MainScreenController controller = loader.getController();
-            controller.setStage(primaryStage);
+
+            primaryStage.setOnCloseRequest(event -> {
+                event.consume();
+                confirmExit();
+            });
+
+            mainScreenController = loader.getController();
+            mainScreenController.setStage(primaryStage);
             primaryStage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
