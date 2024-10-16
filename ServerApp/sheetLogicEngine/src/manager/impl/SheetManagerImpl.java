@@ -20,6 +20,10 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
 
+    public String getSheetSize() {
+        return spreadSheet.getColumnSize() + "x" + spreadSheet.getRowSize();
+    }
+
     public enum OperatorValue {
         OR_OPERATOR, AND_OPERATOR
     }

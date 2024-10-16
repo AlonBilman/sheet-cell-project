@@ -13,8 +13,9 @@
          </font>
       </Text>
       <!-- ChoiceBox for animations -->
-      <ChoiceBox fx:id="animationsChoiceBox" layoutX="819.0" layoutY="1.0" prefHeight="50.0" prefWidth="240.0" />
+      <ChoiceBox fx:id="animationsChoiceBox" layoutX="674.0" prefHeight="50.0" prefWidth="240.0" />
       <!-- ChoiceBox for style -->
-      <ChoiceBox fx:id="styleChoiceBox" layoutX="48.0" layoutY="1.0" prefHeight="58.0" prefWidth="240.0" />
+      <ChoiceBox fx:id="styleChoiceBox" layoutX="197.0" layoutY="2.0" prefHeight="58.0" prefWidth="240.0" />
+      <Button fx:id="backToMainScreenButton" layoutX="936.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMainScreenButtonListener" text="Back to Main-&gt;" />
    </children>
 </AnchorPane>

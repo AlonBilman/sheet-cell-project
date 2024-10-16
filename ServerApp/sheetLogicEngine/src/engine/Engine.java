@@ -67,4 +67,8 @@ public class Engine {
         SheetManagerImpl manager = getSheetManager(userName, sheetId);
         return manager.showCell(cellId);
     }
+
+    public synchronized Map<String, Set<SheetManagerImpl>> getUserMap() {
+        return userMap;
+    }
 }

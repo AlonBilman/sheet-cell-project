@@ -36,4 +36,6 @@ public class Constants {
     public static final String DYNAMIC_CHANGE_SERVLET = "DynamicChangeServlet";
     public static final String DYNAMIC_CHANGE = "/dynamic-change";
     public static final String NO_NAME_RANGES = "/no-name-ranges";
+    public static final String USERS = "/users";
+    public static final String USERS_SERVLET = "UsersServlet";
 }

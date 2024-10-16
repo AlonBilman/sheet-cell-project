@@ -136,4 +136,9 @@ public class CallerService {
         String url = BASE_DIRECTORY + DISPLAY + DYNAMIC_CHANGE;
         HttpClientUtil.runAsyncGet(url,queryParams,callback);
     }
+
+    public void getAllUsers(Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY +USERS;
+        HttpClientUtil.runAsyncGet(url,null,callback);
+    }
 }

@@ -1,12 +1,12 @@
-package components.view.mainscreen;
+package components.page.view.mainscreen;
 
-public class SheetTableData {
+public class AppUser {
 
     private final String userUploaded;
     private final String sheetName;
     private final String sheetSize;
 
-    public SheetTableData(String userUploaded, String sheetName, String sheetSize) {
+    public AppUser(String userUploaded, String sheetName, String sheetSize) {
         this.userUploaded = userUploaded;
         this.sheetName = sheetName;
         this.sheetSize = sheetSize;

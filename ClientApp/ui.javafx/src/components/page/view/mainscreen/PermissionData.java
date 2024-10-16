@@ -1,4 +1,4 @@
-package components.view.mainscreen;
+package components.page.view.mainscreen;
 
 public class PermissionData {
 

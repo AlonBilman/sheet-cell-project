@@ -1,4 +1,4 @@
-package components.view.sheetscreen;
+package components.page.view.sheetscreen;
 
 import com.google.gson.reflect.TypeToken;
 import components.body.table.func.TableFunctionalityController;
@@ -6,6 +6,7 @@ import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.loadfile.LoadFileController;
 import components.header.title.TitleCardController;
+import components.page.view.mainscreen.MainScreenController;
 import constants.Constants;
 import dto.CellDataDTO;
 import dto.sheetDTO;
@@ -46,6 +47,8 @@ public class AppController {
     private CallerService httpCallerService;
     private Map<String, String> quary;
     private String currSheet;
+    private Stage stage;
+
 
     //all the components
     @FXML
@@ -89,6 +92,10 @@ public class AppController {
 
     public void setTitleCardController(TitleCardController titleCardController) {
         this.titleCardController = titleCardController;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     public void initialize() {
@@ -944,5 +951,24 @@ public class AppController {
                 }
             }
         });
+    }
+
+    public void backToMainScreenClicked() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../mainscreen/mainScreen.fxml")); // Update the path accordingly
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 1120, 800);
+            stage.setScene(scene);
+            stage.setTitle("Sheet Cell - Main Screen");
+
+            // Pass the stage back to the main screen controller if needed
+            MainScreenController controller = loader.getController();
+            controller.setStage(stage);
+
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

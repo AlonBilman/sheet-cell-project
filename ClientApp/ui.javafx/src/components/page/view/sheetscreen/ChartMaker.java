@@ -1,4 +1,4 @@
-package components.view.sheetscreen;
+package components.page.view.sheetscreen;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

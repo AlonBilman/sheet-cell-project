@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="343.0" prefWidth="501.0" stylesheets="@loginStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.login.LoginController">
+<AnchorPane prefHeight="343.0" prefWidth="501.0" stylesheets="@loginStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.loginscreen.LoginController">
 
     <!-- Title -->
     <Text fx:id="titleText" layoutX="50.0" layoutY="80.0" styleClass="title-text" text="Sheet Cell" wrappingWidth="400.0">

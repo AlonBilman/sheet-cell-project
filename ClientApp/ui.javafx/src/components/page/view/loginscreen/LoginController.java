@@ -1,4 +1,4 @@
-package components.login;
+package components.page.view.loginscreen;
 
 import com.google.gson.Gson;
 import http.HttpClientUtil;

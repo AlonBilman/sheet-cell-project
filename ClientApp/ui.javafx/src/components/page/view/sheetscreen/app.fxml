@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane minHeight="200.0" minWidth="200.0" prefHeight="605.0" prefWidth="688.0" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.sheetscreen.AppController">
+    <top>
+        <ScrollPane>
+            <FlowPane alignment="CENTER" depthTest="DISABLE" minHeight="140.0" minWidth="595.0" prefWrapLength="0.0"
+                      rowValignment="BASELINE">
+                <VBox alignment="CENTER">
+                    <fx:include fx:id="titleCard" source="../../../header/title/titleCard.fxml"/>
+                    <fx:include fx:id="loadFile" source="../../../header/loadfile/loadFile.fxml"/>
+                    <fx:include fx:id="cellFunctions" source="../../../header/cellfunction/cellFunctions.fxml"/>
+                </VBox>
+            </FlowPane>
+        </ScrollPane>
+    </top>
+    <center>
+        <fx:include fx:id="gridSheet" source="../../../body/table/view/gridSheetView.fxml"/>
+    </center>
+    <left>
+        <fx:include fx:id="tableFunctionality" source="../../../body/table/func/tableFunctionality.fxml"/>
+    </left>
+</BorderPane>
