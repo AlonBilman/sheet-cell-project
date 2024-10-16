@@ -29,6 +29,9 @@ public class Engine {
         if (!isUserExists(user))
             throw new IllegalArgumentException("There is no such user");
         activeUsers.remove(user);
+        for (SheetManagerImpl manager : userMap.get(user)) {
+            sheetNames.remove(manager.getSheetName());
+        }
         userMap.remove(user);
     }
 

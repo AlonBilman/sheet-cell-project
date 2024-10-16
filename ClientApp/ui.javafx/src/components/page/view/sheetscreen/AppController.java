@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static constants.Constants.*;
@@ -94,7 +95,7 @@ public class AppController {
 
     public void initialize() {
         if (tableFunctionalityController != null && gridSheetController != null &&
-                cellFunctionsController != null  && titleCardController != null) {
+                cellFunctionsController != null && titleCardController != null) {
             tableFunctionalityController.setMainController(this);
             cellFunctionsController.setMainController(this);
             titleCardController.setMainController(this);
@@ -102,8 +103,35 @@ public class AppController {
             chartMaker = new ChartMaker(this);
             httpCallerService = new CallerService();
             quary = new HashMap<>();
-
         }
+    }
+
+    public void setLoadFile(String sheetName,  Consumer<Exception> error) {
+        currSheet = sheetName;
+        quary.clear();
+        quary.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(quary, new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    Platform.runLater(() -> {
+                        gridSheetController.populateTableView(sheet, true);
+                        tableFunctionalityController.setActiveButtons(
+                                TableFunctionalityController.ButtonState.LOADING_FILE, true);
+                        cellFunctionsController.wakeVersionButton();
+                    });
+                } catch (Exception e) {
+                    error.accept(e);
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                error.accept(e);
+            }
+        });
     }
 
     private void disableComponents(boolean disable) {
@@ -177,10 +205,6 @@ public class AppController {
         });
     }
 
-    public void loadClicked() {
-        cellFunctionsController.outOfFocus();
-        tableFunctionalityController.outOfFocus();
-    }
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         quary.clear();

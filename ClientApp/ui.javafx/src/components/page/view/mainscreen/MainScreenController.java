@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 
 import static constants.Constants.REFRESH_RATE;
@@ -125,7 +126,7 @@ public class MainScreenController {
     }
 
     public void ViewSheetListener(ActionEvent actionEvent) {
-        openAppScreen();
+        initAppScreen(SheetName);
     }
 
     public void RequestPermissionListener(ActionEvent actionEvent) {
@@ -228,23 +229,34 @@ public class MainScreenController {
         stage.close();
     }
 
-    public void openAppScreen() {
+    public void initAppScreen(String name) {
+        if(name==null) {
+            showInfoAlert("please select a sheet to view");
+            return;
+        }
         try {
             stopListRefresher();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../sheetscreen/app.fxml")); // Update the path accordingly
             Parent root = loader.load();
-
             Scene scene = new Scene(root, 1120, 800);
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - App Screen");
-
             AppController appController = loader.getController();
             appController.setStage(stage);
-
+            appController.setLoadFile(name,this::error);
             stage.show();
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
         }
     }
+
+    private void error(Exception e) {
+        Platform.runLater(()->{
+            showInfoAlert(e.getMessage());
+        });
+    }
+
+
+
 }
 
