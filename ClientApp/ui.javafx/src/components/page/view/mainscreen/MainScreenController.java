@@ -1,5 +1,6 @@
 package components.page.view.mainscreen;
 
+import com.google.gson.reflect.TypeToken;
 import components.page.view.sheetscreen.AppController;
 import http.CallerService;
 import http.HttpClientUtil;
@@ -26,17 +27,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Timer;
 
-import static constants.Constants.REFRESH_RATE;
-
+import static constants.Constants.*;
 
 public class MainScreenController {
-
     public Stage stage;
-
     @FXML
     private TableView<PermissionData> SheetPermissionTable;
     @FXML
@@ -53,50 +53,43 @@ public class MainScreenController {
     private TableColumn<AppUser, String> sheetNameColumn;
     @FXML
     private TableColumn<AppUser, String> sheetSizeColumn;
-
     @FXML
     public Button LoadSheetButton;
-
     @FXML
     public Button ViewSheetButton;
-
     @FXML
     public Button DenyPermissionButton;
-
     @FXML
     public Button AcceptPermissionButton;
-
     @FXML
     public Button RequestPermissionButton;
 
-    public String SheetName;
+    public String sheetName;
     public String username;
     public String permissionName;
+    public String permissionApproved;
     public Timer timer;
     public UsersRefresher usersRefresher;
     public BooleanProperty autoUpdate;
-
-
-    String url = "http://LocalHost:8080/SheetCell";
 
     CallerService httpCallerService;
 
     @FXML
     public void initialize() {
         // Bind columns to the SheetData properties
-        userUploadedColumn.setCellValueFactory(new PropertyValueFactory<>("userUploaded"));
+        userUploadedColumn.setCellValueFactory(new PropertyValueFactory<>("UserUploaded"));
         sheetNameColumn.setCellValueFactory(new PropertyValueFactory<>("SheetName"));
-        sheetSizeColumn.setCellValueFactory(new PropertyValueFactory<>("sheetSize"));
+        sheetSizeColumn.setCellValueFactory(new PropertyValueFactory<>("SheetSize"));
 
-        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
-        permissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("permissionName"));
-        permissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("permissionApproved"));
-
-        //do we change this to http request to
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("UserName"));
+        permissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("PermissionType"));
+        permissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("ApprovedPermission"));
         // Add listener to get selected row's sheet name
         SheetTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                SheetName = newValue.getSheetName();
+                sheetName = newValue.getSheetName();
+                String owner = newValue.getUserUploaded();
+                updatePermissionList(sheetName, owner);
             }
         });
 
@@ -104,12 +97,44 @@ public class MainScreenController {
             if (newValue != null) {
                 permissionName = newValue.getPermissionType();
                 username = newValue.getUserName();
+                permissionApproved = newValue.getApprovedPermission();
             }
         });
 
         httpCallerService = new CallerService();
         autoUpdate = new SimpleBooleanProperty(true);
         startListRefresher();
+    }
+
+    private void updatePermissionList(String sheetName, String owner) {
+        Map<String, String> query = new HashMap<>();
+        query.put(SHEET_ID, sheetName);
+        query.put(OWNER, owner);
+        httpCallerService.getPermissions(query, new Callback() {
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try{
+                    httpCallerService.handleErrorResponse(response);
+                    Type listType = new TypeToken<List<PermissionData>>() {}.getType();
+                    List<PermissionData> permissionsList = GSON.fromJson(response.body().string(), listType);
+                    updatePermissionList(permissionsList);
+
+                }catch (Exception e){
+                    Platform.runLater(()->{
+                            showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(()->{
+                    showInfoAlert(e.getMessage());
+                });
+            }
+        });
+
     }
 
     public void showInfoAlert(String problem) {
@@ -122,7 +147,7 @@ public class MainScreenController {
     }
 
     public void ViewSheetListener(ActionEvent actionEvent) {
-        initAppScreen(SheetName);
+        initAppScreen(sheetName);
     }
 
     public void RequestPermissionListener(ActionEvent actionEvent) {
@@ -179,6 +204,15 @@ public class MainScreenController {
                 }
 
             }
+        });
+    }
+
+    private void updatePermissionList(List<PermissionData> data) {
+        Platform.runLater(()->{
+            ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
+            currentData.clear();
+            currentData.addAll(data);
+            SheetPermissionTable.refresh();
         });
     }
 

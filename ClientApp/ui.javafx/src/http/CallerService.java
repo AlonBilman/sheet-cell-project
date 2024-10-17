@@ -141,4 +141,9 @@ public class CallerService {
         String url = BASE_DIRECTORY + DISPLAY +USERS;
         HttpClientUtil.runAsyncGet(url,null,callback);
     }
+
+    public void getPermissions(Map<String, String> queryParams, Callback callback) {
+        String url = BASE_DIRECTORY + DISPLAY + PERMISSIONS;
+        HttpClientUtil.runAsyncGet(url,queryParams,callback);
+    }
 }

@@ -20,15 +20,23 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
-    private final Map<String, Engine.PermissionStatus> permissionStatusMap = new HashMap<>();
+    private final Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Boolean>> permissionStatusMap = new HashMap<>();
 
     public SheetManagerImpl(String Owner) {
-        permissionStatusMap.put(Owner,Engine.PermissionStatus.OWNER);
+        permissionStatusMap.put(Owner, createPermissionEntry(Engine.PermissionStatus.OWNER, true));
         this.spreadSheet = null;
     }
 
+    private AbstractMap.SimpleEntry<Engine.PermissionStatus, Boolean> createPermissionEntry(Engine.PermissionStatus status, boolean isApproved) {
+        return new AbstractMap.SimpleEntry<>(status, isApproved);
+    }
+
+    public Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Boolean>> getPermissionStatusMap() {
+        return permissionStatusMap;
+    }
+
     public void addPermissionStatus(String user,Engine.PermissionStatus status) {
-        permissionStatusMap.put(user,status);
+        permissionStatusMap.put(user,createPermissionEntry(status, false)); //always false at the beginning.
     }
 
     public String getSheetSize() {

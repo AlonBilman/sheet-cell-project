@@ -26,4 +26,6 @@ public class Constants {
     public static final String NO_NAME_RANGES = "/no-name-ranges";
     public static final Integer REFRESH_RATE = 1500;
     public static final String USERS = "/users";
+    public static final String PERMISSIONS = "/permissions";
+    public static final String OWNER = "owner";
 }

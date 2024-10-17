@@ -16,11 +16,30 @@ public class Engine {
     private final Set<String> sheetNames;
 
     public enum PermissionStatus {
-        PENDING,
-        OWNER,
-        APPROVED_READER,
-        APPROVED_EDITOR,
-        DENIED
+        PENDING {
+            @Override
+            public String toString() {
+                return "Pending approval";
+            }
+        },
+        OWNER {
+            @Override
+            public String toString() {
+                return "Owner";
+            }
+        },
+        READER {
+            @Override
+            public String toString() {
+                return "Reader";
+            }
+        },
+        WRITER {
+            @Override
+            public String toString() {
+                return "Writer";
+            }
+        },
     }
 
     public Engine() {

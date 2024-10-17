@@ -39,5 +39,6 @@ public class Constants {
     public static final String USERS = "/users";
     public static final String USERS_SERVLET = "UsersServlet";
     public static final String PERMISSION_SERVLET = "PermissionServlet";
-    public static final String PERMISSIONS = "permissions";
+    public static final String PERMISSIONS = "/permissions";
+    public static final String OWNER = "owner";
 }
