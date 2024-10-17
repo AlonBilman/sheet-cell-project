@@ -39,8 +39,10 @@ public class UsersServlet extends HttpServlet {
                 for (Map.Entry<String, Set<SheetManagerImpl>> entry : userMap.entrySet()) {
                     Set<SheetManagerImpl> set = entry.getValue();
                     for (SheetManagerImpl manager : set) {
-                        AppUser user = new AppUser(entry.getKey(), manager.getSheetName(), manager.getSheetSize());
-                        list.add(user);
+                        if(manager.isOwner(entry.getKey())) {
+                            AppUser user = new AppUser(entry.getKey(), manager.getSheetName(), manager.getSheetSize());
+                            list.add(user);
+                        }
                     }
                 }
                 ResponseUtils.writeSuccessResponse(response, list);

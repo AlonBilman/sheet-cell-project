@@ -43,6 +43,11 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return spreadSheet.getColumnSize() + "x" + spreadSheet.getRowSize();
     }
 
+    public boolean isOwner(String key) {
+        AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> entry = permissionStatusMap.get(key);
+        return Engine.PermissionStatus.OWNER.equals(entry.getKey());
+    }
+
     public enum OperatorValue {
         OR_OPERATOR, AND_OPERATOR
     }
