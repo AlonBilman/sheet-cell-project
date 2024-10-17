@@ -15,9 +15,7 @@ import java.util.*;
 
 import static constants.Constants.*;
 
-
-@WebServlet(name = Constants.PERMISSION_SERVLET, urlPatterns = {Constants.PERMISSIONS,
-        Constants.PERMISSION_REQUESTS})
+@WebServlet(name = Constants.PERMISSION_SERVLET, urlPatterns = {Constants.PERMISSIONS, Constants.PERMISSION_REQUESTS})
 public class PermissionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -29,21 +27,24 @@ public class PermissionServlet extends HttpServlet {
 
         if (!ServletUtils.isUserNameExists(response, username))
             return;
+
         synchronized (this) {
             try {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
+
                 SheetManagerImpl sheetManager = engine.getSheetManager(owner, sheetName);
                 Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap =
                         sheetManager.getPermissionStatusMap();
+
                 List<PermissionData> list = new ArrayList<>();
-                boolean bool = request.getServletPath().contains(PERMISSION_REQUESTS);
+                boolean isPendingRequests = request.getServletPath().contains(PERMISSION_REQUESTS);
                 for (Map.Entry<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> entry : permissionStatusMap.entrySet()) {
                     String user = entry.getKey();
                     String permission = entry.getValue().getKey().toString();
                     String approved = entry.getValue().getValue().toString();
-                    if (bool) {
+                    if (isPendingRequests) {
                         if (approved.equals(Engine.ApprovalStatus.PENDING.toString())) {
                             list.add(new PermissionData(user, permission, approved));
                         }
@@ -97,22 +98,15 @@ public class PermissionServlet extends HttpServlet {
                     throw new IllegalArgumentException("You cannot request owner permission.");
                 }
 
-                AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> approvalStatus =
-                        new AbstractMap.SimpleEntry<>(permissionStatus, Engine.ApprovalStatus.PENDING);
-
-                permissionStatusMap.put(username, approvalStatus);
+                sheetManager.addPermissionStatus(username, permissionStatus);
 
                 ResponseUtils.writeSuccessResponse(response, "submitted");
 
-            } catch (IllegalArgumentException e) {
-                //case where the input string does not match enum constant or invalid requests.
-                ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             } catch (Exception e) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             }
         }
     }
-
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -122,8 +116,7 @@ public class PermissionServlet extends HttpServlet {
 
         String sheetName = request.getParameter(SHEET_ID);
         String requester = request.getParameter(REQUESTER);
-
-        String permissionResponse = GSON.fromJson(request.getReader(),String.class);
+        String permissionResponse = GSON.fromJson(request.getReader(), String.class);
 
         if (!permissionResponse.equalsIgnoreCase("yes") && !permissionResponse.equalsIgnoreCase("no")) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid response. Expected 'yes' or 'no'.");
@@ -155,21 +148,21 @@ public class PermissionServlet extends HttpServlet {
                     ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "No permission request found for user: " + username);
                     return;
                 }
-                //set approval status to yes
-                if (permissionResponse.equalsIgnoreCase("yes")) {
-                    Engine.PermissionStatus permissionStatus = currentStatus.getKey();
-                    AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> approvalStatus =
-                            new AbstractMap.SimpleEntry<>(permissionStatus, Engine.ApprovalStatus.YES);
 
-                    permissionStatusMap.put(requester, approvalStatus);
-                    engine.addSheetManager(requester,sheetManager,false);
+                Engine.PermissionStatus permissionStatus = currentStatus.getKey();
+                Engine.ApprovalStatus approvalStatus = permissionResponse.equalsIgnoreCase("yes")
+                        ? Engine.ApprovalStatus.YES
+                        : Engine.ApprovalStatus.NO;
+
+                //update the approval status directly using the entry
+                AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> approvalStatusEntry =
+                        new AbstractMap.SimpleEntry<>(permissionStatus, approvalStatus);
+                permissionStatusMap.put(requester, approvalStatusEntry);
+
+                if (approvalStatus == Engine.ApprovalStatus.YES) {
+                    engine.addSheetManager(requester, sheetManager, false);
                     ResponseUtils.writeSuccessResponse(response, "Permission approved for user: " + username);
                 } else {
-                    Engine.PermissionStatus permissionStatus = currentStatus.getKey();
-                    AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> approvalStatus =
-                            new AbstractMap.SimpleEntry<>(permissionStatus, Engine.ApprovalStatus.NO);
-
-                    permissionStatusMap.put(requester, approvalStatus);
                     ResponseUtils.writeSuccessResponse(response, "Permission denied for user: " + username);
                 }
 
