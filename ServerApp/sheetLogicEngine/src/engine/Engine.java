@@ -82,8 +82,8 @@ public class Engine {
         return activeUsers.contains(username);
     }
 
-    public synchronized void addSheetManager(String username, SheetManagerImpl sheetManager) {
-        if (sheetNames.contains(sheetManager.getSheetName()))
+    public synchronized void addSheetManager(String username, SheetManagerImpl sheetManager,boolean init) {
+        if (sheetNames.contains(sheetManager.getSheetName())&&init)
             throw new IllegalArgumentException("Sheet already exists (the name is taken)");
         if (!userMap.containsKey(username))
             userMap.put(username, new HashSet<>());

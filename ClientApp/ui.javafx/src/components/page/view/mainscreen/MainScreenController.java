@@ -66,11 +66,13 @@ public class MainScreenController {
 
     public String sheetName;
     public String username;
+    public String owner;
     public String permissionName;
     public String permissionApproved;
     public Timer timer;
     public UsersRefresher usersRefresher;
     public BooleanProperty autoUpdate;
+    public Map<String,String> query;
 
     CallerService httpCallerService;
 
@@ -88,7 +90,7 @@ public class MainScreenController {
         SheetTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 sheetName = newValue.getSheetName();
-                String owner = newValue.getUserUploaded();
+                owner = newValue.getUserUploaded();
                 updatePermissionList(sheetName, owner);
             }
         });
@@ -103,11 +105,12 @@ public class MainScreenController {
 
         httpCallerService = new CallerService();
         autoUpdate = new SimpleBooleanProperty(true);
+        query = new HashMap<>();
         startListRefresher();
     }
 
     private void updatePermissionList(String sheetName, String owner) {
-        Map<String, String> query = new HashMap<>();
+        query.clear();
         query.put(SHEET_ID, sheetName);
         query.put(OWNER, owner);
         httpCallerService.getPermissions(query, new Callback() {
@@ -151,21 +154,69 @@ public class MainScreenController {
     }
 
     public void RequestPermissionListener(ActionEvent actionEvent) {
-        //get user that requested
-        //get permission that he asked for
-        //add it to the specific sheet's table view
+        query.clear();
+        query.put(SHEET_ID, sheetName);
+        query.put(OWNER, owner);
+
+            httpCallerService.requestPermission(query, "reader", new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Platform.runLater(() -> {
+                        showInfoAlert(e.getMessage());
+                    });
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    try (response) {
+                        httpCallerService.handleErrorResponse(response);
+                        Platform.runLater(() -> {
+                            updatePermissionList(sheetName, owner);
+                        });
+                    } catch (Exception e) {
+                        Platform.runLater(() -> {
+                            showInfoAlert(e.getMessage());
+                        });
+                    }
+                }
+            });
     }
 
     public void AcceptPermissionListener(ActionEvent actionEvent) {
-        //get user that requested
-        //get permission that he asked for
-        //add it to the user
+        answerPermissionRequest("yes");
+    }
+
+    public void answerPermissionRequest(String answer) {
+        query.clear();
+        query.put(SHEET_ID, sheetName);
+        query.put(REQUESTER, username);
+        httpCallerService.acceptOrDenyPermission(query,answer, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    showInfoAlert(e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try(response) {
+                    httpCallerService.handleErrorResponse(response);
+                    Platform.runLater(() -> {
+                        updatePermissionList(sheetName, owner);
+                    });
+                }
+                catch (Exception e){
+                    Platform.runLater(() -> {
+                        showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+        });
     }
 
     public void DenyPermissionListener(ActionEvent actionEvent) {
-        //get user that requested
-        //get permission that he asked for
-        //remove it from the table?
+      answerPermissionRequest("no");
     }
 
     public void LoadFileListener(ActionEvent actionEvent) {

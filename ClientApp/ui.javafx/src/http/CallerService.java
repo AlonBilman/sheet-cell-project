@@ -143,7 +143,19 @@ public class CallerService {
     }
 
     public void getPermissions(Map<String, String> queryParams, Callback callback) {
-        String url = BASE_DIRECTORY + DISPLAY + PERMISSIONS;
+        String url = BASE_DIRECTORY + PERMISSIONS;
         HttpClientUtil.runAsyncGet(url,queryParams,callback);
+    }
+
+    public void requestPermission(Map<String,String> queryParams, String permission, Callback callback) {
+        String url = BASE_DIRECTORY + PERMISSIONS;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(permission));
+        HttpClientUtil.runAsyncPost(url,queryParams,body,callback);
+    }
+
+    public void acceptOrDenyPermission(Map<String,String> queryParams, String answer, Callback callback) {
+        String url = BASE_DIRECTORY + PERMISSIONS;
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(answer));
+        HttpClientUtil.runAsyncPut(url,queryParams,body,callback);
     }
 }
