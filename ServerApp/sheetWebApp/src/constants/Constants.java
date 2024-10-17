@@ -29,7 +29,7 @@ public class Constants {
     public static final String RANGE_SERVLET = "RangeServlet";
     public static final String RANGE = "/range";
     public static final String ALL_VERSIONS = "/all-versions";
-    public static final String DINAMICLY = "/dynamically";
+    public static final String DYNAMICALLY = "/dynamically";
     public static final String SORT = "/sort";
     public static final String FILTER = "/filter";
     public static final String NO_NAME_RANGE = "/no-name-range";
@@ -38,4 +38,6 @@ public class Constants {
     public static final String NO_NAME_RANGES = "/no-name-ranges";
     public static final String USERS = "/users";
     public static final String USERS_SERVLET = "UsersServlet";
+    public static final String PERMISSION_SERVLET = "PermissionServlet";
+    public static final String PERMISSIONS = "permissions";
 }

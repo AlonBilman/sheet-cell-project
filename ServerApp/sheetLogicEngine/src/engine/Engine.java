@@ -15,6 +15,14 @@ public class Engine {
     private final Map<String, Set<SheetManagerImpl>> userMap;
     private final Set<String> sheetNames;
 
+    public enum PermissionStatus {
+        PENDING,
+        OWNER,
+        APPROVED_READER,
+        APPROVED_EDITOR,
+        DENIED
+    }
+
     public Engine() {
         this.activeUsers = new HashSet<>();
         this.userMap = new HashMap<>();
@@ -50,15 +58,13 @@ public class Engine {
 
     public synchronized SheetManagerImpl getSheetManager(String userName, String sheetId) {
         Set<SheetManagerImpl> managers = userMap.get(userName);
-        if (managers == null)
-            throw new IllegalArgumentException("User " + userName + " does not exist");
-
-        for (SheetManagerImpl manager : managers) {
-            if (manager.getSheetName().equals(sheetId)) {
-                return manager;
-            }
+        if (managers == null || managers.isEmpty()) {
+            throw new IllegalArgumentException("Sheet " + sheetId + " does not exist for user " + userName);
         }
-        throw new IllegalArgumentException("Sheet " + sheetId + " does not exist for user " + userName);
+        return managers.stream()
+                .filter(manager -> manager.getSheetName().equals(sheetId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Sheet " + sheetId + " does not exist for user " + userName));
     }
 
     public synchronized sheetDTO getSheetDTO(String sheetId, String userName) {

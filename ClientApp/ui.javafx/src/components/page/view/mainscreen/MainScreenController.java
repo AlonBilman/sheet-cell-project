@@ -115,14 +115,10 @@ public class MainScreenController {
     public void showInfoAlert(String problem) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("!ERROR!");
-        alert.setHeaderText("Error while loading file");
+        alert.setHeaderText("Error :");
         alert.setContentText(problem);
         alert.setResizable(true);
         alert.showAndWait();
-    }
-
-    public void setTheme(String newTheme) {
-
     }
 
     public void ViewSheetListener(ActionEvent actionEvent) {
@@ -214,10 +210,9 @@ public class MainScreenController {
         }
     }
 
-
     public void setStage(Stage stage) {
         this.stage = stage;
-        stage.setOnCloseRequest((event)-> {
+        stage.setOnCloseRequest((event) -> {
             event.consume();
             disconnect();
         });
@@ -230,7 +225,7 @@ public class MainScreenController {
     }
 
     public void initAppScreen(String name) {
-        if(name==null) {
+        if (name == null) {
             showInfoAlert("please select a sheet to view");
             return;
         }
@@ -243,7 +238,7 @@ public class MainScreenController {
             stage.setTitle("Sheet Cell - App Screen");
             AppController appController = loader.getController();
             appController.setStage(stage);
-            appController.setLoadFile(name,this::error);
+            appController.setLoadFile(name, this::error);
             stage.show();
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
@@ -251,12 +246,8 @@ public class MainScreenController {
     }
 
     private void error(Exception e) {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             showInfoAlert(e.getMessage());
         });
     }
-
-
-
 }
-

@@ -2,6 +2,7 @@ package manager.impl;
 
 import dto.*;
 import checkfile.STLSheet;
+import engine.Engine;
 import manager.api.SheetManager;
 import sheet.impl.CellImpl;
 import sheet.impl.SpreadSheetImpl;
@@ -19,6 +20,16 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     private SpreadSheetImpl spreadSheet;
     Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
+    private final Map<String, Engine.PermissionStatus> permissionStatusMap = new HashMap<>();
+
+    public SheetManagerImpl(String Owner) {
+        permissionStatusMap.put(Owner,Engine.PermissionStatus.OWNER);
+        this.spreadSheet = null;
+    }
+
+    public void addPermissionStatus(String user,Engine.PermissionStatus status) {
+        permissionStatusMap.put(user,status);
+    }
 
     public String getSheetSize() {
         return spreadSheet.getColumnSize() + "x" + spreadSheet.getRowSize();
@@ -26,11 +37,6 @@ public class SheetManagerImpl implements SheetManager, Serializable {
 
     public enum OperatorValue {
         OR_OPERATOR, AND_OPERATOR
-    }
-
-    public SheetManagerImpl() {
-        this.spreadSheet = null;
-
     }
 
     public String Load(InputStream inputStream) {
@@ -146,7 +152,6 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return new sheetDTO(spreadSheetCopy);
     }
 
-
     public static SheetManagerImpl resumePositionToEngine(String filePath, String fileName) throws IOException, ClassNotFoundException {
         File file = new File(filePath + "\\" + fileName.trim() + ".ser");
         if (!file.exists()) {
@@ -156,8 +161,6 @@ public class SheetManagerImpl implements SheetManager, Serializable {
             return (SheetManagerImpl) ois.readObject();
         }
     }
-
-    //-------------------------------------------------------------------------------------
 
     private String[] checkRangeParams(String params) {
         if (params == null || !params.contains("..")) {
@@ -184,8 +187,6 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     public void deleteRange(String name) {
         this.spreadSheet.deleteRange(name);
     }
-
-    //-------------------------------------------------------------------------------------
 
     public boolean containSheet() {
         return this.spreadSheet != null;

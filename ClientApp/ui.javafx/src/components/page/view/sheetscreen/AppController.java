@@ -12,7 +12,6 @@ import dto.sheetDTO;
 import http.CallerService;
 import http.HttpClientUtil;
 import javafx.application.Platform;
-import manager.impl.SheetManagerImpl;
 import expression.api.ObjType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,7 +28,6 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -43,14 +41,11 @@ import static constants.Constants.*;
 public class AppController {
 
     private ChartMaker chartMaker;
-    private SheetManagerImpl engine = new SheetManagerImpl();
     private CallerService httpCallerService;
-    private Map<String, String> quary;
+    private Map<String, String> query;
     private String currSheet;
     private Stage stage;
 
-
-    //all the components
     @FXML
     private AnchorPane titleCard;
     @FXML
@@ -58,11 +53,8 @@ public class AppController {
     @FXML
     private ScrollPane tableFunctionality;
     @FXML
-    private HBox loadFile;
-    @FXML
     private ScrollPane gridSheet;
 
-    //controllers
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
@@ -84,7 +76,6 @@ public class AppController {
         this.cellFunctionsController = cellFunctionsController;
     }
 
-
     public void setTitleCardController(TitleCardController titleCardController) {
         this.titleCardController = titleCardController;
     }
@@ -102,15 +93,15 @@ public class AppController {
             gridSheetController.setMainController(this);
             chartMaker = new ChartMaker(this);
             httpCallerService = new CallerService();
-            quary = new HashMap<>();
+            query = new HashMap<>();
         }
     }
 
     public void setLoadFile(String sheetName,  Consumer<Exception> error) {
         currSheet = sheetName;
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(quary, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(query, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
@@ -138,7 +129,6 @@ public class AppController {
         titleCard.setDisable(disable);
         cellFunctions.setDisable(disable);
         tableFunctionality.setDisable(disable);
-        loadFile.setDisable(disable);
         gridSheet.setDisable(disable);
     }
 
@@ -147,12 +137,11 @@ public class AppController {
         boardOutOfFocus();
     }
 
-
     public void CellClicked(String id) {
         outOfFocus();
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
-        httpCallerService.fetchCellAsync(quary, new Callback() {
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
+        httpCallerService.fetchCellAsync(query, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -170,9 +159,9 @@ public class AppController {
                 }
 
                 CellDataDTO cell = GSON.fromJson(response.body().string(), CellDataDTO.class);
-                quary.remove(CELL_ID);
+                query.remove(CELL_ID);
 
-                httpCallerService.fetchSheetAsync(quary, new Callback() {
+                httpCallerService.fetchSheetAsync(query, new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         Platform.runLater(() -> {
@@ -205,11 +194,10 @@ public class AppController {
         });
     }
 
-
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellToUpdate));
-        httpCallerService.changeCellAsync(quary, newOriginalValue, new Callback() {
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellToUpdate));
+        httpCallerService.changeCellAsync(query, newOriginalValue, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -229,8 +217,8 @@ public class AppController {
                         }
                     });
                 }
-                quary.remove(CELL_ID);
-                httpCallerService.fetchSheetAsync(quary, new Callback() {
+                query.remove(CELL_ID);
+                httpCallerService.fetchSheetAsync(query, new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         Platform.runLater(() -> {
@@ -270,15 +258,15 @@ public class AppController {
 
     public void backgroundColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
         String color;
         if (selectedColor != null)
             color = selectedColor.toString();
         else {
             color = null;
         }
-        httpCallerService.changeColorAsync(quary, CELL_BACKGROUND_COLOR, color, new Callback() {
+        httpCallerService.changeColorAsync(query, CELL_BACKGROUND_COLOR, color, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -301,13 +289,12 @@ public class AppController {
                 });
             }
         });
-
     }
 
     public void textColorPicked(Color selectedColor) {
         String id = cellFunctionsController.getCellIdFocused();
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
         String color;
         if (selectedColor != null)
             color = selectedColor.toString();
@@ -315,7 +302,7 @@ public class AppController {
             color = null;
         }
         try {
-            httpCallerService.changeColorAsync(quary, CELL_TEXT_COLOR, color, new Callback() {
+            httpCallerService.changeColorAsync(query, CELL_TEXT_COLOR, color, new Callback() {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Platform.runLater(() -> {
@@ -381,9 +368,9 @@ public class AppController {
         outOfFocus();
         String params = fromCell.trim() + ".." + toCell.trim();
         HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody(rangeName, params);
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.addRange(quary, rangeBody, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.addRange(query, rangeBody, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -406,11 +393,11 @@ public class AppController {
 
     public void deleteRangeConfirmedClicked(String rangeToDelete) {
         outOfFocus();
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
+        query.clear();
+        query.put(SHEET_ID, currSheet);
         HttpClientUtil.RangeBody range = new HttpClientUtil.RangeBody(rangeToDelete, "");
 
-        httpCallerService.deleteRange(quary, range, new Callback() {
+        httpCallerService.deleteRange(query, range, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
@@ -434,9 +421,9 @@ public class AppController {
     public void showRangeConfirmedClicked(String selectedRangeName) {
         outOfFocus();
         Set<String> labelNamesToFocus = new HashSet<>();
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(quary, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(query, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
@@ -466,9 +453,9 @@ public class AppController {
     }
 
     public void getVersionClicked() {
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(quary, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(query, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -498,9 +485,9 @@ public class AppController {
     }
 
     public void confirmVersionClicked(Integer selectedVersion) {
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetsAsync(quary, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetsAsync(query, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
@@ -533,10 +520,10 @@ public class AppController {
 
     public void noNameRangeSelected(String fromCell, String toCell, TableFunctionalityController.ConfirmType type) {
         String params = fromCell.trim() + ".." + toCell.trim();
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
+        query.clear();
+        query.put(SHEET_ID, currSheet);
         HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody("", params);
-        httpCallerService.getNoNameRange(quary, rangeBody, null, NO_NAME_RANGE, new Callback() {
+        httpCallerService.getNoNameRange(query, rangeBody, null, NO_NAME_RANGE, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
@@ -575,10 +562,10 @@ public class AppController {
 
     public void filterParamsConfirmed(String fromCell, String
             toCell, Map<String, Set<String>> filterBy, String selectedFilterType) {
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
+        query.clear();
+        query.put(SHEET_ID, currSheet);
         HttpClientUtil.FilterObj filterObj = new HttpClientUtil.FilterObj(fromCell.trim() + ".." + toCell.trim(), filterBy, selectedFilterType);
-        httpCallerService.filterSheet(quary, filterObj, new Callback() {
+        httpCallerService.filterSheet(query, filterObj, new Callback() {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -611,9 +598,9 @@ public class AppController {
 
     public void sortParamsConfirmed(String fromCell, String toCell, List<String> sortBy) {
         HttpClientUtil.SortObj sortObj = new HttpClientUtil.SortObj(fromCell.trim() + ".." + toCell.trim(), sortBy);
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.sortSheet(quary, sortObj, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.sortSheet(query, sortObj, new Callback() {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -678,9 +665,9 @@ public class AppController {
     }
 
     public void dynamicChangeButtonClicked() {
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellFunctionsController.getCellIdFocused()));
-        httpCallerService.saveCellValueForDynamicChange(quary, new Callback() {
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellFunctionsController.getCellIdFocused()));
+        httpCallerService.saveCellValueForDynamicChange(query, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
@@ -709,10 +696,10 @@ public class AppController {
     }
 
     public void updateCellDynamically(String cellId, String newOriginalValue) {
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellId));
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellId));
 
-        httpCallerService.startDynamicChange(quary, newOriginalValue, new Callback() {
+        httpCallerService.startDynamicChange(query, newOriginalValue, new Callback() {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -746,9 +733,9 @@ public class AppController {
     public void exitDynamicChangeClicked() {
         disableComponents(false);
         cellFunctionsController.setDynamicFuncDisable(false);
-        quary.clear();
-        quary.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellFunctionsController.getCellIdFocused()));
-        httpCallerService.stopDynamicChange(quary, new Callback() {
+        query.clear();
+        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellFunctionsController.getCellIdFocused()));
+        httpCallerService.stopDynamicChange(query, new Callback() {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
@@ -778,9 +765,9 @@ public class AppController {
     }
 
     public void chartButtonClicked() {
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(quary, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(query, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -807,10 +794,10 @@ public class AppController {
     }
 
     public void confirmChartClicked(String chartType, String paramsX, String paramsY) {
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
+        query.clear();
+        query.put(SHEET_ID, currSheet);
         HttpClientUtil.Ranges ranges = new HttpClientUtil.Ranges(paramsX, paramsY);
-        httpCallerService.getNoNameRange(quary, null, ranges, NO_NAME_RANGES, new Callback() {
+        httpCallerService.getNoNameRange(query, null, ranges, NO_NAME_RANGES, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -854,9 +841,9 @@ public class AppController {
     }
 
     public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) throws IOException {
-        quary.clear();
-        quary.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(quary, new Callback() {
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        httpCallerService.fetchSheetAsync(query, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 tableFunctionalityController.showInfoAlert(e.getMessage());
@@ -909,11 +896,10 @@ public class AppController {
             Scene scene = new Scene(root, 1120, 800);
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - Main Screen");
-
             MainScreenController controller = loader.getController();
             controller.setStage(stage);
-
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

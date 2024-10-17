@@ -41,7 +41,7 @@ public class LoadFileServlet extends HttpServlet {
         synchronized (this) {
             try {
                 Engine engine = (Engine) getServletContext().getAttribute(ENGINE);
-                SheetManagerImpl sheetManager = new SheetManagerImpl();
+                SheetManagerImpl sheetManager = new SheetManagerImpl(username);
                 InputStream fileInputStream = part.getInputStream();
                 String sheetName = sheetManager.Load(fileInputStream);
                 engine.addSheetManager(username, sheetManager);
