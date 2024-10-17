@@ -4,9 +4,9 @@ public class PermissionData {
 
     private final String userName;
     private final String permissionType;
-    private final boolean approvedPermission;
+    private final String approvedPermission;
 
-    public PermissionData(String Name, String Permission, boolean approvedPermission) {
+    public PermissionData(String Name, String Permission, String approvedPermission) {
         this.userName = Name;
         this.permissionType = Permission;
         this.approvedPermission = approvedPermission;
@@ -21,9 +21,6 @@ public class PermissionData {
     }
 
     public String getApprovedPermission() {
-        if(approvedPermission) {
-            return "Yes";
-        }
-        else return "No";
+        return approvedPermission;
     }
 }

@@ -33,17 +33,17 @@ public class PermissionServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
                 SheetManagerImpl sheetManager = engine.getSheetManager(owner, sheetName);
-                Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Boolean>> permissionStatusMap =
+                Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap =
                         sheetManager.getPermissionStatusMap();
                 List<PermissionData> list = new ArrayList<>();
-                for (Map.Entry<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Boolean>> entry : permissionStatusMap.entrySet()) {
+                for (Map.Entry<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> entry : permissionStatusMap.entrySet()) {
                     String user = entry.getKey();
                     String permission = entry.getValue().getKey().toString();
-                    boolean approved = entry.getValue().getValue();
+                    String approved = entry.getValue().getValue().toString();
                     PermissionData dataToAdd = new PermissionData(user, permission, approved);
                     list.add(dataToAdd);
-                    ResponseUtils.writeSuccessResponse(response, list);
                 }
+                ResponseUtils.writeSuccessResponse(response, list);
 
             } catch (Exception e) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

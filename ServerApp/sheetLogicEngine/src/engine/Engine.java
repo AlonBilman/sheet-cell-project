@@ -15,13 +15,29 @@ public class Engine {
     private final Map<String, Set<SheetManagerImpl>> userMap;
     private final Set<String> sheetNames;
 
-    public enum PermissionStatus {
+    public enum ApprovalStatus {
         PENDING {
             @Override
             public String toString() {
                 return "Pending approval";
             }
         },
+        YES {
+            @Override
+            public String toString() {
+                return "Yes";
+            }
+        },
+        NO {
+            @Override
+            public String toString() {
+                return "No";
+            }
+        }
+    }
+
+    public enum PermissionStatus {
+
         OWNER {
             @Override
             public String toString() {
