@@ -12,11 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.SubScene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import okhttp3.Call;
@@ -36,6 +36,11 @@ import static constants.Constants.REFRESH_RATE;
 public class MainScreenController {
 
     public Stage stage;
+    @FXML
+    public static AnchorPane anchorPane;
+    @FXML
+    public SubScene permissionSubScene;
+    public Label sheetNames;
 
     @FXML
     private TableView<PermissionData> SheetPermissionTable;
@@ -81,6 +86,14 @@ public class MainScreenController {
 
     CallerService httpCallerService;
 
+    public void setTheme(String value) {
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(
+                Objects.requireNonNull(MainScreenController.class.getResource("components/page/view/mainscreen/" + value + ".css"))
+                        .toExternalForm()
+        );
+    }
+
     @FXML
     public void initialize() {
         // Bind columns to the SheetData properties
@@ -125,10 +138,39 @@ public class MainScreenController {
         initAppScreen(SheetName);
     }
 
+    @FXML
     public void RequestPermissionListener(ActionEvent actionEvent) {
-        //get user that requested
-        //get permission that he asked for
-        //add it to the specific sheet's table view
+        // Show the permission subscene
+        permissionSubScene.setVisible(true);
+        sheetNames.setText(SheetName);
+    }
+
+    // Handle Yes button click
+    @FXML
+    public void onYesPermissionClicked(ActionEvent actionEvent) {
+        // Handle 'Yes' response (send the permission request)
+        handlePermissionRequest();
+        // Hide the subscene
+        permissionSubScene.setVisible(false);
+    }
+
+    // Handle No button click
+    @FXML
+    public void onNoPermissionClicked(ActionEvent actionEvent) {
+        // Handle 'No' response (deny the permission)
+        permissionSubScene.setVisible(false);
+    }
+
+    // Handle Cancel button click
+    @FXML
+    public void onOkayPermissionClicked(ActionEvent actionEvent) {
+        // Hide the subscene
+        permissionSubScene.setVisible(false);
+    }
+
+    private void handlePermissionRequest() {
+        // Implement the logic to request permission here
+        System.out.println("Permission request sent for sheet: " + SheetName + " by user: " + username);
     }
 
     public void AcceptPermissionListener(ActionEvent actionEvent) {
@@ -250,4 +292,5 @@ public class MainScreenController {
             showInfoAlert(e.getMessage());
         });
     }
+
 }

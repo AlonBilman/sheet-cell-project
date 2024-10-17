@@ -37,7 +37,7 @@ public class Main extends Application {
         loader.setLocation(loginFXML);
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, 500, 350);
+        Scene scene = new Scene(root, 510, 350);
         primaryStage.setTitle("Sheet Cell - Login");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -59,7 +59,7 @@ public class Main extends Application {
             URL mainFXML = getClass().getResource("../components/page/view/mainscreen/mainScreen.fxml");
             loader.setLocation(mainFXML);
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1120, 800);
+            Scene scene = new Scene(root, 610, 410);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Sheet Cell - Main Screen");
             primaryStage.centerOnScreen();
