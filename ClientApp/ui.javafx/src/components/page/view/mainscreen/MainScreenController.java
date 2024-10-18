@@ -99,12 +99,20 @@ public class MainScreenController {
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("UserName"));
         permissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("PermissionType"));
         permissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("ApprovedPermission"));
-        // Add listener to get selected row's sheet name
+        // Initially disable the ViewSheetButton
+        disableButtons(true);
+
+        // Add listener to get selected row's sheet name and enable/disable the ViewSheetButton
         SheetTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
+                // Enable the button when a row is selected
+                disableButtons(false);
                 sheetName = newValue.getSheetName();
                 owner = newValue.getUserUploaded();
                 updatePermissionList(sheetName, owner);
+            } else {
+                // Disable the button when the selection is cleared
+                disableButtons(true);
             }
         });
 
@@ -115,11 +123,20 @@ public class MainScreenController {
                 permissionApproved = newValue.getApprovedPermission();
             }
         });
-
+        if(SheetTable.getSelectionModel().getSelectedItem() != null) {
+            ViewSheetButton.setDisable(true);
+        }
         httpCallerService = new CallerService();
         autoUpdate = new SimpleBooleanProperty(true);
         query = new HashMap<>();
         startListRefresher();
+    }
+
+    private void disableButtons(boolean toDisable) {
+        ViewSheetButton.setDisable(toDisable);
+        DenyPermissionButton.setDisable(toDisable);
+        AcceptPermissionButton.setDisable(toDisable);
+        RequestPermissionButton.setDisable(toDisable);
     }
 
     private void updatePermissionList(String sheetName, String owner) {
@@ -162,13 +179,17 @@ public class MainScreenController {
         alert.showAndWait();
     }
 
+
     public void ViewSheetListener(ActionEvent actionEvent) {
+        SheetTable.getSelectionModel().clearSelection();
         initAppScreen(sheetName);
     }
 
     @FXML
     public void RequestPermissionListener() {
-
+       if(SheetTable.getSelectionModel().getSelectedItem() != null) {
+           SheetTable.getSelectionModel().clearSelection();
+       }
         if (sheetName != null) {
             showPermissionPopup();
             if (permissionPicked != null) {
