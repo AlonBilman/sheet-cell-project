@@ -15,7 +15,7 @@ import static http.HttpClientUtil.shutdown;
 public class Main extends Application {
 
     private Stage primaryStage;
-    private MainScreenController mainScreenController; // Reference to the MainScreenController
+    private MainScreenController mainScreenController; //reference to the MainScreenController
 
     public static void main(String[] args) {
         launch(args);
@@ -42,7 +42,9 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         LoginController loginController = loader.getController();
-        loginController.setLoginListener(this::showMainApp);
+        loginController.setLoginListener(()->{
+            showMainApp(loginController.getUserName());
+        });
     }
 
     private void confirmExit() {
@@ -53,8 +55,9 @@ public class Main extends Application {
         shutdown();
     }
 
-    private void showMainApp() {
+    private void showMainApp(String userName) {
         try {
+            //I need to know the name picked inside the login. how can I do it?
             FXMLLoader loader = new FXMLLoader();
             URL mainFXML = getClass().getResource("../components/page/view/mainscreen/mainScreen.fxml");
             loader.setLocation(mainFXML);
@@ -65,6 +68,7 @@ public class Main extends Application {
             primaryStage.centerOnScreen();
             mainScreenController = loader.getController();
             mainScreenController.setStage(primaryStage);
+            mainScreenController.setUserName(userName);
             primaryStage.show();
 
         } catch (Exception e) {

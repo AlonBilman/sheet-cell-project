@@ -131,5 +131,8 @@ public class LoginController {
         });
     }
 
+    public String getUserName() {
+        return usernameField.getText().trim();
+    }
 }
 

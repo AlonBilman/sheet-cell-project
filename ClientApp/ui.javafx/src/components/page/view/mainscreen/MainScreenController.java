@@ -75,18 +75,18 @@ public class MainScreenController {
     @FXML
     public Button AcceptPermissionButton;
     @FXML
-    public Button RequestPermissionButton;
-    public String username;
-    public String sheetName;
-    public String tableUsername;
-    public String owner;
-    public String permissionName;
-    public String permissionPicked;
-    public String permissionApproved;
-    public Timer timer;
-    public UsersRefresher usersRefresher;
-    public BooleanProperty autoUpdate;
-    public Map<String, String> query;
+    private Button RequestPermissionButton;
+    private String username;
+    private String sheetName;
+    private String tableUsername;
+    private String owner;
+    private String permissionName;
+    private String permissionPicked;
+    private String permissionApproved;
+    private Timer timer;
+    private UsersRefresher usersRefresher;
+    private BooleanProperty autoUpdate;
+    private Map<String, String> query;
     private CallerService httpCallerService;
 
     @FXML
@@ -194,7 +194,7 @@ public class MainScreenController {
         if (sheetName != null) {
             showPermissionPopup();
             if (permissionPicked != null) {
-                showTimedNotification(sheetName, 5);
+               // showTimedNotification(sheetName, 5);
             } else return;
         }
         query.clear();
@@ -369,6 +369,14 @@ public class MainScreenController {
             AppController appController = loader.getController();
             appController.setStage(stage);
             appController.setLoadFile(name, this::error);
+            ObservableList<PermissionData> permissionDataList = SheetPermissionTable.getItems();
+            boolean hasReaderPermission = permissionDataList.stream()
+                    .anyMatch(permission -> permission.getUserName().equalsIgnoreCase(username) &&
+                            "reader".equalsIgnoreCase(permission.getPermissionType()));
+            if(hasReaderPermission) {
+                appController.setReaderAccess();
+            }
+            //anything else would be writer or owner...
             stage.show();
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
@@ -414,13 +422,17 @@ public class MainScreenController {
         popupStage.showAndWait();
     }
 
-    public void showTimedNotification(String sheetName, int durationInSeconds) {
-        // Set the message and show the label
-        sheetNames.setText(sheetName);
-        permissionSubScene.setVisible(true);
+//    public void showTimedNotification(String sheetName, int durationInSeconds) {
+//        // Set the message and show the label
+//        sheetNames.setText(sheetName);
+//        permissionSubScene.setVisible(true);
+//
+//        // Hide the notification after the specified duration
+//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(durationInSeconds), evt -> permissionSubScene.setVisible(false)));
+//        timeline.play();
+//    }
 
-        // Hide the notification after the specified duration
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(durationInSeconds), evt -> permissionSubScene.setVisible(false)));
-        timeline.play();
+    public void setUserName(String userName) {
+        this.username = userName;
     }
 }
