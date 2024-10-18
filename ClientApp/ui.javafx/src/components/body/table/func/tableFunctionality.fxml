@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -9,52 +8,52 @@
       <VBox fx:id="tableFuncVBox" alignment="TOP_CENTER" spacing="10.0">
          <children>
             <!-- Table controls in a collapsible pane -->
-            <TitledPane text="Table Controls" expanded="false">
+            <TitledPane expanded="false" text="Table Controls">
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Column Width" underline="true"/>
-                        <Button fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Row Height" underline="true"/>
-                        <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="40.0" prefWidth="200.0" text="Alignment Set" underline="true"/>
-                     </children>
-                  </VBox>
-               </content>
-            </TitledPane>
-
-            <!-- Cell styling controls in a collapsible pane -->
-            <TitledPane text="Cell Styling Controls" expanded="false">
-               <content>
-                  <VBox alignment="CENTER" spacing="10.0">
-                     <children>
-                        <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell Background Color"/>
-                        <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell Text Color" underline="true"/>
-                        <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#resetCellStyleListener" prefHeight="40.0" prefWidth="200.0" text="Reset Style" textAlignment="CENTER" underline="true"/>
+                        <Button fx:id="setColButton" disable="true" mnemonicParsing="false" onAction="#setColActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Column Width" underline="true" />
+                        <Button fx:id="setRowButton" disable="true" mnemonicParsing="false" onAction="#setRowActionListener" prefHeight="40.0" prefWidth="200.0" text="Set Row Height" underline="true" />
+                        <Button fx:id="alignmentSetButton" disable="true" mnemonicParsing="false" onAction="#alignmentSetListener" prefHeight="40.0" prefWidth="200.0" text="Alignment Set" underline="true" />
                      </children>
                   </VBox>
                </content>
             </TitledPane>
 
             <!-- Sort, Filter, and Chart controls in a collapsible pane -->
-            <TitledPane text="Sort, Filter, and Chart" expanded="false">
+            <TitledPane expanded="false" text="Sort, Filter, and Chart">
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="filterButton" disable="true" mnemonicParsing="false" onAction="#filterButtonListener" prefHeight="40.0" prefWidth="200.0" text="Filter"/>
-                        <Button fx:id="sortButton" disable="true" mnemonicParsing="false" onAction="#sortButtonListener" prefHeight="40.0" prefWidth="200.0" text="Sort"/>
-                        <Button fx:id="createChartButton" disable="true" mnemonicParsing="false" onAction="#createChartButtonListener" prefHeight="40.0" prefWidth="200.0" text="Create Chart"/>
+                        <Button fx:id="filterButton" disable="true" mnemonicParsing="false" onAction="#filterButtonListener" prefHeight="40.0" prefWidth="200.0" text="Filter" />
+                        <Button fx:id="sortButton" disable="true" mnemonicParsing="false" onAction="#sortButtonListener" prefHeight="40.0" prefWidth="200.0" text="Sort" />
+                        <Button fx:id="createChartButton" disable="true" mnemonicParsing="false" onAction="#createChartButtonListener" prefHeight="40.0" prefWidth="200.0" text="Create Chart" />
                      </children>
                   </VBox>
                </content>
             </TitledPane>
 
             <!-- Range controls in a collapsible pane -->
-            <TitledPane text="Range Controls" expanded="false">
+            <TitledPane expanded="false" text="Range Controls">
                <content>
                   <VBox alignment="CENTER" spacing="10.0">
                      <children>
-                        <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#addNewRangeListener" prefHeight="40.0" prefWidth="200.0" text="Add Range Set"/>
-                        <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#deleteExistingRangeListener" prefHeight="40.0" prefWidth="200.0" text="Delete Range"/>
-                        <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#viewExistingRangeListener" prefHeight="40.0" prefWidth="200.0" text="View Range"/>
+                        <Button fx:id="viewExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#viewExistingRangeListener" prefHeight="40.0" prefWidth="200.0" text="View Range" />
+                        <Button fx:id="addNewRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#addNewRangeListener" prefHeight="40.0" prefWidth="200.0" text="Add Range Set" />
+                        <Button fx:id="deleteExistingRangeButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#deleteExistingRangeListener" prefHeight="40.0" prefWidth="200.0" text="Delete Range" />
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
+
+            <!-- Cell styling controls in a collapsible pane -->
+            <TitledPane fx:id="cellStylingControl" expanded="false" text="Cell Styling Controls">
+               <content>
+                  <VBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <Button fx:id="cellBackgroundPick" disable="true" mnemonicParsing="false" onAction="#cellBackgroundColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell Background Color" />
+                        <Button fx:id="cellTextPick" disable="true" mnemonicParsing="false" onAction="#cellTextColorPick" prefHeight="40.0" prefWidth="200.0" text="Cell Text Color" underline="true" />
+                        <Button fx:id="resetButton" disable="true" mnemonicParsing="false" onAction="#resetCellStyleListener" prefHeight="40.0" prefWidth="200.0" text="Reset Style" textAlignment="CENTER" underline="true" />
                      </children>
                   </VBox>
                </content>

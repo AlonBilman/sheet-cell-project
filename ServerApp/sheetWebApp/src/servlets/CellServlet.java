@@ -80,6 +80,9 @@ public class CellServlet extends HttpServlet {
                     return;
 
                 SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                if(!sheetManager.havePermissionToEdit(username))
+                    throw new IOException("Permission denied");
+
                 String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
                 sheetManager.updateCell(cellId, newOriginalValue, false);
                 ResponseUtils.writeSuccessResponse(response, null);

@@ -42,6 +42,8 @@ public class CellFunctionsController {
     @FXML
     public Label errorLabelText;
     @FXML
+    public Label readOnlyLabel;
+    @FXML
     private VBox inputDialog;
     @FXML
     private Label cellIdProperty;
@@ -66,6 +68,13 @@ public class CellFunctionsController {
 
     public void setMainController(AppController mainController) {
         this.appController = mainController;
+    }
+
+    public void setReaderAccess() {
+        updateCellButton.setVisible(false);
+        newOriginalValText.setVisible(false);
+        readOnlyLabel.setVisible(true);
+
     }
 
     public void showCell(CellDataDTO cell) {
@@ -308,4 +317,6 @@ public class CellFunctionsController {
     public void dynamicCancelButtonListener() {
         appController.dynamicCancelClicked();
     }
+
+
 }

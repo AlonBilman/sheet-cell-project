@@ -76,9 +76,9 @@ public class MainScreenController {
     public Button AcceptPermissionButton;
     @FXML
     public Button RequestPermissionButton;
-
-    public String sheetName;
     public String username;
+    public String sheetName;
+    public String tableUsername;
     public String owner;
     public String permissionName;
     public String permissionPicked;
@@ -119,7 +119,7 @@ public class MainScreenController {
         SheetPermissionTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 permissionName = newValue.getPermissionType();
-                username = newValue.getUserName();
+                tableUsername = newValue.getUserName();
                 permissionApproved = newValue.getApprovedPermission();
             }
         });
@@ -181,6 +181,7 @@ public class MainScreenController {
 
 
     public void ViewSheetListener(ActionEvent actionEvent) {
+
         SheetTable.getSelectionModel().clearSelection();
         initAppScreen(sheetName);
     }
@@ -231,7 +232,7 @@ public class MainScreenController {
     public void answerPermissionRequest(String answer) {
         query.clear();
         query.put(SHEET_ID, sheetName);
-        query.put(REQUESTER, username);
+        query.put(REQUESTER, tableUsername);
         httpCallerService.acceptOrDenyPermission(query, answer, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

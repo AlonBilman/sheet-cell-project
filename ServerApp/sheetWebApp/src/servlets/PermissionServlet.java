@@ -139,13 +139,24 @@ public class PermissionServlet extends HttpServlet {
                 }
 
                 SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetName);
+
+                if (!sheetManager.isOwner(username)) {
+                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Only the owner can approve or deny permission requests.");
+                    return;
+                }
+
                 Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap =
                         sheetManager.getPermissionStatusMap();
 
                 AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> currentStatus = permissionStatusMap.get(requester);
 
                 if (currentStatus == null) {
-                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "No permission request found for user: " + username);
+                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "No permission request found for user: " + requester);
+                    return;
+                }
+                //if it's not pending...what are you approving?
+                if (currentStatus.getValue() != Engine.ApprovalStatus.PENDING) {
+                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Permission request is not pending.");
                     return;
                 }
 
@@ -154,16 +165,16 @@ public class PermissionServlet extends HttpServlet {
                         ? Engine.ApprovalStatus.YES
                         : Engine.ApprovalStatus.NO;
 
-                //update the approval status directly using the entry
+                //update the approval status (new entry)
                 AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> approvalStatusEntry =
                         new AbstractMap.SimpleEntry<>(permissionStatus, approvalStatus);
                 permissionStatusMap.put(requester, approvalStatusEntry);
 
                 if (approvalStatus == Engine.ApprovalStatus.YES) {
                     engine.addSheetManager(requester, sheetManager, false);
-                    ResponseUtils.writeSuccessResponse(response, "Permission approved for user: " + username);
+                    ResponseUtils.writeSuccessResponse(response, "Permission approved for user: " + requester);
                 } else {
-                    ResponseUtils.writeSuccessResponse(response, "Permission denied for user: " + username);
+                    ResponseUtils.writeSuccessResponse(response, "Permission denied for user: " + requester);
                 }
 
             } catch (Exception e) {

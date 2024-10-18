@@ -45,6 +45,14 @@ public class AppController {
     private Map<String, String> query;
     private String currSheet;
     private Stage stage;
+    @FXML
+    private TableFunctionalityController tableFunctionalityController;
+    @FXML
+    private GridSheetController gridSheetController;
+    @FXML
+    private CellFunctionsController cellFunctionsController;
+    @FXML
+    private TitleCardController titleCardController;
 
     @FXML
     private AnchorPane titleCard;
@@ -55,14 +63,6 @@ public class AppController {
     @FXML
     private ScrollPane gridSheet;
 
-    @FXML
-    private TableFunctionalityController tableFunctionalityController;
-    @FXML
-    private GridSheetController gridSheetController;
-    @FXML
-    private CellFunctionsController cellFunctionsController;
-    @FXML
-    private TitleCardController titleCardController;
 
     public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
         this.tableFunctionalityController = tableFunctionalityController;
@@ -97,7 +97,13 @@ public class AppController {
         }
     }
 
-    public void setLoadFile(String sheetName,  Consumer<Exception> error) {
+    public void setReaderAccess() {
+        cellFunctionsController.setReaderAccess();
+        tableFunctionalityController.setReaderAccess();
+
+    }
+
+    public void setLoadFile(String sheetName, Consumer<Exception> error) {
         currSheet = sheetName;
         query.clear();
         query.put(SHEET_ID, currSheet);
@@ -271,22 +277,26 @@ public class AppController {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
                     cellFunctionsController.showInfoAlert(e.getMessage());
+                    outOfFocus();
                 });
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                    if (errorResponse != null)
-                        cellFunctionsController.showInfoAlert(errorResponse.getError());
-                    else
-                        cellFunctionsController.showInfoAlert("Error updating color.");
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    Platform.runLater(() -> {
+                        if (color != null)
+                            gridSheetController.changeBackgroundColor(id, selectedColor);
+                        outOfFocus();
+
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        cellFunctionsController.showInfoAlert(e.getMessage());
+                        outOfFocus();
+                    });
                 }
-                Platform.runLater(() -> {
-                    if (color != null)
-                        gridSheetController.changeBackgroundColor(id, selectedColor);
-                });
             }
         });
     }
@@ -301,33 +311,33 @@ public class AppController {
         else {
             color = null;
         }
-        try {
-            httpCallerService.changeColorAsync(query, CELL_TEXT_COLOR, color, new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> {
-                        cellFunctionsController.showInfoAlert(e.getMessage());
-                    });
-                }
+        httpCallerService.changeColorAsync(query, CELL_TEXT_COLOR, color, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    cellFunctionsController.showInfoAlert(e.getMessage());
+                    outOfFocus();
+                });
+            }
 
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (!response.isSuccessful()) {
-                        HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                        if (errorResponse != null)
-                            cellFunctionsController.showInfoAlert(errorResponse.getError());
-                        else
-                            cellFunctionsController.showInfoAlert("Error updating color.");
-                    }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
                         if (color != null)
                             gridSheetController.changeTextColor(id, selectedColor);
+                        outOfFocus();
+                    });
+
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        cellFunctionsController.showInfoAlert(e.getMessage());
+                        outOfFocus();
                     });
                 }
-            });
-        } catch (Exception e) {
-            cellFunctionsController.showInfoAlert(e.getMessage());
-        }
+            }
+        });
     }
 
     public void resetStyleClicked() {

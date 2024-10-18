@@ -5,18 +5,22 @@
 <?import javafx.scene.text.*?>
 
 <?import javafx.scene.SubScene?>
-<AnchorPane fx:id="anchorPane" prefHeight="43.0" prefWidth="1110.0" stylesheets="@titleCardDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
-   <children>
-      <!-- "Sheet Cell" text with specific fx:id -->
-      <Text fx:id="sheetCellText" layoutX="460.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sheet Cell" textAlignment="CENTER" underline="true" wrappingWidth="190.0">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </Text>
-      <!-- ChoiceBox for animations -->
-      <ChoiceBox fx:id="animationsChoiceBox" layoutX="674.0" prefHeight="50.0" prefWidth="240.0" />
-      <!-- ChoiceBox for style -->
-      <ChoiceBox fx:id="styleChoiceBox" layoutX="197.0" layoutY="2.0" prefHeight="58.0" prefWidth="240.0" />
-      <Button fx:id="backToMainScreenButton" layoutX="936.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMainScreenButtonListener" text="Back to Main-&gt;" />
-   </children>
+<AnchorPane fx:id="anchorPane" prefHeight="43.0" prefWidth="1110.0" stylesheets="@titleCardDefault.css"
+            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="components.header.title.TitleCardController">
+    <children>
+        <!-- "Sheet Cell" text with specific fx:id -->
+        <Text fx:id="sheetCellText" layoutX="460.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Sheet Cell" textAlignment="CENTER" underline="true" wrappingWidth="190.0">
+            <font>
+                <Font size="25.0"/>
+            </font>
+        </Text>
+        <!-- ChoiceBox for animations -->
+        <ChoiceBox fx:id="animationsChoiceBox" layoutX="674.0" prefHeight="50.0" prefWidth="240.0"/>
+        <!-- ChoiceBox for style -->
+        <ChoiceBox fx:id="styleChoiceBox" layoutX="197.0" layoutY="2.0" prefHeight="58.0" prefWidth="240.0"/>
+        <Button fx:id="backToMainScreenButton" layoutX="936.0" layoutY="14.0" mnemonicParsing="false"
+                onAction="#backToMainScreenButtonListener" text="Back to Main-&gt;"/>
+    </children>
 </AnchorPane>

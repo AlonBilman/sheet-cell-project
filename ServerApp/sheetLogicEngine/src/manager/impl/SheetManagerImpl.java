@@ -27,6 +27,18 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         this.spreadSheet = null;
     }
 
+    public boolean havePermissionToEdit(String username) {
+        AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> permissionEntry = permissionStatusMap.get(username);
+
+        if (permissionEntry != null) {
+            return (Engine.PermissionStatus.WRITER.equals(permissionEntry.getKey()) ||
+                    Engine.PermissionStatus.OWNER.equals(permissionEntry.getKey())) &&
+                    Engine.ApprovalStatus.YES.equals(permissionEntry.getValue());
+        }
+        return false;
+    }
+
+
     private AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> createPermissionEntry(Engine.PermissionStatus status, Engine.ApprovalStatus isApproved) {
         return new AbstractMap.SimpleEntry<>(status, isApproved);
     }

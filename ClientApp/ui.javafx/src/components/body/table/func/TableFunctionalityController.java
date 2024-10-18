@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 public class TableFunctionalityController {
 
+
     private Boolean activeButtonsWhenLoadingFile;
     private Boolean activeButtonsWhenClickingCell;
     private Boolean activeButtonsWhenClickingRow;
@@ -34,6 +35,8 @@ public class TableFunctionalityController {
 
     private AppController appController;
 
+    @FXML
+    public TitledPane cellStylingControl;
     @FXML
     public ScrollPane scrollPane;
     @FXML
@@ -63,6 +66,13 @@ public class TableFunctionalityController {
 
     private String cssLoad = "Default";
 
+    public void setReaderAccess() {
+        cellStylingControl.setVisible(false);
+        addNewRangeButton.setVisible(false);
+        addNewRangeButton.setMaxSize(0,0);
+        deleteExistingRangeButton.setVisible(false);
+        deleteExistingRangeButton.setMaxSize(0,0);
+    }
 
     public enum ButtonState {
         LOADING_FILE,
