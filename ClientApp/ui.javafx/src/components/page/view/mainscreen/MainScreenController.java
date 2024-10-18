@@ -4,6 +4,8 @@ import com.google.gson.reflect.TypeToken;
 import components.page.view.sheetscreen.AppController;
 import http.CallerService;
 import http.HttpClientUtil;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -11,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -18,8 +21,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -36,7 +44,14 @@ import java.util.Timer;
 import static constants.Constants.*;
 
 public class MainScreenController {
+
     public Stage stage;
+    @FXML
+    public static AnchorPane anchorPane;
+    @FXML
+    public SubScene permissionSubScene;
+    public Label sheetNames;
+
     @FXML
     private TableView<PermissionData> SheetPermissionTable;
     @FXML
@@ -53,14 +68,19 @@ public class MainScreenController {
     private TableColumn<AppUser, String> sheetNameColumn;
     @FXML
     private TableColumn<AppUser, String> sheetSizeColumn;
+
     @FXML
     public Button LoadSheetButton;
+
     @FXML
     public Button ViewSheetButton;
+
     @FXML
     public Button DenyPermissionButton;
+
     @FXML
     public Button AcceptPermissionButton;
+
     @FXML
     public Button RequestPermissionButton;
 
@@ -153,7 +173,16 @@ public class MainScreenController {
         initAppScreen(sheetName);
     }
 
+    @FXML
     public void RequestPermissionListener(ActionEvent actionEvent) {
+
+  // Show the permission subscene
+        if (SheetName != null) {
+            showPermissionPopup();
+            if (permissionName != null) {
+                showTimedNotification(SheetName,5);
+            }
+        }
         query.clear();
         query.put(SHEET_ID, sheetName);
         query.put(OWNER, owner);
@@ -334,5 +363,60 @@ public class MainScreenController {
         Platform.runLater(() -> {
             showInfoAlert(e.getMessage());
         });
+    }
+
+    private void showPermissionPopup() {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+
+        // Create radio buttons for permissions
+        ToggleGroup permissionGroup = new ToggleGroup();
+        RadioButton ownerButton = new RadioButton("OWNER");
+        RadioButton editorButton = new RadioButton("EDITOR");
+        RadioButton readerButton = new RadioButton("READER");
+        RadioButton noneButton = new RadioButton("NONE");
+
+
+        ownerButton.setToggleGroup(permissionGroup);
+        editorButton.setToggleGroup(permissionGroup);
+        readerButton.setToggleGroup(permissionGroup);
+        noneButton.setToggleGroup(permissionGroup);
+
+        // Default selection (optional)
+        noneButton.setSelected(true);
+
+        // Create a confirm button
+        Button confirmButton = new Button("Confirm");
+
+        // Handle confirm button action
+        confirmButton.setOnAction((ActionEvent event) -> {
+            permissionName = null;
+            RadioButton selectedRadioButton = (RadioButton) permissionGroup.getSelectedToggle();
+            String selectedPermission = selectedRadioButton.getText();
+            permissionName = selectedPermission;
+            System.out.println("Selected Permission: " + selectedPermission);
+
+            // Here you can return or process the selectedPermission as needed
+            popupStage.close(); // Close popup window
+        });
+
+        // Arrange the layout
+        VBox layout = new VBox(10, readerButton, ownerButton, editorButton, noneButton, confirmButton);
+        layout.setPadding(new Insets(20));
+        Scene popupScene = new Scene(layout, 300, 200);
+
+        popupStage.setTitle("Select Permission");
+        popupStage.setScene(popupScene);
+        popupStage.showAndWait();
+    }
+
+    public void showTimedNotification(String Sheetname, int durationInSeconds) {
+        // Set the message and show the label
+        sheetNames.setText(Sheetname);
+       permissionSubScene.setVisible(true);
+
+        // Hide the notification after the specified duration
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(durationInSeconds), evt -> permissionSubScene.setVisible(false)));
+        timeline.play();
     }
 }

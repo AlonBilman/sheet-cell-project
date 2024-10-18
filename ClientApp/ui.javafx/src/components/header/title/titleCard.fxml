@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import javafx.scene.SubScene?>
 <AnchorPane fx:id="anchorPane" prefHeight="43.0" prefWidth="1110.0" stylesheets="@titleCardDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
    <children>
       <!-- "Sheet Cell" text with specific fx:id -->
