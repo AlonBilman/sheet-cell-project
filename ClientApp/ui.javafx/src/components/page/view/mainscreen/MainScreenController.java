@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -150,7 +151,6 @@ public class MainScreenController {
                 });
             }
         });
-
     }
 
     public void showInfoAlert(String problem) {
@@ -173,7 +173,7 @@ public class MainScreenController {
             showPermissionPopup();
             if (permissionPicked != null) {
                 showTimedNotification(sheetName, 5);
-            }
+            } else return;
         }
         query.clear();
         query.put(SHEET_ID, sheetName);
@@ -290,9 +290,12 @@ public class MainScreenController {
     private void updateUsersList(List<AppUser> users) {
         Platform.runLater(() -> {
             ObservableList<AppUser> currentData = SheetTable.getItems();
-            currentData.clear();
-            currentData.addAll(users);
-            SheetTable.refresh();
+            ObservableList<AppUser> newData = FXCollections.observableArrayList(users);
+            if (!currentData.equals(newData)) {
+                currentData.clear();
+                currentData.addAll(newData);
+                SheetTable.refresh();
+            }
         });
     }
 
@@ -372,10 +375,12 @@ public class MainScreenController {
 
         confirmButton.setOnAction((ActionEvent event) -> {
             RadioButton selectedRadioButton = (RadioButton) permissionGroup.getSelectedToggle();
-            String selectedPermission = selectedRadioButton.getText();
-            permissionPicked = selectedPermission;
-            System.out.println("Selected Permission: " + selectedPermission);
-            popupStage.close();
+            if(selectedRadioButton!=null) {
+                String selectedPermission = selectedRadioButton.getText();
+                permissionPicked = selectedPermission;
+                System.out.println("Selected Permission: " + selectedPermission);
+                popupStage.close();
+            }
         });
 
         VBox layout = new VBox(10, readerButton, editorButton, confirmButton);
