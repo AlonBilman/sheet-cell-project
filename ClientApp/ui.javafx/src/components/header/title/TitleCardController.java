@@ -1,6 +1,9 @@
 package components.header.title;
 
 import components.page.view.sheetscreen.AppController;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,8 +11,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -26,6 +32,8 @@ public class TitleCardController {
     private ChoiceBox<String> styleChoiceBox;
     @FXML
     private ChoiceBox<String> animationsChoiceBox;
+
+
 
     private final String[] styles = {"Default theme", "Theme 1", "Theme 2"};
     private final String[] animations = {"No animations yet"};
@@ -60,6 +68,7 @@ public class TitleCardController {
     public void backToMainScreenButtonListener() {
         appController.backToMainScreenClicked();
     }
+
 }
 
 
