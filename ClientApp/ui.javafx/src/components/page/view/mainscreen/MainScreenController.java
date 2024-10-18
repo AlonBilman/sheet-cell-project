@@ -16,13 +16,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.SubScene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -50,8 +47,8 @@ public class MainScreenController {
     public static AnchorPane anchorPane;
     @FXML
     public SubScene permissionSubScene;
+    @FXML
     public Label sheetNames;
-
     @FXML
     private TableView<PermissionData> SheetPermissionTable;
     @FXML
@@ -68,19 +65,14 @@ public class MainScreenController {
     private TableColumn<AppUser, String> sheetNameColumn;
     @FXML
     private TableColumn<AppUser, String> sheetSizeColumn;
-
     @FXML
     public Button LoadSheetButton;
-
     @FXML
     public Button ViewSheetButton;
-
     @FXML
     public Button DenyPermissionButton;
-
     @FXML
     public Button AcceptPermissionButton;
-
     @FXML
     public Button RequestPermissionButton;
 
@@ -88,13 +80,13 @@ public class MainScreenController {
     public String username;
     public String owner;
     public String permissionName;
+    public String permissionPicked;
     public String permissionApproved;
     public Timer timer;
     public UsersRefresher usersRefresher;
     public BooleanProperty autoUpdate;
-    public Map<String,String> query;
-
-    CallerService httpCallerService;
+    public Map<String, String> query;
+    private CallerService httpCallerService;
 
     @FXML
     public void initialize() {
@@ -137,22 +129,23 @@ public class MainScreenController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try{
+                try {
                     httpCallerService.handleErrorResponse(response);
-                    Type listType = new TypeToken<List<PermissionData>>() {}.getType();
+                    Type listType = new TypeToken<List<PermissionData>>() {
+                    }.getType();
                     List<PermissionData> permissionsList = GSON.fromJson(response.body().string(), listType);
                     updatePermissionList(permissionsList);
 
-                }catch (Exception e){
-                    Platform.runLater(()->{
-                            showInfoAlert(e.getMessage());
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        showInfoAlert(e.getMessage());
                     });
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     showInfoAlert(e.getMessage());
                 });
             }
@@ -174,52 +167,19 @@ public class MainScreenController {
     }
 
     @FXML
-    public void RequestPermissionListener(ActionEvent actionEvent) {
+    public void RequestPermissionListener() {
 
-  // Show the permission subscene
-        if (SheetName != null) {
+        if (sheetName != null) {
             showPermissionPopup();
-            if (permissionName != null) {
-                showTimedNotification(SheetName,5);
+            if (permissionPicked != null) {
+                showTimedNotification(sheetName, 5);
             }
         }
         query.clear();
         query.put(SHEET_ID, sheetName);
         query.put(OWNER, owner);
 
-            httpCallerService.requestPermission(query, "reader", new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    Platform.runLater(() -> {
-                        showInfoAlert(e.getMessage());
-                    });
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    try (response) {
-                        httpCallerService.handleErrorResponse(response);
-                        Platform.runLater(() -> {
-                            updatePermissionList(sheetName, owner);
-                        });
-                    } catch (Exception e) {
-                        Platform.runLater(() -> {
-                            showInfoAlert(e.getMessage());
-                        });
-                    }
-                }
-            });
-    }
-
-    public void AcceptPermissionListener(ActionEvent actionEvent) {
-        answerPermissionRequest("yes");
-    }
-
-    public void answerPermissionRequest(String answer) {
-        query.clear();
-        query.put(SHEET_ID, sheetName);
-        query.put(REQUESTER, username);
-        httpCallerService.acceptOrDenyPermission(query,answer, new Callback() {
+        httpCallerService.requestPermission(query, permissionPicked, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
@@ -229,13 +189,12 @@ public class MainScreenController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try(response) {
+                try (response) {
                     httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
                         updatePermissionList(sheetName, owner);
                     });
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     Platform.runLater(() -> {
                         showInfoAlert(e.getMessage());
                     });
@@ -244,11 +203,43 @@ public class MainScreenController {
         });
     }
 
-    public void DenyPermissionListener(ActionEvent actionEvent) {
-      answerPermissionRequest("no");
+    public void AcceptPermissionListener() {
+        answerPermissionRequest("yes");
     }
 
-    public void LoadFileListener(ActionEvent actionEvent) {
+    public void answerPermissionRequest(String answer) {
+        query.clear();
+        query.put(SHEET_ID, sheetName);
+        query.put(REQUESTER, username);
+        httpCallerService.acceptOrDenyPermission(query, answer, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Platform.runLater(() -> {
+                    showInfoAlert(e.getMessage());
+                });
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try (response) {
+                    httpCallerService.handleErrorResponse(response);
+                    Platform.runLater(() -> {
+                        updatePermissionList(sheetName, owner);
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        showInfoAlert(e.getMessage());
+                    });
+                }
+            }
+        });
+    }
+
+    public void DenyPermissionListener() {
+        answerPermissionRequest("no");
+    }
+
+    public void LoadFileListener() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a file - Allowed only .xml files");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML File", "*.xml"));
@@ -288,7 +279,7 @@ public class MainScreenController {
     }
 
     private void updatePermissionList(List<PermissionData> data) {
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
             currentData.clear();
             currentData.addAll(data);
@@ -366,42 +357,28 @@ public class MainScreenController {
     }
 
     private void showPermissionPopup() {
+        permissionPicked = null;
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
 
-        // Create radio buttons for permissions
         ToggleGroup permissionGroup = new ToggleGroup();
-        RadioButton ownerButton = new RadioButton("OWNER");
-        RadioButton editorButton = new RadioButton("EDITOR");
+        RadioButton editorButton = new RadioButton("WRITER");
         RadioButton readerButton = new RadioButton("READER");
-        RadioButton noneButton = new RadioButton("NONE");
 
-
-        ownerButton.setToggleGroup(permissionGroup);
         editorButton.setToggleGroup(permissionGroup);
         readerButton.setToggleGroup(permissionGroup);
-        noneButton.setToggleGroup(permissionGroup);
 
-        // Default selection (optional)
-        noneButton.setSelected(true);
-
-        // Create a confirm button
         Button confirmButton = new Button("Confirm");
 
-        // Handle confirm button action
         confirmButton.setOnAction((ActionEvent event) -> {
-            permissionName = null;
             RadioButton selectedRadioButton = (RadioButton) permissionGroup.getSelectedToggle();
             String selectedPermission = selectedRadioButton.getText();
-            permissionName = selectedPermission;
+            permissionPicked = selectedPermission;
             System.out.println("Selected Permission: " + selectedPermission);
-
-            // Here you can return or process the selectedPermission as needed
-            popupStage.close(); // Close popup window
+            popupStage.close();
         });
 
-        // Arrange the layout
-        VBox layout = new VBox(10, readerButton, ownerButton, editorButton, noneButton, confirmButton);
+        VBox layout = new VBox(10, readerButton, editorButton, confirmButton);
         layout.setPadding(new Insets(20));
         Scene popupScene = new Scene(layout, 300, 200);
 
@@ -410,10 +387,10 @@ public class MainScreenController {
         popupStage.showAndWait();
     }
 
-    public void showTimedNotification(String Sheetname, int durationInSeconds) {
+    public void showTimedNotification(String sheetName, int durationInSeconds) {
         // Set the message and show the label
-        sheetNames.setText(Sheetname);
-       permissionSubScene.setVisible(true);
+        sheetNames.setText(sheetName);
+        permissionSubScene.setVisible(true);
 
         // Hide the notification after the specified duration
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(durationInSeconds), evt -> permissionSubScene.setVisible(false)));
