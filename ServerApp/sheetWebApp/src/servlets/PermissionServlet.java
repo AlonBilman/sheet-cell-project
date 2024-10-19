@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.PermissionDecision;
 import manager.impl.SheetManagerImpl;
 import utils.*;
 
@@ -15,7 +16,7 @@ import java.util.*;
 
 import static constants.Constants.*;
 
-@WebServlet(name = Constants.PERMISSION_SERVLET, urlPatterns = {Constants.PERMISSIONS, Constants.PERMISSION_REQUESTS})
+@WebServlet(name = Constants.PERMISSION_SERVLET, urlPatterns = {Constants.PERMISSIONS})
 public class PermissionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -35,29 +36,31 @@ public class PermissionServlet extends HttpServlet {
                     return;
 
                 SheetManagerImpl sheetManager = engine.getSheetManager(owner, sheetName);
-                Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap =
-                        sheetManager.getPermissionStatusMap();
+                Map<String, PermissionDecision> permissionFinalizeMap = sheetManager.getFinalizedPermissions();
+                Map<String, PermissionDecision> permissionRequestMap = sheetManager.getPendingPermissionsRequests();
 
-                List<PermissionData> list = new ArrayList<>();
-                boolean isPendingRequests = request.getServletPath().contains(PERMISSION_REQUESTS);
-                for (Map.Entry<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> entry : permissionStatusMap.entrySet()) {
-                    String user = entry.getKey();
-                    String permission = entry.getValue().getKey().toString();
-                    String approved = entry.getValue().getValue().toString();
-                    if (isPendingRequests) {
-                        if (approved.equals(Engine.ApprovalStatus.PENDING.toString())) {
-                            list.add(new PermissionData(user, permission, approved));
-                        }
-                    } else {
-                        list.add(new PermissionData(user, permission, approved));
-                    }
-                }
-                ResponseUtils.writeSuccessResponse(response, list);
+                List<PermissionData> combinedList = new ArrayList<>();
+                combinedList.addAll(extractData(permissionFinalizeMap));
+                combinedList.addAll(extractData(permissionRequestMap));
+
+                ResponseUtils.writeSuccessResponse(response, combinedList);
+
 
             } catch (Exception e) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             }
         }
+    }
+
+    private List<PermissionData> extractData(Map<String, PermissionDecision> permissionDecisionMap) {
+        List<PermissionData> list = new ArrayList<>();
+        for (Map.Entry<String, PermissionDecision> entry : permissionDecisionMap.entrySet()) {
+            String user = entry.getKey();
+            String permission = entry.getValue().getPermissionStatus().toString();
+            String approved = entry.getValue().getApprovalStatus().toString();
+            list.add(new PermissionData(user, permission, approved));
+        }
+        return list;
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -85,11 +88,7 @@ public class PermissionServlet extends HttpServlet {
                 }
 
                 SheetManagerImpl sheetManager = engine.getSheetManager(owner, sheetName);
-                Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap =
-                        sheetManager.getPermissionStatusMap();
-
-                AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> currentStatus = permissionStatusMap.get(username);
-                if (currentStatus != null && currentStatus.getKey().equals(Engine.PermissionStatus.OWNER)) {
+                if (sheetManager.isOwner(username)) {
                     throw new IllegalArgumentException("You are already the owner.");
                 }
 
@@ -98,7 +97,7 @@ public class PermissionServlet extends HttpServlet {
                     throw new IllegalArgumentException("You cannot request owner permission.");
                 }
 
-                sheetManager.addPermissionStatus(username, permissionStatus);
+                sheetManager.addPermissionRequest(username, permissionStatus);
 
                 ResponseUtils.writeSuccessResponse(response, "submitted");
 
@@ -141,39 +140,25 @@ public class PermissionServlet extends HttpServlet {
                 SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetName);
 
                 if (!sheetManager.isOwner(username)) {
-                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Only the owner can approve or deny permission requests.");
-                    return;
+                    throw new IllegalArgumentException("Only the owner can approve or deny permission requests.");
                 }
 
-                Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap =
-                        sheetManager.getPermissionStatusMap();
+                PermissionDecision permissionDecision = sheetManager.getPendingPermissionsRequests().get(requester);
 
-                AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> currentStatus = permissionStatusMap.get(requester);
-
-                if (currentStatus == null) {
-                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "No permission request found for user: " + requester);
-                    return;
-                }
-                //if it's not pending...what are you approving?
-                if (currentStatus.getValue() != Engine.ApprovalStatus.PENDING) {
-                    ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Permission request is not pending.");
-                    return;
+                if (permissionDecision == null) {
+                    throw new RuntimeException("No permission request found for user: " + requester);
                 }
 
-                Engine.PermissionStatus permissionStatus = currentStatus.getKey();
                 Engine.ApprovalStatus approvalStatus = permissionResponse.equalsIgnoreCase("yes")
                         ? Engine.ApprovalStatus.YES
                         : Engine.ApprovalStatus.NO;
 
-                //update the approval status (new entry)
-                AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> approvalStatusEntry =
-                        new AbstractMap.SimpleEntry<>(permissionStatus, approvalStatus);
-                permissionStatusMap.put(requester, approvalStatusEntry);
-
                 if (approvalStatus == Engine.ApprovalStatus.YES) {
+                    sheetManager.setPermissionFinalDecision(requester, Engine.ApprovalStatus.YES);
                     engine.addSheetManager(requester, sheetManager, false);
                     ResponseUtils.writeSuccessResponse(response, "Permission approved for user: " + requester);
                 } else {
+                    sheetManager.setPermissionFinalDecision(requester, Engine.ApprovalStatus.NO);
                     ResponseUtils.writeSuccessResponse(response, "Permission denied for user: " + requester);
                 }
 
@@ -182,4 +167,5 @@ public class PermissionServlet extends HttpServlet {
             }
         }
     }
+
 }

@@ -14,50 +14,48 @@ import static checkfile.CheckForXMLFile.isXMLFile;
 import static checkfile.CheckForXMLFile.readXMLFile;
 
 public class SheetManagerImpl implements SheetManager, Serializable {
+
     private static final int MAX_ROWS = 50;
     private static final int MIN_ROWS_AND_COLS = 1;
     private static final int MAX_COLS = 20;
+
     private SpreadSheetImpl spreadSheet;
-    Map<Integer, sheetDTO> sheets = new HashMap<>();
+    private final Map<Integer, sheetDTO> sheets = new HashMap<>();
     private String revertOriginalVal = null;
-    private final Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> permissionStatusMap = new HashMap<>();
+    private final PermissionManager permissionManager;
 
     public SheetManagerImpl(String Owner) {
-        permissionStatusMap.put(Owner, createPermissionEntry(Engine.PermissionStatus.OWNER, Engine.ApprovalStatus.YES));
+        this.permissionManager = new PermissionManager();
+        this.permissionManager.addOwner(Owner);
         this.spreadSheet = null;
     }
 
     public boolean havePermissionToEdit(String username) {
-        AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> permissionEntry = permissionStatusMap.get(username);
-
-        if (permissionEntry != null) {
-            return (Engine.PermissionStatus.WRITER.equals(permissionEntry.getKey()) ||
-                    Engine.PermissionStatus.OWNER.equals(permissionEntry.getKey())) &&
-                    Engine.ApprovalStatus.YES.equals(permissionEntry.getValue());
-        }
-        return false;
+        return permissionManager.havePermissionToEdit(username);
     }
 
-
-    private AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> createPermissionEntry(Engine.PermissionStatus status, Engine.ApprovalStatus isApproved) {
-        return new AbstractMap.SimpleEntry<>(status, isApproved);
+    public void setPermissionFinalDecision(String user, Engine.ApprovalStatus approvalStatus) {
+        permissionManager.setFinalDecision(user, approvalStatus);
     }
 
-    public Map<String, AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus>> getPermissionStatusMap() {
-        return permissionStatusMap;
+    public void addPermissionRequest(String user, Engine.PermissionStatus status) {
+        permissionManager.addPendingRequest(user, status);
     }
 
-    public void addPermissionStatus(String user, Engine.PermissionStatus status) {
-        permissionStatusMap.put(user, createPermissionEntry(status, Engine.ApprovalStatus.PENDING)); //always pending at the beginning.
+    public Map<String, PermissionDecision> getPendingPermissionsRequests() {
+        return permissionManager.getPendingRequests();
+    }
+
+    public Map<String, PermissionDecision> getFinalizedPermissions() {
+        return permissionManager.getFinalizedPermissions();
     }
 
     public String getSheetSize() {
         return spreadSheet.getColumnSize() + "x" + spreadSheet.getRowSize();
     }
 
-    public boolean isOwner(String key) {
-        AbstractMap.SimpleEntry<Engine.PermissionStatus, Engine.ApprovalStatus> entry = permissionStatusMap.get(key);
-        return Engine.PermissionStatus.OWNER.equals(entry.getKey());
+    public boolean isOwner(String user) {
+        return permissionManager.isOwner(user);
     }
 
     public enum OperatorValue {
@@ -100,7 +98,7 @@ public class SheetManagerImpl implements SheetManager, Serializable {
             throw new IllegalArgumentException("XML file inserted less than " + MIN_ROWS_AND_COLS + " columns");
         }
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
-        System.out.println("init sheet ------- 100%");
+        System.out.println("init Sheet =======> 100%");
         sheets.clear();
         sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
     }
@@ -225,7 +223,6 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return sheets.get(version);
     }
 
-
     public void setTextColor(String id, String selectedColor) {
         this.spreadSheet.getCellOrCreateIt(id).setTextColor(selectedColor);
     }
@@ -243,5 +240,4 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         }
         return cellsDto;
     }
-
 }
