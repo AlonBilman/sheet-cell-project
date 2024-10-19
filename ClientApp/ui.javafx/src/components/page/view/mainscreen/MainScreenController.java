@@ -96,20 +96,25 @@ public class MainScreenController {
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("UserName"));
         permissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("PermissionType"));
         permissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("ApprovedPermission"));
-        // Initially disable the ViewSheetButton
         disableButtons(true);
 
         // Add listener to get selected row's sheet name and enable/disable the ViewSheetButton
         SheetTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                // Enable the button when a row is selected
-                disableButtons(false);
-                sheetName = newValue.getSheetName();
-                owner = newValue.getUserUploaded();
-                updatePermissionList(sheetName, owner);
+                if (!newValue.equals(oldValue)) {
+                    disableButtons(false);
+                    updateList();
+                }
             } else {
-                // Disable the button when the selection is cleared
                 disableButtons(true);
+            }
+        });
+
+
+        SheetTable.setOnMouseClicked(event -> {
+            AppUser selectedItem = SheetTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                updateList();
             }
         });
 
@@ -120,14 +125,23 @@ public class MainScreenController {
                 permissionApproved = newValue.getApprovedPermission();
             }
         });
+
         if (SheetTable.getSelectionModel().getSelectedItem() != null) {
             ViewSheetButton.setDisable(true);
         }
+
         httpCallerService = new CallerService();
         autoUpdate = new SimpleBooleanProperty(true);
         query = new HashMap<>();
         startListRefresher();
     }
+
+    private void updateList(){
+        sheetName = SheetTable.getSelectionModel().getSelectedItem().getSheetName();
+        owner = SheetTable.getSelectionModel().getSelectedItem().getUserUploaded();
+        updatePermissionList(sheetName, owner);
+    }
+
 
     private void disableButtons(boolean toDisable) {
         ViewSheetButton.setDisable(toDisable);
