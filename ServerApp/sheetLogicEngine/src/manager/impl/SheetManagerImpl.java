@@ -47,8 +47,8 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return permissionStatusMap;
     }
 
-    public void addPermissionStatus(String user,Engine.PermissionStatus status) {
-        permissionStatusMap.put(user,createPermissionEntry(status, Engine.ApprovalStatus.PENDING)); //always pending at the beginning.
+    public void addPermissionStatus(String user, Engine.PermissionStatus status) {
+        permissionStatusMap.put(user, createPermissionEntry(status, Engine.ApprovalStatus.PENDING)); //always pending at the beginning.
     }
 
     public String getSheetSize() {

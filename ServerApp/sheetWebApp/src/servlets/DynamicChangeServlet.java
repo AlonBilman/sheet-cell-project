@@ -22,7 +22,7 @@ public class DynamicChangeServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    Gson GSON = new Gson();
+        Gson GSON = new Gson();
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 

@@ -45,17 +45,16 @@ public class CellColorServlet extends HttpServlet {
 
             SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
 
-            if(!sheetManager.havePermissionToEdit(username)) {
+            if (!sheetManager.havePermissionToEdit(username)) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Permission denied");
                 return;
             }
 
             String color = GSON.fromJson(request.getReader(), String.class);
 
-            if(request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
+            if (request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
                 sheetManager.setTextColor(cellId, color);
-            }
-            else {
+            } else {
                 sheetManager.setBackgroundColor(cellId, color);
             }
             ResponseUtils.writeSuccessResponse(response, null);

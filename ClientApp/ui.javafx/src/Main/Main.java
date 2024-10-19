@@ -42,7 +42,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         LoginController loginController = loader.getController();
-        loginController.setLoginListener(()->{
+        loginController.setLoginListener(() -> {
             showMainApp(loginController.getUserName());
         });
     }

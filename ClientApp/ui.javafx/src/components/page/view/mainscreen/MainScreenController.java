@@ -4,8 +4,6 @@ import com.google.gson.reflect.TypeToken;
 import components.page.view.sheetscreen.AppController;
 import http.CallerService;
 import http.HttpClientUtil;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -25,7 +23,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -123,7 +120,7 @@ public class MainScreenController {
                 permissionApproved = newValue.getApprovedPermission();
             }
         });
-        if(SheetTable.getSelectionModel().getSelectedItem() != null) {
+        if (SheetTable.getSelectionModel().getSelectedItem() != null) {
             ViewSheetButton.setDisable(true);
         }
         httpCallerService = new CallerService();
@@ -188,13 +185,13 @@ public class MainScreenController {
 
     @FXML
     public void RequestPermissionListener() {
-       if(SheetTable.getSelectionModel().getSelectedItem() != null) {
-           SheetTable.getSelectionModel().clearSelection();
-       }
+        if (SheetTable.getSelectionModel().getSelectedItem() != null) {
+            SheetTable.getSelectionModel().clearSelection();
+        }
         if (sheetName != null) {
             showPermissionPopup();
             if (permissionPicked != null) {
-               // showTimedNotification(sheetName, 5);
+                // showTimedNotification(sheetName, 5);
             } else return;
         }
         query.clear();
@@ -356,32 +353,41 @@ public class MainScreenController {
 
     public void initAppScreen(String name) {
         if (name == null) {
-            showInfoAlert("please select a sheet to view");
+            showInfoAlert("Please select a sheet to view");
             return;
         }
+
+        ObservableList<PermissionData> permissionDataList = SheetPermissionTable.getItems();
+
+        PermissionData userPermissionData = permissionDataList.stream()
+                .filter(permission -> permission.getUserName().equalsIgnoreCase(username))
+                .findAny()
+                .orElse(null);
+        if (userPermissionData == null || !userPermissionData.getApprovedPermission().equalsIgnoreCase("yes")) {
+            showInfoAlert("You dont have permission for this sheet.");
+            return;
+        }
+
         try {
             stopListRefresher();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../sheetscreen/app.fxml")); // Update the path accordingly
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../sheetscreen/app.fxml"));
             Parent root = loader.load();
+            boolean isReader = userPermissionData.getPermissionType().equalsIgnoreCase("reader");
             Scene scene = new Scene(root, 1120, 800);
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - App Screen");
             AppController appController = loader.getController();
             appController.setStage(stage);
             appController.setLoadFile(name, this::error);
-            ObservableList<PermissionData> permissionDataList = SheetPermissionTable.getItems();
-            boolean hasReaderPermission = permissionDataList.stream()
-                    .anyMatch(permission -> permission.getUserName().equalsIgnoreCase(username) &&
-                            "reader".equalsIgnoreCase(permission.getPermissionType()));
-            if(hasReaderPermission) {
+            if (isReader)
                 appController.setReaderAccess();
-            }
-            //anything else would be writer or owner...
+
             stage.show();
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
         }
     }
+
 
     private void error(Exception e) {
         Platform.runLater(() -> {
@@ -405,7 +411,7 @@ public class MainScreenController {
 
         confirmButton.setOnAction((ActionEvent event) -> {
             RadioButton selectedRadioButton = (RadioButton) permissionGroup.getSelectedToggle();
-            if(selectedRadioButton!=null) {
+            if (selectedRadioButton != null) {
                 String selectedPermission = selectedRadioButton.getText();
                 permissionPicked = selectedPermission;
                 System.out.println("Selected Permission: " + selectedPermission);
