@@ -351,8 +351,8 @@ public class MainScreenController {
         stage.close();
     }
 
-    public void initAppScreen(String name) {
-        if (name == null) {
+    public void initAppScreen(String sheetName) {
+        if (sheetName == null) {
             showInfoAlert("Please select a sheet to view");
             return;
         }
@@ -378,7 +378,8 @@ public class MainScreenController {
             stage.setTitle("Sheet Cell - App Screen");
             AppController appController = loader.getController();
             appController.setStage(stage);
-            appController.setLoadFile(name, this::error);
+            appController.setLoadFile(sheetName, this::error);
+            appController.setUserName(username);
             if (isReader)
                 appController.setReaderAccess();
 

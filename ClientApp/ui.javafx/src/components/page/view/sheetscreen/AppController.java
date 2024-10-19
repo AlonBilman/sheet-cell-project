@@ -45,6 +45,7 @@ public class AppController {
     private Map<String, String> query;
     private String currSheet;
     private Stage stage;
+    private String userName;
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
@@ -907,6 +908,7 @@ public class AppController {
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - Main Screen");
             MainScreenController controller = loader.getController();
+            controller.setUserName(this.userName); // need to give it the username.
             controller.setStage(stage);
             stage.show();
 
@@ -915,4 +917,7 @@ public class AppController {
         }
     }
 
+    public void setUserName(String name) {
+        this.userName = name;
+    }
 }
