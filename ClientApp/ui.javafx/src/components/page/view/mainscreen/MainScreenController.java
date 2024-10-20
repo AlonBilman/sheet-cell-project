@@ -88,7 +88,6 @@ public class MainScreenController {
 
     @FXML
     public void initialize() {
-        // Bind columns to the SheetData properties
         userUploadedColumn.setCellValueFactory(new PropertyValueFactory<>("UserUploaded"));
         sheetNameColumn.setCellValueFactory(new PropertyValueFactory<>("SheetName"));
         sheetSizeColumn.setCellValueFactory(new PropertyValueFactory<>("SheetSize"));
@@ -96,20 +95,19 @@ public class MainScreenController {
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("UserName"));
         permissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("PermissionType"));
         permissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("ApprovedPermission"));
-        disableButtons(true);
+        disableAcceptAndDenyButtons(true);
+        disableViewAndRequestButtons(true);
 
-        // Add listener to get selected row's sheet name and enable/disable the ViewSheetButton
         SheetTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 if (!newValue.equals(oldValue)) {
-                    disableButtons(false);
+                    disableViewAndRequestButtons(false);
                     updateList();
                 }
             } else {
-                disableButtons(true);
+                disableViewAndRequestButtons(true);
             }
         });
-
 
         SheetTable.setOnMouseClicked(event -> {
             AppUser selectedItem = SheetTable.getSelectionModel().getSelectedItem();
@@ -123,6 +121,9 @@ public class MainScreenController {
                 permissionName = newValue.getPermissionType();
                 tableUsername = newValue.getUserName();
                 permissionApproved = newValue.getApprovedPermission();
+                disableAcceptAndDenyButtons(false);
+            } else {
+                disableAcceptAndDenyButtons(true);
             }
         });
 
@@ -136,18 +137,20 @@ public class MainScreenController {
         startListRefresher();
     }
 
-    private void updateList(){
+    private void updateList() {
         sheetName = SheetTable.getSelectionModel().getSelectedItem().getSheetName();
         owner = SheetTable.getSelectionModel().getSelectedItem().getUserUploaded();
         updatePermissionList(sheetName, owner);
     }
 
-
-    private void disableButtons(boolean toDisable) {
+    private void disableViewAndRequestButtons(boolean toDisable) {
         ViewSheetButton.setDisable(toDisable);
+        RequestPermissionButton.setDisable(toDisable);
+    }
+
+    private void disableAcceptAndDenyButtons(boolean toDisable) {
         DenyPermissionButton.setDisable(toDisable);
         AcceptPermissionButton.setDisable(toDisable);
-        RequestPermissionButton.setDisable(toDisable);
     }
 
     private void updatePermissionList(String sheetName, String owner) {
@@ -163,7 +166,7 @@ public class MainScreenController {
                     Type listType = new TypeToken<List<PermissionData>>() {
                     }.getType();
                     List<PermissionData> permissionsList = GSON.fromJson(response.body().string(), listType);
-                    updatePermissionList(permissionsList);
+                    updatePermissionListFromList(permissionsList);
 
                 } catch (Exception e) {
                     Platform.runLater(() -> {
@@ -190,24 +193,23 @@ public class MainScreenController {
         alert.showAndWait();
     }
 
-
-    public void ViewSheetListener(ActionEvent actionEvent) {
-
+    private void clearTableSelection() {
         SheetTable.getSelectionModel().clearSelection();
+        updatePermissionListFromList(null);//clear second table view
+    }
+
+    public void ViewSheetListener() {
+        clearTableSelection();
         initAppScreen(sheetName);
     }
 
     @FXML
     public void RequestPermissionListener() {
-        if (SheetTable.getSelectionModel().getSelectedItem() != null) {
-            SheetTable.getSelectionModel().clearSelection();
-        }
-        if (sheetName != null) {
+        if (sheetName != null)
             showPermissionPopup();
-            if (permissionPicked != null) {
-                // showTimedNotification(sheetName, 5);
-            } else return;
-        }
+        if (permissionPicked == null)
+            return;
+
         query.clear();
         query.put(SHEET_ID, sheetName);
         query.put(OWNER, owner);
@@ -217,6 +219,7 @@ public class MainScreenController {
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Platform.runLater(() -> {
                     showInfoAlert(e.getMessage());
+                    clearTableSelection();
                 });
             }
 
@@ -226,10 +229,12 @@ public class MainScreenController {
                     httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
                         updatePermissionList(sheetName, owner);
+                        clearTableSelection();
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                         showInfoAlert(e.getMessage());
+                        clearTableSelection();
                     });
                 }
             }
@@ -237,6 +242,9 @@ public class MainScreenController {
     }
 
     public void AcceptPermissionListener() {
+        if (SheetPermissionTable.getSelectionModel().getSelectedItem() != null) {
+            SheetPermissionTable.getSelectionModel().clearSelection();
+        }
         answerPermissionRequest("yes");
     }
 
@@ -269,6 +277,9 @@ public class MainScreenController {
     }
 
     public void DenyPermissionListener() {
+        if (SheetPermissionTable.getSelectionModel().getSelectedItem() != null) {
+            SheetPermissionTable.getSelectionModel().clearSelection();
+        }
         answerPermissionRequest("no");
     }
 
@@ -311,7 +322,7 @@ public class MainScreenController {
         });
     }
 
-    private void updatePermissionList(List<PermissionData> data) {
+    private void updatePermissionListFromList(List<PermissionData> data) {
         Platform.runLater(() -> {
             ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
             currentData.clear();
@@ -442,16 +453,6 @@ public class MainScreenController {
         popupStage.setScene(popupScene);
         popupStage.showAndWait();
     }
-
-//    public void showTimedNotification(String sheetName, int durationInSeconds) {
-//        // Set the message and show the label
-//        sheetNames.setText(sheetName);
-//        permissionSubScene.setVisible(true);
-//
-//        // Hide the notification after the specified duration
-//        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(durationInSeconds), evt -> permissionSubScene.setVisible(false)));
-//        timeline.play();
-//    }
 
     public void setUserName(String userName) {
         this.username = userName;
