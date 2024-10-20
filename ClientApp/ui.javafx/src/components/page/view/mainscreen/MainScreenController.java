@@ -326,7 +326,8 @@ public class MainScreenController {
         Platform.runLater(() -> {
             ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
             currentData.clear();
-            currentData.addAll(data);
+            if(data!=null)
+                currentData.addAll(data);
             SheetPermissionTable.refresh();
         });
     }
