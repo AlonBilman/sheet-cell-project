@@ -62,7 +62,7 @@ public class Main extends Application {
             URL mainFXML = getClass().getResource("../components/page/view/mainscreen/mainScreen.fxml");
             loader.setLocation(mainFXML);
             Parent root = loader.load();
-            Scene scene = new Scene(root, 610, 410);
+            Scene scene = new Scene(root, 915, 600);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Sheet Cell - Main Screen");
             primaryStage.centerOnScreen();

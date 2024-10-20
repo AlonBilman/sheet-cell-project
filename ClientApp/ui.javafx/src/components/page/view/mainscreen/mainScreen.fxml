@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="675.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
+<ScrollPane fitToHeight="false" fitToWidth="true" maxHeight="588.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="588.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
     <content>
-        <StackPane alignment="CENTER">
-            <Pane minHeight="398.0" minWidth="585.0" prefHeight="398.0" prefWidth="617.0" styleClass="pane">
+        <VBox alignment="CENTER">
+            <Pane minHeight="398.0" minWidth="585.0" prefHeight="598.0" prefWidth="1500.0" styleClass="pane">
                 <children>
-                    <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="668.0">
+                    <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="1500.0">
                         <children>
-                            <TableView fx:id="SheetTable" layoutX="5.0" layoutY="49.0" prefHeight="139.0" prefWidth="447.0" styleClass="table-view">
+                            <TableView fx:id="SheetTable" layoutX="6.0" layoutY="68.0" prefHeight="232.0" prefWidth="720.0" styleClass="table-view">
                                 <columns>
                                     <TableColumn fx:id="userUploadedColumn" prefWidth="75.0" text="User uploaded" />
                                     <TableColumn fx:id="sheetNameColumn" prefWidth="75.0" text="Sheet name" />
@@ -23,10 +23,7 @@
                                 </columnResizePolicy>
                             </TableView>
 
-                            <!-- Divider between the two tables -->
-                            <Separator layoutX="5.0" layoutY="190.0" orientation="HORIZONTAL" prefWidth="450.0" />
-
-                            <TableView fx:id="SheetPermissionTable" editable="true" layoutX="6.0" layoutY="209.0" prefHeight="179.0" prefWidth="445.0" styleClass="table-view">
+                            <TableView fx:id="SheetPermissionTable" editable="true" layoutX="6.0" layoutY="323.0" prefHeight="251.0" prefWidth="722.0" styleClass="table-view">
                                 <columns>
                                     <TableColumn fx:id="userNameColumn" prefWidth="75.0" text="Sheet users" />
                                     <TableColumn fx:id="permissionNameColumn" prefWidth="75.0" text="User permissions" />
@@ -36,17 +33,11 @@
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                 </columnResizePolicy>
                             </TableView>
-
-                            <Label layoutX="261.0" layoutY="1.0" styleClass="header-label" text="Sheet Cell" underline="true">
-                                <font>
-                                    <Font size="18.0" />
-                                </font>
-                            </Label>
-                            <Button fx:id="LoadSheetButton" layoutX="10.0" layoutY="7.0" mnemonicParsing="false" onAction="#LoadFileListener" prefHeight="25.0" prefWidth="150.0" text="Load Sheet File" />
-                            <Button fx:id="ViewSheetButton" layoutX="460.0" layoutY="81.0" mnemonicParsing="false" onAction="#ViewSheetListener" prefHeight="25.0" prefWidth="150.0" text="View Sheet" />
-                            <Button fx:id="RequestPermissionButton" layoutX="460.0" layoutY="135.0" mnemonicParsing="false" onAction="#RequestPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Request Permission" />
-                            <Button fx:id="AcceptPermissionButton" layoutX="460.0" layoutY="248.0" mnemonicParsing="false" onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Accept Permission" />
-                            <Button fx:id="DenyPermissionButton" layoutX="460.0" layoutY="299.0" mnemonicParsing="false" onAction="#DenyPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Deny Permission" />
+                            <Button fx:id="LoadSheetButton" layoutX="29.0" layoutY="16.0" mnemonicParsing="false" onAction="#LoadFileListener" prefHeight="25.0" prefWidth="150.0" text="Load Sheet File" />
+                            <Button fx:id="ViewSheetButton" layoutX="738.0" layoutY="153.0" mnemonicParsing="false" onAction="#ViewSheetListener" prefHeight="25.0" prefWidth="150.0" text="View Sheet" />
+                            <Button fx:id="RequestPermissionButton" layoutX="738.0" layoutY="191.0" mnemonicParsing="false" onAction="#RequestPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Request Permission" />
+                            <Button fx:id="AcceptPermissionButton" layoutX="738.0" layoutY="410.0" mnemonicParsing="false" onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Accept Permission" />
+                            <Button fx:id="DenyPermissionButton" layoutX="738.0" layoutY="449.0" mnemonicParsing="false" onAction="#DenyPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Deny Permission" />
 
                             <!-- SubScene for Permission Request -->
                             <SubScene fx:id="permissionSubScene" height="120.0" layoutX="450.0" layoutY="350.0" visible="false" width="350.0">
@@ -64,10 +55,24 @@
                                     </Pane>
                                 </root>
                             </SubScene>
+                            <HBox layoutX="244.0" layoutY="16.0" prefHeight="45.0" prefWidth="397.0">
+                                <children>
+                                    <Label prefHeight="27.0" prefWidth="208.0" styleClass="header-label" text="Sheet Cell - Logged as :" underline="true">
+                                        <font>
+                                            <Font size="18.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="userNameText" prefHeight="27.0" prefWidth="187.0" styleClass="header-label" underline="true">
+                                        <font>
+                                            <Font size="18.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </HBox>
                         </children>
                     </AnchorPane>
                 </children>
             </Pane>
-        </StackPane>
+        </VBox>
     </content>
 </ScrollPane>

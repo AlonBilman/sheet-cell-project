@@ -48,6 +48,8 @@ public class MainScreenController {
     @FXML
     public Label sheetNames;
     @FXML
+    public Label userNameText;
+    @FXML
     private TableView<PermissionData> SheetPermissionTable;
     @FXML
     private TableColumn<PermissionData, String> userNameColumn;
@@ -457,5 +459,6 @@ public class MainScreenController {
 
     public void setUserName(String userName) {
         this.username = userName;
+        userNameText.setText(userName);
     }
 }
