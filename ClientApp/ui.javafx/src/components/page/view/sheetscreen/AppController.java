@@ -672,7 +672,6 @@ public class AppController {
         tableFunctionalityController.setTheme(value);
         cellFunctionsController.setTheme(value);
         gridSheetController.setTheme(value);
-        titleCardController.setTheme(value);
     }
 
     public void dynamicChangeButtonClicked() {
@@ -919,5 +918,7 @@ public class AppController {
 
     public void setUserName(String name) {
         this.userName = name;
+        titleCardController.setName(name);
     }
+
 }

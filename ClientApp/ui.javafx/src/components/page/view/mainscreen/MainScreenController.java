@@ -31,10 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
+import java.util.*;
 
 import static constants.Constants.*;
 
@@ -49,6 +46,8 @@ public class MainScreenController {
     public Label sheetNames;
     @FXML
     public Label userNameText;
+    @FXML
+    public ScrollPane scrollPane;
     @FXML
     private TableView<PermissionData> SheetPermissionTable;
     @FXML
@@ -75,6 +74,9 @@ public class MainScreenController {
     public Button AcceptPermissionButton;
     @FXML
     private Button RequestPermissionButton;
+    @FXML
+    private ChoiceBox<String> styleChoiceBox;
+
     private String username;
     private String sheetName;
     private String tableUsername;
@@ -87,6 +89,8 @@ public class MainScreenController {
     private BooleanProperty autoUpdate;
     private Map<String, String> query;
     private CallerService httpCallerService;
+    private final String[] styles = {"Default theme", "Theme 1", "Theme 2"};
+    private String themeStyle = "Default theme";
 
     @FXML
     public void initialize() {
@@ -99,6 +103,14 @@ public class MainScreenController {
         permissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("ApprovedPermission"));
         disableAcceptAndDenyButtons(true);
         disableViewAndRequestButtons(true);
+        styleChoiceBox.getItems().addAll(styles);
+        styleChoiceBox.getSelectionModel().select(0);
+
+        styleChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (!Objects.equals(oldValue, newValue)) {
+                setTheme(newValue);
+            }
+        });
 
         SheetTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
@@ -138,6 +150,32 @@ public class MainScreenController {
         query = new HashMap<>();
         startListRefresher();
     }
+
+    private void setTheme(String newValue) {
+        String cssFilePath = "";
+
+        switch (newValue) {
+            case "Default theme":
+                cssFilePath = "mainScreenDefault.css"; // Update this with your actual path
+                break;
+            case "Theme 1":
+                cssFilePath = "mainScreenTheme1.css"; // Update this with your actual path
+                break;
+            case "Theme 2":
+                cssFilePath = "mainScreenTheme2.css"; // Update this with your actual path
+                break;
+            default:
+                break;
+        }
+
+        themeStyle = newValue;
+        scrollPane.getStylesheets().clear();
+        scrollPane.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource(cssFilePath))
+                        .toExternalForm()
+        );
+    }
+
 
     private void updateList() {
         sheetName = SheetTable.getSelectionModel().getSelectedItem().getSheetName();
@@ -408,6 +446,7 @@ public class MainScreenController {
             appController.setStage(stage);
             appController.setLoadFile(sheetName, this::error);
             appController.setUserName(username);
+            appController.setStyleOnParts(themeStyle);
             if (isReader)
                 appController.setReaderAccess();
 

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane fitToHeight="false" fitToWidth="true" maxHeight="588.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="588.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
+<ScrollPane fitToHeight="false" fx:id= "scrollPane" fitToWidth="true" maxHeight="588.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="588.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
     <content>
         <VBox alignment="CENTER">
             <Pane minHeight="398.0" minWidth="585.0" prefHeight="598.0" prefWidth="1500.0" styleClass="pane">
@@ -69,6 +69,7 @@
                                     </Label>
                                 </children>
                             </HBox>
+                     <ChoiceBox fx:id="styleChoiceBox" layoutX="738.0" layoutY="16.0" prefWidth="150.0" />
                         </children>
                     </AnchorPane>
                 </children>
