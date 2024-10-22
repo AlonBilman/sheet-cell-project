@@ -58,6 +58,10 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return permissionManager.isOwner(user);
     }
 
+    public int getSheetVersion() {
+        return spreadSheet.getSheetVersionNumber();
+    }
+
     public enum OperatorValue {
         OR_OPERATOR, AND_OPERATOR
     }

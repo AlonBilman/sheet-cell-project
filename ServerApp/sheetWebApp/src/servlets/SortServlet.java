@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -42,9 +43,12 @@ public class SortServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
-
                 ResponseUtils.SortObj sort = GSON.fromJson(request.getReader(), ResponseUtils.SortObj.class);
-                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                Manager manager = engine.getManager(username, sheetId);
+                if (!manager.isUpToDate()) {
+                    throw new RuntimeException("In order to use sort functionality you have to update the sheet.");
+                }
+                SheetManagerImpl sheetManager = manager.getSheetManager();
                 sheetDTO sheet = sheetManager.sort(sort.getParams(), sort.getSortBy());
                 ResponseUtils.writeSuccessResponse(response, sheet);
             }

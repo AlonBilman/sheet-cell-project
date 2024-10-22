@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -79,12 +80,21 @@ public class CellServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
 
-                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                Manager manager = engine.getManager(username, sheetId);
+
+                if (!manager.isUpToDate()) {
+                    throw new RuntimeException("Sheet is not up to date.\n" +
+                            "in order to modify it please update the sheet first.");
+                }
+
+                SheetManagerImpl sheetManager = manager.getSheetManager();
+
                 if (!sheetManager.havePermissionToEdit(username))
                     throw new IOException("Permission denied");
 
                 String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
                 sheetManager.updateCell(cellId, newOriginalValue, false);
+                manager.updateVersion();
                 ResponseUtils.writeSuccessResponse(response, null);
             }
 

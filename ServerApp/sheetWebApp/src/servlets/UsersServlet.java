@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import manager.impl.SheetManagerImpl;
+import manager.impl.Manager;
 import utils.AppUser;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -34,20 +34,24 @@ public class UsersServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
 
-                Map<String, Set<SheetManagerImpl>> userMap = engine.getUserMap();
+                Map<String, Set<Manager>> userMap = engine.getUserMap();
                 List<AppUser> list = new ArrayList<>();
-                for (Map.Entry<String, Set<SheetManagerImpl>> entry : userMap.entrySet()) {
-                    Set<SheetManagerImpl> set = entry.getValue();
-                    for (SheetManagerImpl manager : set) {
-                        if (manager.isOwner(entry.getKey())) {
-                            AppUser user = new AppUser(entry.getKey(), manager.getSheetName(), manager.getSheetSize());
+
+                for (Map.Entry<String, Set<Manager>> entry : userMap.entrySet()) {
+                    Set<Manager> managers = entry.getValue();
+                    for (Manager manager : managers) {
+                        if (manager.getSheetManager().isOwner(entry.getKey())) {
+                            AppUser user = new AppUser(entry.getKey(), manager.getSheetManager().getSheetName(), manager.getSheetManager().getSheetSize());
                             list.add(user);
                         }
                     }
                 }
+
                 ResponseUtils.writeSuccessResponse(response, list);
             }
 
+        } catch (IllegalArgumentException e) {
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }

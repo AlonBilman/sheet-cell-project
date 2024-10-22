@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -102,7 +103,11 @@ public class DynamicChangeServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
-                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                Manager manager = engine.getManager(username, sheetId);
+                if (!manager.isUpToDate()) {
+                    throw new RuntimeException("In order to use dynamic-change functionality you have to update the sheet.");
+                }
+                SheetManagerImpl sheetManager = manager.getSheetManager();
                 sheetManager.saveCellValue(cellId);
                 ResponseUtils.writeSuccessResponse(response, null);
             }

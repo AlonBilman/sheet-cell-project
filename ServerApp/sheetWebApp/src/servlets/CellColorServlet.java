@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -39,27 +40,37 @@ public class CellColorServlet extends HttpServlet {
             return;
         }
         synchronized (this) {
-            Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-            if (!ServletUtils.isValidEngine(engine, response))
-                return;
+            try {
+                Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
+                if (!ServletUtils.isValidEngine(engine, response))
+                    return;
 
-            SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                Manager manager = engine.getManager(username, sheetId);
 
-            if (!sheetManager.havePermissionToEdit(username)) {
-                ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Permission denied");
-                return;
+                if (!manager.isUpToDate()) {
+                    throw new RuntimeException("Sheet is not up to date.\n" +
+                            "in order to modify it please update the sheet first.");
+                }
+
+                SheetManagerImpl sheetManager = manager.getSheetManager();
+
+                if (!sheetManager.havePermissionToEdit(username)) {
+                    throw new RuntimeException("Permission denied.");
+                }
+
+                String color = GSON.fromJson(request.getReader(), String.class);
+
+                if (request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
+                    sheetManager.setTextColor(cellId, color);
+                } else {
+                    sheetManager.setBackgroundColor(cellId, color);
+                }
+                manager.updateVersion();
+                ResponseUtils.writeSuccessResponse(response, null);
+            } catch (Exception e) {
+                ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             }
-
-            String color = GSON.fromJson(request.getReader(), String.class);
-
-            if (request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
-                sheetManager.setTextColor(cellId, color);
-            } else {
-                sheetManager.setBackgroundColor(cellId, color);
-            }
-            ResponseUtils.writeSuccessResponse(response, null);
         }
-
     }
 }
 

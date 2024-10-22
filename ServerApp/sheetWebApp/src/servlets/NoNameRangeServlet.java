@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -44,13 +45,20 @@ public class NoNameRangeServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response)) {
                     return;
                 }
-                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                Manager manager = engine.getManager(username, sheetId);
+
+                if (!manager.isUpToDate()) {
+                    throw new RuntimeException("In order to use this functionality you have to be updated\n" +
+                            "please update the sheet in order to continue.");
+                }
+
+                SheetManagerImpl sheetManager = manager.getSheetManager();
+
                 if (request.getServletPath().contains(NO_NAME_RANGES)) {
                     ResponseUtils.Ranges ranges = GSON.fromJson(request.getReader(), ResponseUtils.Ranges.class);
 
                     if (ranges == null) {
-                        ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid range data");
-                        return;
+                        throw new IllegalArgumentException("Invalid range data");
                     }
                     Set<CellDataDTO> xRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getXParams());
                     Set<CellDataDTO> yRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getYParams());
@@ -61,8 +69,7 @@ public class NoNameRangeServlet extends HttpServlet {
                     ResponseUtils.RangeBody rangeBody = GSON.fromJson(request.getReader(), ResponseUtils.RangeBody.class);
 
                     if (rangeBody == null || rangeBody.getToAndFrom() == null) {
-                        ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid range data");
-                        return;
+                        throw new IllegalArgumentException("Invalid range data");
                     }
 
                     Set<CellDataDTO> range = sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
