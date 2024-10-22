@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.SubScene?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="false" fx:id= "scrollPane" fitToWidth="true" maxHeight="588.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="588.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
+<ScrollPane fx:id="scrollPane" fitToHeight="false" fitToWidth="true" maxHeight="588.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="588.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
     <content>
         <VBox alignment="CENTER">
             <Pane minHeight="398.0" minWidth="585.0" prefHeight="598.0" prefWidth="1500.0" styleClass="pane">
@@ -22,8 +30,8 @@
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                 </columnResizePolicy>
                             </TableView>
-
-                            <TableView fx:id="SheetPermissionTable" editable="true" layoutX="6.0" layoutY="323.0" prefHeight="251.0" prefWidth="722.0" styleClass="table-view">
+         
+                                  <TableView fx:id="SheetPermissionTable" editable="true" layoutX="6.0" layoutY="323.0" prefHeight="251.0" prefWidth="722.0" styleClass="table-view">
                                 <columns>
                                     <TableColumn fx:id="userNameColumn" prefWidth="75.0" text="Sheet users" />
                                     <TableColumn fx:id="permissionNameColumn" prefWidth="75.0" text="User permissions" />
@@ -38,8 +46,8 @@
                             <Button fx:id="RequestPermissionButton" layoutX="738.0" layoutY="191.0" mnemonicParsing="false" onAction="#RequestPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Request Permission" />
                             <Button fx:id="AcceptPermissionButton" layoutX="738.0" layoutY="410.0" mnemonicParsing="false" onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Accept Permission" />
                             <Button fx:id="DenyPermissionButton" layoutX="738.0" layoutY="449.0" mnemonicParsing="false" onAction="#DenyPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Deny Permission" />
-
-                            <!-- SubScene for Permission Request -->
+         
+                                  <!-- SubScene for Permission Request -->
                             <SubScene fx:id="permissionSubScene" height="120.0" layoutX="450.0" layoutY="350.0" visible="false" width="350.0">
                                 <root>
                                     <Pane prefHeight="150.0" prefWidth="350.0" styleClass="subscene-pane">
