@@ -6,11 +6,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import utils.ResponseUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static constants.Constants.SHEET_ID;
 
@@ -40,12 +43,16 @@ public class SheetServlet extends HttpServlet {
                     return;
 
                 Object responseData;
+                Manager manager = engine.getManager(username,sheetId);
                 if (servletPath.contains(Constants.ALL_VERSIONS)) {
-                    responseData = engine.getSheetManager(username, sheetId).getSheets();
+                    int version = manager.getCurrentVersion();
+                    responseData = manager.getSheetManager().getSheets().entrySet().stream()
+                            .filter(entry -> entry.getKey() < version) //only include versions less than the current version
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                 } else {
+                    manager.updateVersion();
                     responseData = engine.getSheetDTO(sheetId, username);
                 }
-
                 ResponseUtils.writeSuccessResponse(response, responseData);
             }
 

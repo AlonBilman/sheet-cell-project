@@ -87,6 +87,16 @@ public class CellFunctionsController {
         updateCellButton.setDisable(false);
     }
 
+    public void showEmptyCell(String id) {
+        currCellShown = id;
+        cellIdProperty.setText(currCellShown);
+        cellUpdatedProperty.setText("1");
+        cellValueProperty.setText("Empty Cell");
+        newOriginalValText.setDisable(false);
+        newOriginalValText.setText("");
+        updateCellButton.setDisable(false);
+    }
+
     public void showInfoAlert(String problem) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("!ERROR!");
@@ -261,7 +271,7 @@ public class CellFunctionsController {
             clearDynamicChangeTextBoxes();
             return false;
         }
-        if(jumpValue>toValue-fromValue) {
+        if (jumpValue > toValue - fromValue) {
             errorLabelText.setTextFill(Paint.valueOf("red"));
             errorLabelText.setText("ERROR! Ensure 'jump' < ('To' - 'from').");
             return false;
@@ -275,7 +285,7 @@ public class CellFunctionsController {
             double toValue = Double.parseDouble(toTextField.getText());
             double jumpValue = Double.parseDouble(jumpTextField.getText());
 
-            if(!checkInputDialogValues(fromValue, toValue, jumpValue)) {
+            if (!checkInputDialogValues(fromValue, toValue, jumpValue)) {
                 clearDynamicChangeTextBoxes();
                 return;
             }

@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import static constants.Constants.*;
 
-
 public class AppController {
 
     private ChartMaker chartMaker;
@@ -46,6 +45,7 @@ public class AppController {
     private String currSheet;
     private Stage stage;
     private String userName;
+    private sheetDTO currSheetDTO;
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
@@ -95,6 +95,7 @@ public class AppController {
             chartMaker = new ChartMaker(this);
             httpCallerService = new CallerService();
             query = new HashMap<>();
+            currSheetDTO = null;
         }
     }
 
@@ -113,9 +114,9 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
                     Platform.runLater(() -> {
-                        gridSheetController.populateTableView(sheet, true);
+                        gridSheetController.populateTableView(currSheetDTO, true);
                         tableFunctionalityController.setActiveButtons(
                                 TableFunctionalityController.ButtonState.LOADING_FILE, true);
                         cellFunctionsController.wakeVersionButton();
@@ -146,59 +147,22 @@ public class AppController {
 
     public void CellClicked(String id) {
         outOfFocus();
-        query.clear();
-        query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, id));
-        httpCallerService.fetchCellAsync(query, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    cellFunctionsController.showInfoAlert("Failed to fetch cell data.");
-                });
+        CellDataDTO cell = currSheetDTO.getActiveCells().get(id);
+        if (cell != null) {
+            cellFunctionsController.showCell(cell);
+            tableFunctionalityController.setActiveButtons(
+                    TableFunctionalityController.ButtonState.CLICKING_CELL, true);
+            gridSheetController.colorizeImportantCells(currSheetDTO, id);
+            if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC)) {
+                cellFunctionsController.showNumericButtons(true);
             }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    Platform.runLater(() -> {
-                        cellFunctionsController.showInfoAlert("Error fetching cell data.");
-                    });
-                    return;
-                }
-
-                CellDataDTO cell = GSON.fromJson(response.body().string(), CellDataDTO.class);
-                query.remove(CELL_ID);
-
-                httpCallerService.fetchSheetAsync(query, new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Platform.runLater(() -> {
-                            cellFunctionsController.showInfoAlert("Failed to fetch sheet data.");
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
-                            Platform.runLater(() -> {
-                                cellFunctionsController.showCell(cell);
-                                tableFunctionalityController.setActiveButtons(
-                                        TableFunctionalityController.ButtonState.CLICKING_CELL, true);
-                                gridSheetController.colorizeImportantCells(sheet, id);
-                                if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC)) {
-                                    cellFunctionsController.showNumericButtons(true);
-                                }
-                            });
-                        } else {
-                            Platform.runLater(() -> {
-                                cellFunctionsController.showInfoAlert("Error loading sheet data.");
-                            });
-                        }
-                        response.close();
-                    }
-                });
-            }
-        });
+        }
+        else {
+            cellFunctionsController.showEmptyCell(id);
+            tableFunctionalityController.setActiveButtons(
+                    TableFunctionalityController.ButtonState.CLICKING_CELL, true);
+            gridSheetController.colorizeEmptyCell(id);
+        }
     }
 
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
@@ -245,10 +209,10 @@ public class AppController {
                                 }
                             });
                         }
-                        sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                        currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
                         Platform.runLater(() -> {
                             outOfFocus();
-                            gridSheetController.populateTableView(sheet, false);
+                            gridSheetController.populateTableView(currSheetDTO, false);
                         });
                     }
                 });

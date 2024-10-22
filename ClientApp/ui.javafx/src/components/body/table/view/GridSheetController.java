@@ -150,6 +150,12 @@ public class GridSheetController {
         scrollPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
 
+    public void colorizeEmptyCell(String id) {
+        Label currCell = labelMap.get(id);
+        currCell.getStyleClass().add("cell-selected");
+        focusedOn.add(currCell);
+    }
+
     public void colorizeImportantCells(sheetDTO curr, String id) {
         Label currCell = labelMap.get(id);
         currCell.getStyleClass().add("cell-selected");
