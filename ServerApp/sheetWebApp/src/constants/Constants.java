@@ -43,4 +43,5 @@ public class Constants {
     public static final String OWNER = "owner";
     public static final String PERMISSION_REQUESTS = "/permission-requests";
     public static final String REQUESTER = "requester";
+    public static final String VERSION = "/version";
 }

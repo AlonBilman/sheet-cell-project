@@ -444,7 +444,7 @@ public class MainScreenController {
             stage.setTitle("Sheet Cell - App Screen");
             AppController appController = loader.getController();
             appController.setStage(stage);
-            appController.setLoadFile(sheetName, this::error);
+            appController.setSheet(sheetName, this::error,true);
             appController.setUserName(username);
             appController.setStyleOnParts(themeStyle);
             if (isReader)

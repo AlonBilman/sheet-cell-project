@@ -1,0 +1,38 @@
+/* Default style for the reload button */
+#reloadSheetButton {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-border-color: #0056b3;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
+    -fx-cursor: hand;
+}
+
+#backToMainScreenButton {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-border-color: #0056b3;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
+    -fx-cursor: hand;
+}
+
+/* Subtle breathing glow effect */
+.glow-effect {
+    -fx-effect: dropshadow(gaussian, rgba(0, 123, 255, 0.3), 10, 0, 0, 0);
+}
+
+/* Animation keyframes for breathing */
+@keyframes breathe {
+    0% {
+        -fx-opacity: 1;
+    }
+    50% {
+        -fx-opacity: 0.6; /* Slightly transparent */
+    }
+    100% {
+        -fx-opacity: 1; /* Fully opaque */
+    }
+}

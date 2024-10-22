@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import manager.impl.Manager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -57,7 +58,14 @@ public class RangeServlet extends HttpServlet {
                     return;
                 }
 
-                SheetManagerImpl sheetManager = engine.getSheetManager(username, sheetId);
+                Manager manager = engine.getManager(username, sheetId);
+
+                if (!manager.isUpToDate()) {
+                    throw new RuntimeException("In order to use ranges functionality you have to be updated\n" +
+                            "please update the sheet in order to continue.");
+                }
+
+                SheetManagerImpl sheetManager = manager.getSheetManager();
                 if (!sheetManager.havePermissionToEdit(username)) {
                     throw new IOException("Permission denied");
                 }

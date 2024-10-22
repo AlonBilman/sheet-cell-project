@@ -105,22 +105,28 @@ public class AppController {
 
     }
 
-    public void setLoadFile(String sheetName, Consumer<Exception> error) {
+    public void updateSheetDtoVersion() {
+        setSheet(currSheet, e -> {
+            Platform.runLater(() -> {
+                cellFunctionsController.showInfoAlert("Failed to update sheet version: " + e.getMessage());
+            });
+        }, false);
+        Platform.runLater(this::outOfFocus);
+    }
+
+    public void setSheet(String sheetName, Consumer<Exception> error, boolean isLoad) {
         currSheet = sheetName;
         query.clear();
         query.put(SHEET_ID, currSheet);
+
         httpCallerService.fetchSheetAsync(query, new Callback() {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
-                    Platform.runLater(() -> {
-                        gridSheetController.populateTableView(currSheetDTO, true);
-                        tableFunctionalityController.setActiveButtons(
-                                TableFunctionalityController.ButtonState.LOADING_FILE, true);
-                        cellFunctionsController.wakeVersionButton();
-                    });
+
+                    Platform.runLater(() -> updateUIAfterSheetFetch(isLoad));
                 } catch (Exception e) {
                     error.accept(e);
                 }
@@ -131,6 +137,13 @@ public class AppController {
                 error.accept(e);
             }
         });
+    }
+
+    private void updateUIAfterSheetFetch(boolean isLoad) {
+        gridSheetController.populateTableView(currSheetDTO, isLoad);
+        cellFunctionsController.wakeVersionButton();
+        tableFunctionalityController.setActiveButtons(
+                TableFunctionalityController.ButtonState.LOADING_FILE, true);
     }
 
     private void disableComponents(boolean disable) {
@@ -156,8 +169,7 @@ public class AppController {
             if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC)) {
                 cellFunctionsController.showNumericButtons(true);
             }
-        }
-        else {
+        } else {
             cellFunctionsController.showEmptyCell(id);
             tableFunctionalityController.setActiveButtons(
                     TableFunctionalityController.ButtonState.CLICKING_CELL, true);
@@ -168,6 +180,7 @@ public class AppController {
     public void updateCellClicked(String cellToUpdate, String newOriginalValue) {
         query.clear();
         query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellToUpdate));
+
         httpCallerService.changeCellAsync(query, newOriginalValue, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -178,44 +191,14 @@ public class AppController {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    updateSheetDtoVersion();
+                } catch (Exception e) {
                     Platform.runLater(() -> {
-                        if (errorResponse != null)
-                            cellFunctionsController.showInfoAlert(errorResponse.getError());
-                        else {
-                            cellFunctionsController.showInfoAlert("Error loading data.");
-                        }
+                        cellFunctionsController.showInfoAlert(e.getMessage());
                     });
                 }
-                query.remove(CELL_ID);
-                httpCallerService.fetchSheetAsync(query, new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Platform.runLater(() -> {
-                            cellFunctionsController.showInfoAlert(e.getMessage());
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                            Platform.runLater(() -> {
-                                if (errorResponse != null)
-                                    cellFunctionsController.showInfoAlert(errorResponse.getError());
-                                else {
-                                    cellFunctionsController.showInfoAlert("Error loading sheet.");
-                                }
-                            });
-                        }
-                        currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
-                        Platform.runLater(() -> {
-                            outOfFocus();
-                            gridSheetController.populateTableView(currSheetDTO, false);
-                        });
-                    }
-                });
             }
         });
     }
@@ -366,6 +349,29 @@ public class AppController {
         });
     }
 
+    public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) throws IOException {
+        Set<String> rangeNames = currSheetDTO.getActiveRanges().keySet(); // get the names
+        rangeNames = rangeNames.stream()
+                .sorted() // sort the names
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<String> finalRangeNames = rangeNames;
+        if (type.equals(TableFunctionalityController.ConfirmType.VIEW_EXISTING_RANGE)) {
+            try {
+                tableFunctionalityController.viewAndDeleteRangePopup(
+                        TableFunctionalityController.ConfirmType.VIEW_EXISTING_RANGE, finalRangeNames);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                tableFunctionalityController.viewAndDeleteRangePopup(
+                        TableFunctionalityController.ConfirmType.DELETE_EXISTING_RANGE, finalRangeNames);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public void deleteRangeConfirmedClicked(String rangeToDelete) {
         outOfFocus();
         query.clear();
@@ -396,67 +402,17 @@ public class AppController {
     public void showRangeConfirmedClicked(String selectedRangeName) {
         outOfFocus();
         Set<String> labelNamesToFocus = new HashSet<>();
-        query.clear();
-        query.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(query, new Callback() {
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try {
-                    httpCallerService.handleErrorResponse(response);
-                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
-                    Platform.runLater(() -> {
-                        Set<CellDataDTO> focusCells = sheet.getActiveRanges()
-                                .get(selectedRangeName)
-                                .getCells();
-                        for (CellDataDTO focusCell : focusCells) {
-                            labelNamesToFocus.add(focusCell.getId());
-                        }
-                        gridSheetController.focusOnRangeCells(labelNamesToFocus);
-                    });
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                tableFunctionalityController.showInfoAlert(e.getMessage());
-            }
-        });
+        Set<CellDataDTO> focusCells = currSheetDTO.getActiveRanges()
+                .get(selectedRangeName)
+                .getCells();
+        for (CellDataDTO focusCell : focusCells) {
+            labelNamesToFocus.add(focusCell.getId());
+        }
+        gridSheetController.focusOnRangeCells(labelNamesToFocus);
     }
 
     public void getVersionClicked() {
-        query.clear();
-        query.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(query, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    cellFunctionsController.showInfoAlert(e.getMessage());
-                });
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                    Platform.runLater(() -> {
-                        if (errorResponse != null)
-                            cellFunctionsController.showInfoAlert(errorResponse.getError());
-                        else {
-                            cellFunctionsController.showInfoAlert("Error loading sheet.");
-                        }
-                    });
-                }
-                sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
-                Platform.runLater(() -> {
-                    cellFunctionsController.buildVersionPopup(sheet.getSheetVersionNumber());
-                });
-            }
-        });
-
+        cellFunctionsController.buildVersionPopup(currSheetDTO.getSheetVersionNumber());
     }
 
     public void confirmVersionClicked(Integer selectedVersion) {
@@ -715,11 +671,11 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    sheetDTO oldDto = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
                     Platform.runLater(() -> {
-                        gridSheetController.populateTableView(oldDto, false);
+                        gridSheetController.populateTableView(currSheetDTO, false);
                         cellFunctionsController.showCell(
-                                oldDto.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
+                                currSheetDTO.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> {
@@ -739,32 +695,7 @@ public class AppController {
     }
 
     public void chartButtonClicked() {
-        query.clear();
-        query.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(query, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try {
-                    httpCallerService.handleErrorResponse(response);
-                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
-                    Platform.runLater(() -> {
-                        chartMaker.createChartDialogPopup(sheet.getColSize());
-                    });
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
-                }
-            }
-        });
+        chartMaker.createChartDialogPopup(currSheetDTO.getColSize());
     }
 
     public void confirmChartClicked(String chartType, String paramsX, String paramsY) {
@@ -812,55 +743,6 @@ public class AppController {
                 .sorted(Comparator.comparingInt(CellDataDTO::getRow))
                 .map(cell -> (double) cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
-    }
-
-    public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) throws IOException {
-        query.clear();
-        query.put(SHEET_ID, currSheet);
-        httpCallerService.fetchSheetAsync(query, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                tableFunctionalityController.showInfoAlert(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    sheetDTO sheet = GSON.fromJson(response.body().string(), sheetDTO.class);
-                    Set<String> rangeNames = sheet.getActiveRanges().keySet(); // get the names
-                    rangeNames = rangeNames.stream()
-                            .sorted() // sort the names
-                            .collect(Collectors.toCollection(LinkedHashSet::new));
-                    Set<String> finalRangeNames = rangeNames;
-                    Platform.runLater(() -> {
-                        if (type.equals(TableFunctionalityController.ConfirmType.VIEW_EXISTING_RANGE)) {
-                            try {
-                                tableFunctionalityController.viewAndDeleteRangePopup(
-                                        TableFunctionalityController.ConfirmType.VIEW_EXISTING_RANGE, finalRangeNames);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        } else {
-                            try {
-                                tableFunctionalityController.viewAndDeleteRangePopup(
-                                        TableFunctionalityController.ConfirmType.DELETE_EXISTING_RANGE, finalRangeNames);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    });
-                } else {
-                    HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                    Platform.runLater(() -> {
-                        if (errorResponse != null) {
-                            tableFunctionalityController.showInfoAlert(errorResponse.getError());
-                        } else {
-                            tableFunctionalityController.showInfoAlert("Error loading sheet.");
-                        }
-                    });
-                }
-            }
-        });
     }
 
     public void backToMainScreenClicked() {

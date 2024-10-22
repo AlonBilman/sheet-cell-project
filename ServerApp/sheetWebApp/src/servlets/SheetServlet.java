@@ -12,12 +12,10 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static constants.Constants.SHEET_ID;
 
-@WebServlet(name = Constants.SHEET_SERVLET, urlPatterns = {Constants.DISPLAY + Constants.SHEET_DTO, Constants.DISPLAY + Constants.ALL_VERSIONS})
+@WebServlet(name = Constants.SHEET_SERVLET, urlPatterns = {Constants.VERSION,Constants.DISPLAY + Constants.SHEET_DTO, Constants.DISPLAY + Constants.ALL_VERSIONS})
 public class SheetServlet extends HttpServlet {
 
     @Override
@@ -43,15 +41,15 @@ public class SheetServlet extends HttpServlet {
                     return;
 
                 Object responseData;
-                Manager manager = engine.getManager(username,sheetId);
+                Manager manager = engine.getManager(username, sheetId);
                 if (servletPath.contains(Constants.ALL_VERSIONS)) {
-                    int version = manager.getCurrentVersion();
-                    responseData = manager.getSheetManager().getSheets().entrySet().stream()
-                            .filter(entry -> entry.getKey() < version) //only include versions less than the current version
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                } else {
+                    responseData = manager.getSheetManager().getSheets(); //Map<Integer,sheetDTO>
+                } else if (servletPath.contains(Constants.VERSION)){
+                    responseData = manager.getCurrentVersion(); //int
+                }
+                else {
                     manager.updateVersion();
-                    responseData = engine.getSheetDTO(sheetId, username);
+                    responseData = engine.getSheetDTO(sheetId, username); //sheetDTO
                 }
                 ResponseUtils.writeSuccessResponse(response, responseData);
             }

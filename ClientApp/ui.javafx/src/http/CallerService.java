@@ -73,6 +73,11 @@ public class CallerService {
         fetchDataAsync(CELL_DTO, queryParams, CellDataDTO.class, callback);
     }
 
+    public void getUpdatedVersionNumberAsync(Map<String, String> queryParams, Callback callback) {
+        String url = BASE_DIRECTORY + VERSION;
+        HttpClientUtil.runAsyncGet(url, queryParams, callback);
+    }
+
     public void changeColorAsync(Map<String, String> queryParams, String endPoint, String color, Callback callback) {
         String url = BASE_DIRECTORY + MODIFY + endPoint;
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), GSON.toJson(color));
