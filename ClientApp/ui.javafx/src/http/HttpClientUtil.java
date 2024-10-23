@@ -3,6 +3,7 @@ package http;
 import constants.Constants;
 import com.google.gson.Gson;
 import dto.CellDataDTO;
+import javafx.application.Platform;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,11 +96,13 @@ public class HttpClientUtil {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 System.out.println("[LOGOUT]    Disconnecting from Server: Server returns: " + response.code());
+                Platform.runLater(()->{
+                    HTTP_CLIENT.dispatcher().executorService().shutdown();
+                    HTTP_CLIENT.connectionPool().evictAll();
+                    SIMPLE_COOKIE_MANAGER.clearAllCookies();
+                });
             }
         });
-        HTTP_CLIENT.dispatcher().executorService().shutdown();
-        HTTP_CLIENT.connectionPool().evictAll();
-        SIMPLE_COOKIE_MANAGER.clearAllCookies();
     }
 
     public static ErrorResponse handleErrorResponse(Response response) throws IOException {
