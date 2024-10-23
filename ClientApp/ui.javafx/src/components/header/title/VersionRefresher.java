@@ -43,7 +43,6 @@ public class VersionRefresher extends TimerTask {
                 try {
                     caller.handleErrorResponse(response);
                     int version = GSON.fromJson(response.body().string(), Integer.class);
-                    System.out.println(version);
                     versionConsumer.accept(version);
                 } catch (Exception e) {
                     System.out.println("Error processing version response: " + e.getMessage());

@@ -52,7 +52,7 @@ public class TitleCardController {
     public void reloadSheetListener() {
         appController.updateSheetDtoVersion();
         if (isBreathing) {
-            toggleBreathing(); // Stop breathing if active
+            toggleBreathing(); //stop breathing if active
         }
         reloadSheetButton.setDisable(true);
     }
@@ -70,7 +70,7 @@ public class TitleCardController {
         if (breatheTimeline == null) {
             breatheTimeline = new Timeline(
                     new KeyFrame(Duration.ZERO, e -> reloadSheetButton.setOpacity(1)),
-                    new KeyFrame(Duration.seconds(1.0), e -> reloadSheetButton.setOpacity(0.85)),
+                    new KeyFrame(Duration.seconds(1.0), e -> reloadSheetButton.setOpacity(0.7)),
                     new KeyFrame(Duration.seconds(2.0), e -> reloadSheetButton.setOpacity(1))
             );
             breatheTimeline.setCycleCount(Animation.INDEFINITE);
@@ -111,7 +111,7 @@ public class TitleCardController {
 
     private void onResponseRefresher(int newVersion) {
         if (newVersion > this.currVersion) {
-            System.out.println("DETECTED!");
+            System.out.println("DETECTED new version : "+newVersion);
             stopVersionRefresher();
             reloadSheetButton.setDisable(false);
             toggleBreathing();

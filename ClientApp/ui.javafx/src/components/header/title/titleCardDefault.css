@@ -13,7 +13,6 @@
     -fx-opacity: 0.3
 }
 
-
 #backToMainScreenButton {
     -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
     -fx-text-fill: #ffffff;
