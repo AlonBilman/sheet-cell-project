@@ -1,14 +1,14 @@
 /* General styles for ScrollPane */
-.scroll-pane {
+.pane {
     -fx-background-color: #fff9db; /* Light yellow background */
+    -fx-padding: 20px; /* Spacious padding from the first pane */
     -fx-border-color: #ffd966; /* Subtle yellow border */
-    -fx-border-width: 1.5px; /* Slightly thicker border */
+    -fx-border-width: 1.5px; /* Thicker border, matching the first pane */
     -fx-background-insets: 0, 0; /* Remove default insets */
-    -fx-padding: 20px; /* Spacious padding */
-    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-border-radius: 8px; /* Rounded corners, matching the first pane */
     -fx-background-radius: 8px; /* Matching background radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow for depth */
 }
-
 /* Styling for VBox containers */
 .vbox {
     -fx-background-color: #fff4cc; /* Soft off-yellow background */
@@ -51,7 +51,7 @@
     -fx-background-radius: 5px; /* Matching background radius */
     -fx-padding: 5px 10px; /* Tight padding */
     -fx-border-color: #cc9900; /* Darker yellow border */
-    -fx-border-width: 1.5px; /* Thinner border */
+    -fx-border-width: 1px; /* Thinner border */
     -fx-cursor: hand; /* Pointer cursor */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2); /* Soft shadow */
 }

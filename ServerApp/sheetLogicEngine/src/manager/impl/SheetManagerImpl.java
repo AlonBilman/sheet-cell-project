@@ -72,7 +72,7 @@ public class SheetManagerImpl implements SheetManager, Serializable {
             byte[] inputStreamBytes = inputStream.readAllBytes();
             //check if its xml
             if (!isXMLFile(new ByteArrayInputStream(inputStreamBytes))) {
-                throw new IllegalArgumentException("XML is not valid");
+                throw new IllegalArgumentException("Not a valid XML file");
             }
             //try to init
             STLSheet newSheet = readXMLFile(new ByteArrayInputStream(inputStreamBytes));
@@ -81,7 +81,7 @@ public class SheetManagerImpl implements SheetManager, Serializable {
             return newSheet.getName();
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("XML is not valid: " + e.getMessage());
+            throw new IllegalArgumentException("Not a valid XML file: " + e.getMessage());
         }
     }
 

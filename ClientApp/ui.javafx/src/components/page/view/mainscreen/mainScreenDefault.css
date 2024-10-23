@@ -10,6 +10,28 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow for depth */
 }
 
+/* Modernized Styling for TitledPane headers */
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(to bottom, #0066cc, #0052a3); /* Smoother gradient from vibrant to darker blue */
+    -fx-text-fill: #ffffff; /* Clean white text */
+    -fx-font-size: 15px; /* Slightly larger font for a modern look */
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-border-radius: 4px; /* More rounded corners for a smoother look */
+    -fx-background-radius: 4px; /* Matching background radius */
+    -fx-padding: 12px 10px; /* Spacious padding */
+    -fx-border-color: #0052a3; /* Border to match the darker part of the gradient */
+    -fx-border-width: 2px; /* Thick border for better definition */
+    -fx-cursor: hand; /* Pointer cursor on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow for a floating effect */
+    -fx-alignment: center-left; /* Align text to the left for a more modern look */
+}
+
+.titled-pane > .title:hover {
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker blue on hover for contrast */
+    -fx-border-color: #004b8c; /* Matching darker border */
+}
+
+
 /* Modernized styling for TableViews */
 .table-view {
     -fx-background-color: #ffffff; /* Clean white background */
