@@ -49,6 +49,17 @@ public class MainScreenController {
     @FXML
     public ScrollPane scrollPane;
     @FXML
+    public TitledPane historyTab;
+    @FXML
+    public TableView<PermissionData> historyTable;
+    @FXML
+    public TableColumn<PermissionData,String> HistoryUserNameColumn;
+    @FXML
+    public TableColumn<PermissionData,String> HistoryPermissionNameColumn;
+    @FXML
+    public TableColumn<PermissionData,String> HistoryPermissionApprovedColumn;
+
+    @FXML
     private TableView<PermissionData> SheetPermissionTable;
     @FXML
     private TableColumn<PermissionData, String> userNameColumn;
@@ -97,6 +108,10 @@ public class MainScreenController {
         userUploadedColumn.setCellValueFactory(new PropertyValueFactory<>("UserUploaded"));
         sheetNameColumn.setCellValueFactory(new PropertyValueFactory<>("SheetName"));
         sheetSizeColumn.setCellValueFactory(new PropertyValueFactory<>("SheetSize"));
+
+        HistoryUserNameColumn.setCellValueFactory(new PropertyValueFactory<>("UserName"));
+        HistoryPermissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("PermissionType"));
+        HistoryPermissionApprovedColumn.setCellValueFactory(new PropertyValueFactory<>("ApprovedPermission"));
 
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("UserName"));
         permissionNameColumn.setCellValueFactory(new PropertyValueFactory<>("PermissionType"));
