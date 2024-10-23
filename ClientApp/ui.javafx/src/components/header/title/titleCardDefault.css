@@ -9,6 +9,11 @@
     -fx-cursor: hand;
 }
 
+#reloadSheetButton:disabled {
+    -fx-opacity: 0.3
+}
+
+
 #backToMainScreenButton {
     -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
     -fx-text-fill: #ffffff;
@@ -30,7 +35,7 @@
         -fx-opacity: 1;
     }
     50% {
-        -fx-opacity: 0.6; /* Slightly transparent */
+        -fx-opacity: 0.4; /* Slightly transparent */
     }
     100% {
         -fx-opacity: 1; /* Fully opaque */

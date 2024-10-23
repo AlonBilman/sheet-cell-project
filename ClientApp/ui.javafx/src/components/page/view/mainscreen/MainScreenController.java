@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -23,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -175,7 +177,6 @@ public class MainScreenController {
                         .toExternalForm()
         );
     }
-
 
     private void updateList() {
         sheetName = SheetTable.getSelectionModel().getSelectedItem().getSheetName();
@@ -366,7 +367,7 @@ public class MainScreenController {
         Platform.runLater(() -> {
             ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
             currentData.clear();
-            if(data!=null)
+            if (data != null)
                 currentData.addAll(data);
             SheetPermissionTable.refresh();
         });
@@ -430,7 +431,7 @@ public class MainScreenController {
                 .findAny()
                 .orElse(null);
         if (userPermissionData == null || !userPermissionData.getApprovedPermission().equalsIgnoreCase("yes")) {
-            showInfoAlert("You dont have permission for this sheet.");
+            showInfoAlert("You don't have permission for this sheet.");
             return;
         }
 
@@ -444,18 +445,26 @@ public class MainScreenController {
             stage.setTitle("Sheet Cell - App Screen");
             AppController appController = loader.getController();
             appController.setStage(stage);
-            appController.setSheet(sheetName, this::error,true);
+            appController.setSheet(sheetName, this::error, true);
             appController.setUserName(username);
             appController.setStyleOnParts(themeStyle);
             if (isReader)
                 appController.setReaderAccess();
-
+            //save the main exit window
+            EventHandler<WindowEvent> existingHandler = stage.getOnCloseRequest();
+            stage.setOnCloseRequest(event -> {
+                appController.stopRefresher();
+                //calling the main window closing
+                if (existingHandler != null) {
+                    existingHandler.handle(event);
+                }
+                stage.close();
+            });
             stage.show();
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
         }
     }
-
 
     private void error(Exception e) {
         Platform.runLater(() -> {

@@ -4,12 +4,17 @@ import components.page.view.sheetscreen.AppController;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
+import java.util.Map;
+import java.util.Timer;
 
 public class TitleCardController {
 
@@ -26,6 +31,11 @@ public class TitleCardController {
 
     private AppController appController;
     private boolean isBreathing = false;
+    private Timer versionTimer;
+    private VersionRefresher versionRefresher;
+    private BooleanProperty autoUpdate = new SimpleBooleanProperty(true);
+    private int currVersion;
+    private Timeline breatheTimeline;
 
     public void setMainController(AppController mainController) {
         this.appController = mainController;
@@ -41,26 +51,70 @@ public class TitleCardController {
 
     public void reloadSheetListener() {
         appController.updateSheetDtoVersion();
-        toggleBreathing();
+        if (isBreathing) {
+            toggleBreathing(); // Stop breathing if active
+        }
+        reloadSheetButton.setDisable(true);
     }
 
     private void toggleBreathing() {
         if (isBreathing) {
-            reloadSheetButton.getStyleClass().remove("glow-effect");
-            reloadSheetButton.setOpacity(1);
-            reloadSheetButton.setStyle("");
+            stopBreathingAnimation();
         } else {
-            reloadSheetButton.getStyleClass().add("glow-effect");
+            startBreathingAnimation();
+        }
+        isBreathing = !isBreathing;
+    }
 
-            Timeline breatheTimeline = new Timeline(
+    private void startBreathingAnimation() {
+        if (breatheTimeline == null) {
+            breatheTimeline = new Timeline(
                     new KeyFrame(Duration.ZERO, e -> reloadSheetButton.setOpacity(1)),
                     new KeyFrame(Duration.seconds(1.0), e -> reloadSheetButton.setOpacity(0.85)),
                     new KeyFrame(Duration.seconds(2.0), e -> reloadSheetButton.setOpacity(1))
             );
-
             breatheTimeline.setCycleCount(Animation.INDEFINITE);
+        }
+
+        if (breatheTimeline.getStatus() != Animation.Status.RUNNING) {
+            reloadSheetButton.getStyleClass().add("glow-effect");
             breatheTimeline.play();
         }
-        isBreathing = !isBreathing;
+    }
+
+    private void stopBreathingAnimation() {
+        if (breatheTimeline != null && breatheTimeline.getStatus() == Animation.Status.RUNNING) {
+            breatheTimeline.stop();
+            reloadSheetButton.getStyleClass().remove("glow-effect");
+            reloadSheetButton.setOpacity(1);
+        }
+    }
+
+    public void startVersionRefresher(Map<String, String> queryParams, int currVersion) {
+        stopVersionRefresher();
+        this.currVersion = currVersion;
+        versionRefresher = new VersionRefresher(autoUpdate, this::onResponseRefresher, queryParams);
+        versionTimer = new Timer();
+        versionTimer.schedule(versionRefresher, 0, 3000);
+    }
+
+    public void stopVersionRefresher() {
+        if (versionTimer != null) {
+            versionTimer.cancel();
+            versionTimer = null;
+        }
+        if (versionRefresher != null) {
+            versionRefresher.cancel();
+            versionRefresher = null;
+        }
+    }
+
+    private void onResponseRefresher(int newVersion) {
+        if (newVersion > this.currVersion) {
+            System.out.println("DETECTED!");
+            stopVersionRefresher();
+            reloadSheetButton.setDisable(false);
+            toggleBreathing();
+        }
     }
 }

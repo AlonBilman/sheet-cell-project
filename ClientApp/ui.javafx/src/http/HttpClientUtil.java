@@ -110,15 +110,6 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static String handleStringResponse(Response response) throws IOException {
-        if (response.body() != null) {
-            String responseBody = response.body().string();
-            return GSON.fromJson(responseBody, String.class);
-        }
-        return null;
-    }
-
-
     public static class ErrorResponse {
         private String error;
         private int status;

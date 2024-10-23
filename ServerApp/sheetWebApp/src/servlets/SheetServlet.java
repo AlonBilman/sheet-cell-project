@@ -45,7 +45,7 @@ public class SheetServlet extends HttpServlet {
                 if (servletPath.contains(Constants.ALL_VERSIONS)) {
                     responseData = manager.getSheetManager().getSheets(); //Map<Integer,sheetDTO>
                 } else if (servletPath.contains(Constants.VERSION)){
-                    responseData = manager.getCurrentVersion(); //int
+                    responseData = manager.getSheetManager().getSheetVersion()  ; //int
                 }
                 else {
                     manager.updateVersion();
@@ -59,4 +59,3 @@ public class SheetServlet extends HttpServlet {
         }
     }
 }
-

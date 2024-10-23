@@ -5,6 +5,7 @@ import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.title.TitleCardController;
+import components.header.title.VersionRefresher;
 import components.page.view.mainscreen.MainScreenController;
 
 import dto.CellDataDTO;
@@ -46,6 +47,8 @@ public class AppController {
     private Stage stage;
     private String userName;
     private sheetDTO currSheetDTO;
+    private Timer versionTimer;
+    private VersionRefresher versionRefresher;
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
@@ -96,6 +99,8 @@ public class AppController {
             httpCallerService = new CallerService();
             query = new HashMap<>();
             currSheetDTO = null;
+            versionTimer = null;
+            versionRefresher = null;
         }
     }
 
@@ -144,6 +149,9 @@ public class AppController {
         cellFunctionsController.wakeVersionButton();
         tableFunctionalityController.setActiveButtons(
                 TableFunctionalityController.ButtonState.LOADING_FILE, true);
+        query.clear();
+        query.put(SHEET_ID, currSheet);
+        titleCardController.startVersionRefresher(query, currSheetDTO.getSheetVersionNumber());//will stop the old one too.
     }
 
     private void disableComponents(boolean disable) {
@@ -747,6 +755,7 @@ public class AppController {
 
     public void backToMainScreenClicked() {
         try {
+            stopRefresher();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../mainscreen/mainScreen.fxml")); // Update the path accordingly
             Parent root = loader.load();
             Scene scene = new Scene(root, 1120, 800);
@@ -767,4 +776,7 @@ public class AppController {
         titleCardController.setName(name);
     }
 
+    public void stopRefresher() {
+        titleCardController.stopVersionRefresher();
+    }
 }
