@@ -1,26 +1,29 @@
 package components.page.view.mainscreen;
 
+import java.util.ArrayList;
+import java.util.List;
+
+//this is the data obj that will be sheared between the UI and the SERVER
 public class PermissionData {
 
-    private final String userName;
-    private final String permissionType;
-    private final String approvedPermission;
+    List<Permission> permissions;
+    List<Permission> history;
 
-    public PermissionData(String Name, String Permission, String approvedPermission) {
-        this.userName = Name;
-        this.permissionType = Permission;
-        this.approvedPermission = approvedPermission;
+    public PermissionData(List<Permission> combinedList, List<Permission> history) {
+        this.permissions = combinedList;
+        this.history = history;
     }
 
-    public String getUserName() {
-        return userName;
+    public PermissionData() {
+        this.permissions = new ArrayList<>();
+        this.history = new ArrayList<>();
     }
 
-    public String getPermissionType() {
-        return permissionType;
+    public List<Permission> getHistory() {
+        return history;
     }
 
-    public String getApprovedPermission() {
-        return approvedPermission;
+    public List<Permission> getPermissions() {
+        return permissions;
     }
 }

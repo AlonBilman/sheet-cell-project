@@ -53,22 +53,22 @@ public class MainScreenController {
     @FXML
     public TitledPane historyTab;
     @FXML
-    public TableView<PermissionData> historyTable;
+    public TableView<Permission> historyTable;
     @FXML
-    public TableColumn<PermissionData,String> HistoryUserNameColumn;
+    public TableColumn<Permission, String> HistoryUserNameColumn;
     @FXML
-    public TableColumn<PermissionData,String> HistoryPermissionNameColumn;
+    public TableColumn<Permission, String> HistoryPermissionNameColumn;
     @FXML
-    public TableColumn<PermissionData,String> HistoryPermissionApprovedColumn;
+    public TableColumn<Permission, String> HistoryPermissionApprovedColumn;
 
     @FXML
-    private TableView<PermissionData> SheetPermissionTable;
+    private TableView<Permission> SheetPermissionTable;
     @FXML
-    private TableColumn<PermissionData, String> userNameColumn;
+    private TableColumn<Permission, String> userNameColumn;
     @FXML
-    private TableColumn<PermissionData, String> permissionNameColumn;
+    private TableColumn<Permission, String> permissionNameColumn;
     @FXML
-    private TableColumn<PermissionData, String> permissionApprovedColumn;
+    private TableColumn<Permission, String> permissionApprovedColumn;
     @FXML
     private TableView<AppUser> SheetTable;
     @FXML
@@ -219,11 +219,11 @@ public class MainScreenController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    Type listType = new TypeToken<List<PermissionData>>() {
+                    Type listType = new TypeToken<PermissionData>() {
                     }.getType();
-                    List<PermissionData> permissionsList = GSON.fromJson(response.body().string(), listType);
-                    updatePermissionListFromList(permissionsList);
-
+                    PermissionData permissionData = GSON.fromJson(response.body().string(), listType);
+                    updatePermissionListFromList(permissionData.getPermissions());
+                    updateHistoryPermissionList(permissionData.getHistory());
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                         showInfoAlert(e.getMessage());
@@ -237,6 +237,16 @@ public class MainScreenController {
                     showInfoAlert(e.getMessage());
                 });
             }
+        });
+    }
+
+    private void updateHistoryPermissionList(List<Permission> history) {
+        Platform.runLater(() -> {
+            ObservableList<Permission> currentData = historyTable.getItems();
+            currentData.clear();
+            if (history != null)
+                currentData.addAll(history);
+            historyTable.refresh();
         });
     }
 
@@ -378,9 +388,9 @@ public class MainScreenController {
         });
     }
 
-    private void updatePermissionListFromList(List<PermissionData> data) {
+    private void updatePermissionListFromList(List<Permission> data) {
         Platform.runLater(() -> {
-            ObservableList<PermissionData> currentData = SheetPermissionTable.getItems();
+            ObservableList<Permission> currentData = SheetPermissionTable.getItems();
             currentData.clear();
             if (data != null)
                 currentData.addAll(data);
@@ -439,9 +449,9 @@ public class MainScreenController {
             return;
         }
 
-        ObservableList<PermissionData> permissionDataList = SheetPermissionTable.getItems();
+        ObservableList<Permission> permissionDataList = SheetPermissionTable.getItems();
 
-        PermissionData userPermissionData = permissionDataList.stream()
+        Permission userPermissionData = permissionDataList.stream()
                 .filter(permission -> permission.getUserName().equalsIgnoreCase(username))
                 .findAny()
                 .orElse(null);

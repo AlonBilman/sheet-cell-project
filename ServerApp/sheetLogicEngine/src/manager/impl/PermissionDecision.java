@@ -5,10 +5,16 @@ import engine.Engine;
 public class PermissionDecision {
     private Engine.PermissionStatus permissionStatus;
     private Engine.ApprovalStatus approvalStatus;
+    private final String name;
 
-    public PermissionDecision(Engine.PermissionStatus permissionStatus, Engine.ApprovalStatus approvalStatus) {
+    public PermissionDecision(Engine.PermissionStatus permissionStatus, Engine.ApprovalStatus approvalStatus, String name) {
         this.permissionStatus = permissionStatus;
         this.approvalStatus = approvalStatus;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Engine.PermissionStatus getPermissionStatus() {

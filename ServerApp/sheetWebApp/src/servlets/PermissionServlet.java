@@ -36,14 +36,17 @@ public class PermissionServlet extends HttpServlet {
                     return;
 
                 SheetManagerImpl sheetManager = engine.getSheetManager(owner, sheetName);
+
                 Map<String, PermissionDecision> permissionFinalizeMap = sheetManager.getFinalizedPermissions();
                 Map<String, PermissionDecision> permissionRequestMap = sheetManager.getPendingPermissionsRequests();
+                List<PermissionDecision> permissionHistory = sheetManager.getPermissionHistory();
 
-                List<PermissionData> combinedList = new ArrayList<>();
+                List<Permission> combinedList = new ArrayList<>();
                 combinedList.addAll(extractData(permissionFinalizeMap));
                 combinedList.addAll(extractData(permissionRequestMap));
 
-                ResponseUtils.writeSuccessResponse(response, combinedList);
+                List<Permission> history = extractData(permissionHistory);
+                ResponseUtils.writeSuccessResponse(response, new PermissionData(combinedList, history));
 
 
             } catch (Exception e) {
@@ -52,13 +55,24 @@ public class PermissionServlet extends HttpServlet {
         }
     }
 
-    private List<PermissionData> extractData(Map<String, PermissionDecision> permissionDecisionMap) {
-        List<PermissionData> list = new ArrayList<>();
+    private List<Permission> extractData(Map<String, PermissionDecision> permissionDecisionMap) {
+        List<Permission> list = new ArrayList<>();
         for (Map.Entry<String, PermissionDecision> entry : permissionDecisionMap.entrySet()) {
             String user = entry.getKey();
             String permission = entry.getValue().getPermissionStatus().toString();
             String approved = entry.getValue().getApprovalStatus().toString();
-            list.add(new PermissionData(user, permission, approved));
+            list.add(new Permission(user, permission, approved));
+        }
+        return list;
+    }
+
+    private List<Permission> extractData(List<PermissionDecision> permissionDecisionList) {
+        List<Permission> list = new ArrayList<>();
+        for (PermissionDecision permissionDecision : permissionDecisionList) {
+            String user = permissionDecision.getName();
+            String permission = permissionDecision.getPermissionStatus().toString();
+            String approved = permissionDecision.getApprovalStatus().toString();
+            list.add(new Permission(user, permission, approved));
         }
         return list;
     }

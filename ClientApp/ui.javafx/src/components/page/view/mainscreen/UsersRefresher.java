@@ -2,7 +2,6 @@ package components.page.view.mainscreen;
 
 import com.google.gson.reflect.TypeToken;
 import http.CallerService;
-import http.HttpClientUtil;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,14 +43,14 @@ public class UsersRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                try{
+                try {
                     caller.handleErrorResponse(response);
                     String jsonArrayOfUsersAndSheets = response.body().string();
-                    Type listType = new TypeToken<List<AppUser>>() {}.getType();
+                    Type listType = new TypeToken<List<AppUser>>() {
+                    }.getType();
                     List<AppUser> usersNames = GSON.fromJson(jsonArrayOfUsersAndSheets, listType);
                     usersListConsumer.accept(usersNames);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
             }

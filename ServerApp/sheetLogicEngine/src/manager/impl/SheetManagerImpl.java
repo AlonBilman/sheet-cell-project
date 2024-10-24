@@ -46,6 +46,10 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return permissionManager.getPendingRequests();
     }
 
+    public List<PermissionDecision> getPermissionHistory() {
+        return permissionManager.getPermissionHistory();
+    }
+
     public Map<String, PermissionDecision> getFinalizedPermissions() {
         return permissionManager.getFinalizedPermissions();
     }
