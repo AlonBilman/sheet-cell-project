@@ -44,6 +44,8 @@ public class CellFunctionsController {
     @FXML
     public Label readOnlyLabel;
     @FXML
+    public Label changedBy;
+    @FXML
     private VBox inputDialog;
     @FXML
     private Label cellIdProperty;
@@ -85,6 +87,7 @@ public class CellFunctionsController {
         newOriginalValText.setDisable(false);
         newOriginalValText.setText("");
         updateCellButton.setDisable(false);
+        changedBy.setText("Changed By : "+cell.getChangedBy());
     }
 
     public void showEmptyCell(String id) {
@@ -95,6 +98,7 @@ public class CellFunctionsController {
         newOriginalValText.setDisable(false);
         newOriginalValText.setText("");
         updateCellButton.setDisable(false);
+        changedBy.setText("Changed By :");
     }
 
     public void showInfoAlert(String problem) {
@@ -118,6 +122,7 @@ public class CellFunctionsController {
         cellUpdatedProperty.setText("Cell Version");
         cellValueProperty.setText("Original Cell Value");
         newOriginalValText.setText("New Original Value");
+        changedBy.setText("Changed By :");
         newOriginalValText.setDisable(true);
         updateCellButton.setDisable(true);
         showNumericButtons(false);
@@ -262,6 +267,7 @@ public class CellFunctionsController {
         versionPickerButton.setDisable(disable);
         newOriginalValText.setDisable(disable);
         cellUpdatedProperty.setDisable(disable);
+        changedBy.setDisable(disable);
     }
 
     private boolean checkInputDialogValues(double fromValue, double toValue, double jumpValue) {

@@ -126,11 +126,11 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     }
 
     @Override
-    public sheetDTO updateCell(String cellId, String value, boolean dynamically) {
+    public sheetDTO updateCell(String cellId, String value, boolean dynamically,String changedBy) {
         if (value != null && value.matches(".*\\S.*"))
             value = value.trim();
         try {
-            this.spreadSheet.changeCell(cellId, value, !dynamically);
+            this.spreadSheet.changeCell(cellId, value, !dynamically,changedBy);
             if (!dynamically)
                 sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
         } catch (Exception e) {
@@ -141,11 +141,11 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     }
 
     public sheetDTO setOriginalValDynamically(String cellId, String newOriginalVal) {
-        return updateCell(cellId, newOriginalVal, true);
+        return updateCell(cellId, newOriginalVal, true,null);
     }
 
     public sheetDTO finishedDynamicallyChangeFeature(String cellId) {
-        sheetDTO revertSheet = updateCell(cellId, this.revertOriginalVal, true);
+        sheetDTO revertSheet = updateCell(cellId, this.revertOriginalVal, true,null);
         this.revertOriginalVal = null;
         return revertSheet;
     }

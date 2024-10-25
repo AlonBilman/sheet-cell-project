@@ -22,7 +22,7 @@ public interface SheetManager {
     CellDataDTO showCell(String id);
 
     // Updates a specific cell with a new value
-    sheetDTO updateCell(String cellId, String value, boolean dynamically);
+    sheetDTO updateCell(String cellId, String value, boolean dynamically,String changedBy);
 
     // Sets the original value dynamically
     sheetDTO setOriginalValDynamically(String cellId, String newOriginalVal);

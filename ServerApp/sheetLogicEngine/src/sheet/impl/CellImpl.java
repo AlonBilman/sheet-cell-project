@@ -30,6 +30,7 @@ public class CellImpl implements Serializable {
     private EffectiveValue effectiveValue;
     private CellColor cellColor;
     private static SpreadSheetImpl currSpreadSheet;
+    private String changedBy;
 
     public CellImpl(int row, String col, String newOriginalVal, int versionNumber) {
         this.row = row;
@@ -38,6 +39,7 @@ public class CellImpl implements Serializable {
         cellColor = new CellColor(null, null);
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
+        changedBy = "";
         dependsOnRange = new HashSet<>();
         setOriginalValue(newOriginalVal, true);
         if (newOriginalVal == null)
@@ -68,6 +70,7 @@ public class CellImpl implements Serializable {
         dependsOn = new HashSet<>();
         affectsOn = new HashSet<>();
         dependsOnRange = new HashSet<>();
+        changedBy = "";
         cellColor = new CellColor(null, null);
         setOriginalValue(cell.getSTLOriginalValue(), true);
     }
@@ -416,5 +419,13 @@ public class CellImpl implements Serializable {
 
     public CellColor getCellColor() {
         return cellColor;
+    }
+
+    public String getChangedBy() {
+        return changedBy;
+    }
+
+    public void setChangedBy(String changedBy) {
+        this.changedBy = changedBy;
     }
 }

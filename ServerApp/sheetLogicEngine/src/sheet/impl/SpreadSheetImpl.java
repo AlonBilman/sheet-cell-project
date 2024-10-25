@@ -73,7 +73,7 @@ public class SpreadSheetImpl implements Serializable {
         }
     }
 
-    public void changeCell(String id, String newOriginalVal, boolean editVersion) {
+    public void changeCell(String id, String newOriginalVal, boolean editVersion,String changedBy) {
         if (editVersion) //for dynamic change! please don't delete
             sheetBeforeChange = deepCopy();
         CellImpl.setSpreadSheet(this);
@@ -84,8 +84,10 @@ public class SpreadSheetImpl implements Serializable {
             cell = getCell(id);
         }
         cell.setOriginalValue(newOriginalVal, editVersion);
-        if (editVersion) //for dynamic change! please don't delete
+        if (editVersion) { //for dynamic change! please don't delete
             updateVersionNumber();
+            cell.setChangedBy(changedBy);
+        }
     }
 
     public void addCell(int row, String col, String newOriginalVal) {

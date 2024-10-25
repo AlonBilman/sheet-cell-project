@@ -93,7 +93,7 @@ public class CellServlet extends HttpServlet {
                     throw new IOException("Permission denied");
 
                 String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
-                sheetManager.updateCell(cellId, newOriginalValue, false);
+                sheetManager.updateCell(cellId, newOriginalValue, false,username);
                 manager.updateVersion();
                 ResponseUtils.writeSuccessResponse(response, null);
             }

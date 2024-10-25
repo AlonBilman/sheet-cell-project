@@ -18,6 +18,7 @@ public class CellDataDTO implements Serializable {
     private final String originalValue;
     private final EffectiveValueImpl effectiveValue;
     private final CellColor cellColor;
+    private final String changedBy;
 
     public CellDataDTO(CellImpl cell) {
         this.row = cell.getRow();
@@ -29,6 +30,7 @@ public class CellDataDTO implements Serializable {
         this.originalValue = cell.getOriginalValue();
         this.effectiveValue = (EffectiveValueImpl) cell.getEffectiveValue();
         this.cellColor = new CellColor(cell.getCellColor());
+        this.changedBy = cell.getChangedBy();
     }
 
     public String getId() {
@@ -66,4 +68,6 @@ public class CellDataDTO implements Serializable {
     public String getCol() {
         return col;
     }
+
+    public String getChangedBy() {return changedBy;}
 }

@@ -9,24 +9,30 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3);
 }
 
-/* Modernized styling for Labels */
-.label-style {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #007bff;
-    -fx-border-width: 2px;
+/* Unified Label styling */
+.label-style, #changedBy {
+    -fx-background-color: #ffffff; /* Reverted to white background */
     -fx-padding: 12px;
     -fx-text-fill: #333333;
     -fx-font-size: 15px;
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
 }
 
-.label-style:hover {
-    -fx-border-color: #0056b3;
+#changedBy {
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0.3, 0, 1);
 }
 
-/* Dynamic Change and Exit Buttons */
-#exitDynamicChange, #dynamicChangeButton {
+/* Buttons styling */
+#exitDynamicChange, #dynamicChangeButton, #sliderConfirm, #dynamicCancel,
+.update-button, .version-button {
     -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
     -fx-text-fill: #ffffff;
     -fx-font-size: 13px;
@@ -36,37 +42,20 @@
     -fx-cursor: hand;
 }
 
-#exitDynamicChange:disabled, #dynamicChangeButton:disabled {
-    -fx-opacity: 0.2;
-}
-
-#exitDynamicChange:hover, #dynamicChangeButton:hover {
-    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c);
-    -fx-border-color: #004b8c;
-}
-
-/* Update and Version Buttons */
-.update-button, .version-button {
-    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
-    -fx-text-fill: #ffffff;
-    -fx-font-size: 15px;
-    -fx-padding: 12px 18px;
-    -fx-border-color: #0056b3;
-    -fx-border-width: 2px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
-    -fx-cursor: hand;
-}
-
+#exitDynamicChange:hover, #dynamicChangeButton:hover,
+#sliderConfirm:hover, #dynamicCancel:hover,
 .update-button:hover, .version-button:hover {
     -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c);
     -fx-border-color: #004b8c;
 }
 
+#exitDynamicChange:disabled, #dynamicChangeButton:disabled,
+#sliderConfirm:disabled, #dynamicCancel:disabled,
 .version-button:disabled {
-    -fx-opacity: 0.4;
+    -fx-opacity: 0.2;
 }
 
-/* Modernized styling for TextFields */
+/* TextFields styling */
 .text-field-style, #fromTextField, #toTextField, #jumpTextField {
     -fx-background-color: #ffffff;
     -fx-border-color: #cccccc;
@@ -76,40 +65,21 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
 }
 
-.text-field-style:focused, #fromTextField:focused, #toTextField:focused, #jumpTextField:focused {
+.text-field-style:focused, #fromTextField:focused,
+#toTextField:focused, #jumpTextField:focused {
     -fx-border-color: #007bff;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
 }
 
-/* Submit and Cancel Buttons (inside dialog) */
-#sliderConfirm, #dynamicCancel {
-    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
-    -fx-text-fill: #ffffff;
-    -fx-font-size: 13px;
-    -fx-border-color: #0056b3;
+/* Input Dialog styling */
+.inputDialog {
+    -fx-background-color: #ffffff;
+    -fx-padding: 10px;
+    -fx-border-color: #000000;
     -fx-border-width: 1px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3);
-    -fx-cursor: hand;
 }
 
-#sliderConfirm:hover, #dynamicCancel:hover {
-    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c);
-    -fx-border-color: #004b8c;
-}
-
-/* Disabled styling for buttons */
-#sliderConfirm:disabled, #dynamicCancel:disabled {
-    -fx-opacity: 0.2;
-}
-
-.inputDialog{
-    -fx-background-color: white;
-    -fx-padding: 10;
-    -fx-border-color: black;
-    -fx-border-width: 1;
-}
-
-/* Disabled styling for general elements */
+/* General disabled styling */
 .disabled {
     -fx-opacity: 0.6;
 }
