@@ -72,11 +72,11 @@ public class RangeServlet extends HttpServlet {
 
                 if (isAddOperation) {
                     sheetManager.addRange(rangeBody.getName(), rangeBody.getToAndFrom());
+                    ResponseUtils.writeSuccessResponse(response, sheetManager.getRangeDto(rangeBody.getName()));
                 } else {
                     sheetManager.deleteRange(rangeBody.getName());
+                    ResponseUtils.writeSuccessResponse(response, null);
                 }
-
-                ResponseUtils.writeSuccessResponse(response, null);
             }
 
         } catch (Exception e) {

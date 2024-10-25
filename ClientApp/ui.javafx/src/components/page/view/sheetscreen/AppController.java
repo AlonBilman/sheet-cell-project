@@ -1,5 +1,6 @@
 package components.page.view.sheetscreen;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
@@ -9,6 +10,7 @@ import components.header.title.VersionRefresher;
 import components.page.view.mainscreen.MainScreenController;
 
 import dto.CellDataDTO;
+import dto.RangeDTO;
 import dto.sheetDTO;
 import http.CallerService;
 import http.HttpClientUtil;
@@ -345,9 +347,11 @@ public class AppController {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
+                    RangeDTO rangeDto = new Gson().fromJson(response.body().string(), RangeDTO.class);
+                    currSheetDTO.getActiveRanges().put(rangeName, rangeDto);
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                         tableFunctionalityController.showInfoAlert(e.getMessage());
@@ -357,7 +361,7 @@ public class AppController {
         });
     }
 
-    public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) throws IOException {
+    public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) {
         Set<String> rangeNames = currSheetDTO.getActiveRanges().keySet(); // get the names
         rangeNames = rangeNames.stream()
                 .sorted() // sort the names
@@ -388,9 +392,10 @@ public class AppController {
 
         httpCallerService.deleteRange(query, range, new Callback() {
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
+                    currSheetDTO.getActiveRanges().remove(rangeToDelete);
                 } catch (Exception e) {
                     Platform.runLater(() -> {
                         tableFunctionalityController.showInfoAlert(e.getMessage());
