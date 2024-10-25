@@ -16,6 +16,7 @@ public class Engine {
     private final Map<String, Set<Manager>> userMap;
     private final Set<String> sheetNames;
 
+
     public enum ApprovalStatus {
         PENDING {
             @Override
@@ -117,9 +118,14 @@ public class Engine {
                 .orElseThrow(() -> new IllegalArgumentException("Sheet " + sheetId + " does not exist for user " + userName));
     }
 
+    public SheetManagerImpl getSheetManagerCopy(String username, String sheetId) {
+        Manager manager = getManager(username, sheetId);
+        return manager.getManagerDeepCopyForDynamicChange();
+    }
+
+
     public synchronized sheetDTO getSheetDTO(String sheetId, String userName) {
         Manager manager = getManager(userName, sheetId);
-        //manager.updateVersion();
         SheetManagerImpl sheetManager = manager.getSheetManager();
         return sheetManager.Display();
     }

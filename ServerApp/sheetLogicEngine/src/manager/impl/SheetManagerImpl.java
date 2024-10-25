@@ -248,4 +248,27 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         }
         return cellsDto;
     }
+
+    public SheetManagerImpl deepCopy() {
+        try {
+            //serialize
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+            //deserialize
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return (SheetManagerImpl) objectInputStream.readObject();
+
+        } catch (NotSerializableException e) {
+            System.err.println("A field is not serializable: " + e.getMessage());
+            throw new RuntimeException("Failed to deep copy SheetManagerImpl due to non-serializable field", e);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to deep copy SheetManagerImpl", e);
+        }
+    }
+
 }

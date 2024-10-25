@@ -2,7 +2,9 @@ package manager.impl;
 
 import engine.Engine;
 
-public class PermissionDecision {
+import java.io.Serializable;
+
+public class PermissionDecision implements Serializable {
     private Engine.PermissionStatus permissionStatus;
     private Engine.ApprovalStatus approvalStatus;
     private final String name;

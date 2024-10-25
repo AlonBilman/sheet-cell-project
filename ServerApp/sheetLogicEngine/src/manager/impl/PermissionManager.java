@@ -2,12 +2,13 @@ package manager.impl;
 
 import engine.Engine;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PermissionManager {
+public class PermissionManager implements Serializable {
     private final Map<String, PermissionDecision> finalizedPermissions;
     private final Map<String, PermissionDecision> pendingRequests;
     private final List<PermissionDecision> permissionHistory;

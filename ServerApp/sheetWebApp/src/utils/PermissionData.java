@@ -1,10 +1,11 @@
 package utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 //this is the data obj that will be sheared between the UI and the SERVER
-public class PermissionData {
+public class PermissionData implements Serializable {
 
     List<Permission> permissions;
     List<Permission> history;

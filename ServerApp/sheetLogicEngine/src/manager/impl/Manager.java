@@ -4,9 +4,22 @@ public class Manager {
 
     private final SheetManagerImpl sheetManager;
     private int currentVersion;
+    private SheetManagerImpl deepCopyForDynamicChange;
+
 
     public boolean isUpToDate() {
         return currentVersion == sheetManager.getSheetVersion();
+    }
+
+    public SheetManagerImpl getManagerDeepCopyForDynamicChange(){
+        if(deepCopyForDynamicChange == null){
+            deepCopyForDynamicChange = sheetManager.deepCopy();
+        }
+        return deepCopyForDynamicChange;
+    }
+
+    public void dynamicChangeStopped() {
+        deepCopyForDynamicChange = null; //so the garbage collector will deal with it.
     }
 
     public int getCurrentVersion() {
@@ -24,5 +37,6 @@ public class Manager {
     public Manager(SheetManagerImpl sheetManager) {
         this.sheetManager = sheetManager;
         this.currentVersion = sheetManager.getSheetVersion();
+        this.deepCopyForDynamicChange = null;
     }
 }
