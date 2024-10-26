@@ -30,4 +30,6 @@ public class Constants {
     public static final String OWNER = "owner";
     public static final String REQUESTER = "requester";
     public static final String VERSION = "/version";
+    public static final String CHAT_LINES_LIST = "/chat-lines-list";
+    public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
 }

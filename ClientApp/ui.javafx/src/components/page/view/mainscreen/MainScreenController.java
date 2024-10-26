@@ -1,6 +1,7 @@
 package components.page.view.mainscreen;
 
 import com.google.gson.reflect.TypeToken;
+import components.chatarea.ChatController;
 import components.page.view.sheetscreen.AppController;
 import http.CallerService;
 import http.HttpClientUtil;
@@ -94,6 +95,8 @@ public class MainScreenController {
     private Button RequestPermissionButton;
     @FXML
     private ChoiceBox<String> styleChoiceBox;
+    @FXML
+    private ChatController chatController;
 
     private String username;
     private String sheetName;
@@ -171,6 +174,12 @@ public class MainScreenController {
         autoUpdate = new SimpleBooleanProperty(true);
         query = new HashMap<>();
         startListRefresher();
+        chatController.setMainScreenControllerAndCallerService(this,httpCallerService);
+    }
+
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
     }
 
     private void setTheme(String newValue) {

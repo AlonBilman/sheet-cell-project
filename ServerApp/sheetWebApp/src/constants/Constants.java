@@ -41,7 +41,9 @@ public class Constants {
     public static final String PERMISSION_SERVLET = "PermissionServlet";
     public static final String PERMISSIONS = "/permissions";
     public static final String OWNER = "owner";
-    public static final String PERMISSION_REQUESTS = "/permission-requests";
     public static final String REQUESTER = "requester";
     public static final String VERSION = "/version";
+    public static final String CHAT_LINES_LIST = "/chat-lines-list";
+    public static final String CHAT_SERVLET = "ChatServlet";
+    public static final String WRITE_TO_CHAT = "/write-to-chat";
 }

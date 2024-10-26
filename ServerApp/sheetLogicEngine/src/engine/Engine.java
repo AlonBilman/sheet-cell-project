@@ -2,6 +2,7 @@ package engine;
 
 import dto.CellDataDTO;
 import dto.sheetDTO;
+import manager.impl.ChatManager;
 import manager.impl.SheetManagerImpl;
 import manager.impl.Manager;
 
@@ -15,6 +16,7 @@ public class Engine {
     private final Set<String> activeUsers;
     private final Map<String, Set<Manager>> userMap;
     private final Set<String> sheetNames;
+    private final ChatManager chatManager;
 
 
     public enum ApprovalStatus {
@@ -63,7 +65,12 @@ public class Engine {
     public Engine() {
         this.activeUsers = new HashSet<>();
         this.userMap = new HashMap<>();
-        sheetNames = new HashSet<>();
+        this.sheetNames = new HashSet<>();
+        this.chatManager = new ChatManager();
+    }
+
+    public synchronized ChatManager getChatManager() {
+        return chatManager;
     }
 
     public synchronized void addUser(String user) {
