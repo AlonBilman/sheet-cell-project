@@ -11,8 +11,8 @@ public class Manager {
         return currentVersion == sheetManager.getSheetVersion();
     }
 
-    public SheetManagerImpl getManagerDeepCopyForDynamicChange(){
-        if(deepCopyForDynamicChange == null){
+    public SheetManagerImpl getManagerDeepCopyForDynamicChange() {
+        if (deepCopyForDynamicChange == null) {
             deepCopyForDynamicChange = sheetManager.deepCopy();
         }
         return deepCopyForDynamicChange;

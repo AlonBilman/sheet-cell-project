@@ -45,8 +45,8 @@ public class DynamicChangeServlet extends HttpServlet {
                     return;
                 SheetManagerImpl sheetManager = engine.getSheetManagerCopy(username, sheetId);
                 String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
-                sheetManager.setOriginalValDynamically(cellId, newOriginalValue);
-                ResponseUtils.writeSuccessResponse(response, sheetManager.Display());
+                sheetDTO sheetDto = sheetManager.setOriginalValDynamically(cellId, newOriginalValue);
+                ResponseUtils.writeSuccessResponse(response, sheetDto);
             }
 
         } catch (Exception e) {
@@ -79,9 +79,8 @@ public class DynamicChangeServlet extends HttpServlet {
                 //telling the manager we stopped it, so he could free memory ->
                 //returning the dto since the copy.
                 SheetManagerImpl sheetManager = engine.getSheetManagerCopy(username, sheetId);
-                sheetManager.finishedDynamicallyChangeFeature(cellId);
-                sheetDTO sheetDto = sheetManager.Display();
-                engine.getManager(username,sheetId).dynamicChangeStopped();
+                sheetDTO sheetDto = sheetManager.finishedDynamicallyChangeFeature(cellId);
+                engine.getManager(username, sheetId).dynamicChangeStopped();
                 ResponseUtils.writeSuccessResponse(response, sheetDto);
 
             }

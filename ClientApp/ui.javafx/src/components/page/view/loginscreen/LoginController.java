@@ -71,7 +71,7 @@ public class LoginController {
         String jsonUserName = gson.toJson(usernameField.getText().trim());
         RequestBody body = RequestBody.create(jsonUserName, MediaType.get("application/json; charset=utf-8"));
 
-        HttpClientUtil.runAsyncPost(finalUrl,null ,body, new Callback() {
+        HttpClientUtil.runAsyncPost(finalUrl, null, body, new Callback() {
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -92,7 +92,7 @@ public class LoginController {
                             errorMessageProperty.set("");
                             spinner.setVisible(true);
                             // Loading simulation (sort of)
-                            Task<Void> task = new Task<Void>() {
+                            Task<Void> task = new Task<>() {
                                 @Override
                                 protected Void call() throws Exception {
                                     Thread.sleep(1000);
@@ -114,7 +114,7 @@ public class LoginController {
                         });
                     } else {
                         HttpClientUtil.ErrorResponse errorResponse = HttpClientUtil.handleErrorResponse(response);
-                        if(errorResponse != null) {
+                        if (errorResponse != null) {
                             Platform.runLater(() -> {
                                 errorMessageProperty.set("Something went wrong: \n" + errorResponse.getError());
                                 errorLabel.setVisible(true);

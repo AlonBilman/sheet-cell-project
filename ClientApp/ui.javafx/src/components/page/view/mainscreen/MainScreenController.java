@@ -216,7 +216,7 @@ public class MainScreenController {
         httpCallerService.getPermissions(query, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     Type listType = new TypeToken<PermissionData>() {
@@ -225,17 +225,13 @@ public class MainScreenController {
                     updatePermissionListFromList(permissionData.getPermissions());
                     updateHistoryPermissionList(permissionData.getHistory());
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> showInfoAlert(e.getMessage()));
             }
         });
     }
@@ -290,7 +286,7 @@ public class MainScreenController {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try (response) {
                     httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
@@ -321,22 +317,16 @@ public class MainScreenController {
         httpCallerService.acceptOrDenyPermission(query, answer, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> showInfoAlert(e.getMessage()));
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try (response) {
                     httpCallerService.handleErrorResponse(response);
-                    Platform.runLater(() -> {
-                        updatePermissionList(sheetName, owner);
-                    });
+                    Platform.runLater(() -> updatePermissionList(sheetName, owner));
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> showInfoAlert(e.getMessage()));
                 }
             }
         });
@@ -369,19 +359,15 @@ public class MainScreenController {
         httpCallerService.uploadFileAsync(file, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    showInfoAlert("File upload failed. " + e.getMessage());
-                });
+                Platform.runLater(() -> showInfoAlert("File upload failed. " + e.getMessage()));
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try (response) {
                     httpCallerService.handleErrorResponse(response);
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        showInfoAlert("File upload failed. " + e.getMessage());
-                    });
+                    Platform.runLater(() -> showInfoAlert("File upload failed. " + e.getMessage()));
                 }
 
             }
@@ -492,9 +478,7 @@ public class MainScreenController {
     }
 
     private void error(Exception e) {
-        Platform.runLater(() -> {
-            showInfoAlert(e.getMessage());
-        });
+        Platform.runLater(() -> showInfoAlert(e.getMessage()));
     }
 
     private void showPermissionPopup() {

@@ -6,7 +6,6 @@ import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
 import components.header.title.TitleCardController;
-import components.header.title.VersionRefresher;
 import components.page.view.mainscreen.MainScreenController;
 
 import dto.CellDataDTO;
@@ -49,8 +48,6 @@ public class AppController {
     private Stage stage;
     private String userName;
     private sheetDTO currSheetDTO;
-    private Timer versionTimer;
-    private VersionRefresher versionRefresher;
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
@@ -101,8 +98,6 @@ public class AppController {
             httpCallerService = new CallerService();
             query = new HashMap<>();
             currSheetDTO = null;
-            versionTimer = null;
-            versionRefresher = null;
         }
     }
 
@@ -113,11 +108,7 @@ public class AppController {
     }
 
     public void updateSheetDtoVersion() {
-        setSheet(currSheet, e -> {
-            Platform.runLater(() -> {
-                cellFunctionsController.showInfoAlert("Failed to update sheet version: " + e.getMessage());
-            });
-        }, false);
+        setSheet(currSheet, e -> Platform.runLater(() -> cellFunctionsController.showInfoAlert("Failed to update sheet version: " + e.getMessage())), false);
         Platform.runLater(this::outOfFocus);
     }
 
@@ -194,20 +185,16 @@ public class AppController {
         httpCallerService.changeCellAsync(query, newOriginalValue, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    cellFunctionsController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     updateSheetDtoVersion();
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        cellFunctionsController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
                 }
             }
         });
@@ -240,7 +227,7 @@ public class AppController {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
@@ -279,7 +266,7 @@ public class AppController {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
@@ -341,9 +328,7 @@ public class AppController {
         httpCallerService.addRange(query, rangeBody, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
             }
 
             @Override
@@ -353,9 +338,7 @@ public class AppController {
                     RangeDTO rangeDto = new Gson().fromJson(response.body().string(), RangeDTO.class);
                     currSheetDTO.getActiveRanges().put(rangeName, rangeDto);
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
         });
@@ -397,17 +380,13 @@ public class AppController {
                     httpCallerService.handleErrorResponse(response);
                     currSheetDTO.getActiveRanges().remove(rangeToDelete);
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
             }
         });
     }
@@ -469,7 +448,7 @@ public class AppController {
         HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody("", params);
         httpCallerService.getNoNameRange(query, rangeBody, null, NO_NAME_RANGE, new Callback() {
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     List<CellDataDTO> cellList = GSON.fromJson(response.body().string(), new TypeToken<List<CellDataDTO>>() {
@@ -481,17 +460,13 @@ public class AppController {
                         else tableFunctionalityController.sortColumnPopup(fromCell.toUpperCase(), toCell.toUpperCase());
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
             }
         });
     }
@@ -512,7 +487,7 @@ public class AppController {
         httpCallerService.filterSheet(query, filterObj, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     sheetDTO filteredSheet = GSON.fromJson(response.body().string(), sheetDTO.class);
@@ -525,17 +500,13 @@ public class AppController {
                         }
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
             }
         });
     }
@@ -560,17 +531,13 @@ public class AppController {
                         }
                     });
                 } catch (RuntimeException e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
             }
         });
 
@@ -612,7 +579,7 @@ public class AppController {
         query.putAll(Map.of(SHEET_ID, currSheet, CELL_ID, cellFunctionsController.getCellIdFocused()));
         httpCallerService.saveCellValueForDynamicChange(query, new Callback() {
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     Platform.runLater(() -> {
@@ -622,17 +589,13 @@ public class AppController {
                         cellFunctionsController.setDynamicFuncDisable(true);
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        cellFunctionsController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    cellFunctionsController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
             }
         });
 
@@ -645,25 +608,19 @@ public class AppController {
         httpCallerService.startDynamicChange(query, newOriginalValue, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     sheetDTO dynamicDto = GSON.fromJson(response.body().string(), sheetDTO.class);
-                    Platform.runLater(() -> {
-                        gridSheetController.populateTableView(dynamicDto, false);
-                    });
+                    Platform.runLater(() -> gridSheetController.populateTableView(dynamicDto, false));
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    cellFunctionsController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
             }
         });
 
@@ -681,7 +638,7 @@ public class AppController {
         httpCallerService.stopDynamicChange(query, new Callback() {
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
                     currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
@@ -691,17 +648,13 @@ public class AppController {
                                 currSheetDTO.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        cellFunctionsController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    cellFunctionsController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
             }
         });
 
@@ -718,13 +671,11 @@ public class AppController {
         httpCallerService.getNoNameRange(query, null, ranges, NO_NAME_RANGES, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Platform.runLater(() -> {
-                    tableFunctionalityController.showInfoAlert(e.getMessage());
-                });
+                Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try (response) {
                     httpCallerService.handleErrorResponse(response);
                     Type rangesType = new TypeToken<HttpClientUtil.Ranges>() {
@@ -740,9 +691,7 @@ public class AppController {
                         }
                     });
                 } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        tableFunctionalityController.showInfoAlert(e.getMessage());
-                    });
+                    Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
             }
 

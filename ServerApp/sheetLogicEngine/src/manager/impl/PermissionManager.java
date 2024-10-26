@@ -63,7 +63,8 @@ public class PermissionManager implements Serializable {
     private void removePendingRequest(String user) {
         pendingRequests.remove(user);
     }
-//need to ask aviad about appending first or last.
+
+    //need to ask aviad about appending first or last.
     public void setFinalDecision(String user, Engine.ApprovalStatus approvalStatus) {
         PermissionDecision permissionRequest = pendingRequests.get(user);
 
@@ -77,8 +78,7 @@ public class PermissionManager implements Serializable {
             if (approvalStatus == Engine.ApprovalStatus.NO) {
                 if (oldDecision.getApprovalStatus().equals(Engine.ApprovalStatus.NO)) {
                     permissionHistory.addFirst(oldDecision);
-                }
-                else {
+                } else {
                     permissionHistory.addFirst(permissionRequest);
                 }
             } else if (approvalStatus == Engine.ApprovalStatus.YES) {
