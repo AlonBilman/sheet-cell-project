@@ -60,7 +60,12 @@ public class MainScreenController {
     public TableColumn<Permission, String> HistoryPermissionNameColumn;
     @FXML
     public TableColumn<Permission, String> HistoryPermissionApprovedColumn;
-
+    @FXML
+    public TextField chatData;
+    @FXML
+    public TextField messageInputField;
+    @FXML
+    public Button sendLineChatButton;
     @FXML
     private TableView<Permission> SheetPermissionTable;
     @FXML
@@ -517,5 +522,9 @@ public class MainScreenController {
     public void setUserName(String userName) {
         this.username = userName;
         userNameText.setText(userName);
+    }
+
+    public void handleSendMessage() {
+        //need to implement.
     }
 }
