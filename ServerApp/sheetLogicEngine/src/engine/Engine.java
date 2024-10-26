@@ -27,13 +27,13 @@ public class Engine {
         YES {
             @Override
             public String toString() {
-                return "Yes";
+                return "Approved";
             }
         },
         NO {
             @Override
             public String toString() {
-                return "No";
+                return "Rejected";
             }
         }
     }
@@ -81,7 +81,8 @@ public class Engine {
     }
 
     public synchronized boolean isUserExists(String username) {
-        return activeUsers.contains(username);
+        return activeUsers.stream()
+                .anyMatch(user -> user.equalsIgnoreCase(username));
     }
 
     public synchronized void addSheetManager(String username, SheetManagerImpl sheetManager, boolean init) {

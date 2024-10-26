@@ -441,7 +441,7 @@ public class MainScreenController {
                 .filter(permission -> permission.getUserName().equalsIgnoreCase(username))
                 .findAny()
                 .orElse(null);
-        if (userPermissionData == null || !userPermissionData.getApprovedPermission().equalsIgnoreCase("yes")) {
+        if (userPermissionData == null || !userPermissionData.getApprovedPermission().equalsIgnoreCase("Approved")) {
             showInfoAlert("You don't have permission for this sheet.");
             return;
         }
