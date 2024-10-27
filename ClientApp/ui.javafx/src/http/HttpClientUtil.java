@@ -90,19 +90,23 @@ public class HttpClientUtil {
         runAsyncGet(finalURL, null, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                //ignore
+                cleanUpResources();
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 System.out.println("[LOGOUT]    Disconnecting from Server: Server returns: " + response.code());
-                Platform.runLater(()->{
-                    HTTP_CLIENT.dispatcher().executorService().shutdown();
-                    HTTP_CLIENT.connectionPool().evictAll();
-                    SIMPLE_COOKIE_MANAGER.clearAllCookies();
-                });
+                cleanUpResources();
             }
         });
+    }
+
+    private static void cleanUpResources() {
+        HTTP_CLIENT.dispatcher().executorService().shutdown();
+        HTTP_CLIENT.connectionPool().evictAll();
+        System.out.println("[SHUTDOWN] Starting cookie cleanup...");
+        SIMPLE_COOKIE_MANAGER.clearAllCookies();
+        System.out.println("[SHUTDOWN] Cookie cleanup complete.");
     }
 
     public static ErrorResponse handleErrorResponse(Response response) throws IOException {

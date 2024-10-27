@@ -7,6 +7,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -23,14 +24,16 @@ import static constants.Constants.REFRESH_RATE;
 
 public class ChatController implements Closeable {
 
+    @FXML
+    public TextArea chatData;
+    @FXML
+    public TextField messageInputField;
+    @FXML
+    public Button sendLineChatButton;
+
     private IntegerProperty chatVersion;
     private BooleanProperty autoScroll;
     private BooleanProperty autoUpdate;
-
-    public TextArea chatData;
-    public TextField messageInputField;
-    public Button sendLineChatButton;
-
     private CallerService httpCallerService;
     private ChatAreaRefresher chatAreaRefresher;
     private Timer timer;
@@ -40,7 +43,6 @@ public class ChatController implements Closeable {
         autoScroll = new SimpleBooleanProperty(true);
         autoUpdate = new SimpleBooleanProperty(true);
         httpCallerService = new CallerService();
-        startChatRefresher();
     }
 
     public void sendLineChatButtonListener() {
@@ -102,11 +104,14 @@ public class ChatController implements Closeable {
     public void close() {
         chatVersion.set(0);
         chatData.clear();
-        if (chatAreaRefresher != null && timer != null) {
+
+        if (chatAreaRefresher != null) {
             chatAreaRefresher.cancel();
+            chatAreaRefresher = null;
+        }
+        if (timer != null) {
             timer.cancel();
+            timer = null;
         }
     }
 }
-
-

@@ -166,7 +166,8 @@ public class MainScreenController {
         autoUpdate = new SimpleBooleanProperty(true);
         query = new HashMap<>();
         startListRefresher();
-
+        if(chatController!=null)
+            chatController.startChatRefresher();
     }
 
     private void setTheme(String newValue) {
@@ -174,13 +175,13 @@ public class MainScreenController {
 
         switch (newValue) {
             case "Default theme":
-                cssFilePath = "mainScreenDefault.css"; // Update this with your actual path
+                cssFilePath = "mainScreenDefault.css";
                 break;
             case "Theme 1":
-                cssFilePath = "mainScreenTheme1.css"; // Update this with your actual path
+                cssFilePath = "mainScreenTheme1.css";
                 break;
             case "Theme 2":
-                cssFilePath = "mainScreenTheme2.css"; // Update this with your actual path
+                cssFilePath = "mainScreenTheme2.css";
                 break;
             default:
                 break;
@@ -479,11 +480,7 @@ public class MainScreenController {
         }
     }
 
-    private void startChatRefresher() {
-        chatController.startChatRefresher();
-    }
-
-    private void stopChatRefresher() {
+    public void stopChatRefresher() {
         chatController.close();
     }
 

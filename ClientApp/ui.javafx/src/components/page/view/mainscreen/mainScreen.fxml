@@ -5,14 +5,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="924.0" maxWidth="972.0" minHeight="400.0"
-            minWidth="972.0" prefHeight="703.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css"
+<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="924.0" maxWidth="972.0"
+            minHeight="400.0" minWidth="972.0" prefHeight="703.0" prefWidth="972.0"
+            stylesheets="@mainScreenDefault.css"
             xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="components.page.view.mainscreen.MainScreenController">
+
     <content>
-        <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" maxHeight="1.7976931348623157E308"
-                    maxWidth="1.7976931348623157E308" minHeight="642.0" minWidth="885.0" prefHeight="866.0"
-                    prefWidth="970.0">
+        <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" minHeight="642.0" minWidth="885.0"
+                    prefHeight="866.0" prefWidth="970.0">
+
             <children>
 
                 <!-- TableView for Sheets -->
@@ -51,13 +53,11 @@
 
                 <!-- Request Permission Button -->
                 <Button fx:id="RequestPermissionButton" layoutX="738.0" layoutY="140.0" mnemonicParsing="false"
-                        onAction="#RequestPermissionListener" prefHeight="25.0" prefWidth="150.0"
-                        text="Request Permission"/>
+                        onAction="#RequestPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Request Permission"/>
 
                 <!-- Accept Permission Button -->
                 <Button fx:id="AcceptPermissionButton" layoutX="738.0" layoutY="291.0" mnemonicParsing="false"
-                        onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="150.0"
-                        text="Accept Permission"/>
+                        onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Accept Permission"/>
 
                 <!-- Deny Permission Button -->
                 <Button fx:id="DenyPermissionButton" layoutX="738.0" layoutY="330.0" mnemonicParsing="false"
@@ -99,8 +99,7 @@
                 <ChoiceBox fx:id="styleChoiceBox" layoutX="738.0" layoutY="16.0" prefWidth="150.0"/>
 
                 <!-- TabPane for History and Chat -->
-                <TabPane layoutX="-1.0" layoutY="447.0" prefHeight="249.0" prefWidth="729.0"
-                         tabClosingPolicy="UNAVAILABLE">
+                <TabPane layoutX="-1.0" layoutY="447.0" prefHeight="249.0" prefWidth="729.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="Permission History - Descending order table by time">
                             <content>
@@ -126,7 +125,7 @@
                         </Tab>
                         <Tab text="Online Chat">
                             <content>
-                                <fx:include source="../../../chatarea/chat.fxml"/>
+                                <fx:include fx:id="chat" source="../../../chatarea/chat.fxml"/>
                             </content>
                         </Tab>
                     </tabs>

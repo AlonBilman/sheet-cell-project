@@ -3,6 +3,7 @@ package Main;
 import components.page.view.loginscreen.LoginController;
 import components.page.view.mainscreen.MainScreenController;
 import javafx.application.Application;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,7 +26,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setOnCloseRequest(event -> {
-            event.consume();
             confirmExit();
         });
         showLoginPage();
@@ -50,6 +50,7 @@ public class Main extends Application {
     private void confirmExit() {
         if (mainScreenController != null) {
             mainScreenController.stopListRefresher();
+            mainScreenController.stopChatRefresher();
         }
         primaryStage.close();
         shutdown();
@@ -68,6 +69,10 @@ public class Main extends Application {
             mainScreenController = loader.getController();
             mainScreenController.setStage(primaryStage);
             mainScreenController.setUserName(userName);
+            primaryStage.setOnCloseRequest(event -> {
+                confirmExit();
+                primaryStage.close();
+            });
             primaryStage.show();
 
         } catch (Exception e) {
