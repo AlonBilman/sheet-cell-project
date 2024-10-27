@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import manager.impl.Manager;
+import manager.impl.AppManager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -82,7 +82,6 @@ public class DynamicChangeServlet extends HttpServlet {
                 sheetDTO sheetDto = sheetManager.finishedDynamicallyChangeFeature(cellId);
                 engine.getManager(username, sheetId).dynamicChangeStopped();
                 ResponseUtils.writeSuccessResponse(response, sheetDto);
-
             }
 
         } catch (Exception e) {
@@ -110,11 +109,11 @@ public class DynamicChangeServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
-                Manager manager = engine.getManager(username, sheetId);
-                if (!manager.isUpToDate()) {
+                AppManager appManager = engine.getManager(username, sheetId);
+                if (!appManager.isUpToDate()) {
                     throw new RuntimeException("In order to use dynamic-change functionality you have to update the sheet.");
                 }
-                SheetManagerImpl sheetManager = manager.getManagerDeepCopyForDynamicChange();
+                SheetManagerImpl sheetManager = appManager.getManagerDeepCopyForDynamicChange();
                 sheetManager.saveCellValue(cellId);
                 ResponseUtils.writeSuccessResponse(response, null);
             }

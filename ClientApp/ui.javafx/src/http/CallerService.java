@@ -160,4 +160,15 @@ public class CallerService {
         RequestBody body = RequestBody.create(GSON.toJson(answer), MediaType.get("application/json"));
         HttpClientUtil.runAsyncPut(url, queryParams, body, callback);
     }
+
+    public void writeChatLine(String line, Callback callback) {
+        String url = BASE_DIRECTORY + WRITE_TO_CHAT;
+        RequestBody body = RequestBody.create(GSON.toJson(line), MediaType.get("application/json"));
+        HttpClientUtil.runAsyncPut(url, null, body, callback);
+    }
+
+    public void getDeltaFetchingChatLines(Map<String, String> queryParams, Callback callback) {
+        String url = BASE_DIRECTORY + CHAT_LINES_LIST;
+        HttpClientUtil.runAsyncGet(url, queryParams, callback);
+    }
 }

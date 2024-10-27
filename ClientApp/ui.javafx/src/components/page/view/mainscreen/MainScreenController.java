@@ -40,33 +40,25 @@ import static constants.Constants.*;
 
 public class MainScreenController {
 
-    public Stage stage;
+    private Stage stage;
     @FXML
-    public static AnchorPane anchorPane;
+    private AnchorPane anchorPane;
     @FXML
-    public SubScene permissionSubScene;
+    private SubScene permissionSubScene;
     @FXML
-    public Label sheetNames;
+    private Label sheetNames;
     @FXML
-    public Label userNameText;
+    private Label userNameText;
     @FXML
-    public ScrollPane scrollPane;
+    private ScrollPane scrollPane;
     @FXML
-    public TitledPane historyTab;
+    private TableView<Permission> historyTable;
     @FXML
-    public TableView<Permission> historyTable;
+    private TableColumn<Permission, String> HistoryUserNameColumn;
     @FXML
-    public TableColumn<Permission, String> HistoryUserNameColumn;
+    private TableColumn<Permission, String> HistoryPermissionNameColumn;
     @FXML
-    public TableColumn<Permission, String> HistoryPermissionNameColumn;
-    @FXML
-    public TableColumn<Permission, String> HistoryPermissionApprovedColumn;
-    @FXML
-    public TextField chatData;
-    @FXML
-    public TextField messageInputField;
-    @FXML
-    public Button sendLineChatButton;
+    private TableColumn<Permission, String> HistoryPermissionApprovedColumn;
     @FXML
     private TableView<Permission> SheetPermissionTable;
     @FXML
@@ -84,13 +76,13 @@ public class MainScreenController {
     @FXML
     private TableColumn<AppUser, String> sheetSizeColumn;
     @FXML
-    public Button LoadSheetButton;
+    private Button LoadSheetButton;
     @FXML
-    public Button ViewSheetButton;
+    private Button ViewSheetButton;
     @FXML
-    public Button DenyPermissionButton;
+    private Button DenyPermissionButton;
     @FXML
-    public Button AcceptPermissionButton;
+    private Button AcceptPermissionButton;
     @FXML
     private Button RequestPermissionButton;
     @FXML
@@ -102,9 +94,7 @@ public class MainScreenController {
     private String sheetName;
     private String tableUsername;
     private String owner;
-    private String permissionName;
     private String permissionPicked;
-    private String permissionApproved;
     private Timer timer;
     private UsersRefresher usersRefresher;
     private BooleanProperty autoUpdate;
@@ -112,6 +102,10 @@ public class MainScreenController {
     private CallerService httpCallerService;
     private final String[] styles = {"Default theme", "Theme 1", "Theme 2"};
     private String themeStyle = "Default theme";
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
+    }
 
     @FXML
     public void initialize() {
@@ -157,9 +151,7 @@ public class MainScreenController {
 
         SheetPermissionTable.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                permissionName = newValue.getPermissionType();
                 tableUsername = newValue.getUserName();
-                permissionApproved = newValue.getApprovedPermission();
                 disableAcceptAndDenyButtons(false);
             } else {
                 disableAcceptAndDenyButtons(true);
@@ -174,12 +166,7 @@ public class MainScreenController {
         autoUpdate = new SimpleBooleanProperty(true);
         query = new HashMap<>();
         startListRefresher();
-        chatController.setMainScreenControllerAndCallerService(this,httpCallerService);
-    }
 
-
-    public void setChatController(ChatController chatController) {
-        this.chatController = chatController;
     }
 
     private void setTheme(String newValue) {
@@ -462,6 +449,7 @@ public class MainScreenController {
 
         try {
             stopListRefresher();
+            stopChatRefresher();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../sheetscreen/app.fxml"));
             Parent root = loader.load();
             boolean isReader = userPermissionData.getPermissionType().equalsIgnoreCase("reader");
@@ -489,6 +477,14 @@ public class MainScreenController {
         } catch (Exception e) {
             showInfoAlert(e.getMessage());
         }
+    }
+
+    private void startChatRefresher() {
+        chatController.startChatRefresher();
+    }
+
+    private void stopChatRefresher() {
+        chatController.close();
     }
 
     private void error(Exception e) {
@@ -533,7 +529,4 @@ public class MainScreenController {
         userNameText.setText(userName);
     }
 
-    public void handleSendMessage() {
-        //need to implement.
-    }
 }

@@ -1,76 +1,63 @@
 package components.chatarea;
 
 import components.chatarea.model.ChatLinesWithVersion;
-import constants.Constants;
+import http.CallerService;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.HttpUrl;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
 import static constants.Constants.GSON;
-
+import static constants.Constants.VERSION_PARAM;
 
 public class ChatAreaRefresher extends TimerTask {
-
-    private final Consumer<String> httpRequestLoggerConsumer;
     private final Consumer<ChatLinesWithVersion> chatlinesConsumer;
     private final IntegerProperty chatVersion;
     private final BooleanProperty shouldUpdate;
-    private int requestNumber;
+    private final CallerService httpCallerService;
+    private final Map<String, String> query;
 
-    public ChatAreaRefresher(IntegerProperty chatVersion, BooleanProperty shouldUpdate, Consumer<String> httpRequestLoggerConsumer, Consumer<ChatLinesWithVersion> chatlinesConsumer) {
-        this.httpRequestLoggerConsumer = httpRequestLoggerConsumer;
+    public ChatAreaRefresher(IntegerProperty chatVersion, BooleanProperty shouldUpdate, Consumer<ChatLinesWithVersion> chatlinesConsumer) {
         this.chatlinesConsumer = chatlinesConsumer;
         this.chatVersion = chatVersion;
         this.shouldUpdate = shouldUpdate;
-        requestNumber = 0;
+        httpCallerService = new CallerService();
+        query = new HashMap<>();
     }
 
     @Override
     public void run() {
 
-        if (!shouldUpdate.get()) {
+        if (!shouldUpdate.get())
             return;
-        }
 
-        final int finalRequestNumber = ++requestNumber;
+        query.clear();
+        query.put(VERSION_PARAM, String.valueOf(chatVersion.get()));
+        httpCallerService.getDeltaFetchingChatLines(query, new Callback() {
 
-//        //noinspection ConstantConditions
-//        String finalUrl = HttpUrl
-//                .parse(Constants.CHAT_LINES_LIST)
-//                .newBuilder()
-//                .addQueryParameter("chatversion", String.valueOf(chatVersion.get()))
-//                .build()
-//                .toString();
-//
-//        httpRequestLoggerConsumer.accept("About to invoke: " + finalUrl + " | Chat Request # " + finalRequestNumber);
-//
-//        HttpClientUtil.runAsync(finalUrl, new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//                httpRequestLoggerConsumer.accept("Something went wrong with Chat Request # " + finalRequestNumber);
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//                if (response.isSuccessful()) {
-//                    String rawBody = response.body().string();
-//                    httpRequestLoggerConsumer.accept("Response of Chat Request # " + finalRequestNumber + ": " + rawBody);
-//                    ChatLinesWithVersion chatLinesWithVersion = GSON.fromJson(rawBody, ChatLinesWithVersion.class);
-//                    chatlinesConsumer.accept(chatLinesWithVersion);
-//                } else {
-//                    httpRequestLoggerConsumer.accept("Something went wrong with Request # " + finalRequestNumber + ". Code is " + response.code());
-//                }
-//            }
-//        });
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
+                try {
+                    httpCallerService.handleErrorResponse(response);
+                    ChatLinesWithVersion chatLinesWithVersion = GSON.fromJson(response.body().string(), ChatLinesWithVersion.class);
+                    chatlinesConsumer.accept(chatLinesWithVersion);
+                } catch (Exception e) {
+                    System.out.println("Failed receiving chat lines: " + e.getMessage());
+                }
+            }
 
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                System.out.println("Failed receiving chat lines");
+            }
+        });
     }
-
 }

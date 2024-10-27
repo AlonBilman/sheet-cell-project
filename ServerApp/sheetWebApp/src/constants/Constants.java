@@ -46,4 +46,5 @@ public class Constants {
     public static final String CHAT_LINES_LIST = "/chat-lines-list";
     public static final String CHAT_SERVLET = "ChatServlet";
     public static final String WRITE_TO_CHAT = "/write-to-chat";
+    public static final String VERSION_PARAM = "version";
 }

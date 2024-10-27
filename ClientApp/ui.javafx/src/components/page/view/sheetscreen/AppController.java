@@ -66,7 +66,6 @@ public class AppController {
     @FXML
     private ScrollPane gridSheet;
 
-
     public void setTableFunctionalityController(TableFunctionalityController tableFunctionalityController) {
         this.tableFunctionalityController = tableFunctionalityController;
     }

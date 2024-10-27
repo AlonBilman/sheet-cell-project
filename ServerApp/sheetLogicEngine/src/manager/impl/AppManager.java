@@ -1,11 +1,10 @@
 package manager.impl;
 
-public class Manager {
+public class AppManager {
 
     private final SheetManagerImpl sheetManager;
     private int currentVersion;
     private SheetManagerImpl deepCopyForDynamicChange;
-
 
     public boolean isUpToDate() {
         return currentVersion == sheetManager.getSheetVersion();
@@ -34,7 +33,7 @@ public class Manager {
         return sheetManager;
     }
 
-    public Manager(SheetManagerImpl sheetManager) {
+    public AppManager(SheetManagerImpl sheetManager) {
         this.sheetManager = sheetManager;
         this.currentVersion = sheetManager.getSheetVersion();
         this.deepCopyForDynamicChange = null;

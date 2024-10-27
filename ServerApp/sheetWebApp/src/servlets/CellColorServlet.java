@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import manager.impl.Manager;
+import manager.impl.AppManager;
 import manager.impl.SheetManagerImpl;
 import utils.ResponseUtils;
 import utils.ServletUtils;
@@ -45,14 +45,14 @@ public class CellColorServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
 
-                Manager manager = engine.getManager(username, sheetId);
+                AppManager appManager = engine.getManager(username, sheetId);
 
-                if (!manager.isUpToDate()) {
+                if (!appManager.isUpToDate()) {
                     throw new RuntimeException("Sheet is not up to date.\n" +
                             "in order to modify it please update the sheet first.");
                 }
 
-                SheetManagerImpl sheetManager = manager.getSheetManager();
+                SheetManagerImpl sheetManager = appManager.getSheetManager();
 
                 if (!sheetManager.havePermissionToEdit(username)) {
                     throw new RuntimeException("Permission denied.");
@@ -65,7 +65,7 @@ public class CellColorServlet extends HttpServlet {
                 } else {
                     sheetManager.setBackgroundColor(cellId, color);
                 }
-                manager.updateVersion();
+                appManager.updateVersion();
                 ResponseUtils.writeSuccessResponse(response, null);
             } catch (Exception e) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

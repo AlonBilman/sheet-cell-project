@@ -31,7 +31,7 @@ public class ChatServlet extends HttpServlet {
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        String chatVersion = request.getParameter(VERSION);
+        String chatVersion = request.getParameter(VERSION_PARAM);
         if (chatVersion == null || chatVersion.isEmpty()) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Chat Version is missing.");
             return;
@@ -53,6 +53,7 @@ public class ChatServlet extends HttpServlet {
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
                 ChatManager chatManager = engine.getChatManager();
+                chatManagerVersion = chatManager.getVersion();
                 chatEntries = chatManager.getChatEntries(version);
                 ResponseUtils.writeSuccessResponse(response, new ChatAndVersion(chatEntries, chatManagerVersion));
             } catch (Exception e) {

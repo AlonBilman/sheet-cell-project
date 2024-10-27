@@ -31,5 +31,7 @@ public class Constants {
     public static final String REQUESTER = "requester";
     public static final String VERSION = "/version";
     public static final String CHAT_LINES_LIST = "/chat-lines-list";
-    public final static String CHAT_LINE_FORMATTING = "%tH:%tM:%tS | %.10s: %s%n";
+    public static final String WRITE_TO_CHAT = "/write-to-chat";
+    public static final String VERSION_PARAM = "version";
+    public final static String CHAT_LINE_FORMATTING = "[%tH:%tM:%tS]  %.10s: %s%n";
 }

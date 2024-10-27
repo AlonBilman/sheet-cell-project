@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import manager.impl.Manager;
+import manager.impl.AppManager;
 import utils.ResponseUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -41,13 +41,13 @@ public class SheetServlet extends HttpServlet {
                     return;
 
                 Object responseData;
-                Manager manager = engine.getManager(username, sheetId);
+                AppManager appManager = engine.getManager(username, sheetId);
                 if (servletPath.contains(Constants.ALL_VERSIONS)) {
-                    responseData = manager.getSheetManager().getSheets(); //Map<Integer,sheetDTO>
+                    responseData = appManager.getSheetManager().getSheets(); //Map<Integer,sheetDTO>
                 } else if (servletPath.contains(Constants.VERSION)) {
-                    responseData = manager.getSheetManager().getSheetVersion(); //int
+                    responseData = appManager.getSheetManager().getSheetVersion(); //int
                 } else {
-                    manager.updateVersion();
+                    appManager.updateVersion();
                     responseData = engine.getSheetDTO(sheetId, username); //sheetDTO
                 }
                 ResponseUtils.writeSuccessResponse(response, responseData);
