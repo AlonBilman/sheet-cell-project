@@ -105,7 +105,7 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="728.0">
                                     <children>
-                                        <TableView fx:id="historyTable" disable="true" layoutX="3.0" layoutY="12.0"
+                                        <TableView fx:id="historyTable" layoutX="3.0" layoutY="12.0"
                                                    prefHeight="159.0" prefWidth="724.0" styleClass="table-view">
                                             <columns>
                                                 <TableColumn fx:id="HistoryUserNameColumn" prefWidth="75.0"
@@ -119,6 +119,8 @@
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                                             </columnResizePolicy>
                                         </TableView>
+                                        <!-- Adding a mouse event filter to prevent interaction -->
+                                        <Label prefWidth="724" prefHeight="159"/>
                                     </children>
                                 </AnchorPane>
                             </content>
