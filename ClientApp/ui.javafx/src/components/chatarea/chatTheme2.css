@@ -1,0 +1,61 @@
+/* General styling for the AnchorPane */
+.anchor-pane {
+    -fx-background-color: #fff8e1; /* Light golden yellow background */
+}
+
+/* Styling for the Pane */
+.pane {
+    -fx-background-color: #fffbf0; /* Very light golden background */
+    -fx-padding: 10px; /* Padding around the pane */
+    -fx-background-radius: 10; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2); /* Soft shadow effect */
+}
+
+/* Styling for the TextArea */
+.text-area {
+    -fx-background-color: #fff5cc; /* Light golden background */
+    -fx-border-color: #e0c06d; /* Light golden border */
+    -fx-border-radius: 8; /* Rounded corners */
+    -fx-border-width: 1; /* Border width */
+    -fx-padding: 10; /* Inner padding */
+    -fx-font-size: 14px; /* Font size */
+    -fx-text-fill: #333; /* Dark gray text */
+}
+
+/* Styling for the TextField */
+.text-field {
+    -fx-background-color: #fffaf0; /* Very light golden background */
+    -fx-border-color: #e0c06d; /* Light golden border */
+    -fx-border-radius: 5; /* Rounded corners */
+    -fx-border-width: 1; /* Border width */
+    -fx-padding: 5; /* Inner padding */
+    -fx-font-size: 14px; /* Font size */
+    -fx-text-fill: #333; /* Dark gray text */
+}
+
+.text-field:focused {
+    -fx-border-color: #d4a017; /* Darker golden border on focus */
+}
+
+/* Styling for the Button */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #f4d03f, #d4a017); /* Golden gradient */
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-font-size: 14px; /* Font size */
+    -fx-padding: 8 16; /* Padding for button */
+    -fx-border-radius: 5; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0, 0, 2); /* Shadow effect */
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #d4a017, #b8860b); /* Darker golden gradient on hover */
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #b8860b, #a6761d); /* Even darker golden gradient when pressed */
+}
+
+/* Optional: Styling for placeholder text in TextField */
+.text-field .prompt-text {
+    -fx-text-fill: #b8860b; /* Golden color for prompt text */
+}

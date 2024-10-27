@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,8 @@ public class ChatController implements Closeable {
     public TextField messageInputField;
     @FXML
     public Button sendLineChatButton;
+    @FXML
+    public AnchorPane anchorPane;
 
     private IntegerProperty chatVersion;
     private BooleanProperty autoScroll;
@@ -113,5 +117,29 @@ public class ChatController implements Closeable {
             timer.cancel();
             timer = null;
         }
+    }
+
+    public void setTheme(String newValue) {
+        String cssFilePath = "";
+
+        switch (newValue) {
+            case "Default theme":
+                cssFilePath = "chat.css";
+                break;
+            case "Theme 1":
+                cssFilePath = "chatTheme1.css";
+                break;
+            case "Theme 2":
+                cssFilePath = "chatTheme2.css";
+                break;
+            default:
+                break;
+        }
+
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource(cssFilePath))
+                        .toExternalForm()
+        );
     }
 }

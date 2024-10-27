@@ -1,77 +1,141 @@
-/* General styles for ScrollPane */
+/* General styling for the Pane */
 .pane {
-    -fx-background-color: #fff9db; /* Light yellow background */
-    -fx-padding: 20px; /* Spacious padding from the first pane */
-    -fx-border-color: #ffd966; /* Subtle yellow border */
-    -fx-border-width: 1.5px; /* Thicker border, matching the first pane */
+    -fx-background-color: #FFD700; /* Golden yellow background */
+    -fx-padding: 20px; /* Spacious padding */
+    -fx-border-color: #CDAA00; /* Darker golden border */
+    -fx-border-width: 1.5px; /* Slightly thicker border */
     -fx-background-insets: 0, 0; /* Remove default insets */
-    -fx-border-radius: 8px; /* Rounded corners, matching the first pane */
+    -fx-border-radius: 8px; /* Rounded corners */
     -fx-background-radius: 8px; /* Matching background radius */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow for depth */
-}
-/* Styling for VBox containers */
-.vbox {
-    -fx-background-color: #fff4cc; /* Soft off-yellow background */
-    -fx-padding: 20px; /* Spacious padding */
-    -fx-spacing: 15px; /* Increased spacing between children */
 }
 
 /* Modernized Styling for TitledPane headers */
 .titled-pane > .title {
-    -fx-background-color: linear-gradient(to bottom, #ffcc80, #e6ac00); /* Gradient from light to darker yellow */
-    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-background-color: linear-gradient(to bottom, #FFC300, #FFA500); /* Darker gradient from golden yellow to a deeper shade */
+    -fx-text-fill: #000000; /* Black text for better contrast */
     -fx-font-size: 15px; /* Slightly larger font for a modern look */
     -fx-font-weight: bold; /* Bold text for emphasis */
-    -fx-border-radius: 8px; /* Rounded corners */
-    -fx-background-radius: 8px; /* Matching background radius */
-    -fx-padding: 12px 20px; /* Spacious padding */
-    -fx-border-color: #e6ac00; /* Border matching the darker part of the gradient */
+    -fx-border-radius: 4px; /* More rounded corners for a smoother look */
+    -fx-background-radius: 4px; /* Matching background radius */
+    -fx-padding: 12px 10px; /* Spacious padding */
+    -fx-border-color: #CDAA00; /* Darker golden border */
     -fx-border-width: 2px; /* Thick border for better definition */
     -fx-cursor: hand; /* Pointer cursor on hover */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow */
-    -fx-alignment: center-left; /* Align text to the left */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow for a floating effect */
+    -fx-alignment: center-left; /* Align text to the left for a more modern look */
 }
 
 .titled-pane > .title:hover {
-    -fx-background-color: linear-gradient(to bottom, #e6ac00, #cc9900); /* Darker yellow on hover */
-    -fx-border-color: #cc9900; /* Border matching hover color */
+    -fx-background-color: linear-gradient(to bottom, #FFA500, #FF8C00); /* Darker gradient on hover for contrast */
+    -fx-border-color: #FF8C00; /* Matching darker border */
 }
 
-.titled-pane:disabled > .title {
-    -fx-opacity: 0.6; /* Reduced opacity for disabled state */
+/* Modernized styling for TableViews */
+.table-view {
+    -fx-background-color: #F8F05E; /* Darker light yellow background */
+    -fx-table-cell-border-color: transparent; /* Hide cell borders */
+    -fx-control-inner-background: #F8F05E; /* Darker yellow background for cells */
+    -fx-control-inner-background-alt: #E1D100; /* Lighter yellow for alternate rows */
+    -fx-padding: 5px; /* Tight padding */
+    -fx-background-radius: 8px; /* Rounded background */
+    -fx-border-radius: 8px; /* Rounded border */
+    -fx-border-color: #CDAA00; /* Darker golden border */
+    -fx-border-width: 1px; /* Thin border */
 }
 
-/* Modernized styling for buttons within the TitledPane */
-.button {
-    -fx-background-color: linear-gradient(to bottom, #ffd966, #cc9900); /* Gradient yellow background */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #FFA500; /* Darker yellow background for selected rows */
+    -fx-text-fill: #000000; /* Black text for better contrast */
+}
+
+.table-column {
+    -fx-font-size: 14px; /* Modern font size */
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+}
+
+/* Modernized styling for Labels */
+.label-style {
+    -fx-background-color: #FFC300; /* Darker golden yellow background */
+    -fx-border-color: #CDAA00; /* Darker golden border for emphasis */
+    -fx-border-width: 2px; /* Thick border */
+    -fx-padding: 12px; /* Spacious padding */
     -fx-text-fill: #333333; /* Dark gray text */
-    -fx-font-size: 12px; /* Adjusted font size */
+    -fx-font-size: 15px; /* Modern, larger font */
     -fx-font-weight: bold; /* Bold text */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow for a floating effect */
+}
+
+.label-style:hover {
+    -fx-border-color: #FF8C00; /* Darker border on hover */
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #DAA520, #FFC300); /* Darker gradient golden background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 12px; /* Modern, smaller font */
+    -fx-border-color: #CDAA00; /* Darker golden border */
+    -fx-border-width: 1.5px; /* Thinner border */
     -fx-border-radius: 5px; /* Rounded corners */
     -fx-background-radius: 5px; /* Matching background radius */
     -fx-padding: 5px 10px; /* Tight padding */
-    -fx-border-color: #cc9900; /* Darker yellow border */
-    -fx-border-width: 1px; /* Thinner border */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
     -fx-cursor: hand; /* Pointer cursor */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.5, 0, 2); /* Soft shadow */
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #e6ac00, #b38f00); /* Darker yellow on hover */
-    -fx-border-color: #b38f00; /* Border matching hover color */
+    -fx-background-color: linear-gradient(to bottom, #FFC300, #FFA500); /* Darker gradient on hover */
+    -fx-border-color: #FF8C00; /* Darker border on hover */
 }
 
-/* Disabled button state */
+.button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #FFA500, #FF4500); /* Even darker gradient when pressed */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 1); /* Adjusted shadow for pressed state */
+}
+
 .button:disabled {
     -fx-opacity: 0.4; /* Faded look for disabled buttons */
 }
 
-/* Button with underline styling */
-.button.underline {
-    -fx-underline: true; /* Underline for specific buttons */
+/* ChoiceBox styling */
+.choice-box {
+    -fx-background-color: linear-gradient(to bottom, #DAA520, #FFC300); /* Darker gradient golden background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 12px; /* Modern, smaller font */
+    -fx-border-color: #CDAA00; /* Darker golden border */
+    -fx-border-width: 1.5px; /* Thinner border */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Matching background radius */
+    -fx-padding: 5px 10px; /* Tight padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
+    -fx-cursor: hand; /* Pointer cursor */
 }
 
-/* Margin settings */
-.vbox > .children > .button {
-    -fx-margin: 10px 0; /* Spacing between buttons */
+.choice-box:pressed {
+    -fx-background-color: linear-gradient(to bottom, #FFC300, #DAA520); /* Darker gradient on hover */
+    -fx-border-color: #FF8C00; /* Darker border on hover */
+}
+
+/* Header Labels */
+.header-label {
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-font-size: 18px; /* Larger font for headers */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-underline: true; /* Underlined text */
+}
+
+/* Styling for the SubScene Pane */
+.subscene-pane {
+    -fx-background-color: #F8F05E; /* Darker light yellow background for subscene */
+    -fx-border-color: #CDAA00; /* Darker golden border */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-background-radius: 8px; /* Rounded corners */
+    -fx-padding: 10px; /* Padding for content */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
+}
+
+/* VBox spacing */
+.vbox {
+    -fx-spacing: 15px; /* Spacing between children */
 }

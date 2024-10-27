@@ -5,74 +5,61 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="924.0" maxWidth="972.0"
-            minHeight="400.0" minWidth="972.0" prefHeight="703.0" prefWidth="972.0"
-            stylesheets="@mainScreenDefault.css"
-            xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="components.page.view.mainscreen.MainScreenController">
+<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="924.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="703.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
 
     <content>
-        <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" minHeight="642.0" minWidth="885.0"
-                    prefHeight="866.0" prefWidth="970.0">
+        <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" minHeight="642.0" minWidth="885.0" prefHeight="866.0" prefWidth="970.0">
 
             <children>
 
                 <!-- TableView for Sheets -->
-                <TableView fx:id="SheetTable" layoutX="6.0" layoutY="68.0" prefHeight="170.0" prefWidth="720.0"
-                           styleClass="table-view">
+                <TableView fx:id="SheetTable" layoutX="6.0" layoutY="68.0" prefHeight="170.0" prefWidth="720.0" styleClass="table-view">
                     <columns>
-                        <TableColumn fx:id="userUploadedColumn" prefWidth="75.0" text="User uploaded"/>
-                        <TableColumn fx:id="sheetNameColumn" prefWidth="75.0" text="Sheet name"/>
-                        <TableColumn fx:id="sheetSizeColumn" prefWidth="75.0" text="Sheet size"/>
+                        <TableColumn fx:id="userUploadedColumn" prefWidth="75.0" text="User uploaded" />
+                        <TableColumn fx:id="sheetNameColumn" prefWidth="75.0" text="Sheet name" />
+                        <TableColumn fx:id="sheetSizeColumn" prefWidth="75.0" text="Sheet size" />
                     </columns>
                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
 
                 <!-- TableView for Permissions -->
-                <TableView fx:id="SheetPermissionTable" editable="true" layoutX="5.0" layoutY="253.0" prefHeight="170.0"
-                           prefWidth="720.0" styleClass="table-view">
+                <TableView fx:id="SheetPermissionTable" editable="true" layoutX="5.0" layoutY="253.0" prefHeight="170.0" prefWidth="720.0" styleClass="table-view">
                     <columns>
-                        <TableColumn fx:id="userNameColumn" prefWidth="75.0" text="Sheet user"/>
-                        <TableColumn fx:id="permissionNameColumn" prefWidth="75.0" text="User permission"/>
-                        <TableColumn fx:id="permissionApprovedColumn" prefWidth="75.0" text="Permission status"/>
+                        <TableColumn fx:id="userNameColumn" prefWidth="75.0" text="Sheet user" />
+                        <TableColumn fx:id="permissionNameColumn" prefWidth="75.0" text="User permission" />
+                        <TableColumn fx:id="permissionApprovedColumn" prefWidth="75.0" text="Permission status" />
                     </columns>
                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
 
                 <!-- Load Sheet Button -->
-                <Button fx:id="LoadSheetButton" layoutX="29.0" layoutY="16.0" mnemonicParsing="false"
-                        onAction="#LoadFileListener" prefHeight="25.0" prefWidth="150.0" text="Load Sheet File"/>
+                <Button fx:id="LoadSheetButton" layoutX="29.0" layoutY="16.0" mnemonicParsing="false" onAction="#LoadFileListener" prefHeight="35.0" prefWidth="150.0" text="Load Sheet File" />
 
                 <!-- View Sheet Button -->
-                <Button fx:id="ViewSheetButton" layoutX="738.0" layoutY="102.0" mnemonicParsing="false"
-                        onAction="#ViewSheetListener" prefHeight="25.0" prefWidth="150.0" text="View Sheet"/>
+                <Button fx:id="ViewSheetButton" layoutX="738.0" layoutY="102.0" mnemonicParsing="false" onAction="#ViewSheetListener" prefHeight="35.0" prefWidth="150.0" text="View Sheet" />
 
                 <!-- Request Permission Button -->
-                <Button fx:id="RequestPermissionButton" layoutX="738.0" layoutY="140.0" mnemonicParsing="false"
-                        onAction="#RequestPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Request Permission"/>
+                <Button fx:id="RequestPermissionButton" layoutX="738.0" layoutY="144.0" mnemonicParsing="false" onAction="#RequestPermissionListener" prefHeight="35.0" prefWidth="150.0" text="Request Permission" />
 
                 <!-- Accept Permission Button -->
-                <Button fx:id="AcceptPermissionButton" layoutX="738.0" layoutY="291.0" mnemonicParsing="false"
-                        onAction="#AcceptPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Accept Permission"/>
+                <Button fx:id="AcceptPermissionButton" layoutX="738.0" layoutY="291.0" mnemonicParsing="false" onAction="#AcceptPermissionListener" prefHeight="35.0" prefWidth="150.0" text="Accept Permission" />
 
                 <!-- Deny Permission Button -->
-                <Button fx:id="DenyPermissionButton" layoutX="738.0" layoutY="330.0" mnemonicParsing="false"
-                        onAction="#DenyPermissionListener" prefHeight="25.0" prefWidth="150.0" text="Deny Permission"/>
+                <Button fx:id="DenyPermissionButton" layoutX="738.0" layoutY="333.0" mnemonicParsing="false" onAction="#DenyPermissionListener" prefHeight="35.0" prefWidth="150.0" text="Deny Permission" />
 
                 <!-- SubScene for Permissions -->
-                <SubScene fx:id="permissionSubScene" height="120.0" layoutX="450.0" layoutY="350.0" visible="false"
-                          width="350.0">
+                <SubScene fx:id="permissionSubScene" height="120.0" layoutX="450.0" layoutY="350.0" visible="false" width="350.0">
                     <root>
                         <VBox spacing="5">
-                            <Label text="User request detected"/>
-                            <Label text="Request logged on :"/>
-                            <Label text="user"/>
-                            <Label text="on sheet:"/>
-                            <Label fx:id="sheetNames" text="sheetName"/>
+                            <Label text="User request detected" />
+                            <Label text="Request logged on :" />
+                            <Label text="user" />
+                            <Label text="on sheet:" />
+                            <Label fx:id="sheetNames" text="sheetName" />
                         </VBox>
                     </root>
                 </SubScene>
@@ -80,23 +67,21 @@
                 <!-- Header Section -->
                 <HBox layoutX="244.0" layoutY="16.0" prefHeight="45.0" prefWidth="397.0">
                     <children>
-                        <Label prefHeight="27.0" prefWidth="208.0" styleClass="header-label"
-                               text="Sheet Cell - Logged as :" underline="true">
+                        <Label prefHeight="27.0" prefWidth="208.0" styleClass="header-label" text="Sheet Cell - Logged as :" underline="true">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                         </Label>
-                        <Label fx:id="userNameText" prefHeight="27.0" prefWidth="187.0" styleClass="header-label"
-                               underline="true">
+                        <Label fx:id="userNameText" prefHeight="27.0" prefWidth="187.0" styleClass="header-label" underline="true">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                         </Label>
                     </children>
                 </HBox>
 
                 <!-- Style ChoiceBox -->
-                <ChoiceBox fx:id="styleChoiceBox" layoutX="738.0" layoutY="16.0" prefWidth="150.0"/>
+                <ChoiceBox fx:id="styleChoiceBox" layoutX="738.0" layoutY="17.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="150.0" />
 
                 <!-- TabPane for History and Chat -->
                 <TabPane layoutX="-1.0" layoutY="447.0" prefHeight="249.0" prefWidth="729.0" tabClosingPolicy="UNAVAILABLE">
@@ -105,29 +90,25 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="728.0">
                                     <children>
-                                        <TableView fx:id="historyTable" layoutX="3.0" layoutY="12.0"
-                                                   prefHeight="159.0" prefWidth="724.0" styleClass="table-view">
+                                        <TableView fx:id="historyTable" layoutX="3.0" layoutY="12.0" prefHeight="159.0" prefWidth="724.0" styleClass="table-view">
                                             <columns>
-                                                <TableColumn fx:id="HistoryUserNameColumn" prefWidth="75.0"
-                                                             text="Sheet user"/>
-                                                <TableColumn fx:id="HistoryPermissionNameColumn" prefWidth="75.0"
-                                                             text="User permission"/>
-                                                <TableColumn fx:id="HistoryPermissionApprovedColumn" prefWidth="75.0"
-                                                             text="Permission status"/>
+                                                <TableColumn fx:id="HistoryUserNameColumn" prefWidth="75.0" text="Sheet user" />
+                                                <TableColumn fx:id="HistoryPermissionNameColumn" prefWidth="75.0" text="User permission" />
+                                                <TableColumn fx:id="HistoryPermissionApprovedColumn" prefWidth="75.0" text="Permission status" />
                                             </columns>
                                             <columnResizePolicy>
-                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                             </columnResizePolicy>
                                         </TableView>
                                         <!-- Adding a mouse event filter to prevent interaction -->
-                                        <Label prefWidth="724" prefHeight="159"/>
+                                        <Label prefHeight="159" prefWidth="724" />
                                     </children>
                                 </AnchorPane>
                             </content>
                         </Tab>
                         <Tab text="Online Chat">
                             <content>
-                                <fx:include fx:id="chat" source="../../../chatarea/chat.fxml"/>
+                                <fx:include fx:id="chat" source="../../../chatarea/chat.fxml" />
                             </content>
                         </Tab>
                     </tabs>

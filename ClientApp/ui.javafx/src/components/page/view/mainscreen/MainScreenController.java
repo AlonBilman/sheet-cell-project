@@ -194,6 +194,8 @@ public class MainScreenController {
                 Objects.requireNonNull(getClass().getResource(cssFilePath))
                         .toExternalForm()
         );
+
+        chatController.setTheme(themeStyle);
     }
 
     private void updateList() {

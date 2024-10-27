@@ -4,7 +4,7 @@
     -fx-padding: 20px; /* Spacious padding */
     -fx-border-color: #d0d0d0; /* Subtle gray border */
     -fx-border-width: 1.5px; /* Slightly thicker border */
-    -fx-background-insets: 0, 0; /* Remove default insets */
+    -fx-background-insets: 0; /* Remove default insets */
     -fx-border-radius: 8px; /* Rounded corners */
     -fx-background-radius: 8px; /* Matching background radius */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow for depth */
@@ -12,33 +12,32 @@
 
 /* Modernized Styling for TitledPane headers */
 .titled-pane > .title {
-    -fx-background-color: linear-gradient(to bottom, #0066cc, #0052a3); /* Smoother gradient from vibrant to darker blue */
+    -fx-background-color: linear-gradient(to bottom, #0066cc, #0052a3); /* Gradient from vibrant to darker blue */
     -fx-text-fill: #ffffff; /* Clean white text */
-    -fx-font-size: 15px; /* Slightly larger font for a modern look */
-    -fx-font-weight: bold; /* Bold text for emphasis */
-    -fx-border-radius: 4px; /* More rounded corners for a smoother look */
+    -fx-font-size: 15px; /* Modern look */
+    -fx-font-weight: bold; /* Emphasized text */
+    -fx-border-radius: 4px; /* Rounded corners */
     -fx-background-radius: 4px; /* Matching background radius */
     -fx-padding: 12px 10px; /* Spacious padding */
-    -fx-border-color: #0052a3; /* Border to match the darker part of the gradient */
-    -fx-border-width: 2px; /* Thick border for better definition */
+    -fx-border-color: #0052a3; /* Darker gradient border */
+    -fx-border-width: 2px; /* Defined border */
     -fx-cursor: hand; /* Pointer cursor on hover */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow for a floating effect */
-    -fx-alignment: center-left; /* Align text to the left for a more modern look */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow */
+    -fx-alignment: center-left; /* Align text for a modern feel */
 }
 
 .titled-pane > .title:hover {
-    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker blue on hover for contrast */
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker blue on hover */
     -fx-border-color: #004b8c; /* Matching darker border */
 }
 
-
 /* Modernized styling for TableViews */
 .table-view {
-    -fx-background-color: #ffffff; /* Clean white background */
+    -fx-background-color: #ffffff; /* Clean background */
     -fx-table-cell-border-color: transparent; /* Hide cell borders */
-    -fx-control-inner-background: #ffffff; /* White background for cells */
-    -fx-control-inner-background-alt: #f4f9ff; /* Light blue for alternate rows */
-    -fx-padding: 5px; /* Tight padding */
+    -fx-control-inner-background: #ffffff; /* White cell background */
+    -fx-control-inner-background-alt: #f4f9ff; /* Light blue alternate rows */
+    -fx-padding: 5px; /* Compact padding */
     -fx-background-radius: 8px; /* Rounded background */
     -fx-border-radius: 8px; /* Rounded border */
     -fx-border-color: #d0d0d0; /* Light gray border */
@@ -47,77 +46,106 @@
 
 .table-view .table-row-cell:selected {
     -fx-background-color: #007bff; /* Blue background for selected rows */
-    -fx-text-fill: #ffffff; /* White text for better contrast */
+    -fx-text-fill: #ffffff; /* White text for contrast */
 }
 
 .table-column {
     -fx-font-size: 14px; /* Modern font size */
-    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-text-fill: #333333; /* Readable dark gray text */
 }
 
 /* Modernized styling for Labels */
 .label-style {
-    -fx-background-color: #ffffff; /* Clean white background */
-    -fx-border-color: #007bff; /* Blue border for emphasis */
+    -fx-background-color: #ffffff; /* Clean background */
+    -fx-border-color: #007bff; /* Blue border */
     -fx-border-width: 2px; /* Thick border */
     -fx-padding: 12px; /* Spacious padding */
     -fx-text-fill: #333333; /* Dark gray text */
-    -fx-font-size: 15px; /* Modern, larger font */
+    -fx-font-size: 15px; /* Larger, modern font */
     -fx-font-weight: bold; /* Bold text */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow for a floating effect */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
 }
 
 .label-style:hover {
-    -fx-border-color: #0056b3; /* Darker blue border on hover */
+    -fx-border-color: #0056b3; /* Darker blue on hover */
 }
 
 /* Button styling */
 .button {
-    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient blue background */
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient blue */
     -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 12px; /* Modern, smaller font */
-    -fx-border-color: #0056b3; /* Dark blue border */
-    -fx-border-width: 1.5px; /* Thinner border */
+    -fx-font-size: 12px; /* Modern size */
+    -fx-border-color: #0056b3; /* Dark border */
+    -fx-border-width: 1.5px; /* Thin border */
     -fx-border-radius: 5px; /* Rounded corners */
-    -fx-background-radius: 5px; /* Matching background radius */
-    -fx-padding: 5px 10px; /* Tight padding */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
+    -fx-background-radius: 5px; /* Matching background */
+    -fx-padding: 5px 10px; /* Compact padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow */
     -fx-cursor: hand; /* Pointer cursor */
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker gradient on hover */
-    -fx-border-color: #004b8c; /* Darker blue border on hover */
+    -fx-background-color: linear-gradient(to bottom, #005bb5, #004b8c); /* Darker gradient */
+    -fx-border-color: #004b8c; /* Darker border */
 }
 
 .button:pressed {
-    -fx-background-color: linear-gradient(to bottom, #004b8c, #003366); /* Even darker gradient when pressed */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 1); /* Adjusted shadow for pressed state */
+    -fx-background-color: linear-gradient(to bottom, #004b8c, #003366); /* Even darker gradient */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 1); /* Adjusted shadow */
+}
+
+/* ChoiceBox styling */
+.choice-box {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3); /* Gradient blue */
+    -fx-text-fill: white; /* White text for the choice box */
+    -fx-font-size: 12px; /* Modern size */
+    -fx-border-color: #0056b3; /* Dark border */
+    -fx-border-width: 1.5px; /* Thin border */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Matching background */
+    -fx-padding: 5px; /* Compact padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+.choice-box:pressed {
+    -fx-background-color: linear-gradient(to bottom, #004b8c, #003366); /* Even darker gradient */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 1); /* Adjusted shadow */
+}
+
+/* Text color for the list view within the choice box */
+.choice-box .list-view {
+    -fx-text-fill: white; /* White text for the dropdown items */
+}
+
+/* Text color for the cells in the dropdown */
+.choice-box .list-view .list-cell {
+    -fx-text-fill: white; /* White text for individual items */
 }
 
 .button:disabled {
-    -fx-opacity: 0.4; /* Faded look for disabled buttons */
+    -fx-opacity: 0.4; /* Faded look */
 }
 
 /* Header Labels */
 .header-label {
-    -fx-text-fill: #333333; /* Dark gray text for readability */
-    -fx-font-size: 18px; /* Larger font for headers */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-font-size: 18px; /* Larger header font */
     -fx-font-weight: bold; /* Bold text */
-    -fx-underline: true; /* Underlined text */
+    -fx-underline: true; /* Underlined */
 }
 
 /* Styling for the SubScene Pane */
 .subscene-pane {
-    -fx-background-color: #f9f9f9; /* Light gray background for subscene */
+    -fx-background-color: #f9f9f9; /* Light background */
     -fx-border-color: #d0d0d0; /* Subtle border */
     -fx-border-width: 1px; /* Thin border */
-    -fx-background-radius: 8px; /* Rounded corners */
-    -fx-padding: 10px; /* Padding for content */
+    -fx-background-radius: 8px; /* Rounded background */
+    -fx-padding: 10px; /* Compact padding */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
 }
 
 /* VBox spacing */
 .vbox {
-    -fx-spacing: 15px; /* Spacing between children */
+    -fx-spacing: 15px; /* Spacing between elements */
 }

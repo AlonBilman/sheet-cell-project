@@ -1,0 +1,61 @@
+/* General styling for the AnchorPane */
+.anchor-pane {
+    -fx-background-color: #e0e0e0; /* Light gray background */
+}
+
+/* Styling for the Pane */
+.pane {
+    -fx-background-color: #f2f2f2; /* Light gray background */
+    -fx-padding: 10px; /* Padding around the pane */
+    -fx-background-radius: 10; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2); /* Soft shadow effect */
+}
+
+/* Styling for the TextArea */
+.text-area {
+    -fx-background-color: #e6e6e6; /* Slightly darker gray background */
+    -fx-border-color: #b3b3b3; /* Subtle gray border */
+    -fx-border-radius: 8; /* Rounded corners */
+    -fx-border-width: 1; /* Border width */
+    -fx-padding: 10; /* Inner padding */
+    -fx-font-size: 14px; /* Font size */
+    -fx-text-fill: #333; /* Dark gray text */
+}
+
+/* Styling for the TextField */
+.text-field {
+    -fx-background-color: #f2f2f2; /* Light gray background */
+    -fx-border-color: #b3b3b3; /* Subtle gray border */
+    -fx-border-radius: 5; /* Rounded corners */
+    -fx-border-width: 1; /* Border width */
+    -fx-padding: 5; /* Inner padding */
+    -fx-font-size: 14px; /* Font size */
+    -fx-text-fill: #333; /* Dark gray text */
+}
+
+.text-field:focused {
+    -fx-border-color: #666666; /* Darker gray border on focus */
+}
+
+/* Styling for the Button */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #888888, #666666); /* Gray gradient */
+    -fx-text-fill: #ffffff; /* White text color */
+    -fx-font-size: 14px; /* Font size */
+    -fx-padding: 8 16; /* Padding for button */
+    -fx-border-radius: 5; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0, 0, 2); /* Shadow effect */
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #666666, #4d4d4d); /* Darker gradient on hover */
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #4d4d4d, #333333); /* Even darker gradient when pressed */
+}
+
+/* Optional: Styling for placeholder text in TextField */
+.text-field .prompt-text {
+    -fx-text-fill: #777777; /* Gray color for prompt text */
+}
