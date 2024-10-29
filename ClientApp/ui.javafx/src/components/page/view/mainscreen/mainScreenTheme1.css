@@ -45,8 +45,21 @@
 }
 
 .table-view .table-row-cell:selected {
-    -fx-background-color: #595959; /* Dark gray background for selected rows */
-    -fx-text-fill: #ffffff; /* White text for better contrast */
+    -fx-background-color: #50394c; /* Dark gray background for selected rows */
+}
+
+/* Selected row for alternate rows */
+.table-view .table-row-cell:odd:selected {
+    -fx-background-color: #607274; /* Black selection background for alternate rows */
+}
+
+/* Ensure text color changes on selected rows */
+.table-view .table-row-cell:selected .text {
+    -fx-fill: #FFFFFF; /* Dark text color for non-alt selected rows */
+}
+
+.table-view .table-row-cell:odd:selected .text {
+    -fx-fill: #1A1A1A; /* White text color for alternate (black) selected rows */
 }
 
 .table-column {

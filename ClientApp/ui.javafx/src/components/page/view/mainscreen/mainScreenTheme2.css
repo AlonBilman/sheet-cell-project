@@ -1,141 +1,155 @@
 /* General styling for the Pane */
 .pane {
-    -fx-background-color: #FFD700; /* Golden yellow background */
-    -fx-padding: 20px; /* Spacious padding */
-    -fx-border-color: #CDAA00; /* Darker golden border */
-    -fx-border-width: 1.5px; /* Slightly thicker border */
-    -fx-background-insets: 0, 0; /* Remove default insets */
-    -fx-border-radius: 8px; /* Rounded corners */
-    -fx-background-radius: 8px; /* Matching background radius */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow for depth */
+    -fx-background-color: #FFD523; /* Vibrant golden yellow */
+    -fx-padding: 25px; /* Generous padding */
+    -fx-border-color: #C69200; /* Darker golden border for richness */
+    -fx-border-width: 2px; /* Thicker border for better definition */
+    -fx-background-insets: 0, 0;
+    -fx-border-radius: 10px; /* Slightly rounder corners */
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.4, 0, 4); /* Deeper shadow */
 }
 
-/* Modernized Styling for TitledPane headers */
+/* TitledPane headers */
 .titled-pane > .title {
-    -fx-background-color: linear-gradient(to bottom, #FFC300, #FFA500); /* Darker gradient from golden yellow to a deeper shade */
-    -fx-text-fill: #000000; /* Black text for better contrast */
-    -fx-font-size: 15px; /* Slightly larger font for a modern look */
-    -fx-font-weight: bold; /* Bold text for emphasis */
-    -fx-border-radius: 4px; /* More rounded corners for a smoother look */
-    -fx-background-radius: 4px; /* Matching background radius */
-    -fx-padding: 12px 10px; /* Spacious padding */
-    -fx-border-color: #CDAA00; /* Darker golden border */
-    -fx-border-width: 2px; /* Thick border for better definition */
-    -fx-cursor: hand; /* Pointer cursor on hover */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow for a floating effect */
-    -fx-alignment: center-left; /* Align text to the left for a more modern look */
+    -fx-background-color: linear-gradient(to bottom, #FFB700, #FF8A00); /* Brighter gradient for header */
+    -fx-text-fill: #2C2C2C; /* Dark gray text for subtler contrast */
+    -fx-font-size: 16px; /* Slightly larger font */
+    -fx-font-weight: bold;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px 15px; /* Slightly more padding */
+    -fx-border-color: #C89200;
+    -fx-border-width: 2.5px; /* Slightly thicker border */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 9, 0.5, 0, 5); /* More prominent shadow */
+    -fx-alignment: center-left;
 }
 
 .titled-pane > .title:hover {
-    -fx-background-color: linear-gradient(to bottom, #FFA500, #FF8C00); /* Darker gradient on hover for contrast */
-    -fx-border-color: #FF8C00; /* Matching darker border */
+    -fx-background-color: linear-gradient(to bottom, #FF8A00, #FF4500); /* Richer hover effect */
+    -fx-border-color: #FF5A00;
 }
 
-/* Modernized styling for TableViews */
+/* Styling for TableView */
 .table-view {
-    -fx-background-color: #F8F05E; /* Darker light yellow background */
-    -fx-table-cell-border-color: transparent; /* Hide cell borders */
-    -fx-control-inner-background: #F8F05E; /* Darker yellow background for cells */
-    -fx-control-inner-background-alt: #E1D100; /* Lighter yellow for alternate rows */
-    -fx-padding: 5px; /* Tight padding */
-    -fx-background-radius: 8px; /* Rounded background */
-    -fx-border-radius: 8px; /* Rounded border */
-    -fx-border-color: #CDAA00; /* Darker golden border */
-    -fx-border-width: 1px; /* Thin border */
+    -fx-background-color: #FFF275;
+    -fx-table-cell-border-color: transparent;
+    -fx-control-inner-background: #FFF275;
+    -fx-control-inner-background-alt: #FFD64D; /* Color for alternate rows */
+    -fx-padding: 7px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #C89200;
+    -fx-border-width: 1px;
 }
 
+/* Selected row for non-alternate rows */
 .table-view .table-row-cell:selected {
-    -fx-background-color: #FFA500; /* Darker yellow background for selected rows */
-    -fx-text-fill: #000000; /* Black text for better contrast */
+    -fx-background-color:  #EE7214; /* Original selection color for non-alt rows */
+    -fx-text-fill: #1A1A1A;
 }
 
+/* Selected row for alternate rows */
+.table-view .table-row-cell:odd:selected {
+    -fx-background-color: #bd5734; /* Black selection background for alternate rows */
+    -fx-text-fill: #ffffff; /* White text for contrast */
+}
+/* Ensure text color changes on selected rows */
+.table-view .table-row-cell:selected .text {
+    -fx-fill: #1A1A1A; /* Dark text color for non-alt selected rows */
+}
+
+.table-view .table-row-cell:odd:selected .text {
+    -fx-fill: #FFFFFF; /* White text color for alternate (black) selected rows */
+}
 .table-column {
-    -fx-font-size: 14px; /* Modern font size */
-    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-font-size: 14px;
+    -fx-text-fill: #2C2C2C; /* Dark gray for readability */
 }
 
-/* Modernized styling for Labels */
+/* Label styling */
 .label-style {
-    -fx-background-color: #FFC300; /* Darker golden yellow background */
-    -fx-border-color: #CDAA00; /* Darker golden border for emphasis */
-    -fx-border-width: 2px; /* Thick border */
-    -fx-padding: 12px; /* Spacious padding */
-    -fx-text-fill: #333333; /* Dark gray text */
-    -fx-font-size: 15px; /* Modern, larger font */
-    -fx-font-weight: bold; /* Bold text */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow for a floating effect */
+    -fx-background-color: #FFC933; /* Brighter golden yellow */
+    -fx-border-color: #C89200;
+    -fx-border-width: 2px;
+    -fx-padding: 14px; /* Generous padding */
+    -fx-text-fill: #2C2C2C;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0.4, 0, 3);
 }
 
 .label-style:hover {
-    -fx-border-color: #FF8C00; /* Darker border on hover */
+    -fx-border-color: #FF6A00; /* Richer border color on hover */
 }
 
 /* Button styling */
 .button {
-    -fx-background-color: linear-gradient(to bottom, #DAA520, #FFC300); /* Darker gradient golden background */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 12px; /* Modern, smaller font */
-    -fx-border-color: #CDAA00; /* Darker golden border */
-    -fx-border-width: 1.5px; /* Thinner border */
-    -fx-border-radius: 5px; /* Rounded corners */
-    -fx-background-radius: 5px; /* Matching background radius */
-    -fx-padding: 5px 10px; /* Tight padding */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
-    -fx-cursor: hand; /* Pointer cursor */
+    -fx-background-color: linear-gradient(to bottom, #D29500, #FFC700); /* Bolder gradient */
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px; /* Slightly larger font */
+    -fx-border-color: #C89200;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 12px; /* More comfortable padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0.4, 0, 3);
+    -fx-cursor: hand;
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #FFC300, #FFA500); /* Darker gradient on hover */
-    -fx-border-color: #FF8C00; /* Darker border on hover */
+    -fx-background-color: linear-gradient(to bottom, #FFC300, #FF9700); /* Brighter hover effect */
+    -fx-border-color: #FF6A00;
 }
 
 .button:pressed {
-    -fx-background-color: linear-gradient(to bottom, #FFA500, #FF4500); /* Even darker gradient when pressed */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 1); /* Adjusted shadow for pressed state */
+    -fx-background-color: linear-gradient(to bottom, #FF8A00, #E67300); /* Deeper pressed effect */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 2);
 }
 
 .button:disabled {
-    -fx-opacity: 0.4; /* Faded look for disabled buttons */
+    -fx-opacity: 0.5; /* Slightly more faded */
 }
 
 /* ChoiceBox styling */
 .choice-box {
-    -fx-background-color: linear-gradient(to bottom, #DAA520, #FFC300); /* Darker gradient golden background */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 12px; /* Modern, smaller font */
-    -fx-border-color: #CDAA00; /* Darker golden border */
-    -fx-border-width: 1.5px; /* Thinner border */
-    -fx-border-radius: 5px; /* Rounded corners */
-    -fx-background-radius: 5px; /* Matching background radius */
-    -fx-padding: 5px 10px; /* Tight padding */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
-    -fx-cursor: hand; /* Pointer cursor */
+    -fx-background-color: linear-gradient(to bottom, #D29500, #FFC700);
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-border-color: #C89200;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0.4, 0, 3);
+    -fx-cursor: hand;
 }
 
 .choice-box:pressed {
-    -fx-background-color: linear-gradient(to bottom, #FFC300, #DAA520); /* Darker gradient on hover */
-    -fx-border-color: #FF8C00; /* Darker border on hover */
+    -fx-background-color: linear-gradient(to bottom, #FFC300, #DAA520);
+    -fx-border-color: #FF6A00;
 }
 
 /* Header Labels */
 .header-label {
-    -fx-text-fill: #333333; /* Dark gray text for readability */
-    -fx-font-size: 18px; /* Larger font for headers */
-    -fx-font-weight: bold; /* Bold text */
-    -fx-underline: true; /* Underlined text */
+    -fx-text-fill: #2C2C2C;
+    -fx-font-size: 19px; /* Enhanced header font size */
+    -fx-font-weight: bold;
+    -fx-underline: true;
 }
 
-/* Styling for the SubScene Pane */
+/* SubScene Pane styling */
 .subscene-pane {
-    -fx-background-color: #F8F05E; /* Darker light yellow background for subscene */
-    -fx-border-color: #CDAA00; /* Darker golden border */
-    -fx-border-width: 1px; /* Thin border */
-    -fx-background-radius: 8px; /* Rounded corners */
-    -fx-padding: 10px; /* Padding for content */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
+    -fx-background-color: #FFF275;
+    -fx-border-color: #C89200;
+    -fx-border-width: 1.5px;
+    -fx-background-radius: 10px;
+    -fx-padding: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0.4, 0, 3);
 }
 
 /* VBox spacing */
 .vbox {
-    -fx-spacing: 15px; /* Spacing between children */
+    -fx-spacing: 18px; /* Increased spacing */
 }

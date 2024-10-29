@@ -8,7 +8,7 @@
 <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" maxHeight="924.0" maxWidth="972.0" minHeight="400.0" minWidth="972.0" prefHeight="703.0" prefWidth="972.0" stylesheets="@mainScreenDefault.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.page.view.mainscreen.MainScreenController">
 
     <content>
-        <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" minHeight="642.0" minWidth="885.0" prefHeight="866.0" prefWidth="970.0">
+        <AnchorPane fx:id="anchorPane" layoutX="-1.0" layoutY="-1.0" minHeight="702.0" minWidth="885.0" prefHeight="866.0" prefWidth="970.0">
 
             <children>
 
