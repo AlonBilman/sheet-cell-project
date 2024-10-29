@@ -69,10 +69,6 @@ public class Main extends Application {
             mainScreenController = loader.getController();
             mainScreenController.setStage(primaryStage);
             mainScreenController.setUserName(userName);
-            primaryStage.setOnCloseRequest(event -> {
-                confirmExit();
-                primaryStage.close();
-            });
             primaryStage.show();
 
         } catch (Exception e) {

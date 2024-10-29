@@ -48,6 +48,7 @@ public class AppController {
     private Stage stage;
     private String userName;
     private sheetDTO currSheetDTO;
+    private String theme;
     @FXML
     private TableFunctionalityController tableFunctionalityController;
     @FXML
@@ -97,6 +98,7 @@ public class AppController {
             httpCallerService = new CallerService();
             query = new HashMap<>();
             currSheetDTO = null;
+            theme = "Default";
         }
     }
 
@@ -559,6 +561,7 @@ public class AppController {
     }
 
     public void setStyleOnParts(String value) {
+        theme = value;
         if (value.equals("Theme 1"))
             setNewTheme("Theme1");
         else if (value.equals("Theme 2"))
@@ -717,6 +720,7 @@ public class AppController {
             MainScreenController controller = loader.getController();
             controller.setUserName(this.userName); // need to give it the username.
             controller.setStage(stage);
+            controller.setTheme(theme);
             stage.show();
 
         } catch (Exception e) {

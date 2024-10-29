@@ -1,155 +1,150 @@
 /* General styling for the Pane */
 .pane {
-    -fx-background-color: #FFD523; /* Vibrant golden yellow */
-    -fx-padding: 25px; /* Generous padding */
-    -fx-border-color: #C69200; /* Darker golden border for richness */
-    -fx-border-width: 2px; /* Thicker border for better definition */
-    -fx-background-insets: 0, 0;
-    -fx-border-radius: 10px; /* Slightly rounder corners */
-    -fx-background-radius: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.4, 0, 4); /* Deeper shadow */
+    -fx-background-color: #f7e4a3; /* Light yellow background */
+    -fx-padding: 20px; /* Spacious padding */
+    -fx-border-color: #c5a849; /* Subtle yellow-gray border */
+    -fx-border-width: 1.5px; /* Slightly thicker border */
+    -fx-background-insets: 0, 0; /* Remove default insets */
+    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-background-radius: 8px; /* Matching background radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.3, 0, 3); /* Soft shadow for depth */
 }
 
-/* TitledPane headers */
+/* Modernized Styling for TitledPane headers */
 .titled-pane > .title {
-    -fx-background-color: linear-gradient(to bottom, #FFB700, #FF8A00); /* Brighter gradient for header */
-    -fx-text-fill: #2C2C2C; /* Dark gray text for subtler contrast */
-    -fx-font-size: 16px; /* Slightly larger font */
-    -fx-font-weight: bold;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 12px 15px; /* Slightly more padding */
-    -fx-border-color: #C89200;
-    -fx-border-width: 2.5px; /* Slightly thicker border */
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 9, 0.5, 0, 5); /* More prominent shadow */
-    -fx-alignment: center-left;
+    -fx-background-color: linear-gradient(to bottom, #f4d67a, #e5b862); /* Smoother gradient from light to darker yellow */
+    -fx-text-fill: #333333; /* Darker text */
+    -fx-font-size: 15px; /* Slightly larger font for a modern look */
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-border-radius: 4px; /* Rounded corners */
+    -fx-background-radius: 4px; /* Matching background radius */
+    -fx-padding: 12px 10px; /* Spacious padding */
+    -fx-border-color: #d5ab49; /* Border matching the darker part of the gradient */
+    -fx-border-width: 2px; /* Thick border */
+    -fx-cursor: hand; /* Pointer cursor on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow for a floating effect */
+    -fx-alignment: center-left; /* Align text to the left for a more modern look */
 }
 
 .titled-pane > .title:hover {
-    -fx-background-color: linear-gradient(to bottom, #FF8A00, #FF4500); /* Richer hover effect */
-    -fx-border-color: #FF5A00;
+    -fx-background-color: linear-gradient(to bottom, #e0b758, #cf9e43); /* Darker yellow on hover */
+    -fx-border-color: #c79d3f; /* Matching darker border */
 }
 
-/* Styling for TableView */
+/* Modernized styling for TableViews */
 .table-view {
-    -fx-background-color: #FFF275;
-    -fx-table-cell-border-color: transparent;
-    -fx-control-inner-background: #FFF275;
-    -fx-control-inner-background-alt: #FFD64D; /* Color for alternate rows */
-    -fx-padding: 7px;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-border-color: #C89200;
-    -fx-border-width: 1px;
+    -fx-background-color: #f7e4a3; /* Light yellow background */
+    -fx-table-cell-border-color: transparent; /* Hide cell borders */
+    -fx-control-inner-background: #f7e4a3; /* Yellow background for cells */
+    -fx-control-inner-background-alt: #ebd497; /* Lighter yellow for alternate rows */
+    -fx-padding: 5px; /* Tight padding */
+    -fx-background-radius: 8px; /* Rounded background */
+    -fx-border-radius: 8px; /* Rounded border */
+    -fx-border-color: #c5a849; /* Subtle yellow-gray border */
+    -fx-border-width: 1px; /* Thin border */
 }
 
-/* Selected row for non-alternate rows */
+/* Styling for selected TableView rows with darker yellow */
 .table-view .table-row-cell:selected {
-    -fx-background-color:  #EE7214; /* Original selection color for non-alt rows */
-    -fx-text-fill: #1A1A1A;
+    -fx-background-color: #e0b648; /* Darker yellow background for selected rows */
 }
 
-/* Selected row for alternate rows */
 .table-view .table-row-cell:odd:selected {
-    -fx-background-color: #bd5734; /* Black selection background for alternate rows */
-    -fx-text-fill: #ffffff; /* White text for contrast */
-}
-/* Ensure text color changes on selected rows */
-.table-view .table-row-cell:selected .text {
-    -fx-fill: #1A1A1A; /* Dark text color for non-alt selected rows */
+    -fx-background-color: #cfa33d; /* Even darker yellow for alternate selected rows */
 }
 
+.table-view .table-row-cell:selected .text,
 .table-view .table-row-cell:odd:selected .text {
-    -fx-fill: #FFFFFF; /* White text color for alternate (black) selected rows */
-}
-.table-column {
-    -fx-font-size: 14px;
-    -fx-text-fill: #2C2C2C; /* Dark gray for readability */
+    -fx-fill: #333333; /* Dark text color for readability on darker yellow */
 }
 
-/* Label styling */
+.table-column {
+    -fx-font-size: 14px; /* Modern font size */
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+}
+
+/* Modernized styling for Labels */
 .label-style {
-    -fx-background-color: #FFC933; /* Brighter golden yellow */
-    -fx-border-color: #C89200;
-    -fx-border-width: 2px;
-    -fx-padding: 14px; /* Generous padding */
-    -fx-text-fill: #2C2C2C;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0.4, 0, 3);
+    -fx-background-color: #f7e4a3; /* Light yellow background */
+    -fx-border-color: #c5a849; /* Yellow border for emphasis */
+    -fx-border-width: 2px; /* Thick border */
+    -fx-padding: 12px; /* Spacious padding */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-font-size: 15px; /* Modern, larger font */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow for a floating effect */
 }
 
 .label-style:hover {
-    -fx-border-color: #FF6A00; /* Richer border color on hover */
+    -fx-border-color: #b39639; /* Darker yellow border on hover */
 }
 
 /* Button styling */
 .button {
-    -fx-background-color: linear-gradient(to bottom, #D29500, #FFC700); /* Bolder gradient */
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 13px; /* Slightly larger font */
-    -fx-border-color: #C89200;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 6px 12px; /* More comfortable padding */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0.4, 0, 3);
-    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, #cfb74c, #b7993b); /* Gradient yellow background */
+    -fx-text-fill: #333333; /* Darker text */
+    -fx-font-size: 12px; /* Modern, smaller font */
+    -fx-border-color: #b7993b; /* Dark yellow border */
+    -fx-border-width: 1.5px; /* Thinner border */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Matching background radius */
+    -fx-padding: 5px 10px; /* Tight padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
+    -fx-cursor: hand; /* Pointer cursor */
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #FFC300, #FF9700); /* Brighter hover effect */
-    -fx-border-color: #FF6A00;
+    -fx-background-color: linear-gradient(to bottom, #b7993b, #a38333); /* Darker yellow gradient on hover */
+    -fx-border-color: #a38333; /* Darker border on hover */
 }
 
 .button:pressed {
-    -fx-background-color: linear-gradient(to bottom, #FF8A00, #E67300); /* Deeper pressed effect */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 2);
+    -fx-background-color: linear-gradient(to bottom, #a38333, #8f6e29); /* Even darker gradient when pressed */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 5, 0.3, 0, 1); /* Adjusted shadow for pressed state */
 }
 
 .button:disabled {
-    -fx-opacity: 0.5; /* Slightly more faded */
+    -fx-opacity: 0.4; /* Faded look for disabled buttons */
 }
 
 /* ChoiceBox styling */
 .choice-box {
-    -fx-background-color: linear-gradient(to bottom, #D29500, #FFC700);
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 13px;
-    -fx-border-color: #C89200;
-    -fx-border-width: 1.5px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 6px 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 6, 0.4, 0, 3);
-    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, #cfb74c, #b7993b); /* Gradient yellow background */
+    -fx-text-fill: #333333; /* Darker text */
+    -fx-font-size: 12px; /* Modern, smaller font */
+    -fx-border-color: #b7993b; /* Dark yellow border */
+    -fx-border-width: 1.5px; /* Thinner border */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Matching background radius */
+    -fx-padding: 5px 10px; /* Tight padding */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.3, 0, 2); /* Soft shadow for depth */
+    -fx-cursor: hand; /* Pointer cursor */
 }
 
 .choice-box:pressed {
-    -fx-background-color: linear-gradient(to bottom, #FFC300, #DAA520);
-    -fx-border-color: #FF6A00;
+    -fx-background-color: linear-gradient(to bottom, #b7993b, #a38333); /* Darker gradient on hover */
+    -fx-border-color: #a38333; /* Darker border on hover */
 }
 
 /* Header Labels */
 .header-label {
-    -fx-text-fill: #2C2C2C;
-    -fx-font-size: 19px; /* Enhanced header font size */
-    -fx-font-weight: bold;
-    -fx-underline: true;
+    -fx-text-fill: #333333; /* Dark gray text for readability */
+    -fx-font-size: 18px; /* Larger font for headers */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-underline: true; /* Underlined text */
 }
 
-/* SubScene Pane styling */
+/* Styling for the SubScene Pane */
 .subscene-pane {
-    -fx-background-color: #FFF275;
-    -fx-border-color: #C89200;
-    -fx-border-width: 1.5px;
-    -fx-background-radius: 10px;
-    -fx-padding: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 6, 0.4, 0, 3);
+    -fx-background-color: #f5df91; /* Light yellow background for subscene */
+    -fx-border-color: #c5a849; /* Subtle border */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-background-radius: 8px; /* Rounded corners */
+    -fx-padding: 10px; /* Padding for content */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
 }
 
 /* VBox spacing */
 .vbox {
-    -fx-spacing: 18px; /* Increased spacing */
+    -fx-spacing: 15px; /* Spacing between children */
 }

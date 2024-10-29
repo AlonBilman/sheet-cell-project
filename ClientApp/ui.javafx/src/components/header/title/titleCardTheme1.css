@@ -1,0 +1,42 @@
+/* Default style for the reload button */
+#reloadSheetButton {
+    -fx-background-color: linear-gradient(to bottom, #999999, #666666); /* Gradient gray background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 13px; /* Font size */
+    -fx-border-color: #666666; /* Darker gray border */
+    -fx-border-width: 1px; /* Border thickness */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+#reloadSheetButton:disabled {
+    -fx-opacity: 0.3; /* Reduced opacity for disabled state */
+}
+
+#backToMainScreenButton {
+    -fx-background-color: linear-gradient(to bottom, #999999, #666666); /* Gradient gray background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-font-size: 13px; /* Font size */
+    -fx-border-color: #666666; /* Darker gray border */
+    -fx-border-width: 1px; /* Border thickness */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+/* Subtle breathing glow effect */
+.glow-effect {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0); /* Adjusted glow effect */
+}
+
+/* Animation keyframes for breathing */
+@keyframes breathe {
+    0% {
+        -fx-opacity: 1;
+    }
+    50% {
+        -fx-opacity: 0.4; /* Slightly transparent */
+    }
+    100% {
+        -fx-opacity: 1; /* Fully opaque */
+    }
+}
