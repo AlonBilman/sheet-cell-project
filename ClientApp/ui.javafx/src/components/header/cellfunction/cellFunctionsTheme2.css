@@ -10,7 +10,7 @@
 }
 
 /* Modernized styling for Labels */
-.label-style {
+.label-style, #changedBy {
     -fx-background-color: #ffe680; /* Light yellow background */
     -fx-border-color: #cc9900; /* Medium yellow border */
     -fx-border-width: 2px; /* Slightly thicker border */
@@ -18,64 +18,45 @@
     -fx-text-fill: #333333; /* Dark gray text */
     -fx-font-size: 15px; /* Larger font size */
     -fx-font-weight: bold; /* Bold text */
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow effect */
 }
 
-.label-style:hover {
-    -fx-border-color: #cc9900; /* Darker yellow on hover */
+#changedBy {
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 204, 0, 0.3), 4, 0.3, 0, 1); /* Soft yellow shadow effect */
 }
 
-#exitDynamicChange, #dynamicChangeButton {
+/* Buttons styling */
+#exitDynamicChange, #dynamicChangeButton, #sliderConfirm, #dynamicCancel,
+.update-button, .version-button {
     -fx-background-color: linear-gradient(to bottom, #ffd966, #e6b800); /* Gradient yellow background */
     -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 13px; /* Font size for consistency */
-    -fx-border-color: #e6b800; /* Darker yellow border */
-    -fx-border-width: 1px; /* Border thickness */
+    -fx-font-size: 13px;
+    -fx-border-color: #e6b800;
+    -fx-border-width: 1px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow effect */
     -fx-cursor: hand; /* Pointer cursor */
 }
 
-#exitDynamicChange:disabled, #dynamicChangeButton:disabled {
+#exitDynamicChange:hover, #dynamicChangeButton:hover,
+#sliderConfirm:hover, #dynamicCancel:hover,
+.update-button:hover, .version-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffcc00, #cc9900); /* Darker yellow hover effect */
+    -fx-border-color: #cc9900;
+}
+
+#exitDynamicChange:disabled, #dynamicChangeButton:disabled,
+#sliderConfirm:disabled, #dynamicCancel:disabled,
+.version-button:disabled {
     -fx-opacity: 0.2; /* Reduced opacity for disabled state */
 }
 
-/* Styling for #changedBy Label */
-#changedBy {
-    -fx-background-color: #ffe680; /* Light yellow background */
-    -fx-border-color: #cc9900; /* Yellow border */
-    -fx-border-width: 2px; /* Thicker border */
-    -fx-padding: 10px; /* Padding for spacing */
-    -fx-text-fill: #333333; /* Dark gray text */
-    -fx-font-size: 14px; /* Slightly smaller font size */
-    -fx-font-style: italic; /* Italic style */
-    -fx-font-weight: bold; /* Bold text */
-    -fx-effect: dropshadow(gaussian, rgba(255, 204, 0, 0.3), 5, 0.3, 0, 2); /* Soft yellow shadow effect */
-}
-
-
-/* Styling for Update Button */
-.update-button, .version-button {
-    -fx-background-color: linear-gradient(to bottom, #ffd966, #e6b800); /* Gradient yellow background */
-    -fx-text-fill: #ffffff; /* White text */
-    -fx-font-size: 15px; /* Font size for consistency */
-    -fx-padding: 12px 18px; /* Padding for better proportions */
-    -fx-border-color: #e6b800; /* Darker yellow border */
-    -fx-border-width: 2px; /* Thicker border */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Soft shadow */
-    -fx-cursor: hand; /* Pointer cursor */
-}
-
-.update-button:hover, .version-button:hover, #exitDynamicChange:hover, #dynamicChangeButton:hover {
-    -fx-background-color: linear-gradient(to bottom, #ffcc00, #cc9900); /* Darker yellow hover effect */
-    -fx-border-color: #cc9900; /* Matching border on hover */
-}
-
-.version-button:disabled {
-    -fx-opacity: 0.4; /* Reduced opacity for disabled buttons */
-}
-
-/* Modernized styling for TextField */
-.text-field-style {
+/* TextFields styling */
+.text-field-style, #fromTextField, #toTextField, #jumpTextField {
     -fx-background-color: #fff4cc; /* Light yellow background */
     -fx-border-color: #ffd966; /* Light yellow border */
     -fx-border-width: 1.5px; /* Slightly thicker border */
@@ -84,9 +65,18 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2); /* Soft shadow */
 }
 
-.text-field-style:focused {
+.text-field-style:focused, #fromTextField:focused,
+#toTextField:focused, #jumpTextField:focused {
     -fx-border-color: #e6b800; /* Medium yellow border on focus */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.3, 0, 3); /* Enhanced shadow on focus */
+}
+
+/* Input Dialog styling */
+.inputDialog {
+    -fx-background-color: #ffffff; /* White background */
+    -fx-padding: 10px;
+    -fx-border-color: #000000;
+    -fx-border-width: 1px;
 }
 
 /* Disabled styling */
