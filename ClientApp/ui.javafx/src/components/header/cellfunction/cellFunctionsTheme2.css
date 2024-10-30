@@ -39,6 +39,20 @@
     -fx-opacity: 0.2; /* Reduced opacity for disabled state */
 }
 
+/* Styling for #changedBy Label */
+#changedBy {
+    -fx-background-color: #ffe680; /* Light yellow background */
+    -fx-border-color: #cc9900; /* Yellow border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-padding: 10px; /* Padding for spacing */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-font-size: 14px; /* Slightly smaller font size */
+    -fx-font-style: italic; /* Italic style */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-effect: dropshadow(gaussian, rgba(255, 204, 0, 0.3), 5, 0.3, 0, 2); /* Soft yellow shadow effect */
+}
+
+
 /* Styling for Update Button */
 .update-button, .version-button {
     -fx-background-color: linear-gradient(to bottom, #ffd966, #e6b800); /* Gradient yellow background */

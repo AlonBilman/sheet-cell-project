@@ -20,7 +20,6 @@ import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -180,9 +179,11 @@ public class MainScreenController {
                 break;
             case "Theme 1":
                 cssFilePath = "mainScreenTheme1.css";
+                styleChoiceBox.setValue("Theme 1");
                 break;
             case "Theme 2":
                 cssFilePath = "mainScreenTheme2.css";
+                styleChoiceBox.setValue("Theme 2");
                 break;
             default:
                 break;

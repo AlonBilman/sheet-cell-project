@@ -1,0 +1,56 @@
+/* Default style for the reload button */
+#reloadSheetButton {
+    -fx-background-color: linear-gradient(to bottom, #ffd966, #cc9900); /* Gradient yellow background */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-font-size: 14px; /* Font size for better readability */
+    -fx-border-color: #cc9900; /* Darker yellow border */
+    -fx-background-radius: 6px; /* Matching border radius */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+#reloadSheetButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #e6ac00, #b38f00); /* Darker yellow on hover */
+    -fx-border-color: #b38f00; /* Darker border on hover */
+}
+
+#reloadSheetButton:disabled {
+    -fx-opacity: 0.4; /* Reduced opacity for disabled state */
+}
+
+#backToMainScreenButton {
+    -fx-background-color: linear-gradient(to bottom, #ffd966, #cc9900); /* Gradient yellow background */
+    -fx-text-fill: #333333; /* Dark gray text */
+    -fx-font-size: 14px; /* Font size */
+    -fx-border-color: #cc9900; /* Darker yellow border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 4); /* Soft shadow */
+    -fx-cursor: hand; /* Pointer cursor */
+}
+
+#backToMainScreenButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #e6ac00, #b38f00); /* Darker yellow on hover */
+    -fx-border-color: #b38f00; /* Darker border on hover */
+}
+
+#backToMainScreenButton:disabled {
+    -fx-opacity: 0.4; /* Reduced opacity for disabled state */
+}
+
+/* Subtle breathing glow effect */
+.glow-effect {
+    -fx-effect: dropshadow(gaussian, rgba(255, 204, 0, 0.3), 10, 0.5, 0, 0); /* Yellow glow effect */
+}
+
+/* Animation keyframes for breathing */
+@keyframes breathe {
+    0% {
+        -fx-opacity: 1;
+    }
+    50% {
+        -fx-opacity: 0.6; /* Slightly transparent for breathing effect */
+    }
+    100% {
+        -fx-opacity: 1; /* Fully opaque */
+    }
+}

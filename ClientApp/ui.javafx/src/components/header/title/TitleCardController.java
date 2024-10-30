@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 
 public class TitleCardController {
@@ -43,6 +44,14 @@ public class TitleCardController {
 
     public void setName(String name) {
         nameLabel.setText(name);
+    }
+
+    public void setTheme(String newTheme) {
+        anchorPane.getStylesheets().clear();
+        anchorPane.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/components/header/title/titleCard" + newTheme + ".css"))
+                        .toExternalForm()
+        );
     }
 
     public void backToMainScreenButtonListener() {

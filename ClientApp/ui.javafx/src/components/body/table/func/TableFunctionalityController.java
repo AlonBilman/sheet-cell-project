@@ -107,13 +107,9 @@ public class TableFunctionalityController {
         this.appController = mainController;
     }
 
-    // Method to change the theme dynamically
     public void setTheme(String newTheme) {
         cssSet(newTheme);
-        // Clear the existing stylesheets
         scrollPane.getStylesheets().clear();
-
-        // Add the new theme stylesheet
         scrollPane.getStylesheets().add(
                 Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + newTheme + ".css"))
                         .toExternalForm()
