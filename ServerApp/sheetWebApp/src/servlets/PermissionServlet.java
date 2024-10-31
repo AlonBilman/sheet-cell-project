@@ -1,6 +1,7 @@
 package servlets;
 
-import com.google.gson.Gson;
+import common.dto.permission.Permission;
+import common.dto.permission.PermissionData;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,9 +15,10 @@ import utils.*;
 import java.io.IOException;
 import java.util.*;
 
-import static constants.Constants.*;
+import static common.api.path.path.*;
 
-@WebServlet(name = Constants.PERMISSION_SERVLET, urlPatterns = {Constants.PERMISSIONS})
+
+@WebServlet(name = Constants.PERMISSION_SERVLET, urlPatterns = {PERMISSIONS})
 public class PermissionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -78,7 +80,6 @@ public class PermissionServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Gson GSON = new Gson();
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 
@@ -123,7 +124,6 @@ public class PermissionServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Gson GSON = new Gson();
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 

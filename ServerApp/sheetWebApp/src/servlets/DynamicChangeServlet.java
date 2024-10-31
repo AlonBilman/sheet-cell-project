@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import dto.sheetDTO;
 import engine.Engine;
@@ -16,6 +15,7 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
+import static common.api.path.path.*;
 import static constants.Constants.*;
 
 
@@ -24,18 +24,18 @@ public class DynamicChangeServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        Gson GSON = new Gson();
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        String sheetId = request.getParameter(Constants.SHEET_ID);
-        String cellId = request.getParameter(Constants.CELL_ID);
+        String sheetId = request.getParameter(SHEET_ID);
+        String cellId = request.getParameter(CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "One or more parameters are missing (IDs)");
             return;
         }
         try {
@@ -62,11 +62,12 @@ public class DynamicChangeServlet extends HttpServlet {
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        String sheetId = request.getParameter(Constants.SHEET_ID);
-        String cellId = request.getParameter(Constants.CELL_ID);
+        String sheetId = request.getParameter(SHEET_ID);
+        String cellId = request.getParameter(CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "One or more parameters are missing (IDs)");
             return;
         }
         try {
@@ -97,11 +98,12 @@ public class DynamicChangeServlet extends HttpServlet {
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        String sheetId = request.getParameter(Constants.SHEET_ID);
-        String cellId = request.getParameter(Constants.CELL_ID);
+        String sheetId = request.getParameter(SHEET_ID);
+        String cellId = request.getParameter(CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "One or more parameters are missing (IDs)");
             return;
         }
         try {

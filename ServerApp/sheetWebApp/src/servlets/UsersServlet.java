@@ -1,5 +1,6 @@
 package servlets;
 
+import common.dto.user.AppUser;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,7 +8,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import manager.impl.AppManager;
-import utils.AppUser;
 import utils.ResponseUtils;
 import utils.ServletUtils;
 import utils.SessionUtils;
@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@WebServlet(name = Constants.USERS_SERVLET, urlPatterns = {Constants.DISPLAY + Constants.USERS})
+import static common.api.path.path.DISPLAY;
+import static common.api.path.path.USERS;
+
+@WebServlet(name = Constants.USERS_SERVLET, urlPatterns = {DISPLAY + USERS})
 public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

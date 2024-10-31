@@ -1,6 +1,6 @@
 package servlets;
 
-import com.google.gson.Gson;
+import common.dto.fetures.FilterObject;
 import constants.Constants;
 import dto.sheetDTO;
 import engine.Engine;
@@ -16,20 +16,18 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
+import static common.api.path.path.*;
 import static constants.Constants.*;
 
 @WebServlet(name = FILTER_SERVLET, urlPatterns = {DISPLAY + FILTER})
 public class FilterServlet extends HttpServlet {
-
-    Gson GSON = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 
-        if (!ServletUtils.isUserNameExists(response, username))
-            return;
+        if (!ServletUtils.isUserNameExists(response, username)) return;
 
         String sheetId = request.getParameter(SHEET_ID);
 
@@ -40,9 +38,8 @@ public class FilterServlet extends HttpServlet {
         try {
             synchronized (this) {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-                if (!ServletUtils.isValidEngine(engine, response))
-                    return;
-                ResponseUtils.FilterObj filterObj = GSON.fromJson(request.getReader(), ResponseUtils.FilterObj.class);
+                if (!ServletUtils.isValidEngine(engine, response)) return;
+                FilterObject filterObj = GSON.fromJson(request.getReader(), FilterObject.class);
                 AppManager appManager = engine.getManager(username, sheetId);
                 if (!appManager.isUpToDate()) {
                     throw new RuntimeException("In order to use filter functionality you have to update the sheet.");

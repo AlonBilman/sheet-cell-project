@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import dto.CellDataDTO;
 import engine.Engine;
@@ -16,17 +15,15 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-import static constants.Constants.SHEET_ID;
+import static common.api.path.path.*;
 
 @WebServlet(name = Constants.CELL_SERVLET, urlPatterns = {
-        Constants.DISPLAY + Constants.CELL_DTO,
-        Constants.MODIFY + Constants.CELL,
-        Constants.DYNAMICALLY + Constants.CELL
+        DISPLAY + CELL_DTO,
+        MODIFY + CELL,
+        DYNAMICALLY + CELL
 })
 
 public class CellServlet extends HttpServlet {
-
-    private static final Gson GSON = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -37,10 +34,11 @@ public class CellServlet extends HttpServlet {
             return;
 
         String sheetId = request.getParameter(SHEET_ID);
-        String cellId = request.getParameter(Constants.CELL_ID);
+        String cellId = request.getParameter(CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "One or more parameters are missing (IDs)");
             return;
         }
 
@@ -67,11 +65,12 @@ public class CellServlet extends HttpServlet {
         if (!ServletUtils.isUserNameExists(response, username))
             return;
 
-        String sheetId = request.getParameter(Constants.SHEET_ID);
-        String cellId = request.getParameter(Constants.CELL_ID);
+        String sheetId = request.getParameter(SHEET_ID);
+        String cellId = request.getParameter(CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "One or more parameters are missing (IDs)");
             return;
         }
         try {
@@ -93,7 +92,7 @@ public class CellServlet extends HttpServlet {
                     throw new IOException("Permission denied");
 
                 String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
-                sheetManager.updateCell(cellId, newOriginalValue, false,username);
+                sheetManager.updateCell(cellId, newOriginalValue, false, username);
                 appManager.updateVersion();
                 ResponseUtils.writeSuccessResponse(response, null);
             }

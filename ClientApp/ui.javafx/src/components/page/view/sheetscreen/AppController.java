@@ -2,6 +2,7 @@ package components.page.view.sheetscreen;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import common.dto.range.RangeBody;
 import components.body.table.func.TableFunctionalityController;
 import components.body.table.view.GridSheetController;
 import components.header.cellfunction.CellFunctionsController;
@@ -323,7 +324,7 @@ public class AppController {
     public void addNewRange(String rangeName, String fromCell, String toCell) {
         outOfFocus();
         String params = fromCell.trim() + ".." + toCell.trim();
-        HttpClientUtil.RangeBody rangeBody = new HttpClientUtil.RangeBody(rangeName, params);
+        RangeBody rangeBody = new RangeBody(rangeName, params);
         query.clear();
         query.put(SHEET_ID, currSheet);
         httpCallerService.addRange(query, rangeBody, new Callback() {

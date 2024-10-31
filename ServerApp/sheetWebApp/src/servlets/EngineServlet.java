@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
+import static common.api.path.path.START_UP;
 import static constants.Constants.*;
 
 //urlPatterns is mandatory for some reason - need to ask aviad.

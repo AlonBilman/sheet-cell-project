@@ -1,7 +1,5 @@
 package servlets;
 
-
-import com.google.gson.Gson;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,13 +14,12 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-import static constants.Constants.SHEET_ID;
+import static common.api.path.path.*;
 
-@WebServlet(name = Constants.COLOR_SERVLET, urlPatterns = {Constants.MODIFY + Constants.CELL_TEXT_COLOR, Constants.MODIFY + Constants.CELL_BACKGROUND_COLOR,})
+
+@WebServlet(name = Constants.COLOR_SERVLET, urlPatterns = {MODIFY + CELL_TEXT_COLOR, MODIFY + CELL_BACKGROUND_COLOR,})
 
 public class CellColorServlet extends HttpServlet {
-
-    private static final Gson GSON = new Gson();
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,10 +30,11 @@ public class CellColorServlet extends HttpServlet {
             return;
 
         String sheetId = request.getParameter(SHEET_ID);
-        String cellId = request.getParameter(Constants.CELL_ID);
+        String cellId = request.getParameter(CELL_ID);
 
         if (sheetId == null || sheetId.isEmpty() || cellId == null || cellId.isEmpty()) {
-            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
+            ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST,
+                    "One or more parameters are missing (IDs)");
             return;
         }
         synchronized (this) {
@@ -60,7 +58,7 @@ public class CellColorServlet extends HttpServlet {
 
                 String color = GSON.fromJson(request.getReader(), String.class);
 
-                if (request.getContextPath().contains(Constants.CELL_TEXT_COLOR)) {
+                if (request.getContextPath().contains(CELL_TEXT_COLOR)) {
                     sheetManager.setTextColor(cellId, color);
                 } else {
                     sheetManager.setBackgroundColor(cellId, color);

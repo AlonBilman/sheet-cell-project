@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,12 +15,10 @@ import manager.impl.SingleChatEntry;
 import java.io.IOException;
 import java.util.List;
 
-import static constants.Constants.*;
+import static common.api.path.path.*;
 
 @WebServlet(name = Constants.CHAT_SERVLET, urlPatterns = {CHAT_LINES_LIST, WRITE_TO_CHAT})
 public class ChatServlet extends HttpServlet {
-
-    private static final Gson GSON = new Gson();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 

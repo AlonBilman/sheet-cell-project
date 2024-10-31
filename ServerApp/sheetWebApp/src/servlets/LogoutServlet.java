@@ -2,7 +2,6 @@ package servlets;
 
 import constants.Constants;
 import engine.Engine;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,11 +12,13 @@ import utils.ResponseUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = Constants.LOGOUT_SERVLET, urlPatterns = {Constants.LOGOUT})
+import static common.api.path.path.LOGOUT;
+
+@WebServlet(name = Constants.LOGOUT_SERVLET, urlPatterns = {LOGOUT})
 public class LogoutServlet extends HttpServlet {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 

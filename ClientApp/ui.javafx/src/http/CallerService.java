@@ -1,6 +1,9 @@
 package http;
 
-import com.google.gson.Gson;
+import common.dto.fetures.FilterObject;
+import common.dto.fetures.SortObject;
+import common.dto.range.RangeBody;
+import common.dto.response.ErrorResponse;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,8 +14,6 @@ import java.util.Map;
 import static constants.Constants.*;
 
 public class CallerService {
-
-    private static final Gson GSON = new Gson();
 
     public void uploadFileAsync(File file, Callback callback) throws IOException {
         if (file == null || !file.exists() || !file.isFile()) {
@@ -51,7 +52,7 @@ public class CallerService {
 
     public void handleErrorResponse(Response response) throws IOException {
         if (!response.isSuccessful()) {
-            HttpClientUtil.ErrorResponse error = HttpClientUtil.handleErrorResponse(response);
+            ErrorResponse error = HttpClientUtil.handleErrorResponse(response);
             if (error != null) {
                 throw new IOException(error.getError());
             }
@@ -88,40 +89,40 @@ public class CallerService {
         HttpClientUtil.runAsyncPut(url, queryParams, body, callback);
     }
 
-    public void addRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range, Callback callback) {
+    public void addRange(Map<String, String> queryParams, RangeBody range, Callback callback) {
         String url = BASE_DIRECTORY + RANGE;
         RequestBody body = RequestBody.create(GSON.toJson(range), MediaType.get("application/json"));
         HttpClientUtil.runAsyncPost(url, queryParams, body, callback);
     }
 
-    public void deleteRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range, Callback callback) {
+    public void deleteRange(Map<String, String> queryParams, RangeBody range, Callback callback) {
         String url = BASE_DIRECTORY + RANGE;
         RequestBody body = RequestBody.create(GSON.toJson(range), MediaType.get("application/json"));
         HttpClientUtil.runAsyncDelete(url, queryParams, body, callback);
     }
 
-    public void sortSheet(Map<String, String> queryParams, HttpClientUtil.SortObj sortObj, Callback callback) {
+    public void sortSheet(Map<String, String> queryParams, SortObject sortObj, Callback callback) {
         String url = BASE_DIRECTORY + DISPLAY + SORT;
         RequestBody body = RequestBody.create(GSON.toJson(sortObj), MediaType.get("application/json"));
         HttpClientUtil.runAsyncPost(url, queryParams, body, callback);
     }
 
-    public void filterSheet(Map<String, String> queryParams, HttpClientUtil.FilterObj filterObj, Callback callback) {
+    public void filterSheet(Map<String, String> queryParams, FilterObject filterObj, Callback callback) {
         String url = BASE_DIRECTORY + DISPLAY + FILTER;
         RequestBody body = RequestBody.create(GSON.toJson(filterObj), MediaType.get("application/json"));
         HttpClientUtil.runAsyncPost(url, queryParams, body, callback);
     }
 
-    public void getNoNameRange(Map<String, String> queryParams, HttpClientUtil.RangeBody range, HttpClientUtil.Ranges ranges, String endPoint, Callback callback) {
-        String url = BASE_DIRECTORY + endPoint;
-        RequestBody body;
-        if (endPoint.equals(NO_NAME_RANGE)) {
-            body = RequestBody.create(GSON.toJson(range), MediaType.get("application/json"));
-        } else {
-            body = RequestBody.create(GSON.toJson(ranges), MediaType.get("application/json"));
-        }
-        HttpClientUtil.runAsyncPost(url, queryParams, body, callback);
-    }
+//    public void getNoNameRange(Map<String, String> queryParams, RangeBody range, Ranges ranges, String endPoint, Callback callback) {
+//        String url = BASE_DIRECTORY + endPoint;
+//        RequestBody body;
+//        if (endPoint.equals(NO_NAME_RANGE)) {
+//            body = RequestBody.create(GSON.toJson(range), MediaType.get("application/json"));
+//        } else {
+//            body = RequestBody.create(GSON.toJson(ranges), MediaType.get("application/json"));
+//        }
+//        HttpClientUtil.runAsyncPost(url, queryParams, body, callback);
+//    }
 
     public void startDynamicChange(Map<String, String> queryParams, String body, Callback callback) {
         String url = BASE_DIRECTORY + DISPLAY + DYNAMIC_CHANGE;

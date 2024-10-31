@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.*;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,13 +12,15 @@ import utils.ServletUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-@WebServlet(name = Constants.LOGIN_SERVLET, urlPatterns = {Constants.LOGIN})
+import static common.api.path.path.GSON;
+import static common.api.path.path.LOGIN;
+
+@WebServlet(name = Constants.LOGIN_SERVLET, urlPatterns = {LOGIN})
 public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        Gson gson = new Gson();
         StringBuilder stringBuilder = new StringBuilder();
         String line;
 
@@ -31,7 +32,7 @@ public class LoginServlet extends HttpServlet {
 
         String jsonData = stringBuilder.toString();
         try {
-            String username = gson.fromJson(jsonData, String.class);
+            String username = GSON.fromJson(jsonData, String.class);
 
             if (username == null || username.trim().isEmpty()) {
                 ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid username format");

@@ -1,6 +1,6 @@
 package servlets;
 
-import com.google.gson.Gson;
+import common.dto.range.RangeBody;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,10 +15,10 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-@WebServlet(name = Constants.RANGE_SERVLET, urlPatterns = {Constants.RANGE})
-public class RangeServlet extends HttpServlet {
+import static common.api.path.path.*;
 
-    private final Gson GSON = new Gson();
+@WebServlet(name = Constants.RANGE_SERVLET, urlPatterns = {RANGE})
+public class RangeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -38,7 +38,7 @@ public class RangeServlet extends HttpServlet {
             return;
         }
 
-        String sheetId = request.getParameter(Constants.SHEET_ID);
+        String sheetId = request.getParameter(SHEET_ID);
         if (sheetId == null || sheetId.isEmpty()) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Sheet id is missing");
             return;
@@ -51,7 +51,7 @@ public class RangeServlet extends HttpServlet {
                     return;
                 }
 
-                ResponseUtils.RangeBody rangeBody = GSON.fromJson(request.getReader(), ResponseUtils.RangeBody.class);
+                RangeBody rangeBody = GSON.fromJson(request.getReader(), RangeBody.class);
 
                 if (rangeBody == null || rangeBody.getName() == null || rangeBody.getToAndFrom() == null) {
                     ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid range data");

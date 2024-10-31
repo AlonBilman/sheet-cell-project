@@ -1,6 +1,6 @@
 package servlets;
 
-import com.google.gson.Gson;
+import common.dto.fetures.SortObject;
 import constants.Constants;
 import dto.sheetDTO;
 import engine.Engine;
@@ -16,13 +16,12 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
+import static common.api.path.path.*;
 import static constants.Constants.*;
 
 
 @WebServlet(name = SORT_SERVLET, urlPatterns = {DISPLAY + SORT})
 public class SortServlet extends HttpServlet {
-
-    Gson GSON = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -43,7 +42,7 @@ public class SortServlet extends HttpServlet {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
                 if (!ServletUtils.isValidEngine(engine, response))
                     return;
-                ResponseUtils.SortObj sort = GSON.fromJson(request.getReader(), ResponseUtils.SortObj.class);
+                SortObject sort = GSON.fromJson(request.getReader(), SortObject.class);
                 AppManager appManager = engine.getManager(username, sheetId);
                 if (!appManager.isUpToDate()) {
                     throw new RuntimeException("In order to use sort functionality you have to update the sheet.");

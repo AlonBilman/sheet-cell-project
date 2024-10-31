@@ -13,9 +13,9 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
-import static constants.Constants.SHEET_ID;
+import static common.api.path.path.*;
 
-@WebServlet(name = Constants.SHEET_SERVLET, urlPatterns = {Constants.VERSION, Constants.DISPLAY + Constants.SHEET_DTO, Constants.DISPLAY + Constants.ALL_VERSIONS})
+@WebServlet(name = Constants.SHEET_SERVLET, urlPatterns = {VERSION, DISPLAY + SHEET_DTO, DISPLAY + ALL_VERSIONS})
 public class SheetServlet extends HttpServlet {
 
     @Override
@@ -42,9 +42,9 @@ public class SheetServlet extends HttpServlet {
 
                 Object responseData;
                 AppManager appManager = engine.getManager(username, sheetId);
-                if (servletPath.contains(Constants.ALL_VERSIONS)) {
+                if (servletPath.contains(ALL_VERSIONS)) {
                     responseData = appManager.getSheetManager().getSheets(); //Map<Integer,sheetDTO>
-                } else if (servletPath.contains(Constants.VERSION)) {
+                } else if (servletPath.contains(VERSION)) {
                     responseData = appManager.getSheetManager().getSheetVersion(); //int
                 } else {
                     appManager.updateVersion();

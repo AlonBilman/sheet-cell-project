@@ -16,6 +16,7 @@ import utils.SessionUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static common.api.path.path.LOADFILE;
 import static constants.Constants.*;
 
 @MultipartConfig
