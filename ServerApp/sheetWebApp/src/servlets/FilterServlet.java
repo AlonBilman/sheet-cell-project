@@ -1,7 +1,7 @@
 package servlets;
 
 import constants.Constants;
-import dto.sheetDTO;
+import dto.SheetDto;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -45,7 +45,7 @@ public class FilterServlet extends HttpServlet {
                     throw new RuntimeException("In order to use filter functionality you have to update the sheet.");
                 }
                 SheetManagerImpl sheetManager = appManager.getSheetManager();
-                sheetDTO sheet;
+                SheetDto sheet;
                 if (filterObj.getOperator().equals("OR"))
                     sheet = sheetManager.filter(filterObj.getParams(), filterObj.getFilterBy(), SheetManagerImpl.OperatorValue.OR_OPERATOR);
                 else

@@ -2,8 +2,8 @@ package components.header.cellfunction;
 
 import components.body.table.view.GridSheetController;
 import components.page.view.sheetscreen.AppController;
-import dto.CellDataDTO;
-import dto.sheetDTO;
+import http.dto.CellDataDtoResp;
+import http.dto.SheetDtoResp;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -79,7 +79,7 @@ public class CellFunctionsController {
 
     }
 
-    public void showCell(CellDataDTO cell) {
+    public void showCell(CellDataDtoResp cell) {
         currCellShown = cell.getId();
         cellIdProperty.setText(currCellShown);
         cellUpdatedProperty.setText(String.valueOf(cell.getLastChangeAt()));
@@ -171,7 +171,7 @@ public class CellFunctionsController {
         popupStage.showAndWait();
     }
 
-    public void showVersion(sheetDTO sheet, String versionNumber) throws IOException {
+    public void showVersion(SheetDtoResp sheet, String versionNumber) throws IOException {
         Stage stage = new Stage();
         stage.setTitle("Table version number: " + versionNumber);
         FXMLLoader loader = new FXMLLoader();

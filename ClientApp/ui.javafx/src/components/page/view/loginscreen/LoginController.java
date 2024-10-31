@@ -1,7 +1,7 @@
 package components.page.view.loginscreen;
 
 import com.google.gson.Gson;
-import http.HttpClientUtil;
+import http.utils.HttpClientUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,4 +1,4 @@
-package http;
+package http.utils;
 
 import com.google.gson.Gson;
 import okhttp3.*;

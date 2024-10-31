@@ -1,7 +1,7 @@
 package servlets;
 
 import constants.Constants;
-import dto.CellDataDTO;
+import dto.CellDataDto;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -57,8 +57,8 @@ public class NoNameRangeServlet extends HttpServlet {
                     if (ranges == null) {
                         throw new IllegalArgumentException("Invalid range data");
                     }
-                    Set<CellDataDTO> xRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getXParams());
-                    Set<CellDataDTO> yRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getYParams());
+                    Set<CellDataDto> xRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getXParams());
+                    Set<CellDataDto> yRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getYParams());
                     ranges.setXRange(xRange);
                     ranges.setYRange(yRange);
                     ResponseUtils.writeSuccessResponse(response, ranges);
@@ -69,7 +69,7 @@ public class NoNameRangeServlet extends HttpServlet {
                         throw new IllegalArgumentException("Invalid range data");
                     }
 
-                    Set<CellDataDTO> range = sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
+                    Set<CellDataDto> range = sheetManager.getSetOfCellsDtoDummyRange(rangeBody.getToAndFrom());
                     ResponseUtils.writeSuccessResponse(response, range);
                 }
             }

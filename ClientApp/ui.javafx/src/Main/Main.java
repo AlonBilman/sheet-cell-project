@@ -3,7 +3,6 @@ package Main;
 import components.page.view.loginscreen.LoginController;
 import components.page.view.mainscreen.MainScreenController;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,7 +10,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
-import static http.HttpClientUtil.shutdown;
+import static http.utils.HttpClientUtil.shutdown;
 
 public class Main extends Application {
 

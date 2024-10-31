@@ -8,26 +8,26 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RangeDTO implements Serializable {
+public class RangeDto implements Serializable {
     private final String name;
-    private final Set<CellDataDTO> cells;
+    private final Set<CellDataDto> cells;
 
-    public RangeDTO(Range range) {
+    public RangeDto(Range range) {
         this.name = range.getName();
         //converting all the cells to cells dto
         Set<CellImpl> setOfRealCells = range.getRangeCells();
-        Set<CellDataDTO> setOfDtoCells = new HashSet<>();
+        Set<CellDataDto> setOfDtoCells = new HashSet<>();
         for (CellImpl cell : setOfRealCells) {
-            setOfDtoCells.add(new CellDataDTO(cell));
+            setOfDtoCells.add(new CellDataDto(cell));
         }
         cells = setOfDtoCells;
     }
 
-public String getName() {
-    return name;
-}
+    public String getName() {
+        return name;
+    }
 
-public Set<CellDataDTO> getCells() {
-    return cells;
-}
+    public Set<CellDataDto> getCells() {
+        return cells;
+    }
 }

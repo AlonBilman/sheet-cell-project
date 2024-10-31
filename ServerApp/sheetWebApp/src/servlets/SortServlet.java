@@ -1,7 +1,7 @@
 package servlets;
 
 import constants.Constants;
-import dto.sheetDTO;
+import dto.SheetDto;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -46,7 +46,7 @@ public class SortServlet extends HttpServlet {
                     throw new RuntimeException("In order to use sort functionality you have to update the sheet.");
                 }
                 SheetManagerImpl sheetManager = appManager.getSheetManager();
-                sheetDTO sheet = sheetManager.sort(sort.getParams(), sort.getSortBy());
+                SheetDto sheet = sheetManager.sort(sort.getParams(), sort.getSortBy());
                 ResponseUtils.writeSuccessResponse(response, sheet);
             }
 

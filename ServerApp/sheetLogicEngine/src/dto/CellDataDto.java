@@ -8,7 +8,7 @@ import sheet.impl.EffectiveValueImpl;
 import java.io.Serializable;
 import java.util.Set;
 
-public class CellDataDTO implements Serializable {
+public class CellDataDto implements Serializable {
     private final int row;
     private final String col;
     private final String id;
@@ -20,7 +20,7 @@ public class CellDataDTO implements Serializable {
     private final CellColor cellColor;
     private final String changedBy;
 
-    public CellDataDTO(CellImpl cell) {
+    public CellDataDto(CellImpl cell) {
         this.row = cell.getRow();
         this.col = cell.getCol();
         this.id = cell.getId();
@@ -69,5 +69,7 @@ public class CellDataDTO implements Serializable {
         return col;
     }
 
-    public String getChangedBy() {return changedBy;}
+    public String getChangedBy() {
+        return changedBy;
+    }
 }

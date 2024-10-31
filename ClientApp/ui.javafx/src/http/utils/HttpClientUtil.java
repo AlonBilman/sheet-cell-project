@@ -1,9 +1,8 @@
-package http;
+package http.utils;
 
 import constants.Constants;
 import com.google.gson.Gson;
-import dto.CellDataDTO;
-import javafx.application.Platform;
+import http.dto.CellDataDtoResp;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -209,10 +208,10 @@ public class HttpClientUtil {
     public static class Ranges {
         private final String xParams;
         private final String yParams;
-        private final Set<CellDataDTO> XRange;
-        private final Set<CellDataDTO> YRange;
+        private final Set<CellDataDtoResp> XRange;
+        private final Set<CellDataDtoResp> YRange;
 
-        public Ranges(Set<CellDataDTO> XRange, Set<CellDataDTO> YRange) {
+        public Ranges(Set<CellDataDtoResp> XRange, Set<CellDataDtoResp> YRange) {
             this.XRange = XRange;
             this.YRange = YRange;
             xParams = "";
@@ -241,11 +240,11 @@ public class HttpClientUtil {
             return yParams;
         }
 
-        public Set<CellDataDTO> getXRange() {
+        public Set<CellDataDtoResp> getXRange() {
             return XRange;
         }
 
-        public Set<CellDataDTO> getYRange() {
+        public Set<CellDataDtoResp> getYRange() {
             return YRange;
         }
 

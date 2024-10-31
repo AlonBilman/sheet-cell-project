@@ -20,7 +20,7 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     private static final int MAX_COLS = 20;
 
     private SpreadSheetImpl spreadSheet;
-    private final Map<Integer, sheetDTO> sheets = new HashMap<>();
+    private final Map<Integer, SheetDto> sheets = new HashMap<>();
     private String revertOriginalVal = null;
     private final PermissionManager permissionManager;
 
@@ -108,7 +108,7 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         this.spreadSheet = new SpreadSheetImpl(stlSheet);
         System.out.println("init Sheet =======> 100%");
         sheets.clear();
-        sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
+        sheets.put(this.spreadSheet.getSheetVersionNumber(), new SheetDto(this.spreadSheet));
     }
 
     public String getSheetName() {
@@ -116,36 +116,36 @@ public class SheetManagerImpl implements SheetManager, Serializable {
     }
 
     @Override
-    public sheetDTO Display() {
-        return new sheetDTO(this.spreadSheet);
+    public SheetDto display() {
+        return new SheetDto(this.spreadSheet);
     }
 
     @Override
-    public CellDataDTO showCell(String id) {
-        return new CellDataDTO(this.spreadSheet.getCellOrCreateIt(id));
+    public CellDataDto showCell(String id) {
+        return new CellDataDto(this.spreadSheet.getCellOrCreateIt(id));
     }
 
     @Override
-    public sheetDTO updateCell(String cellId, String value, boolean dynamically, String changedBy) {
+    public SheetDto updateCell(String cellId, String value, boolean dynamically, String changedBy) {
         if (value != null && value.matches(".*\\S.*"))
             value = value.trim();
         try {
             this.spreadSheet.changeCell(cellId, value, !dynamically, changedBy);
             if (!dynamically)
-                sheets.put(this.spreadSheet.getSheetVersionNumber(), new sheetDTO(this.spreadSheet));
+                sheets.put(this.spreadSheet.getSheetVersionNumber(), new SheetDto(this.spreadSheet));
         } catch (Exception e) {
             this.spreadSheet = this.spreadSheet.getSheetBeforeChange(); //1 snapshot back
             throw e;
         }
-        return new sheetDTO(this.spreadSheet);
+        return new SheetDto(this.spreadSheet);
     }
 
-    public sheetDTO setOriginalValDynamically(String cellId, String newOriginalVal) {
+    public SheetDto setOriginalValDynamically(String cellId, String newOriginalVal) {
         return updateCell(cellId, newOriginalVal, true, null);
     }
 
-    public sheetDTO finishedDynamicallyChangeFeature(String cellId) {
-        sheetDTO revertSheet = updateCell(cellId, this.revertOriginalVal, true, null);
+    public SheetDto finishedDynamicallyChangeFeature(String cellId) {
+        SheetDto revertSheet = updateCell(cellId, this.revertOriginalVal, true, null);
         this.revertOriginalVal = null;
         return revertSheet;
     }
@@ -165,32 +165,22 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         }
     }
 
-    public sheetDTO sort(String params, List<String> sortBy) {
+    public SheetDto sort(String params, List<String> sortBy) {
         String[] cellIdentifiers = checkRangeParams(params);
         if (sortBy.isEmpty())
             throw new RuntimeException("You did not specify what rows should we sort for\nPlease provide this information and run the sorting function again.");
         SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
         spreadSheetCopy.sort(cellIdentifiers, sortBy);
-        return new sheetDTO(spreadSheetCopy);
+        return new SheetDto(spreadSheetCopy);
     }
 
-    public sheetDTO filter(String params, Map<String, Set<String>> filterBy, OperatorValue operatorValue) {
+    public SheetDto filter(String params, Map<String, Set<String>> filterBy, OperatorValue operatorValue) {
         String[] cellIdentifiers = checkRangeParams(params);
         if (filterBy.isEmpty())
             throw new RuntimeException("You did not specify what params should we filter for\nPlease provide this information and run the filter function again.");
         SpreadSheetImpl spreadSheetCopy = this.spreadSheet.deepCopy();
         spreadSheetCopy.filter(cellIdentifiers, filterBy, operatorValue);
-        return new sheetDTO(spreadSheetCopy);
-    }
-
-    public static SheetManagerImpl resumePositionToEngine(String filePath, String fileName) throws IOException, ClassNotFoundException {
-        File file = new File(filePath + "\\" + fileName.trim() + ".ser");
-        if (!file.exists()) {
-            throw new FileNotFoundException("File not found: " + filePath);
-        }
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (SheetManagerImpl) ois.readObject();
-        }
+        return new SheetDto(spreadSheetCopy);
     }
 
     private String[] checkRangeParams(String params) {
@@ -210,8 +200,8 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         //there is no need to revert to the last spreadsheet
     }
 
-    public RangeDTO getRangeDto(String id) {
-        sheetDTO sheet = this.Display();
+    public RangeDto getRangeDto(String id) {
+        SheetDto sheet = this.display();
         return sheet.getRange(id);
     }
 
@@ -223,11 +213,11 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         return this.spreadSheet != null;
     }
 
-    public Map<Integer, sheetDTO> getSheets() {
+    public Map<Integer, SheetDto> getSheets() {
         return sheets;
     }
 
-    public sheetDTO getSheet(int version) {
+    public SheetDto getSheet(int version) {
         return sheets.get(version);
     }
 
@@ -239,12 +229,12 @@ public class SheetManagerImpl implements SheetManager, Serializable {
         this.spreadSheet.getCellOrCreateIt(id).setBackgroundColor(selectedColor);
     }
 
-    public Set<CellDataDTO> getSetOfCellsDtoDummyRange(String params) {
+    public Set<CellDataDto> getSetOfCellsDtoDummyRange(String params) {
         String[] cellIdentifiers = checkRangeParams(params);
         Set<CellImpl> cells = spreadSheet.getSetOfCellsFromDummyRange(cellIdentifiers[0], cellIdentifiers[1]);
-        Set<CellDataDTO> cellsDto = new HashSet<>();
+        Set<CellDataDto> cellsDto = new HashSet<>();
         for (CellImpl cell : cells) {
-            cellsDto.add(new CellDataDTO(cell));
+            cellsDto.add(new CellDataDto(cell));
         }
         return cellsDto;
     }
@@ -270,5 +260,4 @@ public class SheetManagerImpl implements SheetManager, Serializable {
             throw new RuntimeException("Failed to deep copy SheetManagerImpl", e);
         }
     }
-
 }

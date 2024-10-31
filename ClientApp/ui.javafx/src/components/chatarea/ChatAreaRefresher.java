@@ -1,7 +1,7 @@
 package components.chatarea;
 
 import components.chatarea.model.ChatLinesWithVersion;
-import http.CallerService;
+import http.utils.CallerService;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import okhttp3.Call;

@@ -1,7 +1,7 @@
 package engine;
 
-import dto.CellDataDTO;
-import dto.sheetDTO;
+import dto.CellDataDto;
+import dto.SheetDto;
 import manager.impl.ChatManager;
 import manager.impl.SheetManagerImpl;
 import manager.impl.AppManager;
@@ -132,13 +132,13 @@ public class Engine {
     }
 
 
-    public synchronized sheetDTO getSheetDTO(String sheetId, String userName) {
+    public synchronized SheetDto getSheetDto(String sheetId, String userName) {
         AppManager appManager = getManager(userName, sheetId);
         SheetManagerImpl sheetManager = appManager.getSheetManager();
-        return sheetManager.Display();
+        return sheetManager.display();
     }
 
-    public synchronized CellDataDTO getCellDTO(String userName, String sheetId, String cellId) {
+    public synchronized CellDataDto getCellDto(String userName, String sheetId, String cellId) {
         SheetManagerImpl manager = getSheetManager(userName, sheetId);
         return manager.showCell(cellId);
     }

@@ -1,8 +1,8 @@
 package components.body.table.func;
 
 import components.page.view.sheetscreen.AppController;
-import dto.CellDataDTO;
-import expression.api.ObjType;
+import http.dto.CellDataDtoResp;
+import http.dto.ObjType;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -188,7 +188,7 @@ public class TableFunctionalityController {
         return columns;
     }
 
-    public void filterColumnPopup(Set<CellDataDTO> cells, String fromCell, String toCell) {
+    public void filterColumnPopup(Set<CellDataDtoResp> cells, String fromCell, String toCell) {
         Set<String> colToFilterBy = new HashSet<>();
         Stage popupStage = new Stage();
         popupStage.setTitle("Select Columns to Filter By:");
@@ -292,9 +292,9 @@ public class TableFunctionalityController {
     }
 
 
-    private Map<String, Set<String>> getValuesFromCols(Set<String> colToFilterBy, Set<CellDataDTO> cells) {
+    private Map<String, Set<String>> getValuesFromCols(Set<String> colToFilterBy, Set<CellDataDtoResp> cells) {
         Map<String, Set<String>> columnToCellValues = new HashMap<>();
-        for (CellDataDTO cell : cells) {
+        for (CellDataDtoResp cell : cells) {
             if (!cell.getEffectiveValue().getObjType().equals(ObjType.EMPTY) && colToFilterBy.contains(cell.getCol())) {
                 columnToCellValues.computeIfAbsent(cell.getCol(), k -> new HashSet<>()).add(cell.getEffectiveValue().getValue().toString());
             }

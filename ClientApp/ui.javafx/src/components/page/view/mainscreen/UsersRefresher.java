@@ -1,7 +1,7 @@
 package components.page.view.mainscreen;
 
 import com.google.gson.reflect.TypeToken;
-import http.CallerService;
+import http.utils.CallerService;
 import javafx.beans.property.BooleanProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static http.HttpClientUtil.GSON;
+import static http.utils.HttpClientUtil.GSON;
 
 public class UsersRefresher extends TimerTask {
 

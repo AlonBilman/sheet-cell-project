@@ -1,8 +1,8 @@
 package components.body.table.view;
 
 import components.page.view.sheetscreen.AppController;
-import dto.CellDataDTO;
-import dto.sheetDTO;
+import http.dto.CellDataDtoResp;
+import http.dto.SheetDtoResp;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -74,12 +74,12 @@ public class GridSheetController {
         }
     }
 
-    public void populateTableView(sheetDTO sheetCopy, boolean isLoad) {
+    public void populateTableView(SheetDtoResp sheetCopy, boolean isLoad) {
         int row = sheetCopy.getRowSize();
         int col = sheetCopy.getColSize();
         int maxRow = sheetCopy.getRowHeight();
         int maxCol = sheetCopy.getColWidth();
-        Map<String, CellDataDTO> cells = sheetCopy.getActiveCells();
+        Map<String, CellDataDtoResp> cells = sheetCopy.getActiveCells();
 
         if (isLoad) {
             labelMap.clear();
@@ -105,7 +105,7 @@ public class GridSheetController {
         }
     }
 
-    private void updateCellLabel(Label cellLabel, CellDataDTO cellData, String id, boolean isLoad) {
+    private void updateCellLabel(Label cellLabel, CellDataDtoResp cellData, String id, boolean isLoad) {
         if (cellData == null) {
             cellLabel.setText("");
         } else {
@@ -156,12 +156,12 @@ public class GridSheetController {
         focusedOn.add(currCell);
     }
 
-    public void colorizeImportantCells(sheetDTO curr, String id) {
+    public void colorizeImportantCells(SheetDtoResp curr, String id) {
         Label currCell = labelMap.get(id);
         currCell.getStyleClass().add("cell-selected");
         focusedOn.add(currCell);
-        Map<String, CellDataDTO> cells = curr.getActiveCells();
-        CellDataDTO cellData = cells.get(id);
+        Map<String, CellDataDtoResp> cells = curr.getActiveCells();
+        CellDataDtoResp cellData = cells.get(id);
         Set<String> affectsOn = cellData.getAffectsOn();
         Set<String> depOn = cellData.getDependsOn();
 

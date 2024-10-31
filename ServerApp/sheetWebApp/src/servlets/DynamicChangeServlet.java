@@ -1,7 +1,7 @@
 package servlets;
 
 import constants.Constants;
-import dto.sheetDTO;
+import dto.SheetDto;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -48,7 +48,7 @@ public class DynamicChangeServlet extends HttpServlet {
 
             SheetManagerImpl sheetManager = engine.getSheetManagerCopy(username, sheetId);
             String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
-            sheetDTO sheetDto = sheetManager.setOriginalValDynamically(cellId, newOriginalValue);
+            SheetDto sheetDto = sheetManager.setOriginalValDynamically(cellId, newOriginalValue);
             ResponseUtils.writeSuccessResponse(response, sheetDto);
         } catch (Exception e) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -80,7 +80,7 @@ public class DynamicChangeServlet extends HttpServlet {
                 return;
 
             SheetManagerImpl sheetManager = engine.getSheetManagerCopy(username, sheetId);
-            sheetDTO sheetDto = sheetManager.finishedDynamicallyChangeFeature(cellId);
+            SheetDto sheetDto = sheetManager.finishedDynamicallyChangeFeature(cellId);
             engine.getManager(username, sheetId).dynamicChangeStopped();
             ResponseUtils.writeSuccessResponse(response, sheetDto);
         } catch (Exception e) {

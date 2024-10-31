@@ -1,8 +1,7 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
-import dto.CellDataDTO;
+import dto.CellDataDto;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -53,7 +52,7 @@ public class CellServlet extends HttpServlet {
             if (!ServletUtils.isValidEngine(engine, response))
                 return;
 
-            CellDataDTO cellDataDTO = engine.getCellDTO(username, sheetId, cellId);
+            CellDataDto cellDataDTO = engine.getCellDto(username, sheetId, cellId);
             ResponseUtils.writeSuccessResponse(response, cellDataDTO);
         } catch (Exception e) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

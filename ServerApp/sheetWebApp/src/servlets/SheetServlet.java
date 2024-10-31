@@ -41,12 +41,12 @@ public class SheetServlet extends HttpServlet {
                 Object responseData;
                 AppManager appManager = engine.getManager(username, sheetId);
                 if (servletPath.contains(Constants.ALL_VERSIONS)) {
-                    responseData = appManager.getSheetManager().getSheets(); //Map<Integer,sheetDTO>
+                    responseData = appManager.getSheetManager().getSheets(); //Map<Integer,SheetDto>
                 } else if (servletPath.contains(Constants.VERSION)) {
                     responseData = appManager.getSheetManager().getSheetVersion(); //int
                 } else {
                     appManager.updateVersion();
-                    responseData = engine.getSheetDTO(sheetId, username); //sheetDTO
+                    responseData = engine.getSheetDto(sheetId, username); //SheetDto
                 }
                 ResponseUtils.writeSuccessResponse(response, responseData);
             }

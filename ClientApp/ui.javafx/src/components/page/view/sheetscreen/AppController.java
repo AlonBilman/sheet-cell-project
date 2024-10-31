@@ -8,13 +8,13 @@ import components.header.cellfunction.CellFunctionsController;
 import components.header.title.TitleCardController;
 import components.page.view.mainscreen.MainScreenController;
 
-import dto.CellDataDTO;
-import dto.RangeDTO;
-import dto.sheetDTO;
-import http.CallerService;
-import http.HttpClientUtil;
+import http.dto.CellDataDtoResp;
+import http.dto.ObjType;
+import http.dto.RangeDtoResp;
+import http.dto.SheetDtoResp;
+import http.utils.CallerService;
+import http.utils.HttpClientUtil;
 import javafx.application.Platform;
-import expression.api.ObjType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -47,7 +47,7 @@ public class AppController {
     private String currSheet;
     private Stage stage;
     private String userName;
-    private sheetDTO currSheetDTO;
+    private SheetDtoResp currSheetDtoResp;
     private String theme;
     @FXML
     private TableFunctionalityController tableFunctionalityController;
@@ -97,7 +97,7 @@ public class AppController {
             chartMaker = new ChartMaker(this);
             httpCallerService = new CallerService();
             query = new HashMap<>();
-            currSheetDTO = null;
+            currSheetDtoResp = null;
             theme = "Default";
         }
     }
@@ -123,7 +123,7 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    currSheetDtoResp = GSON.fromJson(response.body().string(), SheetDtoResp.class);
 
                     Platform.runLater(() -> updateUIAfterSheetFetch(isLoad));
                 } catch (Exception e) {
@@ -139,13 +139,13 @@ public class AppController {
     }
 
     private void updateUIAfterSheetFetch(boolean isLoad) {
-        gridSheetController.populateTableView(currSheetDTO, isLoad);
+        gridSheetController.populateTableView(currSheetDtoResp, isLoad);
         cellFunctionsController.wakeVersionButton();
         tableFunctionalityController.setActiveButtons(
                 TableFunctionalityController.ButtonState.LOADING_FILE, true);
         query.clear();
         query.put(SHEET_ID, currSheet);
-        titleCardController.startVersionRefresher(query, currSheetDTO.getSheetVersionNumber());//will stop the old one too.
+        titleCardController.startVersionRefresher(query, currSheetDtoResp.getSheetVersionNumber());//will stop the old one too.
     }
 
     private void disableComponents(boolean disable) {
@@ -162,12 +162,12 @@ public class AppController {
 
     public void CellClicked(String id) {
         outOfFocus();
-        CellDataDTO cell = currSheetDTO.getActiveCells().get(id);
+        CellDataDtoResp cell = currSheetDtoResp.getActiveCells().get(id);
         if (cell != null) {
             cellFunctionsController.showCell(cell);
             tableFunctionalityController.setActiveButtons(
                     TableFunctionalityController.ButtonState.CLICKING_CELL, true);
-            gridSheetController.colorizeImportantCells(currSheetDTO, id);
+            gridSheetController.colorizeImportantCells(currSheetDtoResp, id);
             if (cell.getEffectiveValue().getObjType().equals(ObjType.NUMERIC)) {
                 cellFunctionsController.showNumericButtons(true);
             }
@@ -336,8 +336,8 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    RangeDTO rangeDto = new Gson().fromJson(response.body().string(), RangeDTO.class);
-                    currSheetDTO.getActiveRanges().put(rangeName, rangeDto);
+                    RangeDtoResp rangeDto = new Gson().fromJson(response.body().string(), RangeDtoResp.class);
+                    currSheetDtoResp.getActiveRanges().put(rangeName, rangeDto);
                 } catch (Exception e) {
                     Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
@@ -346,7 +346,7 @@ public class AppController {
     }
 
     public void deleteOrViewExistingRangeClicked(TableFunctionalityController.ConfirmType type) {
-        Set<String> rangeNames = currSheetDTO.getActiveRanges().keySet(); // get the names
+        Set<String> rangeNames = currSheetDtoResp.getActiveRanges().keySet(); // get the names
         rangeNames = rangeNames.stream()
                 .sorted() // sort the names
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -379,7 +379,7 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    currSheetDTO.getActiveRanges().remove(rangeToDelete);
+                    currSheetDtoResp.getActiveRanges().remove(rangeToDelete);
                 } catch (Exception e) {
                     Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
                 }
@@ -395,17 +395,17 @@ public class AppController {
     public void showRangeConfirmedClicked(String selectedRangeName) {
         outOfFocus();
         Set<String> labelNamesToFocus = new HashSet<>();
-        Set<CellDataDTO> focusCells = currSheetDTO.getActiveRanges()
+        Set<CellDataDtoResp> focusCells = currSheetDtoResp.getActiveRanges()
                 .get(selectedRangeName)
                 .getCells();
-        for (CellDataDTO focusCell : focusCells) {
+        for (CellDataDtoResp focusCell : focusCells) {
             labelNamesToFocus.add(focusCell.getId());
         }
         gridSheetController.focusOnRangeCells(labelNamesToFocus);
     }
 
     public void getVersionClicked() {
-        cellFunctionsController.buildVersionPopup(currSheetDTO.getSheetVersionNumber());
+        cellFunctionsController.buildVersionPopup(currSheetDtoResp.getSheetVersionNumber());
     }
 
     public void confirmVersionClicked(Integer selectedVersion) {
@@ -427,9 +427,9 @@ public class AppController {
                         cellFunctionsController.showInfoAlert("Error loading sheets.");
                     }
                 } else {
-                    Type mapType = new TypeToken<Map<Integer, sheetDTO>>() {
+                    Type mapType = new TypeToken<Map<Integer, SheetDtoResp>>() {
                     }.getType();
-                    Map<Integer, sheetDTO> sheets = GSON.fromJson(response.body().string(), mapType);
+                    Map<Integer, SheetDtoResp> sheets = GSON.fromJson(response.body().string(), mapType);
                     Platform.runLater(() -> {
                         try {
                             cellFunctionsController.showVersion(sheets.get(selectedVersion), "Version Number: " + selectedVersion.toString());
@@ -452,9 +452,9 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    List<CellDataDTO> cellList = GSON.fromJson(response.body().string(), new TypeToken<List<CellDataDTO>>() {
+                    List<CellDataDtoResp> cellList = GSON.fromJson(response.body().string(), new TypeToken<List<CellDataDtoResp>>() {
                     }.getType());
-                    Set<CellDataDTO> cells = new HashSet<>(cellList);
+                    Set<CellDataDtoResp> cells = new HashSet<>(cellList);
                     Platform.runLater(() -> {
                         if (type.equals(TableFunctionalityController.ConfirmType.FILTER_RANGE))
                             tableFunctionalityController.filterColumnPopup(cells, fromCell, toCell);
@@ -491,7 +491,7 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    sheetDTO filteredSheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    SheetDtoResp filteredSheet = GSON.fromJson(response.body().string(), SheetDtoResp.class);
                     Platform.runLater(() -> {
                         try {
                             showSheetPopup(filteredSheet,
@@ -522,7 +522,7 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    sheetDTO sortedSheet = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    SheetDtoResp sortedSheet = GSON.fromJson(response.body().string(), SheetDtoResp.class);
                     Platform.runLater(() -> {
                         try {
                             showSheetPopup(sortedSheet,
@@ -544,7 +544,7 @@ public class AppController {
 
     }
 
-    public void showSheetPopup(sheetDTO sheet, String title) throws IOException {
+    public void showSheetPopup(SheetDtoResp sheet, String title) throws IOException {
         Stage stage = new Stage();
         stage.setTitle(title);
         FXMLLoader loader = new FXMLLoader();
@@ -614,7 +614,7 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    sheetDTO dynamicDto = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    SheetDtoResp dynamicDto = GSON.fromJson(response.body().string(), SheetDtoResp.class);
                     Platform.runLater(() -> gridSheetController.populateTableView(dynamicDto, false));
                 } catch (Exception e) {
                     Platform.runLater(() -> tableFunctionalityController.showInfoAlert(e.getMessage()));
@@ -644,11 +644,11 @@ public class AppController {
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 try {
                     httpCallerService.handleErrorResponse(response);
-                    currSheetDTO = GSON.fromJson(response.body().string(), sheetDTO.class);
+                    currSheetDtoResp = GSON.fromJson(response.body().string(), SheetDtoResp.class);
                     Platform.runLater(() -> {
-                        gridSheetController.populateTableView(currSheetDTO, false);
+                        gridSheetController.populateTableView(currSheetDtoResp, false);
                         cellFunctionsController.showCell(
-                                currSheetDTO.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
+                                currSheetDtoResp.getActiveCells().get(cellFunctionsController.getCellIdFocused()));
                     });
                 } catch (Exception e) {
                     Platform.runLater(() -> cellFunctionsController.showInfoAlert(e.getMessage()));
@@ -664,7 +664,7 @@ public class AppController {
     }
 
     public void chartButtonClicked() {
-        chartMaker.createChartDialogPopup(currSheetDTO.getColSize());
+        chartMaker.createChartDialogPopup(currSheetDtoResp.getColSize());
     }
 
     public void confirmChartClicked(String chartType, String paramsX, String paramsY) {
@@ -702,10 +702,10 @@ public class AppController {
     }
 
     //because I used set in so much code...
-    private List<Double> getNumericValuesSortedByRow(Set<CellDataDTO> cells) {
+    private List<Double> getNumericValuesSortedByRow(Set<CellDataDtoResp> cells) {
         return cells.stream()
                 .filter(cell -> cell.getEffectiveValue().getObjType() == ObjType.NUMERIC)
-                .sorted(Comparator.comparingInt(CellDataDTO::getRow))
+                .sorted(Comparator.comparingInt(CellDataDtoResp::getRow))
                 .map(cell -> (double) cell.getEffectiveValue().getValue())
                 .collect(Collectors.toList());
     }

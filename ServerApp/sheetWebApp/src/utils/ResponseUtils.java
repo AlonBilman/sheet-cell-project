@@ -1,7 +1,7 @@
 package utils;
 
 import com.google.gson.Gson;
-import dto.CellDataDTO;
+import dto.CellDataDto;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -127,10 +127,10 @@ public class ResponseUtils {
     public static class Ranges {
         private final String xParams;
         private final String yParams;
-        private final Set<CellDataDTO> XRange;
-        private final Set<CellDataDTO> YRange;
+        private final Set<CellDataDto> XRange;
+        private final Set<CellDataDto> YRange;
 
-        public Ranges(Set<CellDataDTO> XRange, Set<CellDataDTO> YRange) {
+        public Ranges(Set<CellDataDto> XRange, Set<CellDataDto> YRange) {
             this.XRange = XRange;
             this.YRange = YRange;
             xParams = "";
@@ -159,20 +159,20 @@ public class ResponseUtils {
             return yParams;
         }
 
-        public Set<CellDataDTO> getXRange() {
+        public Set<CellDataDto> getXRange() {
             return XRange;
         }
 
-        public Set<CellDataDTO> getYRange() {
+        public Set<CellDataDto> getYRange() {
             return YRange;
         }
 
-        public void setXRange(Set<CellDataDTO> XRange) {
+        public void setXRange(Set<CellDataDto> XRange) {
             this.XRange.clear();
             this.XRange.addAll(XRange);
         }
 
-        public void setYRange(Set<CellDataDTO> YRange) {
+        public void setYRange(Set<CellDataDto> YRange) {
             this.YRange.clear();
             this.YRange.addAll(YRange);
         }

@@ -1,11 +1,8 @@
 package components.header.title;
 
 import com.google.gson.Gson;
-import constants.Constants;
-import http.CallerService;
-import http.HttpClientUtil;
+import http.utils.CallerService;
 import javafx.beans.property.BooleanProperty;
-import javafx.css.ParsedValue;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
