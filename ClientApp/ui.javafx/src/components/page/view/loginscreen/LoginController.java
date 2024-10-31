@@ -89,9 +89,9 @@ public class LoginController {
                     if (statusCode == HttpServletResponse.SC_OK) {
                         Platform.runLater(() -> {
                             loginButton.setVisible(false);
+                            usernameField.setDisable(true);
                             errorMessageProperty.set("");
                             spinner.setVisible(true);
-                            // Loading simulation (sort of)
                             Task<Void> task = new Task<>() {
                                 @Override
                                 protected Void call() throws Exception {
@@ -118,6 +118,7 @@ public class LoginController {
                             Platform.runLater(() -> {
                                 errorMessageProperty.set("Something went wrong: \n" + errorResponse.getError());
                                 errorLabel.setVisible(true);
+                                usernameField.setDisable(false);
                             });
                         }
                     }
