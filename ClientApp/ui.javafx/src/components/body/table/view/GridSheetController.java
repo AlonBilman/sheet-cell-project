@@ -146,7 +146,7 @@ public class GridSheetController {
     public void setTheme( String newTheme) {
         this.currTheme = newTheme;
         scrollPane.getStylesheets().clear();
-        String newStyle = "/components/body/table/view/gridSheetView" + newTheme + ".css";
+        String newStyle = "/components/body/table/view/css/gridSheetView" + newTheme + ".css";
         scrollPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
 

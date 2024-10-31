@@ -124,13 +124,13 @@ public class ChatController implements Closeable {
 
         switch (newValue) {
             case "Default theme":
-                cssFilePath = "chat.css";
+                cssFilePath = "css/chat.css";
                 break;
             case "Theme 1":
-                cssFilePath = "chatTheme1.css";
+                cssFilePath = "css/chatTheme1.css";
                 break;
             case "Theme 2":
-                cssFilePath = "chatTheme2.css";
+                cssFilePath = "css/chatTheme2.css";
                 break;
             default:
                 break;

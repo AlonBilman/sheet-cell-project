@@ -126,7 +126,7 @@ public class Engine {
                 .orElseThrow(() -> new IllegalArgumentException("Sheet " + sheetId + " does not exist for user " + userName));
     }
 
-    public SheetManagerImpl getSheetManagerCopy(String username, String sheetId) {
+    public synchronized SheetManagerImpl getSheetManagerCopy(String username, String sheetId) {
         AppManager appManager = getManager(username, sheetId);
         return appManager.getManagerDeepCopyForDynamicChange();
     }

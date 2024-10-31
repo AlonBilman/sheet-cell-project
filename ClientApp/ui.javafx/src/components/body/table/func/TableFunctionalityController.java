@@ -111,7 +111,7 @@ public class TableFunctionalityController {
         cssSet(newTheme);
         scrollPane.getStylesheets().clear();
         scrollPane.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/components/body/table/func/tableFunctionality" + newTheme + ".css"))
+                Objects.requireNonNull(getClass().getResource("/components/body/table/func/css/tableFunctionality" + newTheme + ".css"))
                         .toExternalForm()
         );
     }

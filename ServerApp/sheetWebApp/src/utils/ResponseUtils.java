@@ -124,27 +124,27 @@ public class ResponseUtils {
         }
     }
 
-    public static class Ranges {
+    public static class RangesForCharts {
         private final String xParams;
         private final String yParams;
         private final Set<CellDataDTO> XRange;
         private final Set<CellDataDTO> YRange;
 
-        public Ranges(Set<CellDataDTO> XRange, Set<CellDataDTO> YRange) {
+        public RangesForCharts(Set<CellDataDTO> XRange, Set<CellDataDTO> YRange) {
             this.XRange = XRange;
             this.YRange = YRange;
             xParams = "";
             yParams = "";
         }
 
-        public Ranges(String xParams, String yParams) {
+        public RangesForCharts(String xParams, String yParams) {
             this.xParams = xParams;
             this.yParams = yParams;
             this.XRange = new HashSet<>();
             this.YRange = new HashSet<>();
         }
 
-        public Ranges() {
+        public RangesForCharts() {
             this.XRange = new HashSet<>();
             this.YRange = new HashSet<>();
             xParams = "";

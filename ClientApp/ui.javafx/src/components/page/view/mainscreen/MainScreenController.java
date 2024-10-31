@@ -175,14 +175,14 @@ public class MainScreenController {
         switch (newValue) {
             case "Default theme":
             case "Default":
-                cssFilePath = "mainScreenDefault.css";
+                cssFilePath = "css/mainScreenDefault.css";
                 break;
             case "Theme 1":
-                cssFilePath = "mainScreenTheme1.css";
+                cssFilePath = "css/mainScreenTheme1.css";
                 styleChoiceBox.setValue("Theme 1");
                 break;
             case "Theme 2":
-                cssFilePath = "mainScreenTheme2.css";
+                cssFilePath = "css/mainScreenTheme2.css";
                 styleChoiceBox.setValue("Theme 2");
                 break;
             default:

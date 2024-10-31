@@ -55,16 +55,16 @@ public class NoNameRangeServlet extends HttpServlet {
                 SheetManagerImpl sheetManager = appManager.getSheetManager();
 
                 if (request.getServletPath().contains(NO_NAME_RANGES)) {
-                    ResponseUtils.Ranges ranges = GSON.fromJson(request.getReader(), ResponseUtils.Ranges.class);
+                    ResponseUtils.RangesForCharts rangesForCharts = GSON.fromJson(request.getReader(), ResponseUtils.RangesForCharts.class);
 
-                    if (ranges == null) {
+                    if (rangesForCharts == null) {
                         throw new IllegalArgumentException("Invalid range data");
                     }
-                    Set<CellDataDTO> xRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getXParams());
-                    Set<CellDataDTO> yRange = sheetManager.getSetOfCellsDtoDummyRange(ranges.getYParams());
-                    ranges.setXRange(xRange);
-                    ranges.setYRange(yRange);
-                    ResponseUtils.writeSuccessResponse(response, ranges);
+                    Set<CellDataDTO> xRange = sheetManager.getSetOfCellsDtoDummyRange(rangesForCharts.getXParams());
+                    Set<CellDataDTO> yRange = sheetManager.getSetOfCellsDtoDummyRange(rangesForCharts.getYParams());
+                    rangesForCharts.setXRange(xRange);
+                    rangesForCharts.setYRange(yRange);
+                    ResponseUtils.writeSuccessResponse(response, rangesForCharts);
                 } else {
                     ResponseUtils.RangeBody rangeBody = GSON.fromJson(request.getReader(), ResponseUtils.RangeBody.class);
 

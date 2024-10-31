@@ -112,7 +112,7 @@ public class CellFunctionsController {
 
     public void setTheme(String newTheme) {
         cellFuncHBox.getStylesheets().clear();
-        String newStyle = "/components/header/cellfunction/cellFunctions" + newTheme + ".css";
+        String newStyle = "/components/header/cellfunction/css/cellFunctions" + newTheme + ".css";
         cellFuncHBox.getStylesheets().add(Objects.requireNonNull(getClass().getResource(newStyle)).toExternalForm());
     }
 

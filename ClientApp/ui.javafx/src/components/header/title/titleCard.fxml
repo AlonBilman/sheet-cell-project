@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="17.0" prefWidth="1110.0" stylesheets="@titleCardTheme2.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
+<AnchorPane fx:id="anchorPane" prefHeight="17.0" prefWidth="1110.0" stylesheets="@css/titleCardTheme2.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.title.TitleCardController">
     <children>
         <Button fx:id="backToMainScreenButton" layoutX="987.0" layoutY="12.0" mnemonicParsing="false" onAction="#backToMainScreenButtonListener" text="Back to Main-&gt;" />
 

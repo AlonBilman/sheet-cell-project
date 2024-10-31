@@ -49,7 +49,7 @@ public class TitleCardController {
     public void setTheme(String newTheme) {
         anchorPane.getStylesheets().clear();
         anchorPane.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/components/header/title/titleCard" + newTheme + ".css"))
+                Objects.requireNonNull(getClass().getResource("/components/header/title/css/titleCard" + newTheme + ".css"))
                         .toExternalForm()
         );
     }

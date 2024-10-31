@@ -15,7 +15,7 @@
    <content>
       <Pane minHeight="343.0" minWidth="500.0">
          <children>
-            <AnchorPane layoutY="9.328125" prefHeight="343.0" prefWidth="501.0" stylesheets="@loginStyle.css">
+            <AnchorPane layoutY="9.328125" prefHeight="343.0" prefWidth="501.0" stylesheets="@css/loginStyle.css">
             
                 <!-- Title -->
                 <Text fx:id="titleText" layoutX="50.0" layoutY="80.0" styleClass="title-text" text="Sheet Cell" wrappingWidth="400.0">

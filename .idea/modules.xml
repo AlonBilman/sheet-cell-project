@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CommunicationProtocol/CommunicationProtocol.iml" filepath="$PROJECT_DIR$/CommunicationProtocol/CommunicationProtocol.iml" />
       <module fileurl="file://$PROJECT_DIR$/sheet-cell-project.iml" filepath="$PROJECT_DIR$/sheet-cell-project.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/sheetLogicEngine/sheetLogicEngine.iml" filepath="$PROJECT_DIR$/ServerApp/sheetLogicEngine/sheetLogicEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServerApp/sheetWebApp/sheetWebApp.iml" filepath="$PROJECT_DIR$/ServerApp/sheetWebApp/sheetWebApp.iml" />

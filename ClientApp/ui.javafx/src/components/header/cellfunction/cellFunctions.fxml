@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="cellFuncHBox" prefHeight="152.0" prefWidth="1110.0" spacing="15.0" stylesheets="@cellFunctionsDefault.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
+<HBox fx:id="cellFuncHBox" prefHeight="152.0" prefWidth="1110.0" spacing="15.0" stylesheets="@css/cellFunctionsDefault.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.header.cellfunction.CellFunctionsController">
    <children>
       <Label id="CellIDLabel" fx:id="cellIdProperty" maxWidth="162.0" prefHeight="56.0" prefWidth="162.0" styleClass="label-style" text="Selected Cell ID" textAlignment="CENTER">
          <HBox.margin>
