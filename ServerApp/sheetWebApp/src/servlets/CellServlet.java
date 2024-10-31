@@ -15,7 +15,10 @@ import utils.ServletUtils;
 import utils.SessionUtils;
 
 import java.io.IOException;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReadWriteLock;
 
+import static constants.Constants.GSON;
 import static constants.Constants.SHEET_ID;
 
 @WebServlet(name = Constants.CELL_SERVLET, urlPatterns = {
@@ -26,7 +29,7 @@ import static constants.Constants.SHEET_ID;
 
 public class CellServlet extends HttpServlet {
 
-    private static final Gson GSON = new Gson();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,18 +47,18 @@ public class CellServlet extends HttpServlet {
             return;
         }
 
+        lock.readLock().lock();
         try {
-            synchronized (this) {
-                Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-                if (!ServletUtils.isValidEngine(engine, response))
-                    return;
+            Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
+            if (!ServletUtils.isValidEngine(engine, response))
+                return;
 
-                CellDataDTO cellDataDTO = engine.getCellDTO(username, sheetId, cellId);
-                ResponseUtils.writeSuccessResponse(response, cellDataDTO);
-            }
-
+            CellDataDTO cellDataDTO = engine.getCellDTO(username, sheetId, cellId);
+            ResponseUtils.writeSuccessResponse(response, cellDataDTO);
         } catch (Exception e) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } finally {
+            lock.readLock().unlock();
         }
     }
 
@@ -74,32 +77,32 @@ public class CellServlet extends HttpServlet {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "One or more parameters are missing (IDs)");
             return;
         }
+
+        lock.writeLock().lock();
         try {
-            synchronized (this) {
-                Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-                if (!ServletUtils.isValidEngine(engine, response))
-                    return;
+            Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
+            if (!ServletUtils.isValidEngine(engine, response))
+                return;
 
-                AppManager appManager = engine.getManager(username, sheetId);
+            AppManager appManager = engine.getManager(username, sheetId);
 
-                if (!appManager.isUpToDate()) {
-                    throw new RuntimeException("Sheet is not up to date.\n" +
-                            "in order to modify it please update the sheet first.");
-                }
-
-                SheetManagerImpl sheetManager = appManager.getSheetManager();
-
-                if (!sheetManager.havePermissionToEdit(username))
-                    throw new IOException("Permission denied");
-
-                String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
-                sheetManager.updateCell(cellId, newOriginalValue, false,username);
-                appManager.updateVersion();
-                ResponseUtils.writeSuccessResponse(response, null);
+            if (!appManager.isUpToDate()) {
+                throw new RuntimeException("Sheet is not up to date.\n" +
+                        "In order to modify it, please update the sheet first.");
             }
+            SheetManagerImpl sheetManager = appManager.getSheetManager();
 
+            if (!sheetManager.havePermissionToEdit(username))
+                throw new IOException("Permission denied");
+
+            String newOriginalValue = GSON.fromJson(request.getReader(), String.class);
+            sheetManager.updateCell(cellId, newOriginalValue, false, username);
+            appManager.updateVersion();
+            ResponseUtils.writeSuccessResponse(response, null);
         } catch (Exception e) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 }

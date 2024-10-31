@@ -1,6 +1,9 @@
 package constants;
 
+import com.google.gson.Gson;
+
 public class Constants {
+    public static final Gson GSON = new Gson();
     public static final String ENGINE = "engine";
     public static final String USERNAME = "username";
     public static final String ENGINE_SERVLET = "EngineServlet";

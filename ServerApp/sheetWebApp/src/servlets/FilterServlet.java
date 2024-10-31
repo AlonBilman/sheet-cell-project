@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import dto.sheetDTO;
 import engine.Engine;
@@ -20,8 +19,6 @@ import static constants.Constants.*;
 
 @WebServlet(name = FILTER_SERVLET, urlPatterns = {DISPLAY + FILTER})
 public class FilterServlet extends HttpServlet {
-
-    Gson GSON = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

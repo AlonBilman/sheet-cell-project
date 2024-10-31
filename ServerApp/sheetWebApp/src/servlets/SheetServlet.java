@@ -24,8 +24,7 @@ public class SheetServlet extends HttpServlet {
         String username = SessionUtils.getUsername(request);
         response.setContentType("application/json");
 
-        if (!ServletUtils.isUserNameExists(response, username))
-            return;
+        if (!ServletUtils.isUserNameExists(response, username)) return;
 
         String sheetId = request.getParameter(SHEET_ID);
 
@@ -37,8 +36,7 @@ public class SheetServlet extends HttpServlet {
         try {
             synchronized (this) {
                 Engine engine = (Engine) getServletContext().getAttribute(Constants.ENGINE);
-                if (!ServletUtils.isValidEngine(engine, response))
-                    return;
+                if (!ServletUtils.isValidEngine(engine, response)) return;
 
                 Object responseData;
                 AppManager appManager = engine.getManager(username, sheetId);

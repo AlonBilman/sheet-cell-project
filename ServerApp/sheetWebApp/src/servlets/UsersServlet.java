@@ -46,7 +46,6 @@ public class UsersServlet extends HttpServlet {
                         }
                     }
                 }
-
                 ResponseUtils.writeSuccessResponse(response, list);
             }
 

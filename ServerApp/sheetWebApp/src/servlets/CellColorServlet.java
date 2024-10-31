@@ -1,7 +1,5 @@
 package servlets;
 
-
-import com.google.gson.Gson;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,13 +14,12 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
+import static constants.Constants.GSON;
 import static constants.Constants.SHEET_ID;
 
 @WebServlet(name = Constants.COLOR_SERVLET, urlPatterns = {Constants.MODIFY + Constants.CELL_TEXT_COLOR, Constants.MODIFY + Constants.CELL_BACKGROUND_COLOR,})
 
 public class CellColorServlet extends HttpServlet {
-
-    private static final Gson GSON = new Gson();
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -73,28 +70,3 @@ public class CellColorServlet extends HttpServlet {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

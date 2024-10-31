@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import dto.CellDataDTO;
 import engine.Engine;
@@ -17,13 +16,11 @@ import utils.SessionUtils;
 import java.io.IOException;
 import java.util.Set;
 
-import static constants.Constants.NO_NAME_RANGE;
-import static constants.Constants.NO_NAME_RANGES;
+import static constants.Constants.*;
 
 @WebServlet(name = Constants.NO_NAME_RANGE_SERVLET, urlPatterns = {NO_NAME_RANGE, Constants.NO_NAME_RANGES})
 public class NoNameRangeServlet extends HttpServlet {
 
-    Gson GSON = new Gson();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = SessionUtils.getUsername(request);
@@ -76,7 +73,6 @@ public class NoNameRangeServlet extends HttpServlet {
                     ResponseUtils.writeSuccessResponse(response, range);
                 }
             }
-
         } catch (Exception e) {
             ResponseUtils.writeErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }

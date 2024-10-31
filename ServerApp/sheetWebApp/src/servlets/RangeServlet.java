@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import constants.Constants;
 import engine.Engine;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,10 +14,10 @@ import utils.SessionUtils;
 
 import java.io.IOException;
 
+import static constants.Constants.GSON;
+
 @WebServlet(name = Constants.RANGE_SERVLET, urlPatterns = {Constants.RANGE})
 public class RangeServlet extends HttpServlet {
-
-    private final Gson GSON = new Gson();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
