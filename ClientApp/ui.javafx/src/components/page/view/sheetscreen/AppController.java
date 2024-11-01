@@ -715,7 +715,7 @@ public class AppController {
             stopRefresher();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/page/view/mainscreen/mainScreen.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1120, 800);
+            Scene scene = new Scene(root, 915, 710);
             stage.setScene(scene);
             stage.setTitle("Sheet Cell - Main Screen");
             MainScreenController controller = loader.getController();
