@@ -713,7 +713,7 @@ public class AppController {
     public void backToMainScreenClicked() {
         try {
             stopRefresher();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../mainscreen/mainScreen.fxml")); // Update the path accordingly
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/page/view/mainscreen/mainScreen.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 1120, 800);
             stage.setScene(scene);

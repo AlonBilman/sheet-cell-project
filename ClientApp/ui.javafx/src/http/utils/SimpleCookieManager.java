@@ -22,16 +22,12 @@ public class SimpleCookieManager implements CookieJar {
     @Override
     public List<Cookie> loadForRequest(@NotNull HttpUrl httpUrl) {
         String host = httpUrl.host();
-        StringBuilder sb = new StringBuilder();
-        sb.append(CACHE_MANAGER_PREFIX).append("Fetching cookies for domain: [").append(host).append("]...");
         List<Cookie> cookiesPerDomain = Collections.emptyList();
         synchronized (this) {
             if (cookies.containsKey(host)) {
                 cookiesPerDomain = new ArrayList<>(cookies.get(host).values());
             }
         }
-        sb.append(" Total of ").append(cookiesPerDomain.size()).append(" cookie(s) will be loaded !");
-        logData.accept(sb.toString());
         return cookiesPerDomain;
     }
 

@@ -1,13 +1,15 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="ui.javafx:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/ui_javafx_jar</output-path>
-    <root id="archive" name="ui.javafx.jar">
-      <element id="module-output" name="ui.javafx" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Okhttp/okio-2.8.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Okhttp/okhttp-4.9.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Okhttp/annotations-13.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Okhttp/kotlin-stdlib-1.4.10.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Okhttp/kotlin-stdlib-common-1.4.10.jar" path-in-jar="/" />
+  <artifact type="jar" name="sheetLogicEngine:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/sheetLogicEngine_jar</output-path>
+    <root id="archive" name="sheetLogicEngine.jar">
+      <element id="module-output" name="sheetLogicEngine" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-jxc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-xjc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-core.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-impl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/angus-activation.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jakarta.xml.bind-api.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jakarta.activation-api.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Gson/gson-2.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Gson/gson-2.1-javadoc.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/thirdParty/Gson/gson-2.1-sources.jar" path-in-jar="/" />

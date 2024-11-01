@@ -456,7 +456,8 @@ public class MainScreenController {
         try {
             stopListRefresher();
             stopChatRefresher();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../sheetscreen/app.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/components/page/view/sheetscreen/app.fxml"));
             Parent root = loader.load();
             boolean isReader = userPermissionData.getPermissionType().equalsIgnoreCase("reader");
             Scene scene = new Scene(root, 1120, 800);

@@ -22,28 +22,5 @@
     <orderEntry type="library" scope="PROVIDED" name="tomcatServer" level="application_server_libraries" />
     <orderEntry type="module" module-name="sheetLogicEngine" />
     <orderEntry type="library" name="Gson" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-jxc.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-xjc.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-core.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-impl.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/angus-activation.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jakarta.xml.bind-api.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jakarta.activation-api.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-jxc.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-xjc.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-core.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jaxb-impl.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/angus-activation.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jakarta.xml.bind-api.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/jaxb-ri-4.0.5/jaxb-ri/mod/jakarta.activation-api.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>

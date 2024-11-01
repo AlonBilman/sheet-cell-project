@@ -8,7 +8,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Gson" />
-          <element id="artifact" artifact-name="appengine:jar" />
+          <element id="artifact" artifact-name="sheetLogicEngine:jar" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="sheetWebApp/web/Web" />

@@ -27,12 +27,17 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(event -> {
             confirmExit();
         });
-        showLoginPage();
+        try {
+            showLoginPage();
+        }
+        catch (Exception e) {
+            System.out.println("Problem with loading page: " + e.getMessage());
+        }
     }
 
     private void showLoginPage() throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        URL loginFXML = getClass().getResource("../components/page/view/loginscreen/loginPage.fxml"); // Update the path accordingly
+        URL loginFXML = getClass().getResource("/components/page/view/loginscreen/loginPage.fxml");
         loader.setLocation(loginFXML);
         Parent root = loader.load();
 
@@ -58,7 +63,7 @@ public class Main extends Application {
     private void showMainApp(String userName) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = getClass().getResource("../components/page/view/mainscreen/mainScreen.fxml");
+            URL mainFXML = getClass().getResource("/components/page/view/mainscreen/mainScreen.fxml");
             loader.setLocation(mainFXML);
             Parent root = loader.load();
             Scene scene = new Scene(root, 915, 600);

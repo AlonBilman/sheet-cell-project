@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="sheetWebApp:Web">
+    <output-path>$PROJECT_DIR$/out/artifacts/sheetWebApp_Web</output-path>
+    <root id="archive" name="sheetWebApp_Web.war">
+      <element id="artifact" artifact-name="sheetWebApp:Web exploded" />
+    </root>
+  </artifact>
+</component>
