@@ -17,7 +17,7 @@ import java.io.IOException;
 import static constants.Constants.GSON;
 import static constants.Constants.SHEET_ID;
 
-@WebServlet(name = Constants.COLOR_SERVLET, urlPatterns = {Constants.MODIFY + Constants.CELL_TEXT_COLOR, Constants.MODIFY + Constants.CELL_BACKGROUND_COLOR,})
+@WebServlet(name = Constants.COLOR_SERVLET, urlPatterns = {Constants.MODIFY + Constants.CELL_TEXT_COLOR, Constants.MODIFY + Constants.CELL_BACKGROUND_COLOR})
 
 public class CellColorServlet extends HttpServlet {
 
