@@ -511,9 +511,7 @@ public class MainScreenController {
         confirmButton.setOnAction((ActionEvent event) -> {
             RadioButton selectedRadioButton = (RadioButton) permissionGroup.getSelectedToggle();
             if (selectedRadioButton != null) {
-                String selectedPermission = selectedRadioButton.getText();
-                permissionPicked = selectedPermission;
-                System.out.println("Selected Permission: " + selectedPermission);
+                permissionPicked = selectedRadioButton.getText();
                 popupStage.close();
             }
         });
