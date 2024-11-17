@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Gson">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/thirdParty/Gson" />
+      <root url="file://$PROJECT_DIR$/ThirdParty/Gson" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/thirdParty/Gson" />
+      <root url="file://$PROJECT_DIR$/ThirdParty/Gson" />
     </SOURCES>
-    <jarDirectory url="file://$PROJECT_DIR$/thirdParty/Gson" recursive="false" />
-    <jarDirectory url="file://$PROJECT_DIR$/thirdParty/Gson" recursive="false" type="SOURCES" />
+    <jarDirectory url="file://$PROJECT_DIR$/ThirdParty/Gson" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/ThirdParty/Gson" recursive="false" type="SOURCES" />
   </library>
 </component>
