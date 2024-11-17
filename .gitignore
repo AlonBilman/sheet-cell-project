@@ -31,7 +31,10 @@ bin/
 .DS_Store
 
 ### Keep jars, wars, and scripts ###
-*.jar
-*.war
+# Allow JAR and WAR files in any directory
+!*.jar
+!*.war
+
+# Include executable scripts
 run.sh
 run.bat
