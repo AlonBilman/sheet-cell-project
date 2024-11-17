@@ -7,7 +7,6 @@
           <element id="module-output" name="sheetWebApp" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Gson" />
           <element id="artifact" artifact-name="sheetLogicEngine:jar" />
         </element>
       </element>
