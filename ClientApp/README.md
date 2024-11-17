@@ -8,4 +8,4 @@ To run the client, follow the instructions based on your operating system:
 - **Linux/Mac**: Use the following commands in your terminal:
   ```bash
   chmod +x run.sh # Make the script executable
-  ./run-client.sh # Run the client
+  ./run.sh # Run the client
