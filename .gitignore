@@ -19,6 +19,8 @@ bin/
 /nbproject/private/
 /nbbuild/
 /dist/
+!/dist/*.jar
+!/dist/*.war
 /nbdist/
 /.nb-gradle/
 
@@ -27,3 +29,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Keep jars, wars, and scripts ###
+*.jar
+*.war
+run.sh
+run.bat
